@@ -8,7 +8,7 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 fi
 
 # Source oh-my-zsh
-if [ -d "$HOME/.oh-my-zsh"]; then
+if [ -d "$HOME/.oh-my-zsh" ]; then
     source $HOME/.oh-my-zsh/oh-my-zsh.sh
 fi
 
