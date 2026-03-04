@@ -1,83 +1,27 @@
 #!/bin/bash
+# =============================================================================
+# install.sh — Création des symlinks vers les dotfiles
+# =============================================================================
 
-echo "🚀 Installing development tools..."
+set -euo pipefail
 
-# Install uv (Python package manager)
-if ! command -v uv >/dev/null 2>&1; then
-    echo "📦 Installing uv..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    echo "✅ uv installed!"
-else
-    echo "✅ uv already installed"
-fi
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Install jq (JSON processor)
-if ! command -v jq >/dev/null 2>&1; then
-    echo "📦 Installing jq..."
-    if command -v apt-get >/dev/null 2>&1; then
-        sudo apt-get update && sudo apt-get install -y jq
-    elif command -v brew >/dev/null 2>&1; then
-        brew install jq
-    else
-        echo "❌ Could not install jq - no package manager found"
-    fi
-    echo "✅ jq installed!"
-else
-    echo "✅ jq already installed"
-fi
+link() {
+    local src="$1"
+    local dst="$2"
+    mkdir -p "$(dirname "$dst")"
+    ln -sf "$src" "$dst"
+    echo "Linked: $dst → $src"
+}
 
-# Install GitHub CLI
-if ! command -v gh >/dev/null 2>&1; then
-    echo "📦 Installing GitHub CLI..."
-    if command -v apt-get >/dev/null 2>&1; then
-        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-        sudo apt-get update && sudo apt-get install -y gh
-    elif command -v brew >/dev/null 2>&1; then
-        brew install gh
-    fi
-    echo "✅ GitHub CLI installed!"
-else
-    echo "✅ GitHub CLI already installed"
-fi
+echo "=== Installation des dotfiles depuis $DOTFILES_DIR ==="
 
-# Install tree (directory structure visualizer)
-if ! command -v tree >/dev/null 2>&1; then
-    echo "📦 Installing tree..."
-    if command -v apt-get >/dev/null 2>&1; then
-        sudo apt-get install -y tree
-    elif command -v brew >/dev/null 2>&1; then
-        brew install tree
-    fi
-    echo "✅ tree installed!"
-else
-    echo "✅ tree already installed"
-fi
+link "$DOTFILES_DIR/zsh/.zshrc"             "$HOME/.zshrc"
+link "$DOTFILES_DIR/git/.gitconfig"         "$HOME/.gitconfig"
+link "$DOTFILES_DIR/scripts/maintenance.sh" "$HOME/scripts/maintenance.sh"
+link "$DOTFILES_DIR/vscode/settings.json"   "$HOME/.config/Code/User/settings.json"
 
-# Install bat (better cat with syntax highlighting)
-if ! command -v bat >/dev/null 2>&1; then
-    echo "📦 Installing bat..."
-    if command -v apt-get >/dev/null 2>&1; then
-        sudo apt-get install -y bat
-    elif command -v brew >/dev/null 2>&1; then
-        brew install bat
-    fi
-    echo "✅ bat installed!"
-else
-    echo "✅ bat already installed"
-fi
-
-# Install htop (interactive process viewer)
-if ! command -v htop >/dev/null 2>&1; then
-    echo "📦 Installing htop..."
-    if command -v apt-get >/dev/null 2>&1; then
-        sudo apt-get install -y htop
-    elif command -v brew >/dev/null 2>&1; then
-        brew install htop
-    fi
-    echo "✅ htop installed!"
-else
-    echo "✅ htop already installed"
-fi
-
-echo "🎉 Done!"
+echo ""
+echo "=== Symlinks créés. ==="
+echo "Lance 'source ~/.zshrc' pour recharger le shell."

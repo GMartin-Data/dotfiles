@@ -1,0 +1,10 @@
+[user]
+	name = Greg Martin
+	email = gregory.martin.data@gmail.com
+	signingkey = CB867C69E9232B94
+[commit]
+	gpgsign = true
+[tag]
+	gpgsign = true
+[init]
+	defaultBranch = main

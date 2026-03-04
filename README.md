@@ -1,71 +1,114 @@
-# 🛠️ Personal Dotfiles
+# dotfiles
 
-My development environment configuration for GitHub Codespaces and local development.
+Configuration personnelle pour environnement de développement data engineering / AI engineering.
+Optimisé pour **Crostini (ChromeOS, Debian 12 bookworm)** et **Ubuntu 22.04**.
 
-## What's Included
+---
 
-### Shell Configuration
+## Contenu
 
-- **Zsh with Oh My Zsh** - Modern shell with Git integration
-- **Automatic setup** - Installs missing dependencies automatically
+| Fichier | Emplacement cible | Description |
+|---|---|---|
+| `zsh/.zshrc` | `~/.zshrc` | Shell Zsh + Oh My Zsh, plugins, aliases |
+| `git/.gitconfig` | `~/.gitconfig` | Identité Git, GPG signing, aliases |
+| `scripts/maintenance.sh` | `~/scripts/maintenance.sh` | Maintenance automatisée du conteneur |
+| `vscode/settings.json` | `~/.config/Code/User/settings.json` | Configuration VS Code |
 
-### Development Tools
+---
 
-- **uv** - Fast Python package manager
-- **jq** - JSON processor for API work
-- **GitHub CLI (gh)** - GitHub operations from command line
-- **tree** - Directory structure visualization
-- **bat** - Better `cat` with syntax highlighting
-- **htop** - Interactive system monitor
-
-## Quick Start
-
-### For GitHub Codespaces
-
-1. Go to [GitHub Settings → Codespaces](https://github.com/settings/codespaces)
-2. Enable "Automatically install dotfiles"
-3. Select this repository: `GMartin-Data/dotfiles`
-4. Set install command: `./install.sh`
-
-New Codespaces will automatically include all tools!
-
-### For Local Setup
+## Installation sur une machine vierge
 
 ```bash
-git clone https://github.com/GMartin-Data/dotfiles.git
-cd dotfiles
+git clone git@github.com:GMartin-Data/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+
+# 1. Installer les outils
+./bootstrap.sh
+
+# 2. Créer les symlinks
 ./install.sh
+
+# 3. Recharger le shell
+source ~/.zshrc
 ```
 
-## Files
-
-- `.bashrc` - Switches to Zsh automatically
-- `.zshrc` - Zsh configuration with Oh My Zsh
-- `install.sh` - Installs all development tools
-- `README.md` - This file
-
-## Usage
-
-All tools install automatically. Key commands:
-
-- `tree` - Show directory structure
-- `bat filename` - View file with syntax highlighting
-- `jq .` - Format JSON from clipboard
-- `gh repo list` - List your GitHub repositories
-- `htop` - Monitor system resources
-
-## Adding More Tools
-
-Edit `install.sh` and follow the pattern:
+## Installation sur une machine déjà configurée
 
 ```bash
-if ! command -v toolname >/dev/null 2>&1; then
-    echo "📦 Installing toolname..."
-    # installation commands here
-    echo "✅ toolname installed!"
-fi
+git clone git@github.com:GMartin-Data/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./install.sh
+source ~/.zshrc
 ```
 
-## License
+---
 
-Free to use and modify for personal use.
+## Stack
+
+**Shell**
+- Zsh + Oh My Zsh
+- Plugins : git, zsh-autosuggestions, zsh-syntax-highlighting, z, sudo, fzf, history, docker, vi-mode, alias-tips
+
+**Outils système**
+- `jq` / `yq` — traitement JSON/YAML
+- `fzf` — recherche floue interactive
+- `ripgrep` — recherche dans les fichiers (alternative à grep)
+- `fd` — recherche de fichiers (alternative à find)
+
+**Développement**
+- Node.js via nvm
+- Python via uv
+- Claude Code
+- Google Cloud CLI
+- Docker Engine
+
+**Git**
+- GPG signing actif (clé RSA 4096)
+- SSH GitHub (`id_github_chromebook`)
+
+---
+
+## Outils à configurer manuellement
+
+Ces outils ne sont pas couverts par `bootstrap.sh` — leur installation implique des dépôts tiers ou des étapes interactives :
+
+| Outil | Documentation |
+|---|---|
+| Docker Engine | https://docs.docker.com/engine/install/debian/ |
+| Google Cloud CLI | https://cloud.google.com/sdk/docs/install |
+| VS Code | https://code.visualstudio.com/docs/setup/linux |
+
+---
+
+## Sauvegardes
+
+Les éléments suivants ne sont **pas** dans ce dépôt et doivent être sauvegardés séparément :
+
+| Élément | Méthode |
+|---|---|
+| Clé GPG privée | `gpg --export-secret-keys --armor KEY_ID > gpg-backup.asc` → stocker hors du conteneur |
+| Clé SSH | Copier `~/.ssh/id_github_chromebook` sur support externe chiffré |
+
+> ⚠️ Ne jamais versionner de clés SSH, GPG, tokens ou mots de passe — même dans un dépôt privé.
+
+---
+
+## Notes spécifiques à Crostini (ChromeOS)
+
+- Ne jamais utiliser `sudo reboot` dans le conteneur (casse la VM)
+- GPU désactivé (swrast par défaut, pas de virgl)
+- Si la VM refuse de démarrer (`vm_start failed`), cliquer sur "Manage" dans l'interface Terminal
+- Partager "My Files" avec Linux pour accéder à `/mnt/chromeos/MyFiles/`
+
+---
+
+## Maintenance
+
+```bash
+maintain        # alias → ~/scripts/maintenance.sh
+```
+
+Log consultable dans `~/.local/logs/maintenance.log`.
+
+> ⚠️ Le nettoyage des volumes Docker est une tâche **manuelle** :
+> `docker volume ls` / `docker volume prune` / `docker volume rm <nom>`
