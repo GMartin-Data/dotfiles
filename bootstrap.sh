@@ -26,7 +26,8 @@ sudo apt-get install -y -q \
     ripgrep \
     fd-find \
     build-essential \
-    gnupg
+    gnupg \
+    nano
 
 # yq (pas dans les dépôts Debian, installation via binaire officiel)
 if ! command -v yq &>/dev/null; then
