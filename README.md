@@ -60,11 +60,27 @@ source ~/.zshrc
 - Python via uv
 - Claude Code
 - Google Cloud CLI
+- GitHub CLI (`gh`)
 - Docker Engine
 
 **Git**
 - GPG signing actif (clé RSA 4096)
 - SSH GitHub (`id_github_chromebook`)
+
+---
+
+## Configuration post-bootstrap
+
+Après `bootstrap.sh`, ces outils nécessitent une authentification manuelle :
+
+```bash
+# GitHub CLI
+gh auth login
+
+# Google Cloud CLI
+gcloud auth login
+gcloud auth application-default login
+```
 
 ---
 
