@@ -54,6 +54,7 @@ source ~/.zshrc
 - `fzf` — recherche floue interactive
 - `ripgrep` — recherche dans les fichiers (alternative à grep)
 - `fd` — recherche de fichiers (alternative à find)
+- `btop` — moniteur système interactif (processus, CPU, mémoire, réseau, disque)
 
 **Développement**
 - Node.js via nvm

@@ -44,6 +44,16 @@ if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
     ln -sf "$(which fdfind)" "$HOME/.local/bin/fd"
 fi
 
+# btop (version apt obsolète sur Debian bookworm — installation via binaire officiel)
+if ! command -v btop &>/dev/null; then
+    echo ">>> Installation de btop..."
+    BTOP_VERSION=$(curl -s https://api.github.com/repos/aristocratos/btop/releases/latest         | grep '"tag_name"' | cut -d'"' -f4)
+    curl -fsSL "https://github.com/aristocratos/btop/releases/download/${BTOP_VERSION}/btop-x86_64-linux-musl.tbz"         -o /tmp/btop.tbz
+    tar -xjf /tmp/btop.tbz -C /tmp
+    sudo /tmp/btop/install.sh
+    rm -rf /tmp/btop.tbz /tmp/btop
+fi
+
 # -----------------------------------------------------------------------------
 # Zsh + Oh My Zsh
 # -----------------------------------------------------------------------------
