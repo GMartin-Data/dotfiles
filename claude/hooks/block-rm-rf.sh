@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
-# Block rm -rf commands
-# PreToolUse hook for Bash tool
-
+# PreToolUse hook — Block rm -rf
 set -euo pipefail
 
-INPUT="${CLAUDE_TOOL_INPUT:-}"
+COMMAND=$(jq -r '.tool_input.command // empty')
 
-# Check if command contains rm with -rf or -fr flags
-if echo "$INPUT" | grep -qE '\brm\s+.*-(rf|fr)\b' || \
-   echo "$INPUT" | grep -qE '\brm\s+-(rf|fr)\b'; then
-    echo "BLOCKED: rm -rf is not allowed"
-    echo "Use rm with explicit paths or ask user to run manually"
-    exit 1
+if echo "$COMMAND" | grep -qE '\brm\s+.*-(rf|fr)\b|\brm\s+-(rf|fr)\b'; then
+    echo "BLOCKED: rm -rf is not allowed. Use rm with explicit paths." >&2
+    exit 2
 fi
 
 exit 0
