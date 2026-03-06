@@ -13,6 +13,11 @@ Optimisé pour **Crostini (ChromeOS, Debian 12 bookworm)** et **Ubuntu 22.04**.
 | `git/.gitconfig` | `~/.gitconfig` | Identité Git, GPG signing, aliases |
 | `scripts/maintenance.sh` | `~/scripts/maintenance.sh` | Maintenance automatisée du conteneur |
 | `vscode/settings.json` | `~/.config/Code/User/settings.json` | Configuration VS Code |
+| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Conventions globales Claude Code |
+| `claude/settings.json` | `~/.claude/settings.json` | Configuration Claude Code |
+| `claude/commands/*.md` | `~/.claude/commands/` | Slash commands personnalisées |
+| `claude/hooks/*` | `~/.claude/hooks/` | Hooks PreToolUse (protection) |
+| `claude/skills/` | `~/.claude/skills/` | Skills personnalisées (dossiers symlinkés) |
 
 ---
 
@@ -67,6 +72,33 @@ source ~/.zshrc
 **Git**
 - GPG signing actif (clé RSA 4096)
 - SSH GitHub (`id_github_chromebook`)
+
+---
+
+## Claude Code
+
+La configuration Claude Code est versionnée dans `claude/` et symlinkée vers `~/.claude/` par `install.sh`.
+
+**Fichiers racine :**
+- `CLAUDE.md` — conventions globales (identité, stack, style Python, règles Git, workflow AI)
+- `settings.json` — configuration Claude Code
+
+**Slash commands (`commands/`) :**
+- `claude-md.md` — interview structuré pour créer un CLAUDE.md projet
+- `immunize.md` — cycle immunitaire : lessons-inbox → CLAUDE.md projet → CLAUDE.md global
+- `prd.md` — interview structuré pour créer un PRD
+
+**Hooks PreToolUse (`hooks/`) :**
+- `block-force-push.sh` — bloque `git push --force`
+- `block-rm-rf.sh` — bloque `rm -rf`
+- `protect_env.py` — protège les fichiers `.env`
+
+**Skills (`skills/`) :**
+- `code-mentor/` — mentor Socratique avec génération de flashcards Anki
+- `dp-coach/` — coach de pratique délibérée (Python, SQL)
+
+**Plugin à réinstaller manuellement :**
+- `pyright-lsp@claude-plugins-official` — LSP Python pour Claude Code
 
 ---
 
