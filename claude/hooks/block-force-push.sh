@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
-# Block git push --force commands
-# PreToolUse hook for Bash tool
-
+# PreToolUse hook — Block git push --force
 set -euo pipefail
 
-INPUT="${CLAUDE_TOOL_INPUT:-}"
+COMMAND=$(jq -r '.tool_input.command // empty')
 
-# Check if command contains push with force flag
-if echo "$INPUT" | grep -qE 'push\s+.*(-f|--force)' || \
-   echo "$INPUT" | grep -qE 'push\s+(-f|--force)'; then
-    echo "BLOCKED: git push --force is not allowed"
-    echo "Use regular push or ask user to run manually if force is required"
-    exit 1
+if echo "$COMMAND" | grep -qE 'push\s+.*(-f|--force)|push\s+(-f|--force)'; then
+    echo "BLOCKED: git push --force is not allowed. Use regular push." >&2
+    exit 2
 fi
 
 exit 0
