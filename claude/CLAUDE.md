@@ -3,7 +3,7 @@
 ## Identity & Context
 - Data Engineer / AI Engineer (junior, banking)
 - Stack: Python 3.12+, SQL, dbt, Spark, Docker, GCP
-- OS: Linux
+- OS: Linux (Ubuntu 22.04)
 - Shell: zsh
 - Package manager: uv
 
@@ -12,16 +12,25 @@
 - Code, comments, docstrings: English
 - Commit messages: English (Conventional Commits)
 
-## Python Conventions
-- Google-style docstrings
-- Type hints everywhere
-- structlog for logging
-- pytest for testing
+## Python Stack Choices
+- Testing: pytest (never unittest)
+- Logging: structlog (never print/logging)
+- Docstrings: Google style
+- Type hints: mandatory on all signatures
+
+## Common Commands
+- `uv sync` — install/sync dependencies
+- `uv run pytest` — run tests
+- `uv run ruff check .` — lint
+- `uv run ruff format .` — format
 
 ## Git
 - Conventional commits (feat/fix/docs/refactor/test/chore)
-- Never force push
-- Never rm -rf without confirmation
+- Force push and destructive rm are blocked by hooks
+
+## Context Management
+- Before /clear: always update PROGRESS.md with current state
+- Use /rewind (Esc Esc) when Claude derails — don't correct in polluted context
 
 ## AI Workflow
 - Project-specific conventions live in project CLAUDE.md (via /claude-md)
