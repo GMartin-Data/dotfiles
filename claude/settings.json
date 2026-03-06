@@ -40,6 +40,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/ruff-check.sh"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {

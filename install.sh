@@ -42,6 +42,7 @@ link "$DOTFILES_DIR/claude/commands/prd.md"          "$HOME/.claude/commands/prd
 link "$DOTFILES_DIR/claude/hooks/block-force-push.sh" "$HOME/.claude/hooks/block-force-push.sh"
 link "$DOTFILES_DIR/claude/hooks/block-rm-rf.sh"      "$HOME/.claude/hooks/block-rm-rf.sh"
 link "$DOTFILES_DIR/claude/hooks/protect_env.py"      "$HOME/.claude/hooks/protect_env.py"
+link "$DOTFILES_DIR/claude/hooks/ruff-check.sh"       "$HOME/.claude/hooks/ruff-check.sh"
 
 # Skills (dossiers entiers — chaque skill est un dossier isolé qu'on contrôle)
 link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mentor"
