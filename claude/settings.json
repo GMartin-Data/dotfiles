@@ -61,6 +61,5 @@
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
   },
-  "alwaysThinkingEnabled": false,
-  "effortLevel": "medium"
+  "alwaysThinkingEnabled": false
 }
