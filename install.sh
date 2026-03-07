@@ -37,6 +37,8 @@ link "$DOTFILES_DIR/claude/settings.json"        "$HOME/.claude/settings.json"
 link "$DOTFILES_DIR/claude/commands/claude-md.md"  "$HOME/.claude/commands/claude-md.md"
 link "$DOTFILES_DIR/claude/commands/immunize.md"    "$HOME/.claude/commands/immunize.md"
 link "$DOTFILES_DIR/claude/commands/prd.md"          "$HOME/.claude/commands/prd.md"
+link "$DOTFILES_DIR/claude/commands/catchup.md"    "$HOME/.claude/commands/catchup.md"
+link "$DOTFILES_DIR/claude/commands/progress.md"    "$HOME/.claude/commands/progress.md"
 
 # Hooks (fichiers individuels — même raison)
 link "$DOTFILES_DIR/claude/hooks/block-force-push.sh" "$HOME/.claude/hooks/block-force-push.sh"
