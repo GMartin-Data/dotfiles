@@ -1,3 +1,16 @@
+---
+description: Interview structurée pour produire un CLAUDE.md projet avec conventions et structure hiérarchique
+argument-hint: [component-path]
+allowed-tools: Read, Write
+model: sonnet
+---
+
+## Contexte utilisateur existant
+!`cat ~/.claude/CLAUDE.md 2>/dev/null || echo "Pas de CLAUDE.md global"`
+
+## Contexte projet existant
+!`cat CLAUDE.md 2>/dev/null || echo "Pas de CLAUDE.md projet"`
+
 # Conventions Interview
 
 Structured interview process to produce a complete CLAUDE.md (with optional hierarchical structure) through incremental questioning.

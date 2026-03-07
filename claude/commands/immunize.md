@@ -1,6 +1,8 @@
 ---
 description: Consolide lessons-inbox.md — promeut les patterns récurrents, archive le bruit, immunise le workflow
+argument-hint: [lesson-description]
 allowed-tools: Read, Write, Bash(grep:*), Bash(wc:*), Bash(cat:*), Bash(date:*)
+model: sonnet
 ---
 
 ## Objectif

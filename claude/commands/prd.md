@@ -1,6 +1,13 @@
 ---
+description: Interview structurée pour produire un PRD complet par questionnement incrémental
 argument-hint: [output-filename]
+allowed-tools: Read, Write
+model: opus
 ---
+
+## Contexte projet
+- Remote : !`git remote -v 2>/dev/null || echo "Pas de remote configuré"`
+- CLAUDE.md projet : !`cat CLAUDE.md 2>/dev/null || echo "Pas de CLAUDE.md projet"`
 
 # PRD Interview
 
