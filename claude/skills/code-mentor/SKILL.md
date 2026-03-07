@@ -1,6 +1,6 @@
 ---
 name: code-mentor
-description: Session pédagogique interactive pour comprendre du code. Utiliser quand on veut analyser et apprendre du code existant dans le workspace.
+description: "Session pédagogique interactive pour comprendre du code. Triggers : 'explique-moi ce code', 'mentor', 'session pédagogique', 'je ne comprends pas', 'analyse ce fichier avec moi'. Explore du code existant dans le workspace via questionnement Socratique et scaffolding progressif. Produit des flashcards Anki en fin de session."
 ---
 
 # Code Mentor

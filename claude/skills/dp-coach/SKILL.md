@@ -1,6 +1,6 @@
 ---
 name: dp-coach
-description: Deliberate Practice coach for programming skills. Generates calibrated exercises, executes user code, analyzes results, and provides targeted feedback. Use when the user wants to practice coding skills (Python, SQL, bash, etc.), requests drill exercises, asks to improve a specific sub-skill, or mentions "deliberate practice", "DP", "katas", or "drill".
+description: "Deliberate Practice coach for programming skills. Generates calibrated exercises, executes user code, analyzes results, and provides targeted feedback. Triggers : 'deliberate practice', 'DP', 'katas', 'drill', practice coding skills."
 ---
 
 # DP Coach
