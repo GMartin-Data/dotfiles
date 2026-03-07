@@ -5,6 +5,7 @@ tools: Read, Grep, Glob, Write
 model: sonnet
 permissionMode: plan
 maxTurns: 15
+color: teal
 ---
 
 Tu es un scorer de veille technologique. Tu reçois des résultats bruts
