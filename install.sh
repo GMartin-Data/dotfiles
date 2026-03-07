@@ -50,6 +50,9 @@ link "$DOTFILES_DIR/claude/hooks/ruff-check.sh"       "$HOME/.claude/hooks/ruff-
 link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mentor"
 link "$DOTFILES_DIR/claude/skills/dp-coach"     "$HOME/.claude/skills/dp-coach"
 
+# Agents (fichiers individuels)
+link "$DOTFILES_DIR/claude/agents/tech-watch-scorer.md" "$HOME/.claude/agents/tech-watch-scorer.md"
+
 echo ""
 echo "=== Symlinks créés. ==="
 echo "Lance 'source ~/.zshrc' pour recharger le shell."
