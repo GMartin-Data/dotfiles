@@ -53,6 +53,10 @@ link "$DOTFILES_DIR/claude/skills/dp-coach"     "$HOME/.claude/skills/dp-coach"
 
 # Agents (fichiers individuels)
 link "$DOTFILES_DIR/claude/agents/tech-watch-scorer.md" "$HOME/.claude/agents/tech-watch-scorer.md"
+link "$DOTFILES_DIR/claude/agents/learning-tracker.md" "$HOME/.claude/agents/learning-tracker.md"
+
+# Agent memory (dossiers entiers)
+link "$DOTFILES_DIR/claude/agent-memory/learning-tracker" "$HOME/.claude/agent-memory/learning-tracker"
 
 echo ""
 echo "=== Symlinks créés. ==="
