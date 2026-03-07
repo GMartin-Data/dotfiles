@@ -40,6 +40,7 @@ link "$DOTFILES_DIR/claude/commands/prd.md"          "$HOME/.claude/commands/prd
 link "$DOTFILES_DIR/claude/commands/catchup.md"    "$HOME/.claude/commands/catchup.md"
 link "$DOTFILES_DIR/claude/commands/progress.md"    "$HOME/.claude/commands/progress.md"
 link "$DOTFILES_DIR/claude/commands/tech-watch.md"  "$HOME/.claude/commands/tech-watch.md"
+link "$DOTFILES_DIR/claude/commands/learning-tracker.md" "$HOME/.claude/commands/learning-tracker.md"
 
 # Hooks (fichiers individuels — même raison)
 link "$DOTFILES_DIR/claude/hooks/block-force-push.sh" "$HOME/.claude/hooks/block-force-push.sh"
