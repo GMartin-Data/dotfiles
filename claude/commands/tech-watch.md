@@ -1,6 +1,6 @@
 ---
 description: Pipeline complet de veille technologique — score et classe des sources brutes
-allowed-tools: Read, Bash(cat:*), Bash(mkdir:*), Bash(python3:*)
+allowed-tools: Read, Bash(cat:*), Bash(python3:*)
 ---
 
 # Tech Watch Pipeline
