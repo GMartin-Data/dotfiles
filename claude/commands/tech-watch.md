@@ -1,17 +1,21 @@
 ---
-description: Pipeline complet de veille technologique — score et classe des sources brutes
-allowed-tools: Read, Bash(cat:*), Bash(python3:*)
+description: Pipeline complet de veille technologique — fetch, score et classe des sources
+allowed-tools: Read, Bash(cat:*), Bash(uv:*), Bash(python3:*)
 ---
 
 # Tech Watch Pipeline
 
 Topic : $ARGUMENTS
 
-## Step 1 : Vérifier les sources brutes
+## Step 1 : Récupérer les sources brutes
 
-Vérifie que `tech-watch/raw-sources.json` existe.
-Si le fichier n'existe PAS : affiche un message d'erreur clair et STOP.
-Le fichier doit être préparé manuellement avant de lancer cette command.
+Exécute le fetcher pour collecter les sources :
+```
+uv run ~/.claude/agents/scripts/fetch-sources.py "$ARGUMENTS" --days 20 --output tech-watch/raw-sources.json
+```
+
+Si le script échoue (code retour ≠ 0) : affiche l'erreur et STOP.
+Si le fichier est produit mais contient 0 sources : signale qu'aucune source n'a été trouvée et STOP.
 
 ## Step 2 : Scoring des sources
 
