@@ -46,27 +46,3 @@ Session : [CLAUDE_SESSION_ID]
 6. Écris dans `progress.md` (crée le fichier s'il n'existe pas)
 
 Ne supprime pas l'historique existant — ajoute en tête du fichier.
-```
-
-Justifications : `sonnet` parce qu'il faut analyser le contexte de la conversation courante et synthétiser. `${CLAUDE_SESSION_ID}` pour la traçabilité — tu pourras remonter quel checkpoint vient de quelle session. Le "montre-moi avant d'écrire" implémente le human-in-the-loop décidé en Module 0.3.
-
----
-
-### Récapitulatif des actions
-
-| Fichier | Action | Effort |
-|---|---|---|
-| `~/.claude/commands/prd.md` | Remplacer frontmatter + ajouter injection contexte | ~2 min |
-| `~/.claude/commands/claude-md.md` | Ajouter frontmatter + injection contexte | ~2 min |
-| `~/.claude/commands/immunize.md` | Ajouter `argument-hint` et `model` | ~1 min |
-| `~/.claude/commands/catchup.md` | Créer (contenu complet ci-dessus) | ~1 min |
-| `~/.claude/commands/progress.md` | Créer (contenu complet ci-dessus) | ~1 min |
-
-### Structure cible après déploiement
-```
-~/.claude/commands/
-├── catchup.md      ← NOUVEAU
-├── claude-md.md    ← MODIFIÉ (frontmatter + injection)
-├── immunize.md     ← MODIFIÉ (argument-hint + model)
-├── prd.md          ← MODIFIÉ (frontmatter + injection)
-└── progress.md     ← NOUVEAU
