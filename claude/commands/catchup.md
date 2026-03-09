@@ -1,48 +1,25 @@
 ---
-description: Sauvegarde un checkpoint d'avancement dans progress.md (human-in-the-loop)
-allowed-tools: Read, Write, Bash(git status:*), Bash(git diff:*), Bash(git branch:*)
-model: sonnet
+description: Reconstruit le contexte de travail après /clear ou reprise de session
+allowed-tools: Read, Bash(git status:*), Bash(git diff:*), Bash(git branch:*), Bash(git log:*)
+model: haiku
 ---
 
-## État Git actuel
+## État Git
 - Branche : !`git branch --show-current`
 - Status : !`git status --short`
 - Diff vs main : !`git diff --stat main 2>/dev/null || echo "Pas de branche main"`
+- Derniers commits : !`git log --oneline -5 2>/dev/null || echo "Pas d'historique"`
 
-## Session
-ID : ${CLAUDE_SESSION_ID}
+## Artefacts projet
+Lis ces fichiers s'ils existent :
+- progress.md (source de vérité sur l'avancement)
+- PRD.md (intention initiale, figé)
+- CLAUDE.md (conventions)
 
 ## Ta tâche
+Produis un résumé structuré en 3 parties :
+1. **État actuel** — où en est le travail (branche, fichiers modifiés, dernière action)
+2. **Prochaine étape** — la tâche immédiate à reprendre
+3. **Décisions en suspens** — si progress.md mentionne des points ouverts
 
-1. Lis `progress.md` s'il existe
-2. Lis `PRD.md` s'il existe (pour détecter les écarts)
-3. Analyse le contexte de travail courant (cette conversation)
-4. Produis une mise à jour de progress.md avec ces sections :
-```
-## Dernière mise à jour
-Date : [YYYY-MM-DD HH:MM]
-Session : [CLAUDE_SESSION_ID]
-
-## Tâches complétées
-- [liste]
-
-## En cours
-- [tâche actuelle + état]
-
-## Prochaines étapes
-- [liste ordonnée]
-
-## Écarts vs PRD
-- [si divergence identifiée, sinon "Aucun"]
-
-## Décisions prises
-- [liste des choix faits pendant cette session]
-
-## Blocages
-- [si existants, sinon "Aucun"]
-```
-
-5. **Montre-moi la mise à jour AVANT d'écrire** — attends ma confirmation explicite
-6. Écris dans `progress.md` (crée le fichier s'il n'existe pas)
-
-Ne supprime pas l'historique existant — ajoute en tête du fichier.
+Sois concis. Pas de reformulation du PRD ou du CLAUDE.md — juste l'état et la direction.
