@@ -26,6 +26,7 @@
 
 ## Git
 - Conventional commits (feat/fix/docs/refactor/test/chore)
+- Commit after each logical unit - never batch multiple concerns in one commit
 - Force push and destructive rm are blocked by hooks
 
 ## Context Management
