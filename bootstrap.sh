@@ -143,6 +143,16 @@ echo "   → https://code.visualstudio.com/docs/setup/linux"
 echo ""
 
 # -----------------------------------------------------------------------------
+# Extensions VS Code (nécessite VS Code déjà installé)
+# -----------------------------------------------------------------------------
+if command -v code &>/dev/null && [ -f "$DOTFILES_DIR/vscode/extensions.txt" ]; then
+    echo ">>> Installation des extensions VS Code..."
+    cat "$DOTFILES_DIR/vscode/extensions.txt" | xargs -L 1 code --install-extension
+else
+    echo "⚠️  VS Code non détecté ou extensions.txt absent — extensions non installées."
+fi
+
+# -----------------------------------------------------------------------------
 # Fin
 # -----------------------------------------------------------------------------
 echo "=== Bootstrap terminé ==="
