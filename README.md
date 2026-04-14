@@ -7,17 +7,21 @@ Optimisé pour **Crostini (ChromeOS, Debian 12 bookworm)** et **Ubuntu 22.04**.
 
 ## Contenu
 
-| Fichier | Emplacement cible | Description |
+| Fichier / Dossier | Emplacement cible | Description |
 |---|---|---|
 | `zsh/.zshrc` | `~/.zshrc` | Shell Zsh + Oh My Zsh, plugins, aliases |
 | `git/.gitconfig` | `~/.gitconfig` | Identité Git, GPG signing, aliases |
 | `scripts/maintenance.sh` | `~/scripts/maintenance.sh` | Maintenance automatisée du conteneur |
 | `vscode/settings.json` | `~/.config/Code/User/settings.json` | Configuration VS Code |
+| `vscode/extensions.txt` | — | Liste des extensions VS Code (installées par `bootstrap.sh`) |
 | `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Conventions globales Claude Code |
 | `claude/settings.json` | `~/.claude/settings.json` | Configuration Claude Code |
 | `claude/commands/*.md` | `~/.claude/commands/` | Slash commands personnalisées |
-| `claude/hooks/*` | `~/.claude/hooks/` | Hooks PreToolUse (protection) |
+| `claude/hooks/*` | `~/.claude/hooks/` | Hooks PreToolUse (protection + lint) |
 | `claude/skills/` | `~/.claude/skills/` | Skills personnalisées (dossiers symlinkés) |
+| `claude/agents/` | `~/.claude/agents/` | Subagents (fichiers individuels + scripts partagés) |
+| `claude/agent-memory/` | `~/.claude/agent-memory/` | Mémoire persistante des subagents |
+| `TODO.md` | — | Évolutions différées avec contexte et critères |
 
 ---
 
@@ -81,24 +85,50 @@ La configuration Claude Code est versionnée dans `claude/` et symlinkée vers `
 
 **Fichiers racine :**
 - `CLAUDE.md` — conventions globales (identité, stack, style Python, règles Git, workflow AI)
-- `settings.json` — configuration Claude Code
+- `settings.json` — configuration Claude Code (permissions, hooks, plugins, effort level)
 
 **Slash commands (`commands/`) :**
+- `catchup.md` — reprise de contexte après interruption
 - `claude-md.md` — interview structuré pour créer un CLAUDE.md projet
 - `immunize.md` — cycle immunitaire : lessons-inbox → CLAUDE.md projet → CLAUDE.md global
+- `learning-tracker.md` — invocation du subagent de suivi d'apprentissage
 - `prd.md` — interview structuré pour créer un PRD
+- `progress.md` — checkpoint d'avancement avant `/clear`
+- `tech-watch.md` — orchestration de la veille technologique
 
 **Hooks PreToolUse (`hooks/`) :**
 - `block-force-push.sh` — bloque `git push --force`
 - `block-rm-rf.sh` — bloque `rm -rf`
 - `protect_env.py` — protège les fichiers `.env`
+- `ruff-check.sh` — lint automatique via Ruff
 
 **Skills (`skills/`) :**
+- `coach-pedagogique/` — coaching de développement structuré avec scaffolding dégressif
 - `code-mentor/` — mentor Socratique avec génération de flashcards Anki
 - `dp-coach/` — coach de pratique délibérée (Python, SQL)
 
+**Subagents (`agents/`) :**
+- `tech-watch-scorer.md` — scoring et classement de la veille technologique
+- `learning-tracker.md` — suivi de progression d'apprentissage
+- `scripts/` — scripts utilitaires partagés entre subagents
+
+**Mémoire subagents (`agent-memory/`) :**
+- `learning-tracker/MEMORY.md` — état persistant du suivi d'apprentissage
+
 **Plugin à réinstaller manuellement :**
 - `pyright-lsp@claude-plugins-official` — LSP Python pour Claude Code
+
+---
+
+## VS Code
+
+- `vscode/settings.json` — configuration symlinkée vers `~/.config/Code/User/settings.json`
+- `vscode/extensions.txt` — liste des extensions, installées automatiquement par `bootstrap.sh`
+
+Pour mettre à jour la liste après ajout/suppression d'extensions :
+```bash
+code --list-extensions > ~/dotfiles/vscode/extensions.txt
+```
 
 ---
 

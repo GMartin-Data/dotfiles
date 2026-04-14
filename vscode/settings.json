@@ -3,22 +3,23 @@
   "window.zoomLevel": 0,
   "workbench.iconTheme": "material-icon-theme",
   "workbench.colorTheme": "Visual Studio Dark",
-
   // Sauvegarde & Formatage Global
   "files.autoSave": "onFocusChange",
   "editor.formatOnSave": true,
-  "editor.rulers": [88],
-
+  "editor.rulers": [
+    88
+  ],
   // Python - Formatage avec Ruff
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.rulers": [88],
+    "editor.rulers": [
+      88
+    ],
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
     }
   },
-
   // Python - Pylance
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.diagnosticSeverityOverrides": {
@@ -26,7 +27,6 @@
     "reportUnknownMemberType": "none",
     "reportGeneralTypeIssues": "warning"
   },
-
   // Formatage par langage
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
@@ -56,14 +56,13 @@
     "editor.defaultFormatter": "hashicorp.terraform",
     "editor.formatOnSave": true
   },
-
   // Copilot - actif pour autocomplétion
   "remote.defaultExtensionsIfInstalledLocally": [
     "GitHub.copilot",
     "GitHub.copilot-chat"
   ],
   "github.copilot.nextEditSuggestions.enabled": true,
-
   // Gemini Code Assist - autocomplétion désactivée, Cloud Code reste actif
-  "geminicodeassist.inlineCompletion.enable": false
+  "geminicodeassist.inlineCompletion.enable": false,
+  "python.analysis.extraPaths": []
 }
