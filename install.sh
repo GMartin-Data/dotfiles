@@ -53,6 +53,14 @@ link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mento
 link "$DOTFILES_DIR/claude/skills/dp-coach"     "$HOME/.claude/skills/dp-coach"
 link "$DOTFILES_DIR/claude/skills/coach-pedagogique" "$HOME/.claude/skills/coach-pedagogique"
 
+# Rules (fichiers individuels — glob-scoped, chargés à la demande par Claude Code)
+link "$DOTFILES_DIR/claude/rules/python.md"     "$HOME/.claude/rules/python.md"
+link "$DOTFILES_DIR/claude/rules/dbt-sql.md"    "$HOME/.claude/rules/dbt-sql.md"
+link "$DOTFILES_DIR/claude/rules/terraform.md"  "$HOME/.claude/rules/terraform.md"
+
+# Templates (dossier entier — stock pour bootstrapper les CLAUDE.md projet, pas lu par Claude Code)
+link "$DOTFILES_DIR/claude/templates"            "$HOME/.claude/templates"
+
 # Agents (fichiers individuels)
 link "$DOTFILES_DIR/claude/agents/tech-watch-scorer.md" "$HOME/.claude/agents/tech-watch-scorer.md"
 link "$DOTFILES_DIR/claude/agents/learning-tracker.md" "$HOME/.claude/agents/learning-tracker.md"

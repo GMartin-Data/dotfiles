@@ -14,8 +14,10 @@ Optimisé pour **Crostini (ChromeOS, Debian 12 bookworm)** et **Ubuntu 22.04**.
 | `scripts/maintenance.sh` | `~/scripts/maintenance.sh` | Maintenance automatisée du conteneur |
 | `vscode/settings.json` | `~/.config/Code/User/settings.json` | Configuration VS Code |
 | `vscode/extensions.txt` | — | Liste des extensions VS Code (installées par `bootstrap.sh`) |
-| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Conventions globales Claude Code |
+| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Conventions universelles Claude Code |
 | `claude/settings.json` | `~/.claude/settings.json` | Configuration Claude Code |
+| `claude/rules/*.md` | `~/.claude/rules/` | Conventions techniques glob-scoped (Python, dbt, Terraform) |
+| `claude/templates/*.md` | `~/.claude/templates/` | Starters pour CLAUDE.md projet (non lu par Claude Code) |
 | `claude/commands/*.md` | `~/.claude/commands/` | Slash commands personnalisées |
 | `claude/hooks/*` | `~/.claude/hooks/` | Hooks PreToolUse (protection + lint) |
 | `claude/skills/` | `~/.claude/skills/` | Skills personnalisées (dossiers symlinkés) |
@@ -81,42 +83,23 @@ source ~/.zshrc
 
 ## Claude Code
 
-La configuration Claude Code est versionnée dans `claude/` et symlinkée vers `~/.claude/` par `install.sh`.
+La configuration Claude Code suit une **architecture 3 couches** documentée en détail dans [`claude/README.md`](claude/README.md).
 
-**Fichiers racine :**
-- `CLAUDE.md` — conventions globales (identité, stack, style Python, règles Git, workflow AI)
-- `settings.json` — configuration Claude Code (permissions, hooks, plugins, effort level)
+| Couche | Emplacement | Chargement | Rôle |
+|---|---|---|---|
+| User CLAUDE.md | `claude/CLAUDE.md` | Chaque session | Identité, langue, session discipline |
+| Rules glob-scoped | `claude/rules/*.md` | À la demande (par type de fichier) | Conventions Python, dbt, Terraform |
+| Templates projet | `claude/templates/*.md` | Jamais (stock pour `cp`) | Starters pour CLAUDE.md projet |
 
-**Slash commands (`commands/`) :**
-- `catchup.md` — reprise de contexte après interruption
-- `claude-md.md` — interview structuré pour créer un CLAUDE.md projet
-- `immunize.md` — cycle immunitaire : lessons-inbox → CLAUDE.md projet → CLAUDE.md global
-- `learning-tracker.md` — invocation du subagent de suivi d'apprentissage
-- `prd.md` — interview structuré pour créer un PRD
-- `progress.md` — checkpoint d'avancement avant `/clear`
-- `tech-watch.md` — orchestration de la veille technologique
+**Slash commands** : catchup, claude-md, immunize, learning-tracker, prd, progress, tech-watch
 
-**Hooks PreToolUse (`hooks/`) :**
-- `block-force-push.sh` — bloque `git push --force`
-- `block-rm-rf.sh` — bloque `rm -rf`
-- `protect_env.py` — protège les fichiers `.env`
-- `ruff-check.sh` — lint automatique via Ruff
+**Hooks** : block-force-push, block-rm-rf, protect_env, ruff-check
 
-**Skills (`skills/`) :**
-- `coach-pedagogique/` — coaching de développement structuré avec scaffolding dégressif
-- `code-mentor/` — mentor Socratique avec génération de flashcards Anki
-- `dp-coach/` — coach de pratique délibérée (Python, SQL)
+**Skills** : coach-pedagogique, code-mentor, dp-coach
 
-**Subagents (`agents/`) :**
-- `tech-watch-scorer.md` — scoring et classement de la veille technologique
-- `learning-tracker.md` — suivi de progression d'apprentissage
-- `scripts/` — scripts utilitaires partagés entre subagents
+**Subagents** : tech-watch-scorer, learning-tracker (+ scripts partagés et mémoire persistante)
 
-**Mémoire subagents (`agent-memory/`) :**
-- `learning-tracker/MEMORY.md` — état persistant du suivi d'apprentissage
-
-**Plugin à réinstaller manuellement :**
-- `pyright-lsp@claude-plugins-official` — LSP Python pour Claude Code
+**Plugin à réinstaller manuellement** : `pyright-lsp@claude-plugins-official`
 
 ---
 
