@@ -3,6 +3,12 @@
 ## Overview
 <!-- One paragraph: what infrastructure this manages and for which environment -->
 
+## Code skeleton origin
+<!-- Fill in the values below at bootstrap; they tell Claude the infrastructure is deterministic and already in place. -->
+- Bootstrapped from: `GMartin-Data/python-project-template` [COOKIECUTTER_TAG_OR_SHA]
+- Rulesets applied: [e.g. `main-protection` via `scripts/apply-ruleset.sh`]
+- Bootstrap options chosen: [e.g. dbt=false, terraform=true, provider=GCP]
+
 ## Stack
 - Terraform [VERSION]
 - Provider: [GCP / AWS — adapt]

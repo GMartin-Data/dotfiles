@@ -3,6 +3,12 @@
 ## Overview
 <!-- One paragraph: what data domain this project models and why -->
 
+## Code skeleton origin
+<!-- Fill in the values below at bootstrap; they tell Claude the infrastructure is deterministic and already in place. -->
+- Bootstrapped from: `GMartin-Data/python-project-template` [COOKIECUTTER_TAG_OR_SHA]
+- Rulesets applied: [e.g. `main-protection` via `scripts/apply-ruleset.sh`]
+- Bootstrap options chosen: [e.g. dbt=true, terraform=false, warehouse=Snowflake]
+
 ## Stack
 - dbt Core, installed via uv (`uv run dbt`)
 - Warehouse: [Snowflake / BigQuery — adapt]

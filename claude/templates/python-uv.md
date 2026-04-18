@@ -3,6 +3,12 @@
 ## Overview
 <!-- One paragraph: what this project does and why it exists -->
 
+## Code skeleton origin
+<!-- Fill in the values below at bootstrap; they tell Claude the infrastructure is deterministic and already in place. -->
+- Bootstrapped from: `GMartin-Data/python-project-template` [COOKIECUTTER_TAG_OR_SHA]
+- Rulesets applied: [e.g. `main-protection` via `scripts/apply-ruleset.sh`]
+- Bootstrap options chosen: [e.g. dbt=false, terraform=false, license=MIT]
+
 ## Stack
 - Python 3.12+, managed by uv
 - Framework: [FastAPI / CLI / library — adapt]
