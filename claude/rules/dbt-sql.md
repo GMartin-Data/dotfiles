@@ -1,5 +1,7 @@
 ---
-globs: "*.sql,models/**/*.yml,models/**/*.yaml"
+paths:
+  - "**/*.sql"
+  - "**/models/**/*.{yml,yaml}"
 ---
 # SQL / dbt Conventions
 

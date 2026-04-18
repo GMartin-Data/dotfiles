@@ -1,5 +1,7 @@
 ---
-globs: "*.tf,*.tfvars"
+paths:
+  - "**/*.tf"
+  - "**/*.tfvars"
 ---
 # Terraform Conventions
 
