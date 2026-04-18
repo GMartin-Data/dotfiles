@@ -1,0 +1,4 @@
+.ruff_cache/
+
+# Audit metadata — local working notes, not part of the repo
+AUDIT_PROGRESS.md
