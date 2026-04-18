@@ -18,6 +18,7 @@
         "hooks": [
           {
             "type": "command",
+            "if": "Bash(git push*)",
             "command": "~/.claude/hooks/block-force-push.sh"
           }
         ]
@@ -27,6 +28,7 @@
         "hooks": [
           {
             "type": "command",
+            "if": "Bash(rm *)",
             "command": "~/.claude/hooks/block-rm-rf.sh"
           }
         ]
