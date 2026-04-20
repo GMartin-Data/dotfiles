@@ -1,6 +1,6 @@
 ---
 name: prd
-description: Cette skill doit être utilisée quand l'utilisateur demande à produire un PRD (Product Requirements Document), cadrer un nouveau projet, formaliser l'intention d'une initiative via interview structurée, ou dit "écris le PRD", "cadre ce projet", "je veux démarrer un projet". Ne pas utiliser pour : éditer un PRD existant (utiliser /progress pour documenter les écarts), rédiger des specs techniques détaillées, ou générer un CLAUDE.md (c'est le rôle de la skill claude-md).
+description: Cette skill doit être utilisée quand l'utilisateur demande à produire un PRD (Product Requirements Document), cadrer un nouveau projet, formaliser l'intention d'une initiative via interview structurée, ou dit "écris le PRD", "cadre ce projet", "je veux démarrer un projet". Détecte automatiquement les instances Cruft (présence d'un `.cruft.json`) pour alléger les questions sur la stack et l'architecture déjà déterminées par le template. Ne pas utiliser pour : éditer un PRD existant (utiliser /progress pour documenter les écarts), rédiger des specs techniques détaillées, ou générer un CLAUDE.md (c'est le rôle de la skill claude-md).
 disable-model-invocation: false
 ---
 
@@ -32,6 +32,33 @@ Commande annulée.
 ```
 
 Puis s'arrêter. Ne pas continuer l'interview.
+
+---
+
+## Pré-flight — détection d'instance Cruft
+
+**Avant Phase 1**, vérifier la présence d'un fichier `.cruft.json` à la racine du CWD.
+
+Si **absent** : procéder à l'interview standard (toutes les phases).
+
+Si **présent** : lire son contenu (section `context.cookiecutter`) et récupérer la présence réelle des dossiers `dbt/` et `terraform/` dans le CWD (un post-hook Cruft supprime ces dossiers si non retenus — l'arbo fait donc foi). Afficher le résumé détecté :
+
+```
+Instance Cruft détectée. Stack pré-déterminée :
+
+- Python [version] (package manager : uv)
+- Project name : [project_name]
+- License : [license]
+- Branch protection : [branch_protection_profile]
+- dbt : [oui avec adapter / non]
+- Terraform : [oui avec provider / non]
+
+Les Phases 8 (Stack technique) et 10 (Architecture) seront allégées
+en conséquence — les autres phases restent intégrales (l'intention
+produit reste à cadrer).
+```
+
+Conserver en mémoire ce résumé pour les Phase 8 et Phase 10 allégées.
 
 ---
 
@@ -111,6 +138,14 @@ Demander un exemple ou proposer une structure selon le contexte.
 
 ### Phase 8 — Stack technique
 
+**Si pré-flight Cruft détecté** : la stack de base est déjà connue. Ne poser qu'une seule question ouverte :
+
+> "Stack de base déjà fixée par l'instance (cf. résumé pré-flight). As-tu besoin d'**APIs ou dépendances externes** spécifiques, d'une **authentification** particulière, ou d'une **cible de déploiement** (Cloud Run, GKE, etc.) ?"
+
+Si l'utilisateur répond "rien de plus", marquer la Phase comme validée et passer à Phase 9.
+
+**Sinon** (pas de pré-flight) : interview complète.
+
 "Des préférences ou contraintes techniques ?"
 - Langage/framework
 - APIs/dépendances externes
@@ -127,9 +162,15 @@ Lister 3-5 modes de défaillance probables. S'appuyer sur la stack définie en P
 
 ### Phase 10 — Architecture
 
-**Critère de skip** : skipper cette phase si la Phase 1 (Problème) ne mentionne qu'**un seul composant technique**.
+**Critère de skip** : skipper cette phase si la Phase 1 (Problème) ne mentionne qu'**un seul composant technique** ET qu'aucun pré-flight Cruft n'a révélé plusieurs composants.
 
-Si le système est multi-composants :
+**Si pré-flight Cruft détecté avec plusieurs composants** (ex. `src/` + `dbt/` + `terraform/`) : au lieu de partir de zéro, pré-proposer une architecture dérivée des composants présents :
+
+> "Composants détectés dans l'instance : [liste]. Je propose l'architecture suivante : [proposition]. Des ajustements ?"
+
+Valider. Ne poser la question ouverte originale que si la proposition est rejetée.
+
+**Sinon** (multi-composants sans pré-flight) :
 
 "Comment les composants interagissent-ils ?"
 
