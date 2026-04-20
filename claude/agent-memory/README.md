@@ -12,6 +12,8 @@ agent-memory/
     └── MEMORY.md       # format propre au subagent, lu/écrit par son code
 ```
 
+Le chemin de `MEMORY.md` doit être explicite dans le prompt du subagent (ex. `claude/agent-memory/learning-tracker/MEMORY.md`) — le subagent ne le découvre pas par convention implicite.
+
 ## Pourquoi cette mémoire est versionnée
 
 Contrairement à l'auto memory native, cette mémoire est :
@@ -30,7 +32,9 @@ Le commit de cette mémoire est cohérent avec la doctrine dotfiles : *"tout ce 
 
 ## Maintenance
 
-Si un subagent génère une mémoire qui grandit indéfiniment (ex. un log d'activité), introduire une stratégie de rotation dans le code du subagent — ne pas laisser `MEMORY.md` dépasser quelques centaines de lignes, sinon :
+Si un subagent génère une mémoire qui grandit indéfiniment (ex. un log d'activité), introduire une stratégie de rotation dans le code du subagent. Chaque subagent fixe son propre seuil de curation adapté à son format (ex. `learning-tracker` : 100 lignes, déplacement des sujets archivés vers `completed-topics.md`).
+
+Laisser `MEMORY.md` grossir sans borne mène à :
 - Bruit sémantique pour le subagent qui la relit
 - Diffs git peu lisibles entre commits
 
@@ -39,3 +43,4 @@ Si un subagent génère une mémoire qui grandit indéfiniment (ex. un log d'act
 | Subagent | Chemin | Rôle de sa mémoire |
 |---|---|---|
 | `learning-tracker` | `learning-tracker/MEMORY.md` | Progression d'apprentissage par sujet (sessions, modules, vélocité) |
+| `tech-watch-scorer` | — | Pas de mémoire persistante (stateless : lit `raw-sources.json`, écrit `scores.json`) |
