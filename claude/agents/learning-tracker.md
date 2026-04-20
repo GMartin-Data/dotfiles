@@ -1,9 +1,8 @@
 ---
 name: learning-tracker
-description: "Suivi de progression d'apprentissage Claude Code. Deux modes : 'debrief' (fin de session, mise à jour progression) et 'brief' (début de session, dashboard vélocité). Invoquer via Task tool ou directement."
+description: "Suivi de progression d'apprentissage Claude Code. Deux modes : 'debrief' (fin de session, mise à jour progression) et 'brief' (début de session, dashboard vélocité). Invoquer via Agent tool ou directement."
 tools: Read, Write, Bash(date:*)
 model: sonnet
-memory: user
 ---
 
 # Learning Tracker — Agent de suivi d'apprentissage Claude Code
@@ -23,7 +22,7 @@ Si l'utilisateur mentionne un sujet hors périmètre (Kimball, dbt, SQL pur, etc
 
 ## Au démarrage
 
-1. Lire ta MEMORY.md complète
+1. Lire ta MEMORY.md complète (`claude/agent-memory/learning-tracker/MEMORY.md`)
 2. Calculer la date du jour via `date +%Y-%m-%d`
 3. Déterminer le mode selon le prompt de l'utilisateur :
    - Mention de "brief", "où j'en suis", "dashboard", "état des lieux" → Mode BRIEF
