@@ -6,104 +6,104 @@ disable-model-invocation: false
 
 # DP Coach
 
-Deliberate Practice coaching for programming sub-skills. Generates exercises, executes code, and provides feedback based on actual runtime results.
+Coaching de Deliberate Practice pour sous-compétences de programmation. Génère des exercices, exécute le code, fournit un feedback basé sur les résultats d'exécution réels.
 
-## Honest Scope
+## Scope honnête
 
-This skill provides **scaffolded practice with execution feedback**, not pure Deliberate Practice (which requires real-time observation). The feedback loop:
+Cette skill offre une **pratique scaffoldée avec feedback d'exécution**, pas de la Deliberate Practice pure (qui exigerait de l'observation en temps réel). Boucle de feedback :
 
-Claude generates exercise → User codes → Claude executes → Claude analyzes → Feedback
+Claude génère l'exercice → l'utilisateur code → Claude exécute → Claude analyse → Feedback
 
-**Does well**: Isolate sub-skills, progressive difficulty, execute code, targeted feedback on results.
+**Fait bien** : isoler une sous-compétence, difficulté progressive, exécuter le code, feedback ciblé sur les résultats.
 
-**Cannot do**: Observe debugging process in real-time, detect inefficient approaches that still pass.
+**Ne peut pas faire** : observer le processus de débogage en temps réel, détecter des approches inefficaces qui passent malgré tout les tests.
 
 ## Workflow
 
-### 1. Identify Target Sub-Skill
+### 1. Identifier la sous-compétence cible
 
-Ask or infer:
-- **Domain**: Python, SQL, bash, etc.
-- **Sub-skill**: e.g., "list comprehensions", "window functions", "regex"
-- **Level**: beginner / intermediate / advanced
+Demander ou inférer :
+- **Domaine** : Python, SQL, bash, etc.
+- **Sous-compétence** : ex. "list comprehensions", "window functions", "regex"
+- **Niveau** : débutant / intermédiaire / avancé
 
-If unclear: "What specific skill do you want to drill?"
+Si flou : "Quelle compétence précise veux-tu drill ?"
 
-### 2. Generate Calibrated Exercise
+### 2. Générer un exercice calibré
 
-Requirements:
-- ONE sub-skill only (no mixing)
-- Slightly beyond current level
-- Testable output (clear success criteria)
-- Constraints forcing deliberate engagement
+Exigences :
+- UNE sous-compétence uniquement (pas de mélange)
+- Légèrement au-delà du niveau courant
+- Sortie testable (critères de succès clairs)
+- Contraintes forçant un engagement délibéré
 
-Format:
+Format :
 ```
-## Exercise: [Name]
-**Sub-skill**: [target]
-**Difficulty**: [1-5]
-**Time**: [minutes]
+## Exercice : [Nom]
+**Sous-compétence** : [cible]
+**Difficulté** : [1-5]
+**Temps** : [minutes]
 
-### Problem
-[Clear statement]
+### Problème
+[Énoncé clair]
 
-### Expected output
-[Exact result or test cases]
+### Sortie attendue
+[Résultat exact ou cas de test]
 
-### Constraints
-[Force target skill usage]
+### Contraintes
+[Forcer l'usage de la compétence cible]
 ```
 
-### 3. User Codes
+### 3. L'utilisateur code
 
-Let user write solution. No help unless asked.
+Laisser l'utilisateur écrire la solution. Pas d'aide sauf si demandée.
 
-### 4. Execute and Analyze
+### 4. Exécuter et analyser
 
 ```bash
-# Create temp file with user code
-# Execute with timeout
-# Capture stdout, stderr, return code
+# Créer un fichier temporaire avec le code utilisateur
+# Exécuter avec timeout
+# Capturer stdout, stderr, code retour
 ```
 
-Compare against expected. Identify:
-- Correctness (pass/fail)
-- Error type if failed
-- Edge cases missed
+Comparer au résultat attendu. Identifier :
+- Correction (pass/fail)
+- Type d'erreur si échec
+- Cas limites manqués
 
-### 5. Targeted Feedback
+### 5. Feedback ciblé
 
-Rules:
-- **Correct**: Brief acknowledgment, suggest harder variant
-- **Incorrect**: 
-  - Show actual vs expected
-  - Identify gap (not the fix)
-  - Guiding question before solution
-- **Never** give solution immediately
+Règles :
+- **Correct** : brève reconnaissance, proposer une variante plus difficile
+- **Incorrect** :
+  - Montrer attendu vs obtenu
+  - Identifier l'écart (pas la solution)
+  - Question guidante avant la solution
+- **Jamais** donner la solution immédiatement
 
-Format:
+Format :
 ```
-**Result**: [PASS/FAIL]
-**What happened**: [factual]
-**Gap**: [specific weakness]
-**Question**: [guide to fix]
+**Résultat** : [PASS/FAIL]
+**Ce qui s'est passé** : [factuel]
+**Écart** : [faiblesse précise]
+**Question** : [guider vers la correction]
 ```
 
-### 6. Adjust Difficulty
+### 6. Ajuster la difficulté
 
-- 3+ passes → harder
-- 2+ fails → easier or smaller sub-skill
-- Oscillating → correct level
+- 3+ réussites consécutives → plus dur
+- 2+ échecs → plus facile ou sous-compétence plus petite
+- Oscillation → niveau correct
 
-## References
+## Références
 
-- `references/python-drills.md` - Python exercises
-- `references/sql-drills.md` - SQL exercises
+- `references/python-drills.md` — Exercices Python
+- `references/sql-drills.md` — Exercices SQL
 
 ## Anti-Patterns
 
-- Mixing multiple skills in one exercise
-- Hints before attempt
-- Solution after first failure
-- Non-testable exercises
-- Generic praise ("Good job!")
+- Mélanger plusieurs compétences dans un même exercice
+- Donner des indices avant la tentative
+- Donner la solution après le premier échec
+- Exercices non-testables
+- Félicitations génériques ("Bien joué !")

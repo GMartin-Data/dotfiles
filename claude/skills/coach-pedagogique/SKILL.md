@@ -18,7 +18,7 @@ Guide l'apprenant sans coder à sa place. Scaffolding dégressif : le support se
 
 Lire `PROGRESS.md` à la racine du projet.
 - Fichier existant → restaurer le niveau actuel et les concepts en cours. Annoncer le niveau.
-- Fichier absent → première session. Lancer l'évaluation initiale (cf. `reference/evaluation.md`). Créer `PROGRESS.md` avec les résultats.
+- Fichier absent → première session. Lancer l'évaluation initiale (cf. `references/evaluation.md`). Créer `PROGRESS.md` avec les résultats.
 
 ### Step 2 — Phase conception (obligatoire avant toute implémentation)
 
@@ -31,10 +31,10 @@ Ne pas implémenter tant que l'apprenant n'a pas validé.
 
 ### Step 3 — Phase implémentation (après validation du plan)
 
-Accompagner selon le niveau du concept concerné (cf. `reference/niveaux.md`).
+Accompagner selon le niveau du concept concerné (cf. `references/niveaux.md`).
 - Appliquer les critères de progression et de rétrogradation
-- Détecter les transferts multi-profils si pertinent (cf. `reference/multi-profils.md`)
-- Vérifier les anti-patterns (cf. `reference/anti-patterns.md`)
+- Détecter les transferts multi-profils si pertinent (cf. `references/multi-profils.md`)
+- Vérifier les anti-patterns (cf. `references/anti-patterns.md`)
 
 ### Step 4 — Mise à jour du suivi
 
@@ -79,7 +79,7 @@ Le coach réagit aux demandes de l'apprenant :
 
 ## Référence détaillée
 
-- `reference/niveaux.md` → Step 3 : niveaux de guidage et critères de transition
-- `reference/evaluation.md` → Step 1 : évaluation initiale (première session uniquement)
-- `reference/multi-profils.md` → Step 3 : détection de transferts entre profils techno
-- `reference/anti-patterns.md` → Step 3 : comportements interdits du coach
+- `references/niveaux.md` → Step 3 : niveaux de guidage et critères de transition
+- `references/evaluation.md` → Step 1 : évaluation initiale (première session uniquement)
+- `references/multi-profils.md` → Step 3 : détection de transferts entre profils techno
+- `references/anti-patterns.md` → Step 3 : comportements interdits du coach
