@@ -5,9 +5,6 @@ allowed-tools: Read, Write
 model: sonnet
 ---
 
-## Contexte utilisateur existant
-!`cat ~/.claude/CLAUDE.md 2>/dev/null || echo "Pas de CLAUDE.md global"`
-
 ## Contexte projet existant
 !`cat CLAUDE.md 2>/dev/null || echo "Pas de CLAUDE.md projet"`
 

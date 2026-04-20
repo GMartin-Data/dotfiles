@@ -1,6 +1,6 @@
 ---
 description: Pipeline complet de veille technologique — fetch, score et classe des sources
-allowed-tools: Read, Bash(cat:*), Bash(uv:*), Bash(python3:*)
+allowed-tools: Read, Agent, Bash(cat:*), Bash(uv:*), Bash(python3:*)
 ---
 
 # Tech Watch Pipeline
@@ -19,7 +19,7 @@ Si le fichier est produit mais contient 0 sources : signale qu'aucune source n'a
 
 ## Step 2 : Scoring des sources
 
-Utilise le Task tool pour invoquer le scorer :
+Utilise le Agent tool pour invoquer le scorer :
 - subagent_type: tech-watch-scorer
 - description: Score les sources sur le topic "$ARGUMENTS"
 - prompt: Score les sources dans tech-watch/raw-sources.json sur le topic "$ARGUMENTS". Écris les résultats dans tech-watch/scores.json selon tes instructions de scoring.
@@ -47,7 +47,7 @@ Produis un rapport lisible avec :
 
 ## Critical Requirements
 
-1. **Task tool pour le scorer** : NE PAS utiliser bash pour invoquer l'agent.
+1. **Agent tool pour le scorer** : NE PAS utiliser bash pour invoquer l'agent.
 2. **Séquentiel** : attendre la fin du Step 3 avant le Step 4.
 3. **Pas d'invention** : si scores.json n'existe pas ou est invalide, signaler l'échec.
 4. **$ARGUMENTS obligatoire** : si aucun topic n'est fourni, demander à l'utilisateur.
