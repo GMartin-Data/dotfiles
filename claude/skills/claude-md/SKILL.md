@@ -1,16 +1,18 @@
 ---
-description: Interview structurée pour produire un CLAUDE.md projet avec conventions et structure hiérarchique
-argument-hint: [component-path]
-allowed-tools: Read, Write
-model: sonnet
+name: claude-md
+description: Cette skill doit être utilisée quand l'utilisateur demande à produire un CLAUDE.md projet, définir les conventions Claude Code d'un projet, formaliser la stack/les conventions/le workflow IA d'un repo existant, ou dit "génère le CLAUDE.md", "crée les conventions projet", "cadre l'IA pour ce projet". Inclut la génération hiérarchique (root + sous-composants). Ne pas utiliser pour : éditer le CLAUDE.md user global (~/.claude/CLAUDE.md), rédiger un PRD (c'est la skill prd), ou mettre à jour des conventions techniques glob-scoped (cela vit dans rules/).
+disable-model-invocation: false
 ---
-
-## Contexte projet existant
-!`cat CLAUDE.md 2>/dev/null || echo "Pas de CLAUDE.md projet"`
 
 # Conventions Interview
 
 Structured interview process to produce a complete CLAUDE.md (with optional hierarchical structure) through incremental questioning.
+
+---
+
+## Step 0 — Read existing project CLAUDE.md if present
+
+Before starting the interview, read `CLAUDE.md` at the current working directory (the project root). If it exists, acknowledge its content and ask the user whether they want to **replace** it, **extend** it, or **abort**. If absent, proceed directly to Phase 1.
 
 ---
 
