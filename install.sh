@@ -43,10 +43,11 @@ link "$DOTFILES_DIR/claude/commands/tech-watch.md"  "$HOME/.claude/commands/tech
 link "$DOTFILES_DIR/claude/commands/learning-tracker.md" "$HOME/.claude/commands/learning-tracker.md"
 
 # Hooks (fichiers individuels — même raison)
-link "$DOTFILES_DIR/claude/hooks/block-force-push.sh" "$HOME/.claude/hooks/block-force-push.sh"
-link "$DOTFILES_DIR/claude/hooks/block-rm-rf.sh"      "$HOME/.claude/hooks/block-rm-rf.sh"
-link "$DOTFILES_DIR/claude/hooks/protect_env.py"      "$HOME/.claude/hooks/protect_env.py"
-link "$DOTFILES_DIR/claude/hooks/ruff-check.sh"       "$HOME/.claude/hooks/ruff-check.sh"
+link "$DOTFILES_DIR/claude/hooks/block-force-push.sh"        "$HOME/.claude/hooks/block-force-push.sh"
+link "$DOTFILES_DIR/claude/hooks/block-rm-rf.sh"             "$HOME/.claude/hooks/block-rm-rf.sh"
+link "$DOTFILES_DIR/claude/hooks/protect_env.py"             "$HOME/.claude/hooks/protect_env.py"
+link "$DOTFILES_DIR/claude/hooks/ruff-check.sh"              "$HOME/.claude/hooks/ruff-check.sh"
+link "$DOTFILES_DIR/claude/hooks/learning-tracker-brief.py"  "$HOME/.claude/hooks/learning-tracker-brief.py"
 
 # Skills (dossiers entiers — chaque skill est un dossier isolé qu'on contrôle)
 link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mentor"

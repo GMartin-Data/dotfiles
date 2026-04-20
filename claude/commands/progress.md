@@ -44,5 +44,6 @@ Session : [CLAUDE_SESSION_ID]
 
 5. **Montre-moi la mise à jour AVANT d'écrire** — attends ma confirmation explicite
 6. Écris dans `progress.md` (crée le fichier s'il n'existe pas)
+7. **Si cette session a couvert un sujet d'apprentissage Claude Code** (skills, hooks, subagents, MCP, orchestration, agent memory, etc.), rappelle-moi gentiment de lancer `/learning-tracker debrief` pour mettre à jour MEMORY.md. Ne force pas — c'est une suggestion non-bloquante.
 
 Ne supprime pas l'historique existant — ajoute en tête du fichier.

@@ -1,4 +1,6 @@
 .ruff_cache/
+__pycache__/
+*.pyc
 
 # Audit metadata — local working notes, not part of the repo
 AUDIT_PROGRESS.md
