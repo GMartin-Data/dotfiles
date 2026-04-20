@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from datetime import UTC, datetime, timedelta
@@ -35,7 +36,18 @@ import requests
 
 
 def fetch_arxiv(query: str, days: int, max_results: int = 30) -> list[dict]:
-    """Fetch recent papers from arXiv API. Free, no key required."""
+    """Fetch recent papers from arXiv API. Free, no key required.
+
+    Args:
+        query: Free-text search query (passed to arXiv `all:` field).
+        days: Only keep papers published within the last N days.
+        max_results: Upper bound on results requested from arXiv.
+
+    Returns:
+        List of source dicts with keys: title, url, published, source,
+        type, summary, authors, tags, engagement. Empty list on request
+        failure.
+    """
     url = "http://export.arxiv.org/api/query"
     params = {
         "search_query": f"all:{query}",
@@ -94,7 +106,18 @@ def fetch_arxiv(query: str, days: int, max_results: int = 30) -> list[dict]:
 
 
 def fetch_github(query: str, days: int, max_results: int = 20) -> list[dict]:
-    """Fetch recent/trending repos from GitHub Search API. No key = 10 req/min."""
+    """Fetch recent/trending repos from GitHub Search API. No key = 10 req/min.
+
+    Args:
+        query: Free-text search query (combined with `pushed:>` filter).
+        days: Only keep repos pushed within the last N days.
+        max_results: Upper bound on results requested from GitHub (capped at 30).
+
+    Returns:
+        List of source dicts with keys: title, url, published, source,
+        type, summary, authors, tags, engagement (stars/forks/watchers).
+        Empty list on request failure.
+    """
     cutoff = datetime.now(UTC) - timedelta(days=days)
     cutoff_str = cutoff.strftime("%Y-%m-%d")
 
@@ -108,8 +131,6 @@ def fetch_github(query: str, days: int, max_results: int = 20) -> list[dict]:
     headers = {"Accept": "application/vnd.github.v3+json"}
 
     # Use token from env if available (optional, higher rate limit)
-    import os
-
     token = os.environ.get("GITHUB_TOKEN")
     if token:
         headers["Authorization"] = f"token {token}"
@@ -159,7 +180,14 @@ def fetch_github(query: str, days: int, max_results: int = 20) -> list[dict]:
 
 
 def deduplicate(sources: list[dict]) -> list[dict]:
-    """Remove duplicate URLs."""
+    """Remove duplicate URLs, preserving first-seen order.
+
+    Args:
+        sources: List of source dicts, each expected to have a `url` key.
+
+    Returns:
+        List of sources with duplicate URLs removed.
+    """
     seen: set[str] = set()
     unique = []
     for s in sources:
