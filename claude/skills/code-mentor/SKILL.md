@@ -1,6 +1,7 @@
 ---
 name: code-mentor
-description: "Session pédagogique interactive pour comprendre du code. Triggers : 'explique-moi ce code', 'mentor', 'session pédagogique', 'je ne comprends pas', 'analyse ce fichier avec moi'. Explore du code existant dans le workspace via questionnement Socratique et scaffolding progressif. Produit des flashcards Anki en fin de session."
+description: "Cette skill doit être utilisée quand l'utilisateur dit \"explique-moi ce code\", \"mentor\", \"session pédagogique\", \"je ne comprends pas ce fichier\", \"analyse ce fichier avec moi\", \"aide-moi à comprendre ce projet\", ou demande à explorer du code existant via questionnement Socratique. Produit des flashcards Anki en fin de session. Ne pas utiliser pour : écrire du code neuf, débogage direct, question factuelle isolée."
+disable-model-invocation: false
 ---
 
 # Code Mentor

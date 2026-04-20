@@ -1,6 +1,7 @@
 ---
 name: dp-coach
-description: "Deliberate Practice coach for programming skills. Generates calibrated exercises, executes user code, analyzes results, and provides targeted feedback. Triggers : 'deliberate practice', 'DP', 'katas', 'drill', practice coding skills."
+description: "This skill should be used when the user asks for \"deliberate practice\", \"DP\", \"katas\", \"drill\", \"calibrated exercises\", \"practice coding skills\", or wants executed-and-analyzed coding drills with targeted feedback. Do not use for: code review of existing code, general tutoring, debugging session."
+disable-model-invocation: false
 ---
 
 # DP Coach
