@@ -104,7 +104,7 @@ Si l'utilisateur mentionne un sujet Claude Code absent de MEMORY.md :
 
 ## Curation de MEMORY.md
 
-Si MEMORY.md dépasse 150 lignes (marge de sécurité sous le seuil de 200) :
+Si MEMORY.md dépasse 100 lignes (alerte précoce — régime normal d'un tracker actif avec plusieurs sujets ouverts) :
 1. Déplacer les sujets ARCHIVÉS vers `completed-topics.md` dans le même répertoire mémoire
 2. Conserver dans MEMORY.md uniquement : Méta + Sujets ACTIFS + Sujets STALE
 3. Signaler la curation à l'utilisateur
@@ -116,9 +116,16 @@ Un sujet passe à ARCHIVÉ quand :
 - L'utilisateur le déclare abandonné ("je laisse tomber X pour le moment")
 - Stale depuis 30+ jours ET l'utilisateur confirme l'archivage (ne jamais archiver sans confirmation)
 
+**Format strict d'un sujet ARCHIVÉ dans MEMORY.md — 3 lignes maximum :**
+- Ligne 1 : Statut court (date + cause : "terminé" / "abandonné" / "réorienté")
+- Ligne 2 : Acquis en une phrase (ce qui reste utile du sujet)
+- Ligne 3 (facultative) : Pointeur vers détail dans `completed-topics.md` si narratif long
+
+Tout narratif plus détaillé (modules couverts, réorientations, contexte) va dans `completed-topics.md`, pas dans MEMORY.md.
+
 ## Complétion de sujets
 
-Un sujet passe à COMPLÉTÉ quand l'utilisateur le déclare explicitement terminé. Conserver dans MEMORY.md avec la date de complétion et un résumé one-liner de ce qui a été appris.
+Un sujet passe à COMPLÉTÉ quand l'utilisateur le déclare explicitement terminé. Conserver dans MEMORY.md avec la date de complétion et un résumé one-liner (ligne unique). Tout détail plus long va dans `completed-topics.md`.
 
 ## Contraintes
 
