@@ -36,7 +36,6 @@ link "$DOTFILES_DIR/claude/settings.json"        "$HOME/.claude/settings.json"
 # Commands (fichiers individuels — le dossier peut contenir des fichiers gérés par Claude Code)
 link "$DOTFILES_DIR/claude/commands/claude-md.md"  "$HOME/.claude/commands/claude-md.md"
 link "$DOTFILES_DIR/claude/commands/immunize.md"    "$HOME/.claude/commands/immunize.md"
-link "$DOTFILES_DIR/claude/commands/prd.md"          "$HOME/.claude/commands/prd.md"
 link "$DOTFILES_DIR/claude/commands/catchup.md"    "$HOME/.claude/commands/catchup.md"
 link "$DOTFILES_DIR/claude/commands/progress.md"    "$HOME/.claude/commands/progress.md"
 link "$DOTFILES_DIR/claude/commands/tech-watch.md"  "$HOME/.claude/commands/tech-watch.md"
@@ -53,6 +52,7 @@ link "$DOTFILES_DIR/claude/hooks/learning-tracker-brief.py"  "$HOME/.claude/hook
 link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mentor"
 link "$DOTFILES_DIR/claude/skills/dp-coach"     "$HOME/.claude/skills/dp-coach"
 link "$DOTFILES_DIR/claude/skills/coach-pedagogique" "$HOME/.claude/skills/coach-pedagogique"
+link "$DOTFILES_DIR/claude/skills/prd"          "$HOME/.claude/skills/prd"
 
 # Rules (fichiers individuels — glob-scoped, chargés à la demande par Claude Code)
 link "$DOTFILES_DIR/claude/rules/python.md"     "$HOME/.claude/rules/python.md"
