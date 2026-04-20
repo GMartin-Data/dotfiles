@@ -3,7 +3,6 @@ name: tech-watch-scorer
 description: Score et classe les sources brutes d'une veille technologique selon 5 critères pondérés
 tools: Read, Grep, Glob, Write
 model: sonnet
-permissionMode: plan
 maxTurns: 15
 color: teal
 ---
