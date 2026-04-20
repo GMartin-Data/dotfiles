@@ -19,7 +19,7 @@ Optimisé pour **Crostini (ChromeOS, Debian 12 bookworm)** et **Ubuntu 22.04**.
 | `claude/rules/*.md` | `~/.claude/rules/` | Conventions techniques glob-scoped (Python, dbt, Terraform) |
 | `claude/templates/*.md` | `~/.claude/templates/` | Starters pour CLAUDE.md projet (non lu par Claude Code) |
 | `claude/commands/*.md` | `~/.claude/commands/` | Slash commands personnalisées |
-| `claude/hooks/*` | `~/.claude/hooks/` | Hooks PreToolUse (protection + lint) |
+| `claude/hooks/*` | `~/.claude/hooks/` | Hooks SessionStart / PreToolUse / PostToolUse (dashboard, protection, lint) |
 | `claude/skills/` | `~/.claude/skills/` | Skills personnalisées (dossiers symlinkés) |
 | `claude/agents/` | `~/.claude/agents/` | Subagents (fichiers individuels + scripts partagés) |
 | `claude/agent-memory/` | `~/.claude/agent-memory/` | Mémoire persistante des subagents |
@@ -83,21 +83,27 @@ source ~/.zshrc
 
 ## Claude Code
 
-La configuration Claude Code suit une **architecture 3 couches** documentée en détail dans [`claude/README.md`](claude/README.md).
+Configuration versionnée et portable entre machines. Architecture détaillée et principes de chargement dans [`claude/README.md`](claude/README.md).
 
-| Couche | Emplacement | Chargement | Rôle |
+| Composant | Emplacement | Chargement | Rôle |
 |---|---|---|---|
 | User CLAUDE.md | `claude/CLAUDE.md` | Chaque session | Identité, langue, session discipline |
-| Rules glob-scoped | `claude/rules/*.md` | À la demande (par type de fichier) | Conventions Python, dbt, Terraform |
-| Templates projet | `claude/templates/*.md` | Jamais (stock pour `cp`) | Starters pour CLAUDE.md projet |
+| Settings | `claude/settings.json` | Démarrage | Permissions, hooks, plugins |
+| Rules | `claude/rules/*.md` | À la demande (glob-scoped) | Conventions Python, dbt, Terraform |
+| Templates | `claude/templates/*.md` | Jamais (stock pour `cp`) | Starters pour CLAUDE.md projet |
+| Commands | `claude/commands/*.md` | Explicite (`/nom`) | Gestes rituels en contexte principal |
+| Skills | `claude/skills/<name>/` | Explicite | Workflows spécialisés |
+| Agents | `claude/agents/*.md` | Délégation | Subagents en contexte isolé |
+| Hooks | `claude/hooks/*` | Événementiel | Automatismes déclenchés par l'harness |
+| Agent memory | `claude/agent-memory/<agent>/` | Lu/écrit par subagents | Mémoire custom portable |
 
-**Slash commands** : catchup, claude-md, immunize, learning-tracker, prd, progress, tech-watch
+**Commands** : catchup, claude-md, immunize, learning-tracker, prd, progress, tech-watch
 
-**Hooks** : block-force-push, block-rm-rf, protect_env, ruff-check
+**Hooks** : learning-tracker-brief (SessionStart), block-force-push, block-rm-rf, protect_env (PreToolUse), ruff-check (PostToolUse)
 
 **Skills** : coach-pedagogique, code-mentor, dp-coach
 
-**Subagents** : tech-watch-scorer, learning-tracker (+ scripts partagés et mémoire persistante)
+**Subagents** : learning-tracker (stateful), tech-watch-scorer (stateless)
 
 **Plugin à réinstaller manuellement** : `pyright-lsp@claude-plugins-official`
 
