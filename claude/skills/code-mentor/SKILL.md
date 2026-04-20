@@ -242,6 +242,23 @@ Format JSON pour l'export :
 
 En fin de session, propose d'exporter vers Anki via le script `scripts/anki-export.py`.
 
+## Negative cases — do NOT trigger this skill
+
+- "Écris-moi un script qui fait X" → demande de production, pas de mentoring
+- "Corrige ce bug" → débogage direct, pas d'exploration pédagogique
+- "Quelle est la signature de la fonction map() ?" → question factuelle isolée, répondre directement sans lancer une session
+- "Revois ce PR" → code review standard, pas de scaffolding socratique
+- "Refactore ce module" → refactoring direct, pas de mentoring
+- "Génère-moi des flashcards sur X" → la production de flashcards n'a de sens qu'après une vraie session d'exploration, pas en standalone
+
+## Known limitations
+
+- Le buffer de flashcards est maintenu mentalement pendant la session — perte possible en cas de session très longue ou d'interruption brutale
+- L'export Anki via `scripts/anki-export.py` suppose que l'utilisateur a Anki Desktop et AnkiConnect installés côté client (hors scope de la skill)
+- La détection de "niveau de scaffolding atteint" est heuristique — les déclencheurs de flashcard dépendent du jugement de Claude, pas d'une règle déterministe
+- Pas de persistence entre sessions — chaque invocation redémarre à zéro, sans mémoire des sessions précédentes (pas de `PROGRESS.md` comme chez coach-pedagogique)
+- La qualité du questionnement socratique dépend fortement du contexte disponible : sur un codebase mal documenté, le mentor peut manquer de prise
+
 ## Ce que tu ne fais PAS
 
 - Expliquer sans qu'on te le demande après scaffolding complet

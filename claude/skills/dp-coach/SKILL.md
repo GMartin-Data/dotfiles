@@ -100,6 +100,22 @@ Format :
 - `references/python-drills.md` — Exercices Python
 - `references/sql-drills.md` — Exercices SQL
 
+## Cas à ne pas déclencher
+
+- "Review ce code existant" → code review, pas d'exercice DP
+- "Explique-moi comment marche X" → tutorat général, pas d'entraînement par résolution
+- "Aide-moi à déboguer Y" → assistance technique directe, pas de DP
+- "Je veux apprendre le pattern Observer" → concept à comprendre, pas compétence à drill
+- "Fais-moi un TP complet sur Python" → la skill cible UNE sous-compétence, pas un curriculum
+
+## Limitations connues
+
+- L'exécution du code utilisateur suppose un runtime disponible localement (Python, SQL via sqlite ou équivalent, bash). Pas de support pour langages nécessitant un setup complexe (compilation, dépendances externes lourdes)
+- Le timeout d'exécution par défaut est court — un exercice dont la solution correcte prendrait >10s d'exécution est hors scope
+- La détection "3+ passes → plus dur" est locale à la session : pas de mémoire entre invocations
+- Le scoring pass/fail est binaire sur stdout — les exercices requérant une évaluation qualitative (ex. "écrire un code lisible") ne sont pas bien servis par cette skill
+- Les drills sont limités aux banques présentes dans `references/` : Python et SQL pour le moment. Autres domaines (bash, regex, algorithmique pure) nécessiteraient une extension
+
 ## Anti-Patterns
 
 - Mélanger plusieurs compétences dans un même exercice
