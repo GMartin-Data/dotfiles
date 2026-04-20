@@ -8,7 +8,8 @@ FILE_PATH=$(jq -r '.tool_input.file_path // empty')
 if [[ "$FILE_PATH" == *.py ]]; then
     OUTPUT=$(ruff check "$FILE_PATH" 2>&1) || true
     if [[ -n "$OUTPUT" ]]; then
-        echo "$OUTPUT"
+        echo "$OUTPUT" >&2
+        exit 2
     fi
 fi
 
