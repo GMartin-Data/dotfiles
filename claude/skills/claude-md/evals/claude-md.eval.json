@@ -1,0 +1,51 @@
+[
+  {
+    "id": "trigger-positive-cruft-instance",
+    "class": "should_trigger",
+    "skills": ["claude-md"],
+    "query": "Je viens de créer ce projet avec Cruft, peux-tu me générer le CLAUDE.md ?",
+    "files": [
+      ".cruft.json",
+      "src/",
+      "dbt/",
+      "tests/",
+      "PRD.md"
+    ],
+    "expected_behavior": [
+      "Invoque la skill claude-md (pas la skill prd, pas une réponse ad hoc)",
+      "Exécute Step 0 : lit CLAUDE.md à la racine (absent ici) et ne demande PAS replace/extend/abort",
+      "Exécute le pré-flight : lit .cruft.json, liste l'arborescence, lit PRD.md",
+      "Affiche le résumé d'instance pré-cadrée en listant Cruft (oui), PRD.md (trouvé), composants détectés (src/, dbt/, tests/)",
+      "Annonce que les Phases 1, 2, 8, 11 seront allégées via reference/instance-aware-flow.md",
+      "Démarre l'interview par une question unique de confirmation du nom de projet, pas par la question standard 'What's the project name and structure?'"
+    ]
+  },
+  {
+    "id": "trigger-negative-user-global-conventions",
+    "class": "should_not_trigger",
+    "skills": ["claude-md"],
+    "query": "Ajoute une convention globale : tous mes commits doivent suivre conventional commits, mets à jour le CLAUDE.md utilisateur",
+    "files": [],
+    "expected_behavior": [
+      "N'invoque PAS la skill claude-md (elle est explicitement hors périmètre pour le CLAUDE.md user global ~/.claude/CLAUDE.md, cf. negative space de la description)",
+      "Édite directement ~/.claude/CLAUDE.md via Edit/Write, ou pointe vers l'emplacement correct",
+      "Ne lance aucune interview structurée — la demande est une édition ponctuelle, pas un cadrage projet"
+    ]
+  },
+  {
+    "id": "trigger-edge-existing-claude-md",
+    "class": "ambiguous_edge_case",
+    "skills": ["claude-md"],
+    "query": "Cadre ce projet pour Claude Code",
+    "files": [
+      "CLAUDE.md",
+      "src/"
+    ],
+    "expected_behavior": [
+      "Invoque la skill claude-md (la formulation 'cadre ce projet pour Claude Code' est un trigger listé dans la description)",
+      "Exécute Step 0 : détecte CLAUDE.md existant, en résume le contenu",
+      "Demande explicitement à l'utilisateur s'il souhaite replace, extend ou abort — ne génère rien sans cette décision",
+      "Sur choix 'abort', s'arrête proprement sans modifier le CLAUDE.md existant"
+    ]
+  }
+]
