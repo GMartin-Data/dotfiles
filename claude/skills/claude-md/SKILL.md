@@ -1,332 +1,235 @@
 ---
 name: claude-md
-description: Cette skill doit être utilisée quand l'utilisateur demande à produire un CLAUDE.md projet, définir les conventions Claude Code d'un projet, formaliser la stack/les conventions/le workflow IA d'un repo existant, ou dit "génère le CLAUDE.md", "crée les conventions projet", "cadre l'IA pour ce projet". Inclut la génération hiérarchique (root + sous-composants). Ne pas utiliser pour : éditer le CLAUDE.md user global (~/.claude/CLAUDE.md), rédiger un PRD (c'est la skill prd), ou mettre à jour des conventions techniques glob-scoped (cela vit dans rules/).
+description: Cette skill doit être utilisée quand l'utilisateur demande à produire un CLAUDE.md projet, définir les conventions Claude Code d'un projet, formaliser la stack/les conventions/le workflow IA d'un repo existant, ou dit "génère le CLAUDE.md", "crée les conventions projet", "cadre l'IA pour ce projet". Détecte automatiquement les instances pré-cadrées (présence d'un `.cruft.json`, d'un `PRD.md` ou d'une arborescence explicite) pour alléger les phases Overview/Stack/Documentation Structure déjà déterminées par le template ou le PRD. Inclut la génération hiérarchique (root + sous-composants). Ne pas utiliser pour : éditer le CLAUDE.md user global (~/.claude/CLAUDE.md), rédiger un PRD (c'est la skill prd), ou mettre à jour des conventions techniques glob-scoped (cela vit dans rules/).
 disable-model-invocation: false
+user-invocable: true
+allowed-tools: Read, Write, Glob, Bash
+paths: ["CLAUDE.md", "PRD.md", ".cruft.json"]
+model: sonnet
 ---
 
-# Conventions Interview
+# Interview Conventions
 
-Structured interview process to produce a complete CLAUDE.md (with optional hierarchical structure) through incremental questioning.
-
----
-
-## Step 0 — Read existing project CLAUDE.md if present
-
-Before starting the interview, read `CLAUDE.md` at the current working directory (the project root). If it exists, acknowledge its content and ask the user whether they want to **replace** it, **extend** it, or **abort**. If absent, proceed directly to Phase 1.
-
----
-
-## Interaction Rules
-
-1. **One question at a time** — never overwhelm with multiple questions
-2. **Options A/B/C** — provide choices when discrete alternatives exist
-3. **Validate before continuing** — reformulate only on ambiguous answers
-4. **YAGNI** — challenge over-engineering, keep conventions minimal
-5. **Per-component** — if multi-component project, ask conventions for each
-6. **Adapt language** — match user's language throughout interview and output
+Processus d'interview structurée pour produire un CLAUDE.md complet (avec structure hiérarchique optionnelle) par questionnement incrémental.
 
 ---
 
-## Interview Sequence
+## Step 0 — Lire le CLAUDE.md projet existant si présent
 
-Progress through these phases in order. Skip phases only if clearly irrelevant.
+Avant de démarrer l'interview, lire `CLAUDE.md` à la racine du CWD (racine du projet). S'il existe, en résumer le contenu et demander à l'utilisateur s'il veut **remplacer**, **étendre** ou **abandonner**. S'il est absent, enchaîner directement sur le pré-flight.
 
-### Phase 1: Project Overview
-"What's the project name and structure?"
-- Single component or monorepo?
-- List components if multiple (e.g., backend, extension, CLI)
+---
 
-### Phase 2: Stack (per component)
-For each component:
-"What's the stack for [component]?"
-- Language + version
-- Framework
-- Package manager
-- Test framework
+## Pré-flight — détection d'instance (Cruft + PRD + arbo)
 
-### Phase 3: Code Conventions (per language)
-For each language in the project:
-"What are your code conventions for [language]?"
-- Type hints / strict mode?
-- Docstring format (Google, NumPy, JSDoc)?
-- Naming conventions (snake_case, camelCase, PascalCase)?
-- Linter / formatter?
-- Language for comments?
+**Avant Phase 1**, collecter le contexte disponible sans poser de question :
 
-### Phase 4: Testing Approach
-"What's your testing approach?"
-- TDD? If yes, strict or light?
-- Coverage target?
-- Testing pyramid (unit/integration/e2e ratio)?
-- What to test (happy path, errors, edge cases)?
-- What NOT to test (glue code, trivial)?
+1. **`.cruft.json`** — si présent à la racine du CWD, lire `context.cookiecutter` pour extraire : `project_name`, `python_version`, `license`, `branch_protection_profile`, et les flags `use_dbt` / `use_terraform`.
+2. **Arborescence racine** — lister les dossiers présents (`src/`, `dbt/`, `terraform/`, `tests/`, `docs/`, `.github/`, etc.). L'arbo fait foi : un post-hook Cruft supprime les dossiers non retenus.
+3. **`PRD.md`** — si présent, le lire pour récupérer : problème, utilisateurs, interface, stack technique, architecture, phases d'implémentation.
 
-### Phase 5: Versioning
-"What's your git workflow?"
-- Commit format (conventional commits?)
-- Scopes if monorepo?
-- Who commits? (AI prepares, human validates?)
-- Branch strategy?
+Si **aucun** de ces trois artefacts n'existe : procéder à l'interview standard complète (toutes les phases).
 
-### Phase 6: Languages
-"What language for what context?"
-- Code (comments, docstrings)
-- Documentation (README, PRD)
-- Commit messages
-
-### Phase 7: CI/CD
-"What's your CI/CD setup?"
-- CI: lint, tests, on which triggers?
-- CD: manual or automated? Platform?
-
-### Phase 8: AI Workflow
-"How should AI assistants work on this project?"
-- Context files to read first?
-- Progress tracking file?
-- Files to ignore (.claudeignore)?
-- Frequent commands?
-
-### Phase 9: Infrastructure (if applicable)
-"Does your project use any of these?"
-
-**Database:**
-- ORM / query builder?
-- Migration tool?
-- Connection patterns (pooling, PRAGMAs)?
-
-**Logging:**
-- Structured logging (structlog, pino)?
-- Format (JSON, pretty)?
-- Log levels policy?
-
-**MCP Servers:**
-- Which MCP servers are configured?
-- When to use each?
-
-Skip subsections that don't apply.
-
-### Phase 10: Sensitive Points
-"Any specific warnings or constraints?"
-- Secrets management
-- API quirks
-- Known pitfalls
-- Files to never modify
-
-### Phase 11: Documentation Structure (Diagnostic)
-
-**Do NOT ask user preference. Diagnose automatically based on Phase 1-2 answers:**
+Si **au moins un** est présent : afficher le résumé détecté et annoncer l'allègement :
 
 ```
-Multi-component with different stacks?
+Instance pré-cadrée détectée :
+
+- Cruft : [oui — Python X.Y, dbt/Terraform selon flags | non]
+- PRD.md : [trouvé — projet [nom], interface [X], stack [Y] | absent]
+- Composants détectés (arbo) : [liste : src/, dbt/, terraform/, ...]
+
+Les phases suivantes seront **allégées ou pré-remplies** :
+- Phase 1 (Vue d'ensemble), Phase 2 (Stack) → confirmation rapide depuis Cruft+PRD
+- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo
+- Phase 8 (Workflow IA) → pré-rempli (progress.md, PRD.md)
+
+Phases restant à cadrer intégralement (conventions AI-driven, non déductibles) :
+- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter
+- Phase 4 (Approche de test) — TDD, couverture, pyramide
+- Phase 6 (Langues) — code vs docs vs commits
+- Phase 7 (CI/CD) — triggers, déploiement
+- Phase 10 (Points d'attention) — secrets, pièges
+
+Principe : Cookiecutter a déjà demandé ce qui est décidable à T0.
+L'interview ne porte que sur ce qui mérite délibération humaine.
+```
+
+**Pour les Phases 1, 2, 8 et 11, suivre `reference/instance-aware-flow.md` au lieu du texte standard ci-dessous.** Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies ci-dessous.
+
+---
+
+## Règles d'interaction
+
+1. **Une question à la fois** — ne jamais surcharger avec plusieurs questions
+2. **Options A/B/C** — proposer des choix quand des alternatives discrètes existent
+3. **Valider avant de continuer** — reformuler uniquement sur les réponses ambiguës
+4. **YAGNI** — challenger le sur-engineering, garder les conventions minimales
+5. **Par composant** — si projet multi-composants, demander les conventions pour chacun
+6. **Adapter la langue** — matcher la langue de l'utilisateur pendant l'interview et dans la sortie
+
+---
+
+## Séquence d'interview
+
+Progresser à travers les phases dans l'ordre. Ne skipper une phase que si elle est clairement hors sujet.
+
+### Phase 1 — Vue d'ensemble du projet
+
+(Si pré-flight a détecté une instance, suivre `reference/instance-aware-flow.md` pour cette phase.)
+
+« Quel est le nom du projet et sa structure ? »
+- Composant unique ou monorepo ?
+- Lister les composants s'il y en a plusieurs (ex. backend, extension, CLI)
+
+### Phase 2 — Stack (par composant)
+
+(Si pré-flight a détecté une instance, suivre `reference/instance-aware-flow.md` pour cette phase.)
+
+Pour chaque composant :
+« Quelle est la stack de [composant] ? »
+- Langage + version
+- Framework
+- Package manager
+- Framework de test
+
+### Phase 3 — Conventions de code (par langage)
+
+Pour chaque langage présent dans le projet :
+« Quelles sont tes conventions de code pour [langage] ? »
+- Type hints / mode strict ?
+- Format de docstring (Google, NumPy, JSDoc) ?
+- Conventions de nommage (snake_case, camelCase, PascalCase) ?
+- Linter / formatter ?
+- Langue des commentaires ?
+
+### Phase 4 — Approche de test
+
+« Quelle est ton approche de test ? »
+- TDD ? Si oui, strict ou light ?
+- Cible de couverture ?
+- Pyramide de test (ratio unit/integration/e2e) ?
+- Quoi tester (happy path, erreurs, edge cases) ?
+- Ce qu'il ne faut PAS tester (glue code, trivial) ?
+
+### Phase 5 — Versioning
+
+« Quel est ton workflow Git ? »
+- Format de commit (conventional commits ?)
+- Scopes si monorepo ?
+- Qui commite ? (IA prépare, humain valide ?)
+- Stratégie de branches ?
+
+### Phase 6 — Langues
+
+« Quelle langue pour quel contexte ? »
+- Code (commentaires, docstrings)
+- Documentation (README, PRD)
+- Messages de commit
+
+### Phase 7 — CI/CD
+
+« Quel est ton setup CI/CD ? »
+- CI : lint, tests, sur quels triggers ?
+- CD : manuel ou automatique ? Plateforme ?
+
+### Phase 8 — Workflow IA
+
+(Si pré-flight a détecté une instance, suivre `reference/instance-aware-flow.md` pour cette phase.)
+
+« Comment les assistants IA doivent-ils travailler sur ce projet ? »
+- Fichiers de contexte à lire en premier ?
+- Fichier de suivi d'avancement ?
+- Fichiers à ignorer (.claudeignore) ?
+- Commandes fréquentes ?
+
+### Phase 9 — Infrastructure (si applicable)
+
+« Le projet utilise-t-il l'un des éléments suivants ? »
+
+**Base de données :**
+- ORM / query builder ?
+- Outil de migration ?
+- Patterns de connexion (pooling, PRAGMAs) ?
+
+**Logging :**
+- Logging structuré (structlog, pino) ?
+- Format (JSON, pretty) ?
+- Politique de niveaux de log ?
+
+**Serveurs MCP :**
+- Quels serveurs MCP sont configurés ?
+- Quand utiliser chacun ?
+
+Skipper les sous-sections qui ne s'appliquent pas.
+
+### Phase 10 — Points d'attention
+
+« Des avertissements ou contraintes spécifiques ? »
+- Gestion des secrets
+- Quirks d'API
+- Pièges connus
+- Fichiers à ne jamais modifier
+
+### Phase 11 — Structure documentaire (diagnostic)
+
+(Si pré-flight a détecté une instance, suivre `reference/instance-aware-flow.md` pour cette phase — le diagnostic se fait alors directement depuis l'arborescence réelle.)
+
+**Ne pas demander la préférence de l'utilisateur. Diagnostiquer automatiquement depuis les réponses des Phases 1-2 :**
+
+```
+Multi-composants avec stacks différentes ?
     │
-    ├── NO  → CLAUDE.md seul (+ .claude/reference/ si docs volumineuses)
+    ├── NON → CLAUDE.md seul (+ .claude/reference/ si docs volumineuses)
     │
-    └── YES → Conventions partagées entre composants?
+    └── OUI → Conventions partagées entre composants ?
                   │
-                  ├── NO  → Hiérarchique seul
+                  ├── NON → Hiérarchique seul
                   │         (component/CLAUDE.md par composant)
                   │
-                  └── YES → Hybride
+                  └── OUI → Hybride
                             (hiérarchique + .claude/reference/)
 ```
 
-**If Hybrid approach diagnosed:**
+**Si approche hybride diagnostiquée :**
 
-Identify which conventions are:
-- **Component-specific** → will go in `component/CLAUDE.md`
-- **Cross-cutting** → will go in `.claude/reference/`
+Identifier quelles conventions sont :
+- **Spécifiques à un composant** → iront dans `component/CLAUDE.md`
+- **Transverses** → iront dans `.claude/reference/`
 
-Present the diagnosis:
-> "Based on your project structure, I'll generate:
-> - Root CLAUDE.md with global conventions
-> - [component]/CLAUDE.md for [language]-specific conventions
-> - .claude/reference/ for shared patterns: [list]
+Présenter le diagnostic :
+> « D'après la structure du projet, je vais générer :
+> - Root CLAUDE.md avec les conventions globales
+> - [component]/CLAUDE.md pour les conventions propres à [langage]
+> - .claude/reference/ pour les patterns partagés : [liste]
 >
-> Does this structure work for you?"
+> Cette structure te convient-elle ? »
 
-**Cross-cutting conventions to look for:**
-- Testing strategy (if same philosophy across components)
-- Logging standards (if unified format)
-- Deployment patterns
-- API design conventions (if consumed across components)
-
----
-
-## Final Validation
-
-Before generating, verify each item and present summary for user validation.
-
-### Checklist
-
-#### Required Sections
-
-- [ ] **Project overview** — Name, structure, components
-- [ ] **Stack** — Language, framework, package manager, test framework (per component)
-- [ ] **Code conventions** — Style, naming, linter/formatter (per language)
-- [ ] **Versioning** — Commit format, workflow
-
-#### Conditional Sections
-
-Include if discussed:
-
-- [ ] **Testing approach** — TDD, coverage, pyramid, what to test
-- [ ] **Languages** — Code vs docs vs commits
-- [ ] **CI/CD** — Lint, tests, deployment
-- [ ] **AI workflow** — Context files, progress tracking, commands
-- [ ] **Infrastructure** — Database, logging, MCP servers
-- [ ] **Files to ignore** — .claudeignore content
-- [ ] **Sensitive points** — Secrets, API quirks, pitfalls
-
-#### Documentation Structure
-
-- [ ] **Structure diagnosed** — Mono / Hierarchical / Hybrid
-- [ ] **Component CLAUDE.md list** — If hierarchical or hybrid
-- [ ] **Reference docs list** — If hybrid, with "When to read" triggers
-
-### Validation Format
-
-Present summary as:
-
-```
-Récapitulatif avant génération du CLAUDE.md :
-
-1. Projet : [name] — [structure]
-2. Composants : [list]
-3. Stack :
-   - [component 1] : [language, framework, pkg manager, tests]
-   - [component 2] : ...
-4. Conventions code :
-   - [language 1] : [type hints, docstrings, naming, linter]
-   - [language 2] : ...
-5. Tests : [approach, coverage, pyramid, priorities]
-6. Commits : [format, scopes, workflow]
-7. Langues : code=[X], docs=[Y], commits=[Z]
-8. CI/CD : [setup]
-9. Infrastructure : [DB, logging, MCP]
-10. Workflow IA : [context files, commands]
-11. Points d'attention : [list]
-
-Structure documentation :
-[Display diagnosed structure]
-
-project/
-├── CLAUDE.md (racine)
-├── [component 1]/
-│   └── CLAUDE.md
-├── [component 2]/
-│   └── CLAUDE.md
-└── .claude/
-    └── reference/
-        ├── [topic-1].md — "When [trigger]"
-        └── [topic-2].md — "When [trigger]"
-
-Confirmez-vous ces éléments ? (oui / corrections)
-```
-
-**Generate CLAUDE.md files only after explicit "oui" or equivalent confirmation.**
+**Conventions transverses typiques à chercher :**
+- Stratégie de test (si même philosophie entre composants)
+- Standards de logging (si format unifié)
+- Patterns de déploiement
+- Conventions de design d'API (si consommée entre composants)
 
 ---
 
-## Output Format
+## Validation finale
 
-### Root CLAUDE.md
-
-Generate with these sections (omit if N/A):
-
-```markdown
-# CLAUDE.md — [project-name]
-
-## Vue d'ensemble
-[Brief description + pointers to key docs]
-
-## Structure du projet
-[Tree structure if relevant]
-
-## Reference Documentation
-[If hybrid approach — routing table]
-
-| Document | When to Read |
-|----------|--------------|
-| `.claude/reference/[topic].md` | [trigger] |
-
-## Conventions [Language] ([component])
-### Environnement
-### Style de code
-### Exemple
-
-## Tests
-### Approche
-### Pyramide (unit/integration/e2e)
-### Couverture cible
-### Fonctions à tester en priorité
-### Ne pas tester
-
-## Versioning
-### Commits
-### Workflow Git
-
-## Langues
-| Contexte | Langue |
-|----------|--------|
-| Code (commentaires, docstrings) | ... |
-| Documentation | ... |
-| Commits | ... |
-
-## CI/CD
-
-## Infrastructure
-### Base de données
-### Logging
-### MCP Servers
-
-## Workflow avec Claude
-### Gestion du contexte
-### Commandes fréquentes
-
-## Fichiers à ignorer
-[.claudeignore content or patterns]
-
-## Points d'attention
-[Warnings, secrets, pitfalls]
-```
-
-### Child CLAUDE.md (components)
-
-Shorter, focused on delta from root:
-
-```markdown
-# CLAUDE.md — [component]
-
-## Environnement
-[Language, framework, package manager specific to this component]
-
-## Style de code
-[Only if different from root]
-
-## Commandes fréquentes
-[Component-specific commands]
-```
-
-### Reference Documentation (if hybrid)
-
-For each cross-cutting topic, create `.claude/reference/[topic].md`:
-
-```markdown
-# [Topic] — Best Practices
-
-## When to Read
-[Explicit trigger: "Read this when working on X"]
-
-## [Content organized by subtopic]
-```
+Avant d'écrire le moindre fichier, appliquer la checklist et présenter le récapitulatif à l'utilisateur. **Suivre `reference/validation-checklist.md`** pour le détail des sections à vérifier, le format de récapitulatif, et la porte de génération (pas d'écriture sans « oui » explicite).
 
 ---
 
-## Post-Generation
+## Format de sortie
 
-After creating the CLAUDE.md file(s):
-1. Confirm file path(s)
-2. If hierarchical or hybrid, list all files created
-3. Suggest adding to version control
-4. Remind to create .claudeignore if discussed
-5. If MCP servers mentioned, remind to verify `claude mcp list`
+Une fois la validation obtenue, écrire les fichiers selon les templates de **`reference/output-format.md`** (Root CLAUDE.md, Child CLAUDE.md par composant, fichiers `.claude/reference/` si structure hybride).
+
+---
+
+## Après génération
+
+Après avoir créé le(s) fichier(s) CLAUDE.md :
+1. Confirmer les chemins des fichiers
+2. Si hiérarchique ou hybride, lister tous les fichiers créés
+3. Suggérer de les ajouter au contrôle de version
+4. Rappeler de créer `.claudeignore` si discuté
+5. Si des serveurs MCP ont été mentionnés, rappeler de vérifier `claude mcp list`

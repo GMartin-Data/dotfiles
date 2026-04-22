@@ -2,6 +2,10 @@
 name: prd
 description: Cette skill doit être utilisée quand l'utilisateur demande à produire un PRD (Product Requirements Document), cadrer un nouveau projet, formaliser l'intention d'une initiative via interview structurée, ou dit "écris le PRD", "cadre ce projet", "je veux démarrer un projet". Détecte automatiquement les instances Cruft (présence d'un `.cruft.json`) pour alléger les questions sur la stack et l'architecture déjà déterminées par le template. Ne pas utiliser pour : éditer un PRD existant (utiliser /progress pour documenter les écarts), rédiger des specs techniques détaillées, ou générer un CLAUDE.md (c'est le rôle de la skill claude-md).
 disable-model-invocation: false
+user-invocable: true
+allowed-tools: Read, Write, Glob
+paths: ["PRD.md", ".cruft.json"]
+model: sonnet
 ---
 
 # PRD Interview
