@@ -1,6 +1,39 @@
 ## Dernière mise à jour
-Date : 2026-04-27 (audit dotfiles entièrement clôturé — Phase 6g ✅)
-Session : (catchup post-/clear, prolongée Phase 6g + 7)
+Date : 2026-04-27 (campagne methodology-trial — Étape 1 PRD ✅ + /immunize)
+Session : (catchup post-/clear, prolongée audit→methodology-trial)
+
+## Tâches complétées
+- Sujet learning-tracker `methodology-trial` ouvert (commit 78cced0) — campagne d'éprouvage de la méthodologie /prd + /claude-md + /progress + /immunize sur projets variés
+- **Étape 1 — CLI `memory-grep` PRD validé** (côté ~/projects/memory-grep, hors dotfiles) :
+  - PRD.md généré : 8 critères de succès, 4 phases d'implémentation (1a/1b/2/3), 5 risques, gestion d'erreurs 7 cas avec exit codes POSIX
+  - Hypothèse case-sensitivity : tranchée smart-case post-PRD via `/prd` lui-même
+  - Architecture Phase 10 correctement skippée (composant unique)
+  - git init + /progress effectués côté memory-grep
+- 7 frictions méthodologiques capturées dans tasks/lessons-inbox.md (commit 4351910)
+- /immunize 2e passe (commit d8496b7) :
+  - 2 nouvelles règles `## Global Do NOT` promues (groupes A "spec écrasée par UX" et B "cohérence transverse multi-phases")
+  - 7 entrées inbox fusionnées en 2 règles
+  - Inbox : 9 → 3 entrées | Global Do NOT : 1 → 3 règles | Cap : 3/20
+- Subagent learning-tracker invoqué : `methodology-trial` sessions 1 → 2, méta sessions 6 → 7
+
+## En cours
+- Rien (campagne Étape 1 close, pause avant Étape 2)
+
+## Prochaines étapes
+1. Étape 1 — finalisation memory-grep : /claude-md projet + Phase 1a implémentation (squelette + scan + smoke test) — session ultérieure dédiée
+2. Étape 2 — Ingestion API : choisir parmi `gh-prs-tracker`, `anthropic-models-watcher`, `dataset-gouv-fetcher`
+3. Étape 3 — Webscraping : `hn-watch` ou `arxiv-skim`
+4. Étape 4 (optionnelle) — stack hors-Python pour stresser la généralisabilité
+5. Surveiller récurrence des 3 lessons inbox pour promotion future
+6. Test terrain hook SessionStart (passif — staleness `methodology-trial`)
+
+## Décisions prises
+- Le pattern "le modèle écrase la doctrine quand l'UX appelle un raccourci" est promu en 3 règles distinctes du `## Global Do NOT` (typographie, découpage spec, cohérence transverse). Originellement issu de dotfiles + memory-grep, validé cross-contexte.
+- Fusion préférée à la conservation d'entrées proches : 7 frictions distinctes regroupées en 2 règles synthétiques plutôt que promues séparément. Réduit le bruit cognitif au runtime.
+- `claude/CLAUDE.md` (versionné dans dotfiles) **est** `~/.claude/CLAUDE.md` (symlink) : la doctrine /immunize "global vs projet" se collapse en une seule destination sur ce repo. Cas particulier du repo dotfiles lui-même.
+
+## Blocages
+Aucun
 
 ## Tâches complétées
 - Merge `feat/claude-md-instance-aware` → main confirmé (commits aa95ac0 → 0ec5576)

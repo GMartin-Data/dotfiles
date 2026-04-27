@@ -1,20 +1,21 @@
 ## Méta
 - Première session : 2026-03-07
-- Sessions totales : 6
+- Sessions totales : 7
 - Sujets actifs : 1 | Complétés : 0 | Archivés : 4
 
 ## Sujets
 
 ### methodology-trial [ACTIF]
 - Premier contact : 2026-04-27 | Dernier contact : 2026-04-27
-- Sessions : 1 | Vélocité : n/a (démarrage)
-- Statut : Campagne d'éprouvage de /prd + /claude-md + /progress + /immunize sur projets jouets multi-stacks. Session A en cours ; session B lance /prd sur memory-grep.
-- Prochaine étape : Conclure Étape 1 (memory-grep CLI), capturer lessons dans tasks/lessons-inbox.md, /immunize.
+- Sessions : 2 | Vélocité : ~2/sem (2 sessions sur 1 jour, semaine 1)
+- Statut : Étape 1 PRD validée (memory-grep/PRD.md — 8 critères, 4 phases, 5 risques). /immunize exécuté côté dotfiles (2 règles promues, commit d8496b7). /claude-md sur memory-grep reporté. 3 entrées inbox en attente de promotion.
+- Prochaine étape : /claude-md sur memory-grep + Phase 1a implémentation (session suivante). Puis choisir projet Étape 2.
 - Branches ouvertes :
-  - Étape 1 — CLI : `memory-grep` (~/projects/memory-grep, folder vide pur, mode no-preflight) — EN COURS
+  - Étape 1 — CLI : `memory-grep` — PRD VALIDE ; /claude-md + Phase 1a implémentation à faire
   - Étape 2 — Ingestion API : choisir parmi `gh-prs-tracker`, `anthropic-models-watcher`, `dataset-gouv-fetcher`
   - Étape 3 — Webscraping : `hn-watch` ou `arxiv-skim`
   - Étape 4 (optionnelle) — Stack hors-Python pour stresser la généralisabilité
+  - Inbox dotfiles : 3 entrées en attente (auto-invocation skills, doctrine bidirectionnelle, stories paraphrase)
 - Objectifs précis :
   - /prd : qualité cadrage produit + allègement Cruft Phase 8/10
   - /progress : discipline checkpoint, lisibilité après /clear, robustesse "Écarts vs PRD"
