@@ -13,7 +13,13 @@ Processus d'interview structurée pour produire un CLAUDE.md complet (avec struc
 
 ## Step 0 — Lire le CLAUDE.md projet existant si présent
 
-Avant de démarrer l'interview, lire `CLAUDE.md` à la racine du CWD (racine du projet). S'il existe, en résumer le contenu et demander à l'utilisateur s'il veut **remplacer**, **étendre** ou **abandonner**. S'il est absent, enchaîner directement sur le pré-flight.
+Avant de démarrer l'interview, lire `CLAUDE.md` à la racine du CWD (racine du projet).
+
+**Dès que le fichier existe — vide ou non —** en résumer le contenu (ou indiquer qu'il est vide) et demander à l'utilisateur s'il veut **remplacer**, **étendre** ou **abandonner**. Ne pas traiter un fichier vide comme une absence : un placeholder peut avoir été créé par un autre outil, un checkout intermédiaire, ou un geste utilisateur explicite. La gate protège contre une écriture non sollicitée.
+
+S'il est **absent** (Read échoue), enchaîner directement sur le pré-flight.
+
+**Ne pas lancer le pré-flight ni l'interview avant la décision de l'utilisateur** quand la gate est ouverte.
 
 ---
 
@@ -27,23 +33,54 @@ Avant de démarrer l'interview, lire `CLAUDE.md` à la racine du CWD (racine du 
 
 Si **aucun** de ces trois artefacts n'existe : procéder à l'interview standard complète (toutes les phases).
 
-Si **au moins un** est présent : afficher le résumé détecté et annoncer l'allègement :
+Si **au moins un** est présent : afficher le pré-flight en **deux blocs distincts** (résumé libre puis annonce templatée).
+
+### Gate conditionnelle — Cruft + PRD.md
+
+**Avant tout autre affichage, appliquer cette gate :**
+
+Si `.cruft.json` est **présent** ET `PRD.md` est **absent** : **interdire la poursuite** et afficher le message d'arrêt :
 
 ```
-Instance pré-cadrée détectée :
+Instance Cruft détectée, mais aucun PRD.md à la racine.
 
-- Cruft : [oui — Python X.Y, dbt/Terraform selon flags | non]
-- PRD.md : [trouvé — projet [nom], interface [X], stack [Y] | absent]
-- Composants détectés (arbo) : [liste : src/, dbt/, terraform/, ...]
+Le workflow projet est : Cruft → /prd → /claude-md.
+Le cadrage produit (problème, utilisateurs, périmètre v1) doit être figé
+avant les conventions techniques. Lance /prd d'abord, puis reviens ici.
 
-Les phases suivantes seront **allégées ou pré-remplies** :
+Commande annulée.
+```
+
+Puis s'arrêter. Ne pas continuer le pré-flight.
+
+Si `.cruft.json` est **absent** : pas de gate, le scénario est hors workflow Cruft (projet existant, dotfiles, tooling, scripts) — poursuivre normalement avec le pré-flight, même sans PRD.
+
+Si `PRD.md` est **présent** (avec ou sans Cruft) : poursuivre normalement.
+
+### Bloc 1 — Résumé d'instance (libre)
+
+Présenter ce qui a été détecté. Le wording est libre et peut **enrichir** au-delà des trois sources obligatoires (`.cruft.json`, arbo, `PRD.md`) — ex. lecture additionnelle de `pyproject.toml`, `README.md`, `.pre-commit-config.yaml` pour préciser la stack et l'outillage. Couvrir au minimum :
+
+- **Cruft** : présence + version Python + flags `use_dbt` / `use_terraform`
+- **PRD.md** : présence + résumé bref si trouvé
+- **Composants** : liste des dossiers détectés à la racine
+
+### Bloc 2 — Annonce d'allègement (templatée)
+
+**Reproduire ce bloc mot pour mot, sans substituer ses propres choix de phases.** Cette liste n'est pas une suggestion : elle pointe vers `reference/instance-aware-flow.md`, qui contient les parcours alternatifs pour ces phases précises. Substituer d'autres phases (ex. Phase 5, Phase 7) revient à improviser sans la doctrine progressive disclosure.
+
+```
+Les phases suivantes seront **allégées ou pré-remplies**
+(parcours détaillé dans reference/instance-aware-flow.md) :
+
 - Phase 1 (Vue d'ensemble), Phase 2 (Stack) → confirmation rapide depuis Cruft+PRD
+- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)
 - Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo
-- Phase 8 (Workflow IA) → pré-rempli (progress.md, PRD.md)
 
 Phases restant à cadrer intégralement (conventions AI-driven, non déductibles) :
 - Phase 3 (Conventions de code) — type hints, docstrings, naming, linter
 - Phase 4 (Approche de test) — TDD, couverture, pyramide
+- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite
 - Phase 6 (Langues) — code vs docs vs commits
 - Phase 7 (CI/CD) — triggers, déploiement
 - Phase 10 (Points d'attention) — secrets, pièges
@@ -52,7 +89,7 @@ Principe : Cookiecutter a déjà demandé ce qui est décidable à T0.
 L'interview ne porte que sur ce qui mérite délibération humaine.
 ```
 
-**Pour les Phases 1, 2, 8 et 11, suivre `reference/instance-aware-flow.md` au lieu du texte standard ci-dessous.** Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies ci-dessous.
+**Pour les Phases 1, 2, 8 et 11, suivre `reference/instance-aware-flow.md` au lieu du texte standard ci-dessous.** Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies ci-dessous, **même si leur contenu paraît partiellement déductible depuis l'instance** : ce sont des conventions AI-driven qui méritent délibération.
 
 ---
 

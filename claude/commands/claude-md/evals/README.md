@@ -1,24 +1,29 @@
 # Evals — `/claude-md`
 
-> ⚠️ **Document en attente de refonte (2026-04-27).** Ce corpus a été conçu quand `claude-md` était une skill et instrumente la doctrine d'auto-invocation (`should_trigger` / `should_not_trigger` / `ambiguous_edge_case`). Suite au pivot doctrinal vers slash-command (qui est invoquée explicitement par l'utilisateur, donc sans logique de déclenchement à tester), la doctrine d'évaluation est entièrement à repenser autour du **comportement post-invocation** (pré-flight, Step 0, gates, skip criteria). À traiter dans une session dédiée. Le contenu ci-dessous est conservé comme matériel de base, mais ne reflète plus le design cible.
-
-Corpus d'évaluation pour mesurer l'efficacité de la skill `claude-md` (trigger accuracy, instruction following, output quality).
+Corpus d'évaluation pour mesurer le **comportement post-invocation** de la slash-command `/claude-md` : pré-flight, Step 0, gates, allègement des phases.
 
 ## Doctrine
 
-Approche **Evaluation-Driven Development** (Anthropic, [best practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices)) : les evals sont la **source de vérité** pour mesurer si la skill résout de vrais problèmes. On construit le corpus avant de documenter extensivement — et on l'étoffe par nécessité observée, pas par volonté de couverture.
+`/claude-md` est une slash-command : son déclenchement est explicite (l'utilisateur tape `/claude-md`), il n'y a pas de logique d'auto-invocation à tester. Les evals mesurent donc ce qui se passe **après** l'invocation :
 
-Parallèle pytest-coverage : même logique d'accumulation incrémentale. Une régression observée en usage réel = une query à ajouter. Pas d'anticipation spéculative.
+- **Pré-flight** correct (lit `.cruft.json`, liste l'arbo, lit `PRD.md` quand ils existent)
+- **Step 0** correct (gate replace/extend/abort si `CLAUDE.md` présent ; enchaîne sinon)
+- **Skip criteria** respectés (pas d'interview standard quand instance pré-cadrée détectée)
+- **Délégation aux fichiers `reference/`** au moment opportun (progressive disclosure effective)
+
+Approche **Evaluation-Driven Development** (Anthropic, [best practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices)) : les evals sont la source de vérité pour mesurer si la command résout de vrais problèmes. On démarre minimal et on étoffe par nécessité observée — parallèle pytest-coverage, pas de couverture spéculative.
 
 ## Format
 
-Chaque eval suit le schéma officiel Anthropic :
+Chaque eval suit ce schéma :
 
 ```json
 {
-  "skills": ["<skill-name>"],
-  "query": "<prompt utilisateur simulé>",
-  "files": ["<fixtures nécessaires, chemins relatifs>"],
+  "id": "<eval-id>",
+  "class": "<preflight | step0_gate | ...>",
+  "command": "/claude-md",
+  "query": "<input utilisateur, généralement '/claude-md' nu>",
+  "files": ["<fixtures nécessaires, chemins relatifs au CWD>"],
   "expected_behavior": [
     "<invariant observable 1>",
     "<invariant observable 2>"
@@ -26,143 +31,116 @@ Chaque eval suit le schéma officiel Anthropic :
 }
 ```
 
-- `skills` : skills chargées dans le contexte du test
-- `query` : prompt utilisateur, reflète un usage réel
-- `files` : fixtures (repo vierge, `.cruft.json`, `PRD.md` existant, etc.)
-- `expected_behavior` : invariants **observables** — pas une sortie exacte
+- `class` : axe comportemental testé (pré-flight, gate Step 0, allègement, qualité d'output…)
+- `query` : input utilisateur, le plus souvent `/claude-md` nu — éventuellement avec un argument (`/claude-md backend`)
+- `files` : fixtures qui doivent exister dans le CWD au lancement de la session de test
+- `expected_behavior` : invariants **observables** dans la transcription — pas une sortie exacte
 
-## Classes de queries à couvrir
+## Classes comportementales
 
-Anthropic recommande 3-5 queries par skill, réparties en trois classes :
+| Classe | Mesure | Exemple |
+|---|---|---|
+| `preflight` | Lecture correcte des artefacts d'instance, annonce d'allègement | `preflight-cruft-instance` |
+| `step0_gate` | Gate replace/extend/abort quand CLAUDE.md préexiste | `step0-existing-claude-md` |
+| `lightening` | Phases allégées effectivement court-circuitées (futur) | — |
+| `output_quality` | Structure du CLAUDE.md généré (futur, plus coûteux à juger) | — |
 
-1. **Should trigger** — cas clairs où la skill doit s'activer
-2. **Should NOT trigger** — cas proches sémantiquement mais hors périmètre (teste le *negative space* de la description)
-3. **Ambiguous edge cases** — cas intermédiaires où le comportement attendu est défini précisément
+Démarrage minimal : 2 evals (`preflight` + `step0_gate`). On ajoute par classe une fois qu'un cas réel le justifie.
 
-## Prérequis fixtures
-
-Certaines queries nécessitent un **vrai environnement** (instance Cruft fraîche, CLAUDE.md pré-existant, etc.) — pas des mocks. Tester contre des fixtures simulées reviendrait à tester du code mort, puisque le pré-flight de la skill lit réellement `.cruft.json`, liste l'arbo, et lit `PRD.md`.
+## Fixtures
 
 ### Instance Cruft fraîche
 
 - **Template source** : `~/python-project-template-v2` (repo local).
-  ⚠️ Utiliser impérativement le suffixe `-v2`. Sans ce suffixe, le repo correspond à une ancienne tentative périmée qui fausserait les tests.
-- **Création** : `cruft create ~/python-project-template-v2` dans un CWD temporaire
-- **Queries concernées** : `trigger-positive-cruft-instance`
+  ⚠️ Le suffixe `-v2` est **obligatoire**. Sans lui, le repo correspond à une ancienne tentative périmée qui fausserait les tests.
+- **Création** : `cruft create ~/python-project-template-v2` (automatisé par `setup-eval-cwd.sh`)
+- **Eval concernée** : `preflight-cruft-instance`
 
-### CWD minimal avec CLAUDE.md pré-existant
+### CWD avec CLAUDE.md préexistant
 
-- **Création** : `mkdir -p <cwd> && touch <cwd>/CLAUDE.md && mkdir <cwd>/src`
-- **Queries concernées** : `trigger-edge-existing-claude-md`
+- **Création** : `mkdir -p <cwd>/src && touch <cwd>/CLAUDE.md`
+- **Eval concernée** : `step0-existing-claude-md`
 
-### Aucune fixture (negative space)
+Fixtures **éphémères** : créées à la demande sous `/tmp/`, jetées après test. La reproductibilité est garantie par l'état local de `~/python-project-template-v2`, pas par des snapshots versionnés ici.
 
-- **Création** : CWD quelconque, même vide
-- **Queries concernées** : `trigger-negative-user-global-conventions`
+## Exécution — protocole A → B → A
 
-### Cycle de vie
+L'isolation contextuelle reste utile même sans logique d'auto-invocation : elle garantit un CWD propre (pas de fichiers parasites de la session A) et une transcription figée (l'auteur juge un artefact, pas un déroulé live).
 
-Fixtures **éphémères** : créées à la demande, jetées après test. La reproductibilité est garantie par la version du template au moment du test (référencée via son état local `~/python-project-template-v2`), pas par des snapshots versionnés dans ce repo.
-
-Pour automatiser la mise en place, utiliser le script `setup-eval-cwd.sh` fourni (cf. section Exécution).
-
-## Exécution
-
-**Il n'existe pas de runner natif Anthropic.** L'exécution se fait manuellement selon le pattern Claude A / Claude B (cf. section Rôles & Protocole ci-dessous).
-
-Pour rejouer une eval :
-1. **Monter le CWD** via le script fourni, depuis la session A :
-   ```bash
-   ./setup-eval-cwd.sh <eval-id>
-   # exemple : ./setup-eval-cwd.sh trigger-positive-cruft-instance
-   ```
-   Le script crée un répertoire temporaire sous `/tmp/claude-md-eval-<id>-<timestamp>/` et imprime son chemin.
-2. **Lancer une nouvelle session Claude Code** dans ce CWD — c'est la session B, contexte vierge, pas de continuation.
-3. **Envoyer la `query`** telle quelle, telle que définie dans `claude-md.eval.json`.
-4. **Capturer la transcription** produite par B (copier-coller l'output intégral).
-5. **Transmettre la transcription à la session A** (retour dans `~/dotfiles`), qui coche les `expected_behavior` et produit le rapport matrice.
-
-## Rôles & Protocole
-
-Le protocole suit le triangle **A → B → A**, où A et B sont deux contextes isolés. La séparation n'est pas identitaire (« deux Claudes différents ») mais contextuelle : c'est l'isolation du contexte qui protège le test de la contamination cognitive.
-
-### Les trois rôles
-
-| Rôle | Qui | Contexte | Mission |
+| Rôle | Qui | CWD | Mission |
 |---|---|---|---|
-| **A (auteur)** | Session dans `~/dotfiles`, avec accès aux evals sur disque | Contexte projet, connaît les attentes | Conçoit la skill, monte les CWDs de test (via `setup-eval-cwd.sh`), juge les transcriptions de B contre les `expected_behavior` |
-| **B (exécutant)** | Session dans `/tmp/claude-md-eval-<id>-*/`, contexte vierge | Aucune connaissance du projet dotfiles, aucune vue sur les evals | Reçoit la query nue, répond naturellement, **ne sait pas qu'elle teste** |
-| **Humain** | Toi | Porte l'intention produit | Canal de transmission entre B et A (copie les transcriptions), valide ou amende le rapport matrice final |
+| **A (auteur)** | Session dans `~/dotfiles` | Projet | Monte les CWDs (`setup-eval-cwd.sh`), juge les transcriptions de B contre les `expected_behavior`, produit le rapport matrice |
+| **B (exécutant)** | Session fraîche dans `/tmp/claude-md-eval-<id>-*/` | Fixture éphémère | Reçoit la query, exécute la command, produit la transcription |
+| **Humain** | Toi | — | Canal de transmission (copie-colle les transcriptions vers A) |
 
-### Pourquoi A peut juger B sans contamination
-
-- A n'a pas produit la réponse de B : A ne peut pas rationaliser *a posteriori* ce qu'elle-même aurait écrit
-- A n'a pas vu B « en live » : elle ne lit qu'un artefact figé (la transcription)
-- B n'avait pas accès aux evals : sa réponse reflète un usage utilisateur réel, pas une satisfaction d'attentes
-- L'isolation des CWDs garantit l'étanchéité structurelle, pas seulement intentionnelle
-
-### Séquence complète d'une campagne de test
+### Séquence
 
 ```
 [Session A — setup]
-  1. A lance setup-eval-cwd.sh pour chaque eval
+  1. A lance setup-eval-cwd.sh pour chaque eval-id
   2. A fournit à l'humain la liste des CWDs temporaires
-  3. A reste ouverte (ne pas /clear tant que la campagne n'est pas finie,
-     sauf à s'appuyer sur /catchup au retour)
 
 [Sessions B — une par eval, contexte vierge chacune]
-  1. Humain : cd <cwd temporaire>, lance une nouvelle session Claude Code
-  2. Humain : colle la query de l'eval
-  3. B produit sa réponse naturelle (peut démarrer l'interview, poser des questions)
-  4. Humain : laisse dérouler jusqu'à avoir vu assez pour juger les expected_behavior,
-     puis coupe. Copie l'intégralité de la transcription.
+  1. cd <cwd temporaire> && claude
+  2. Coller la query (généralement '/claude-md' nu)
+  3. Laisser dérouler jusqu'à avoir vu les invariants attendus (Step 0, pré-flight,
+     première question d'interview), puis couper
+  4. Copier-coller l'intégralité de la transcription
 
 [Retour session A — jugement]
-  1. Humain colle les transcriptions dans A (une par une, pour gérer la longueur)
-  2. A lit chaque transcription et coche les expected_behavior (✅ / ⚠️ / ❌)
+  1. Coller les transcriptions une par une
+  2. A coche chaque expected_behavior (✅ / ⚠️ / ❌)
   3. A produit le rapport matrice consolidé
-  4. Humain relit le rapport et valide ou amende les cases ambiguës
-  5. Décision : refinements à apporter à SKILL.md, ou corpus à étoffer
 ```
 
-### Points d'attention (frictions connues)
+### Frictions connues
 
-- **`/catchup` ne restaure pas tout.** À la reprise de A après `/clear`, `/catchup` relit `progress.md` et le git log récent — pas les 3 fichiers `reference/` ni le contenu détaillé des evals. Si le protocole a besoin d'un détail, il doit être dans `progress.md`, pas seulement dans ce README. Ce README reste la doctrine **durable** ; `progress.md` est la **feuille de route opérationnelle** de la campagne.
+- **`/catchup` ne restaure pas tout.** À la reprise de A après `/clear`, `/catchup` relit `progress.md` et le git log — pas ce README. Si le protocole a besoin d'un détail, il doit aussi être dans `progress.md`. Ce README porte la doctrine durable ; `progress.md` porte la feuille de route opérationnelle.
 
-- **Longueur des transcriptions.** Une session B qui déclenche correctement la skill peut produire plusieurs dizaines de lignes (interview complète). Coller les 3 transcriptions d'un coup dans A peut consommer 15-25 points de contexte. Préférer un traitement **séquentiel** : transcription 1 → jugement → transcription 2 → jugement → etc. L'humain peut aussi pré-élaguer ce qui est manifestement hors scope (small talk, détails non liés aux `expected_behavior`).
+- **Durée de session B.** Les `expected_behavior` portent sur les premiers échanges (Step 0 → pré-flight → première question d'interview). Inutile de dérouler l'interview complète. Couper dès que les invariants sont observés ou clairement ratés.
 
-- **Durée de session B.** Les `expected_behavior` portent généralement sur les 30 premières secondes de B (détection de la skill, pré-flight, annonce d'allègement, première question). Il n'est **pas nécessaire** de dérouler l'interview complète. L'humain coupe dès qu'il a vu assez pour juger.
+- **Échec silencieux.** Si B reçoit `/claude-md` mais que la command rate un invariant (ex. saute Step 0, ne lit pas `.cruft.json`), elle peut continuer en générant du contenu. **C'est précisément un cas d'échec**, à signaler dans le rapport. L'absence d'un comportement attendu est un signal.
 
-- **Échec silencieux de trigger.** Si B reçoit la query mais ne déclenche pas la skill (`trigger-positive-*` raté ou `trigger-negative-*` qui aurait dû rester inactif), B va répondre de manière générique, sans signaler qu'une skill était attendue. **C'est précisément un cas d'échec**, à noter comme tel dans le rapport matrice. L'absence de mention de la skill dans la transcription est un signal, pas un non-événement.
+- **Consommation contexte de A.** Une campagne complète peut pousser A au-delà de 30-40 %. Accepter `/progress` + `/clear` en cours de campagne : le rapport partiel est sauvegardé, A reprise via `/catchup` continue avec les transcriptions restantes.
 
-- **Consommation de contexte de la session A.** Une campagne complète (3 evals, 3 transcriptions, jugement) peut pousser A au-delà de 30-40 %. Accepter de `/progress` + `/clear` en cours de campagne est acceptable : le rapport matrice partiel est sauvegardé sur disque, la session A reprise via `/catchup` peut continuer avec les transcriptions restantes.
+### Lancer une eval
+
+```bash
+# Depuis ~/dotfiles, en session A :
+cd ~/dotfiles/claude/commands/claude-md/evals
+./setup-eval-cwd.sh preflight-cruft-instance
+# → imprime un chemin /tmp/claude-md-eval-preflight-cruft-instance-<timestamp>/
+
+# Dans un terminal séparé, session B vierge :
+cd /tmp/claude-md-eval-preflight-cruft-instance-<timestamp>
+claude
+# Puis taper : /claude-md
+```
 
 ## Doctrine d'étoffage
 
-Ajouter une query **quand** :
-- La skill rate un trigger attendu en usage réel → nouvelle query *should trigger*
-- Un false positive est observé (skill s'invoque à tort) → nouvelle query *should NOT trigger*
-- Un edge case nouveau apparaît (combinaison non testée de fixtures) → nouvelle query *ambiguous*
-- Un changement de modèle (Haiku/Sonnet/Opus) change le comportement → dupliquer une query existante en marquant le modèle dans un champ `model`
+Ajouter une eval **quand** :
+- Une régression observée en usage réel rate un invariant non couvert → nouvelle classe ou nouveau fixture
+- Un changement de modèle (Haiku/Sonnet/Opus) change le comportement → dupliquer une eval avec un champ `model`
+- Une nouvelle gate ou un nouveau skip criterion est ajouté à `claude-md.md` → eval dédiée
 
 Éviter :
-- Les queries hypothétiques « au cas où » sans usage réel sous-jacent
+- Les evals hypothétiques « au cas où » sans usage réel sous-jacent
 - Les `expected_behavior` trop prescriptifs (décrire le **quoi observable**, pas le **comment**)
-- La duplication entre queries : chaque query doit cibler un invariant différent
+- La duplication entre evals : chaque eval doit cibler un invariant différent
 
-## Axes futurs d'étoffage (non bloquants)
+## Axes futurs (non bloquants)
 
-- **Cross-modèles** : rejouer le corpus sur Haiku et Opus, pas seulement Sonnet — l'efficacité varie par modèle
-- **Coexistence** : tester la skill aux côtés de `prd` (et futurement d'autres skills) pour détecter les conflits de trigger
-- **Isolation behavior** : vérifier que la skill fonctionne seule, sans `prd` ni autre skill chargée
-- **Corpus élargi** : passer de 3 à 5-7 queries quand l'usage révèle de nouveaux cas
-- **Profils de stack** : ajouter des queries dédiées quand la skill développe une logique dépendante d'un flag Cruft (ex. `use_dbt`, `use_terraform`). Tant que le comportement du pré-flight reste uniforme, la variation peut se faire par choix de réponses Cruft à l'exécution — pas par duplication dans le corpus JSON.
+- **Allègement effectif** : eval `lightening-*` qui vérifie que les Phases 1, 2, 8, 11 sont court-circuitées (pas juste annoncées allégées)
+- **Cross-modèles** : rejouer le corpus sur Haiku et Opus
+- **PRD seul sans Cruft** : eval avec `PRD.md` mais pas de `.cruft.json` (chemin Phase 2 « Si PRD.md présent sans Cruft » dans `instance-aware-flow.md`)
+- **Output quality** : evals `output_quality-*` jugées sur le CLAUDE.md final — plus coûteux car nécessite de dérouler l'interview entière
 
 ## État du corpus
 
-| Skill | Statut | Nombre de queries | Dernière mise à jour |
+| Command | Statut | Nombre d'evals | Dernière mise à jour |
 |---|---|---|---|
-| `claude-md` | ✅ bootstrap | 3 | 2026-04-22 |
-| `prd` | ⏳ TODO | 0 | — |
+| `/claude-md` | ✅ bootstrap (post-pivot command) | 2 | 2026-04-27 |
+| `/prd` | ✅ bootstrap (post-pivot command) | 3 | 2026-04-27 |
 
-**TODO** : créer `claude/skills/prd/evals/` avec un corpus équivalent lors de la prochaine session touchant à `/prd`. Même structure, mêmes classes de queries.
+Le corpus `/prd` vit sous `claude/commands/prd/evals/` — même doctrine, classes adaptées au flow PRD (`strict_mode_gate`, `block_validation`).

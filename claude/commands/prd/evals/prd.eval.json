@@ -1,0 +1,51 @@
+[
+  {
+    "id": "strict-mode-existing-prd",
+    "class": "strict_mode_gate",
+    "command": "/prd",
+    "query": "/prd",
+    "files": [
+      "PRD.md"
+    ],
+    "expected_behavior": [
+      "Détecte la présence du fichier de sortie (PRD.md) avant toute autre action",
+      "Affiche le message d'arrêt standard expliquant qu'un PRD est un document figé après T0",
+      "Mentionne l'alternative : suppression manuelle (rm PRD.md) si réécriture vraiment souhaitée",
+      "Mentionne /progress comme exutoire pour documenter un écart vs PRD initial",
+      "S'arrête immédiatement : ne lit pas .cruft.json, ne lance pas le pré-flight, ne pose aucune question d'interview"
+    ]
+  },
+  {
+    "id": "preflight-cruft-instance",
+    "class": "preflight",
+    "command": "/prd",
+    "query": "/prd",
+    "files": [
+      ".cruft.json",
+      "src/",
+      "dbt/",
+      "tests/"
+    ],
+    "expected_behavior": [
+      "Vérification préalable : constate l'absence de PRD.md et n'arrête pas la commande",
+      "Pré-flight : lit .cruft.json (section context.cookiecutter), vérifie la présence réelle de dbt/ et terraform/ dans le CWD",
+      "Affiche le résumé d'instance Cruft (Python version, project_name, license, branch_protection, dbt oui/non, terraform oui/non)",
+      "Annonce explicitement que les Phases 8 (Stack technique) et 10 (Architecture) seront allégées",
+      "Démarre l'interview par la Phase 1 (Problème), pas par la Phase 8"
+    ]
+  },
+  {
+    "id": "no-preflight-empty-cwd",
+    "class": "preflight",
+    "command": "/prd",
+    "query": "/prd",
+    "files": [],
+    "expected_behavior": [
+      "Vérification préalable : constate l'absence de PRD.md et n'arrête pas la commande",
+      "Pré-flight : constate l'absence de .cruft.json, ne lit aucun fichier d'instance",
+      "N'affiche AUCUN résumé d'instance Cruft et n'annonce AUCUN allègement de Phase 8 ou 10",
+      "Enchaîne directement sur la Phase 1 (Problème) avec la question standard ouverte",
+      "Suit l'interview standard complète (toutes les phases, sous réserve des skip criteria explicites)"
+    ]
+  }
+]

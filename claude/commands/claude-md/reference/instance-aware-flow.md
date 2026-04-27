@@ -18,11 +18,13 @@ Principe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'intervi
 
 ## Phase 1 — Vue d'ensemble (pré-remplie)
 
-Pré-remplir depuis les artefacts et demander une confirmation unique :
+Pré-remplir depuis les artefacts et demander une confirmation unique sur le territoire CLAUDE.md (nom + structure/composants) :
 
 > « Projet détecté : **[project_name]** — composants : [liste depuis arbo]. Correct ? »
 
 Sur « oui », passer à la Phase 2.
+
+**Ne pas glisser sur le territoire `/prd`** (problème résolu, utilisateurs cibles, valeur, user stories). Si on est ici, c'est que la gate conditionnelle de `claude-md.md` est passée — donc `PRD.md` existe et le cadrage produit est déjà figé. Le rôle de Phase 1 est un checkpoint sur le nom et la structure, pas une re-élicitation de l'intention produit.
 
 ---
 
