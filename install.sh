@@ -42,6 +42,10 @@ link "$DOTFILES_DIR/claude/commands/learning-tracker.md" "$HOME/.claude/commands
 link "$DOTFILES_DIR/claude/commands/claude-md.md"   "$HOME/.claude/commands/claude-md.md"
 link "$DOTFILES_DIR/claude/commands/prd.md"         "$HOME/.claude/commands/prd.md"
 
+# Commands — runtime reference assets (progressive disclosure).
+# Only `reference/` is symlinked; `evals/` stays in the repo as internal QA material.
+link "$DOTFILES_DIR/claude/commands/claude-md/reference" "$HOME/.claude/commands/claude-md/reference"
+
 # Hooks (fichiers individuels — même raison)
 link "$DOTFILES_DIR/claude/hooks/block-force-push.sh"        "$HOME/.claude/hooks/block-force-push.sh"
 link "$DOTFILES_DIR/claude/hooks/block-rm-rf.sh"             "$HOME/.claude/hooks/block-rm-rf.sh"

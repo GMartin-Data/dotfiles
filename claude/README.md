@@ -64,6 +64,8 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
 **Commands** (7) : `catchup`, `claude-md`, `immunize`, `learning-tracker`, `prd`, `progress`, `tech-watch`
 
+> Les commands `claude-md` et `prd` ont un sous-dossier compagnon (`commands/<name>/`) qui matérialise la **progressive disclosure** : `reference/` (assets runtime — chargés par la command à l'exécution) et `evals/` (corpus de tests A→B→A — interne au repo, non symlinké). Pattern symétrique à celui des skills, mais conservé en command pour préserver l'invocation explicite.
+
 **Skills** (3) : `coach-pedagogique`, `code-mentor`, `dp-coach`
 
 **Agents** (2) : `learning-tracker` (stateful, mémoire persistante), `tech-watch-scorer` (stateless)
@@ -126,5 +128,5 @@ Chaque subagent stateful a son sous-dossier. Le chemin de `MEMORY.md` doit être
 ## Évolutions possibles
 
 - Rules additionnelles (Dockerfile, YAML CI, etc.)
-- `/claude-md` interactif proposant un choix de template au bootstrap
 - Utiliser `@import` dans les `CLAUDE.md` projet pour référencer des docs partagées
+- Factoriser un `cruft-reader` partagé entre `/prd` et `/claude-md` (différé YAGNI tant que la duplication reste minime)
