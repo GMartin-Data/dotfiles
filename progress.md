@@ -1,4 +1,37 @@
 ## Dernière mise à jour
+Date : 2026-04-27 (audit dotfiles clôturé)
+Session : (catchup post-/clear)
+
+## Tâches complétées
+- Merge `feat/claude-md-instance-aware` → main confirmé (commits aa95ac0 → 0ec5576)
+- README.md racine et claude/README.md alignés avec le pattern command + companion folder (commit 0ec5576)
+- settings.json committé séparément (commit 0fc02e5 : effortLevel xhigh, Opus default, theme dark-daltonized)
+- /immunize exécuté sur tasks/lessons-inbox.md — aucune promotion (3 entrées 1× chacune, datées du même jour : règle 2+ occurrences non atteinte)
+- MEMORY.md learning-tracker mis à jour (session 4, Phase 6 fermée, 4 branches ouvertes consignées) — commit 62145f2
+- tasks/lessons-inbox.md committé (3 lessons Phase 6 datées 2026-04-27) — commit d8bffc7
+- Push origin/main effectué (0ec5576..d8bffc7)
+- **Phase 7 — Audit dotfiles clôturé** : AUDIT_PROGRESS.md supprimé (était gitignoré, action locale silencieuse). Trace utile déjà migrée : commits scopés (40+), fiches `~/claude-audit-notes/`, lessons-inbox.md, MEMORY.md learning-tracker. Aucune mention "audit" dans les READMEs versionnés à nettoyer.
+
+## En cours
+- Rien
+
+## Prochaines étapes
+1. Phase 6g (evals/prd/ en session dédiée /prd) — bootstrapée, à tester en A→B→A
+2. Test terrain hook SessionStart (passif — staleness dotfiles-audit)
+3. Surveiller récurrence des 3 lessons inbox pour promotion future
+4. Mettre à jour le sujet learning-tracker `dotfiles-audit` → ARCHIVÉ à la prochaine ouverture
+
+## Décisions prises
+- Suppression AUDIT_PROGRESS.md plutôt que conversion en note rétrospective : redondant avec les fiches pédagogiques + commits + memory déjà en place
+- Aucune promotion lessons-inbox cette passe — règle "2+ occurrences" respectée stricto sensu malgré pertinence forte
+- Deux commits scopés séparés (learning-tracker / tasks) plutôt qu'un commit fourre-tout
+
+## Blocages
+Aucun
+
+---
+
+## Dernière mise à jour
 Date : 2026-04-27 14:15
 Session : 9ef4eaf8-7f35-4453-9fc6-a48420a38dad
 
