@@ -1,6 +1,6 @@
 ## Dernière mise à jour
-Date : 2026-04-27 (audit dotfiles clôturé)
-Session : (catchup post-/clear)
+Date : 2026-04-27 (audit dotfiles entièrement clôturé — Phase 6g ✅)
+Session : (catchup post-/clear, prolongée Phase 6g + 7)
 
 ## Tâches complétées
 - Merge `feat/claude-md-instance-aware` → main confirmé (commits aa95ac0 → 0ec5576)
@@ -10,19 +10,27 @@ Session : (catchup post-/clear)
 - MEMORY.md learning-tracker mis à jour (session 4, Phase 6 fermée, 4 branches ouvertes consignées) — commit 62145f2
 - tasks/lessons-inbox.md committé (3 lessons Phase 6 datées 2026-04-27) — commit d8bffc7
 - Push origin/main effectué (0ec5576..d8bffc7)
-- **Phase 7 — Audit dotfiles clôturé** : AUDIT_PROGRESS.md supprimé (était gitignoré, action locale silencieuse). Trace utile déjà migrée : commits scopés (40+), fiches `~/claude-audit-notes/`, lessons-inbox.md, MEMORY.md learning-tracker. Aucune mention "audit" dans les READMEs versionnés à nettoyer.
+- **Phase 7 — Audit dotfiles clôturé** : AUDIT_PROGRESS.md supprimé (était gitignoré, action locale silencieuse). Trace utile déjà migrée : commits scopés, fiches `~/claude-audit-notes/`, lessons-inbox.md, MEMORY.md learning-tracker. Aucune mention "audit" dans les READMEs versionnés à nettoyer. Commit checkpoint 1e83e13.
+- **Phase 6g — Campagne A→B→A `/prd` ✅** :
+  - `setup-eval-cwd.sh` rendu non-interactif (`--no-input` + `--extra-context`) — commit 6c75347
+  - 3 CWDs préparés, 3 sessions B exécutées sous Opus (model frontmatter)
+  - Eval `strict-mode-existing-prd` : ✅ 5/5 (gate strict-mode propre)
+  - Eval `preflight-cruft-instance` : ⚠️ 4.5/5 → ✅ après fix (étape "vérif arbo" tacite → spec durcie en 2 étapes numérotées explicites) — commit 8ba959d
+  - Eval `no-preflight-empty-cwd` : ✅ 5/5 (cas négatif propre)
+- Lesson `lessons-inbox.md` reformulée : pattern "modèle survole les étapes mal mises en relief" généralisé à modèle-agnostique (Sonnet ×2 + Opus ×1 = 3e occurrence) — commit 6369662
 
 ## En cours
-- Rien
+- Rien — audit dotfiles entièrement clôturé (Phases 1-7 ✅, plus Phase 6g ✅)
 
 ## Prochaines étapes
-1. Phase 6g (evals/prd/ en session dédiée /prd) — bootstrapée, à tester en A→B→A
-2. Test terrain hook SessionStart (passif — staleness dotfiles-audit)
-3. Surveiller récurrence des 3 lessons inbox pour promotion future
-4. Mettre à jour le sujet learning-tracker `dotfiles-audit` → ARCHIVÉ à la prochaine ouverture
+1. Test terrain hook SessionStart (passif — staleness `dotfiles-audit`)
+2. /immunize à la prochaine passe : promouvoir la lesson "spec-skip" (3e occurrence atteinte, règle 2+ largement franchie)
+3. Mettre à jour le sujet learning-tracker `dotfiles-audit` → ARCHIVÉ à la prochaine ouverture
 
 ## Décisions prises
 - Suppression AUDIT_PROGRESS.md plutôt que conversion en note rétrospective : redondant avec les fiches pédagogiques + commits + memory déjà en place
+- Durcir `prd.md` immédiatement (pendant la campagne) plutôt que noter en TODO : contexte chaud, fix minimal, alignement avec `claude-md.md` déjà éprouvé
+- Lesson `lessons-inbox.md` reformulée modèle-agnostique : l'observation Opus invalide l'attribution Sonnet-spécifique initiale ; le pattern vise la **typographie** de la spec (numérotation, paragraphes distincts), pas la taille du modèle
 - Aucune promotion lessons-inbox cette passe — règle "2+ occurrences" respectée stricto sensu malgré pertinence forte
 - Deux commits scopés séparés (learning-tracker / tasks) plutôt qu'un commit fourre-tout
 
