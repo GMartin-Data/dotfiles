@@ -11,6 +11,7 @@
       "Write(**/.env.*)"
     ]
   },
+  "model": "Opus",
   "hooks": {
     "SessionStart": [
       {
@@ -29,8 +30,8 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git push*)",
-            "command": "~/.claude/hooks/block-force-push.sh"
+            "command": "~/.claude/hooks/block-force-push.sh",
+            "if": "Bash(git push*)"
           }
         ]
       },
@@ -39,8 +40,8 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(rm *)",
-            "command": "~/.claude/hooks/block-rm-rf.sh"
+            "command": "~/.claude/hooks/block-rm-rf.sh",
+            "if": "Bash(rm *)"
           }
         ]
       },
@@ -75,5 +76,6 @@
     "pyright-lsp@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": false,
-  "effortLevel": "high"
+  "effortLevel": "xhigh",
+  "theme": "dark-daltonized"
 }
