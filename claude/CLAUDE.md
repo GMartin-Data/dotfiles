@@ -17,3 +17,5 @@
 
 ## Global Do NOT
 - Ne jamais formuler une étape opérationnelle dans une phrase parenthétique ou secondaire — toujours la mettre en paragraphe propre avec numérotation ou gras. Le modèle (Sonnet ou Opus) zappe systématiquement les étapes imbriquées dans une typographie de second plan. (learned 2026-04, from dotfiles)
+- Quand une spec prescrit un découpage (une question à la fois, critères binaires, comportement vs implémentation, livrables vs polish), ne jamais fusionner les catégories sous prétexte d'efficacité — séquencer à la place. Le modèle écrase systématiquement ces frontières quand l'UX semble appeler un raccourci. (learned 2026-04, from memory-grep)
+- Dans un workflow multi-phases, toujours vérifier la cohérence transverse avant validation finale : exclusions v1 → risques → critères de succès doivent former une chaîne sans trou ni contradiction. Ne pas traiter chaque phase en isolation. (learned 2026-04, from memory-grep)
