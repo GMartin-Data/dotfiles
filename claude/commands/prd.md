@@ -42,7 +42,12 @@ Puis s'arrêter. Ne pas continuer l'interview.
 
 Si **absent** : procéder à l'interview standard (toutes les phases).
 
-Si **présent** : lire son contenu (section `context.cookiecutter`) et récupérer la présence réelle des dossiers `dbt/` et `terraform/` dans le CWD (un post-hook Cruft supprime ces dossiers si non retenus — l'arbo fait donc foi). Afficher le résumé détecté :
+Si **présent**, exécuter ces deux étapes dans l'ordre **avant** d'afficher le résumé :
+
+1. **Lire `.cruft.json`** (section `context.cookiecutter`) pour récupérer Python version, project_name, license, branch_protection_profile, dbt_adapter, terraform_provider.
+2. **Vérifier l'arbo réelle** du CWD pour confirmer la présence (ou l'absence) effective des dossiers `dbt/` et `terraform/`. Un post-hook Cruft supprime ces dossiers si non retenus — **l'arbo fait foi**, pas le `.cruft.json` seul. Cette vérification doit être une action explicite (un `Listed directory` ou équivalent), pas une déduction tacite.
+
+Puis afficher le résumé détecté :
 
 ```
 Instance Cruft détectée. Stack pré-déterminée :
