@@ -1,10 +1,7 @@
 ---
-name: claude-md
-description: Cette skill doit être utilisée quand l'utilisateur demande à produire un CLAUDE.md projet, définir les conventions Claude Code d'un projet, formaliser la stack/les conventions/le workflow IA d'un repo existant, ou dit "génère le CLAUDE.md", "crée les conventions projet", "cadre l'IA pour ce projet". Détecte automatiquement les instances pré-cadrées (présence d'un `.cruft.json`, d'un `PRD.md` ou d'une arborescence explicite) pour alléger les phases Overview/Stack/Documentation Structure déjà déterminées par le template ou le PRD. Inclut la génération hiérarchique (root + sous-composants). Ne pas utiliser pour : éditer le CLAUDE.md user global (~/.claude/CLAUDE.md), rédiger un PRD (c'est la skill prd), ou mettre à jour des conventions techniques glob-scoped (cela vit dans rules/).
-disable-model-invocation: false
-user-invocable: true
+description: Interview structurée pour produire un CLAUDE.md projet (avec détection d'instance Cruft / PRD / arborescence pour alléger les phases pré-déterminées)
+argument-hint: [component-path]
 allowed-tools: Read, Write, Glob, Bash
-paths: ["CLAUDE.md", "PRD.md", ".cruft.json"]
 model: sonnet
 ---
 

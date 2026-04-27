@@ -10,7 +10,7 @@
 ## Quand lire ce fichier
 À lire **uniquement si le pré-flight a détecté au moins un des éléments suivants** : un `.cruft.json`, un `PRD.md`, ou une arborescence de composants explicite (par ex. `src/` + `dbt/` + `terraform/`).
 
-Ces quatre phases **remplacent** les phases de même numéro du SKILL.md. Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies dans SKILL.md — elles couvrent des conventions AI-driven non déductibles depuis le template ou le PRD.
+Ces quatre phases **remplacent** les phases de même numéro de `claude-md.md`. Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies dans `claude-md.md` — elles couvrent des conventions AI-driven non déductibles depuis le template ou le PRD.
 
 Principe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.
 
@@ -48,7 +48,7 @@ Pré-proposer un workflow par défaut cohérent avec l'instance :
 
 > « Workflow IA pré-proposé :
 > - Context files : PRD.md (intention figée), progress.md (état courant via /progress)
-> - Progress tracking : progress.md mis à jour via skill /progress
+> - Progress tracking : progress.md mis à jour via `/progress`
 > - Frequent commands : [lister d'après Cruft — ex. `uv run`, `dbt build`, `terraform plan`]
 >
 > Ajouts ou ajustements ? »

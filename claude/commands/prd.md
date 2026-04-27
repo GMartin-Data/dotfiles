@@ -1,18 +1,15 @@
 ---
-name: prd
-description: Cette skill doit être utilisée quand l'utilisateur demande à produire un PRD (Product Requirements Document), cadrer un nouveau projet, formaliser l'intention d'une initiative via interview structurée, ou dit "écris le PRD", "cadre ce projet", "je veux démarrer un projet". Détecte automatiquement les instances Cruft (présence d'un `.cruft.json`) pour alléger les questions sur la stack et l'architecture déjà déterminées par le template. Ne pas utiliser pour : éditer un PRD existant (utiliser /progress pour documenter les écarts), rédiger des specs techniques détaillées, ou générer un CLAUDE.md (c'est le rôle de la skill claude-md).
-disable-model-invocation: false
-user-invocable: true
+description: Interview structurée pour produire un PRD (avec détection d'instance Cruft pour alléger les phases techniques)
+argument-hint: [output-filename]
 allowed-tools: Read, Write, Glob
-paths: ["PRD.md", ".cruft.json"]
-model: sonnet
+model: opus
 ---
 
 # PRD Interview
 
 Processus d'interview structurée pour produire un PRD à travers un questionnement incrémental.
 
-**Fichier de sortie** : `PRD.md` par défaut, ou nom fourni par l'utilisateur.
+**Fichier de sortie** : `$ARGUMENTS` (défaut : `PRD.md`).
 
 ---
 
@@ -336,4 +333,4 @@ Générer le PRD avec les sections ci-dessous. Si une phase a été skippée, **
 Après avoir créé le PRD :
 1. Confirmer le chemin du fichier
 2. Souligner les éventuelles hypothèses faites
-3. Suggérer les prochaines étapes immédiates (créer CLAUDE.md projet via la skill `claude-md`, revoir des sections, démarrer la Phase 1 d'implémentation, etc.)
+3. Suggérer les prochaines étapes immédiates (créer CLAUDE.md projet via `/claude-md`, revoir des sections, démarrer la Phase 1 d'implémentation, etc.)

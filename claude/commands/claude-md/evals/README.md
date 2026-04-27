@@ -1,4 +1,6 @@
-# Evals — skill `claude-md`
+# Evals — `/claude-md`
+
+> ⚠️ **Document en attente de refonte (2026-04-27).** Ce corpus a été conçu quand `claude-md` était une skill et instrumente la doctrine d'auto-invocation (`should_trigger` / `should_not_trigger` / `ambiguous_edge_case`). Suite au pivot doctrinal vers slash-command (qui est invoquée explicitement par l'utilisateur, donc sans logique de déclenchement à tester), la doctrine d'évaluation est entièrement à repenser autour du **comportement post-invocation** (pré-flight, Step 0, gates, skip criteria). À traiter dans une session dédiée. Le contenu ci-dessous est conservé comme matériel de base, mais ne reflète plus le design cible.
 
 Corpus d'évaluation pour mesurer l'efficacité de la skill `claude-md` (trigger accuracy, instruction following, output quality).
 
