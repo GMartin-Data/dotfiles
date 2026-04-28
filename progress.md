@@ -18,17 +18,25 @@ Session : (prolongation post-Étape 1, brainstorm candidats outils utiles écosy
 - Rien (décision pivot prise, attente reprise Étape 1 implémentation memory-grep)
 
 ## Prochaines étapes
-1. **Étape 1 finalisation memory-grep — non négociable avant tout pivot** : Phase 1a implémentation (uv init + structure memgrep/ + CLI Typer minimal + smoke test) — session ultérieure dédiée côté memory-grep. Anti-procrastination méthodologique.
-2. (Optionnel) Phase 1b memory-grep (frontmatter parsing) si appétit
-3. **Préparation pré-`/prd` skill-eval-runner** :
-   - Première tâche d'observation : lancer `claude -p "drill me on Python list comprehensions"` (ou prompt équivalent dp-coach) → observer sortie brute → décider stratégie détection triggering. **Ne pas lancer `/prd` avant.**
-   - Corriger pitch existant sur 3 points : (a) supprimer "Stack imposée" → référence CLAUDE.md memory-grep + délibération via `/prd` Phase 2, (b) corriger volumétrie ~3h36/cycle (pas ~9h, post-abandon track workflow-skills), (c) trancher Cruft vs uv init manuel
-4. Étape 2 implémentation : `skill-eval-runner` (`/prd` → `/claude-md` → implémentation, audit A→B→A si appétit)
-5. Étape 3 candidate : `prompt-companion` (NotebookLM helper) — archétype I/O réseau + état + clipboard + interview interactive, pain points B + D
-6. Étape 4 candidate : `ai-models-watcher` ou pivot selon évolution
-7. Étape 5 (recommandé) : projet stress-test généralisabilité hors-archétype Python CLI single-user (Go/Rust ou service longue durée API multi-component)
-8. **Audit cross-CLAUDE.md** (action correctrice friction #1 du 2026-04-28) : grep `.claudeignore` + `gitignore.*aware` sur tous les CLAUDE.md du repo
-9. **`/immunize` à la prochaine passe** : inbox 6 entrées (3 du 2026-04-27 + 3 du 2026-04-28) — surveiller récurrence
+
+**Discipline anti-procrastination** : memory-grep doit être FINALISÉ (atteindre seuil de valeur, pas dogmatiquement exécuter PRD ligne par ligne) avant toute préparation skill-eval-runner. Comparer 2 projets terminés > comparer 1 demi-livrable + 1 nouveau projet.
+
+1. **Étape 1 finalisation memory-grep** — non négociable avant pivot Étape 2 :
+   - Phase 1a (squelette + scan + smoke test) côté ~/projects/memory-grep
+   - Phase 1b (frontmatter parsing) — pain point originel
+   - Phase 2 (output enrichi) — usage quotidien
+   - **Retro post-Phase 2** : Phase 3 polish vaut-elle l'effort ou reportée ? Décision tranchée et tracée dans progress.md memory-grep
+   - Phase 3 (polish) ou marquer "reportée" selon retro
+2. **Préparation pré-`/prd` skill-eval-runner** :
+   - Première tâche d'observation : lancer `claude -p "drill me on Python list comprehensions"` → observer sortie brute → décider stratégie détection triggering. **Ne pas lancer `/prd` avant.**
+   - Corriger pitch sur 3 points : (a) supprimer "Stack imposée" → référence CLAUDE.md memory-grep + délibération via `/prd` Phase 2, (b) corriger volumétrie ~3h36/cycle, (c) trancher Cruft vs uv init manuel
+3. **Étape 2 — `skill-eval-runner`** : `/prd` → `/claude-md` → implémentation (audit A→B→A si appétit)
+4. **Étape 3 candidate — `prompt-companion`** (NotebookLM helper) : archétype I/O réseau + état + clipboard + interview interactive
+5. **Étape 4 candidate — `ai-models-watcher`** ou pivot selon évolution
+6. **Étape 5 (recommandé) — projet stress-test généralisabilité** hors-archétype Python CLI single-user (Go/Rust ou service longue durée API multi-component) — préserve hybride 60/40
+7. **Audit cross-CLAUDE.md** (action correctrice friction #1 du 2026-04-28) : grep `.claudeignore` + `gitignore.*aware` sur tous les CLAUDE.md du repo
+8. **`/immunize` à la prochaine passe** : inbox 6 entrées — surveiller récurrence
+9. **`/insights` exploitable** : après finalisation memory-grep + skill-eval-runner (corpus de sessions de build suffisant)
 
 ## Décisions prises
 - **Pivot candidat 2 : prompt-companion → skill-eval-runner** justifié par :
