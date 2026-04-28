@@ -1,4 +1,53 @@
 ## Dernière mise à jour
+Date : 2026-04-28 (campagne methodology-trial — pivot candidats Étape 2+)
+Session : (prolongation post-Étape 1, brainstorm candidats outils utiles écosystème Claude Code)
+
+## Tâches complétées
+- **Pivot stratégique campagne methodology-trial** : virage des candidats "stress-tests généralisabilité" vers candidats "outillage AI/Claude Code utile au quotidien", après triple gain identifié (connaissance écosystème + outillage perso + signal d'audit méthodologique sous charge réelle)
+- **Modèle hybride 60/40 retenu** : 60% outils utiles haute densité signal, 40% stress-tests généralisabilité (préserver détection biais d'archétype)
+- **Vérification écosystème Claude Code** via subagent `claude-code-guide` : confirmation existence `/insights` (slash command native d'audit usage local, postérieure au cutoff cutoff feb 2025) + `/usage` (alias `/stats`) + `/team-onboarding`. À utiliser plus tard quand corpus de sessions de build sera riche (post-Étape 2 minimum).
+- **Décision de NE PAS lancer `/insights` maintenant** : signal trop pauvre actuellement (0 projet implémenté), risque de procrastination méthodologique déguisée
+- **Brainstorm candidats Étape 2+ via interview ciblée** :
+  - `gh-prs-tracker` ❌ écarté : pas de PRs réelles côté Greg (repos solo), outil mort-né
+  - `ai-models-watcher` 🟡 reculé en candidat 4 : pertinent mais ROI modeste (changelogs Anthropic existent), fréquence d'usage faible
+  - `prompt-companion` (NotebookLM helper) 🟡 reculé en candidat 3 : couvre pain points B (sélection prompts) + D (suivi qualité jamais fait), basé sur repo public `notebooklm-prompts` existant
+  - `skill-eval-runner` ✅ **promu candidat 2** : pain point chiffré (~3h36/cycle 3 skills), proposal mature pré-existante (avril 2026), archétype radicalement opposé à memory-grep (subprocess + LLM-as-judge + parsing dynamique sortie `claude -p`), stress-test fort `/prd` `/claude-md` (5 trous explicites à combler)
+- **Décision pivot candidat 2** : prompt-companion → skill-eval-runner
+
+## En cours
+- Rien (décision pivot prise, attente reprise Étape 1 implémentation memory-grep)
+
+## Prochaines étapes
+1. **Étape 1 finalisation memory-grep — non négociable avant tout pivot** : Phase 1a implémentation (uv init + structure memgrep/ + CLI Typer minimal + smoke test) — session ultérieure dédiée côté memory-grep. Anti-procrastination méthodologique.
+2. (Optionnel) Phase 1b memory-grep (frontmatter parsing) si appétit
+3. **Préparation pré-`/prd` skill-eval-runner** :
+   - Première tâche d'observation : lancer `claude -p "drill me on Python list comprehensions"` (ou prompt équivalent dp-coach) → observer sortie brute → décider stratégie détection triggering. **Ne pas lancer `/prd` avant.**
+   - Corriger pitch existant sur 3 points : (a) supprimer "Stack imposée" → référence CLAUDE.md memory-grep + délibération via `/prd` Phase 2, (b) corriger volumétrie ~3h36/cycle (pas ~9h, post-abandon track workflow-skills), (c) trancher Cruft vs uv init manuel
+4. Étape 2 implémentation : `skill-eval-runner` (`/prd` → `/claude-md` → implémentation, audit A→B→A si appétit)
+5. Étape 3 candidate : `prompt-companion` (NotebookLM helper) — archétype I/O réseau + état + clipboard + interview interactive, pain points B + D
+6. Étape 4 candidate : `ai-models-watcher` ou pivot selon évolution
+7. Étape 5 (recommandé) : projet stress-test généralisabilité hors-archétype Python CLI single-user (Go/Rust ou service longue durée API multi-component)
+8. **Audit cross-CLAUDE.md** (action correctrice friction #1 du 2026-04-28) : grep `.claudeignore` + `gitignore.*aware` sur tous les CLAUDE.md du repo
+9. **`/immunize` à la prochaine passe** : inbox 6 entrées (3 du 2026-04-27 + 3 du 2026-04-28) — surveiller récurrence
+
+## Décisions prises
+- **Pivot candidat 2 : prompt-companion → skill-eval-runner** justifié par :
+  - Pain point chiffré récurrent (cycle validation skills, ~3h36/run de re-test) vs pain ressenti diffus (suivi qualité NotebookLM optionnel)
+  - Cadrage plus mature (proposal pré-existante avec 5 trous explicites identifiés vs esquisse en session)
+  - Archétype technique radicalement opposé à memory-grep (subprocess + LLM-as-judge + parsing dynamique vs scan filesystem statique read-only) → 6+ axes opposés
+  - Stress-test plus fort `/prd` `/claude-md` (recursivité méta : eval-runner = outil qui teste des outils, expose Phases 4/7/10/11 sous angles inédits)
+  - Synergie boucle vertueuse (outil qui améliore ta capacité à construire d'autres outils)
+- **prompt-companion conservé candidat 3** : NotebookLM helper reste pertinent (pain point B + D réels, dogfooding 3-5×/semaine si NotebookLM utilisé), mais second à skill-eval-runner sur critères ROI mesuré + maturité cadrage
+- **`gh-prs-tracker` définitivement abandonné** : signal pain point absent (Greg n'a pas de PRs en attente, repos solo), outil mort-né si construit
+- **Modèle hybride 60/40** : éviter pivot 100% "outils Claude Code" qui créerait biais d'archétype invalidant la généralisabilité de la doctrine. Au moins 1 projet doit rester stress-test pur (non-Python ou multi-component longue durée).
+- **Ordre d'exécution non négociable** : Phase 1a memory-grep AVANT toute préparation skill-eval-runner. Pas de "menu menu menu jamais cuisiner".
+
+## Blocages
+Aucun
+
+---
+
+## Dernière mise à jour
 Date : 2026-04-28 (campagne methodology-trial — Étape 1 CLAUDE.md ✅ + audit méthodologique)
 Session : (catchup post-/clear, prolongée /claude-md memory-grep accompagné session A→B→A)
 
