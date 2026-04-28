@@ -9,7 +9,8 @@
       "Edit(**/.env.*)",
       "Write(**/.env)",
       "Write(**/.env.*)"
-    ]
+    ],
+    "defaultMode": "default"
   },
   "model": "Opus",
   "hooks": {
