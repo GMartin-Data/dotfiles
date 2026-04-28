@@ -64,5 +64,6 @@
   "github.copilot.nextEditSuggestions.enabled": true,
   // Gemini Code Assist - autocomplétion désactivée, Cloud Code reste actif
   "geminicodeassist.inlineCompletion.enable": false,
-  "python.analysis.extraPaths": []
+  "python.analysis.extraPaths": [],
+  "terminal.integrated.mouseWheelScrollSensitivity": 3
 }
