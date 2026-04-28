@@ -1,4 +1,45 @@
 ## Dernière mise à jour
+Date : 2026-04-28 (campagne methodology-trial — Étape 1 CLAUDE.md ✅ + audit méthodologique)
+Session : (catchup post-/clear, prolongée /claude-md memory-grep accompagné session A→B→A)
+
+## Tâches complétées
+- **Étape 1 — CLAUDE.md `memory-grep` produit** (côté ~/projects/memory-grep, hors dotfiles) :
+  - 219 lignes, 13 sections (For AI — Read first / Session protocols / Filesystem Access, Stack, Project layout, Code conventions, Testing, Versioning, Languages, CI/CD, Out of scope, Constraints, Common commands)
+  - Anglais strict (sauf zones FR explicites listées)
+  - Commit baseline f3d4f38 `docs: initial CLAUDE.md and progress checkpoint` (CLAUDE.md + progress.md ensemble, PRD.md déjà committé séparément)
+- **Audit méthodologique `/claude-md` accompagné en mode A→B→A** :
+  - Fichier d'audit complet : `~/claude-audit-notes/methodology-trial-claude-md-memory-grep.md`
+  - 11 phases d'interview auditées phase par phase
+  - Bilan : 3 frictions critiques + 6 patterns positifs + 1 friction protocole méta
+- **3 frictions critiques capturées dans `tasks/lessons-inbox.md`** :
+  1. `.claudeignore` est une fiction + Read/Glob/Grep ne respectent pas `.gitignore` (CRITIQUE — implications cross-CLAUDE.md)
+  2. Pré-flight `/claude-md` ne lit pas `MEMORY.md` projet/dotfiles (gap doctrinal)
+  3. Conventions figées non appliquées comme contraintes dures cross-phases (2 occurrences même session)
+
+## En cours
+- Rien (Étape 1 entièrement close, pause avant Étape 2)
+
+## Prochaines étapes
+1. Étape 1 — finalisation memory-grep : Phase 1a implémentation (uv init + structure memgrep/ + CLI Typer minimal + smoke test) — session ultérieure dédiée côté memory-grep
+2. **Audit cross-CLAUDE.md** : grep `.claudeignore` + `gitignore.*aware` sur tous les CLAUDE.md du repo dotfiles + projets externes connus (action correctrice friction #1)
+3. **`/immunize` à la prochaine passe** : 3 nouvelles entrées 2026-04-28 dans inbox + 3 entrées 2026-04-27 préexistantes (6 total) — surveiller récurrence pour promotion vers `## Global Do NOT`. Pattern "conventions figées" déjà à 2 occurrences dans la même session = signal fort.
+4. Étape 2 — Ingestion API : choisir parmi `gh-prs-tracker`, `anthropic-models-watcher`, `dataset-gouv-fetcher`
+5. Étape 3 — Webscraping : `hn-watch` ou `arxiv-skim`
+6. Étape 4 (optionnelle) — stack hors-Python pour stresser la généralisabilité
+
+## Décisions prises
+- **Protocole d'audit A→B→A pour `/claude-md`** validé sur memory-grep : 11 phases auditées en parallèle de l'exécution, friction protocole révélée (A invisible aux actions hors-interview de B → faux positifs possibles sur "inférences non sourcées"). Action correctrice : A demande confirmation avant flagger.
+- **Capture audit dans `~/claude-audit-notes/`** (réutilisation convention existante pour audit dotfiles) plutôt que création d'un nouveau dossier
+- **Granularité fine pour lessons-inbox** : 3 entrées séparées plutôt qu'une fusionnée — cohérent avec pratique précédente, `/immunize` fusionnera si pattern récurrent
+- **Patterns positifs (6) NON ajoutés à lessons-inbox** : restent dans le fichier d'audit comme matériau pour enrichissement futur de la doctrine `/claude-md`. Lessons-inbox = règles à promouvoir, pas réservoir de bonnes pratiques.
+- **Commit baseline avec scope vide** (`docs:` au lieu de `docs(claude-md):`) : refus du scope inventé, respect strict de la liste des 8 scopes figés en Phase 5.1 du CLAUDE.md memory-grep
+
+## Blocages
+Aucun
+
+---
+
+## Dernière mise à jour
 Date : 2026-04-27 (campagne methodology-trial — Étape 1 PRD ✅ + /immunize)
 Session : (catchup post-/clear, prolongée audit→methodology-trial)
 
