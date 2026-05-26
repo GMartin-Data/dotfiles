@@ -15,6 +15,11 @@
 - Lessons learned accumulate in tasks/lessons-inbox.md (via /immunize)
 - One concept at a time — validate before moving to next step
 
+## State Verification (pre-flight before claiming)
+- Before asserting any fact about repo state (git log, file contents, config schema, command/tool existence, external API), run the verifying command first (`git log`, `Read`, `grep`, web search) and quote the result
+- Never describe state from memory or inference — if you can't verify, say "I don't know" instead of guessing
+- Applies especially to: git state ("how many commits?", "what's on this branch?"), file contents ("does X mention Y?"), pyproject/config schemas, existence of slash commands/tools/MCP servers, GCP/cloud metrics availability
+
 ## Global Do NOT
 - Ne jamais formuler une étape opérationnelle dans une phrase parenthétique ou secondaire — toujours la mettre en paragraphe propre avec numérotation ou gras. Le modèle (Sonnet ou Opus) zappe systématiquement les étapes imbriquées dans une typographie de second plan. (learned 2026-04, from dotfiles)
 - Quand une spec prescrit un découpage (une question à la fois, critères binaires, comportement vs implémentation, livrables vs polish), ne jamais fusionner les catégories sous prétexte d'efficacité — séquencer à la place. Le modèle écrase systématiquement ces frontières quand l'UX semble appeler un raccourci. (learned 2026-04, from memory-grep)

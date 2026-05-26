@@ -78,3 +78,12 @@ Pattern transversal : les conventions figées en début/milieu d'interview sont 
 Mitigation doctrinale : `/claude-md` doit, à chaque phase et au moment de la rédaction finale, vérifier que les nouvelles décisions/formulations ne contredisent pas les phases déjà figées. Si conflit détecté → flagger explicitement et proposer redressement, pas accepter passivement.
 
 Source : memory-grep CLAUDE.md commit f3d4f38, audit `~/claude-audit-notes/methodology-trial-claude-md-memory-grep.md`.
+
+---
+
+## [INSIGHTS 2026-05-26] pre-flight-state-verification
+
+- **Problème observé** : hallucinations récurrentes d'état (git, pyproject config, métriques GCP, existence de `/insights`) forçant l'utilisateur à fact-checker derrière Claude — pattern de friction #2 du rapport `/insights` du 2026-05-26.
+- **Action engagée** : ajout d'une section `## State Verification (pre-flight before claiming)` dans `~/.claude/CLAUDE.md` (chemin réel : `~/dotfiles/claude/CLAUDE.md`) imposant la vérification via tool call avant toute affirmation factuelle sur l'état du repo, du système ou de l'écosystème.
+- **Critère de succès vérifiable** : au prochain `/insights` (2026-06-26), la catégorie de friction « Hallucinated state, configs, and command knowledge » doit (a) ne plus figurer dans les 3 catégories principales OU (b) avoir une baisse mesurable dans les exemples cités (moins de cas d'invention sur git/config/commandes).
+- **Date de revue** : 2026-06-26
