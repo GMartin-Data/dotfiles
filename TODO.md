@@ -12,12 +12,30 @@
 
 ---
 
-## Migrer PR template vers python-project-template
+## Migrer PR template vers python-project-template + créer skill `/pr`
 
-**Quoi :** `.github/pull_request_template.md` (anciennement dans `scaffolds/python-uv/`) doit vivre dans le repo Cookiecutter `GMartin-Data/python-project-template`, sous `{{ cookiecutter.project_slug }}/.github/`.
+**Quoi :**
+- (a) `.github/pull_request_template.md` (anciennement dans `scaffolds/python-uv/`) doit vivre dans le repo Cookiecutter `GMartin-Data/python-project-template`, sous `{{ cookiecutter.project_slug }}/.github/`
+- (b) skill `~/.claude/skills/pr/SKILL.md` pour les PR créées par Claude (qui n'utilisent pas le template GitHub natif via `gh pr create --body`)
 
-**Pourquoi :** un PR template relève du code-skeleton projet, pas des dotfiles AI. La doctrine "dotfiles = IA, template = code" impose cette migration.
+**Pourquoi :**
+- (a) un PR template relève du code-skeleton projet, pas des dotfiles AI — doctrine "dotfiles = IA, template = code"
+- (b) `gh pr create --body "..."` non-interactif ignore le template GitHub natif → besoin d'un mécanisme propre à Claude
 
-**Comment :** ouvrir une PR dans le template avec le contenu de `scaffolds/python-uv/.github/pull_request_template.md` (supprimé de dotfiles lors du retrait de `scaffolds/` — récupérable via `git show <commit>^:scaffolds/python-uv/.github/pull_request_template.md`).
+**Comment :**
+- (a) ouvrir une PR dans le template avec le contenu récupérable via `git show <commit>^:scaffolds/python-uv/.github/pull_request_template.md` (supprimé de dotfiles lors du retrait de `scaffolds/`)
+- (b) skill bloquée tant que la structure du template (ADR, TODOs agentiques, autres éléments workflow) n'est pas finalisée — voir audit workflow à venir
 
-**Réf :** audit dotfiles du 2026-04-18, Phase 1.
+**Réf :** audit dotfiles du 2026-04-18 Phase 1 (point a) ; session karpathy-inspired-guidelines du 2026-05-27 (point b).
+
+---
+
+## Audit "mettre de l'ordre" dans le workflow agentique
+
+**Quand :** une fois le workflow agentique formellement finalisé (PR template, ADR, skill `/pr` et autres éléments encore à arbitrer). Pas de date — c'est la stabilité qui déclenche, pas le calendrier.
+
+**Quoi :** inventaire factuel des intentions/conventions/TODOs à travers les ~11 lieux possibles (CLAUDE.md user/projet, progress.md, lessons-inbox, TODO.md, MEMORY.md, skills, hooks, rules, routines, agents, commands). Identifier redondances, contradictions, télescopages. Décider de règles d'aiguillage stables (où va quoi).
+
+**Pourquoi :** procéder par tâtonnements crée des décisions oubliées et des redécouvertes coûteuses. L'audit produit le repère stable nécessaire pour aiguiller les décisions futures sans réinventer à chaque fois.
+
+**Réf :** discussion session karpathy-inspired-guidelines du 2026-05-27.

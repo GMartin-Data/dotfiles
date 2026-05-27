@@ -12,7 +12,6 @@
 - Commits: Conventional Commits format (enforced by pre-commit)
 - Commit granularity: atomic per logical grouping (one purpose per commit, may span multiple files)
 - Branch workflow: default to feature/fix branch → PR → main for any complex project. Exemptions (commits direct on main) must be declared in the project's CLAUDE.md
-- PR creation: workflow under finalization — `/pr` skill to be added once template structure is decided (added 2026-05-27)
 
 ## Session Discipline
 - Before /clear or ending a session: invoke `/progress` to checkpoint current state and next steps
