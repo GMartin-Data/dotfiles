@@ -7,7 +7,12 @@
 ## Communication
 - Respond in user's language (default: French)
 - All code, comments, docstrings, commits: English
-- Commits: Conventional Commits format
+
+## Version Control
+- Commits: Conventional Commits format (enforced by pre-commit)
+- Commit granularity: atomic per logical grouping (one purpose per commit, may span multiple files)
+- Branch workflow: default to feature/fix branch → PR → main for any complex project. Exemptions (commits direct on main) must be declared in the project's CLAUDE.md
+- PR creation: workflow under finalization — `/pr` skill to be added once template structure is decided (added 2026-05-27)
 
 ## Session Discipline
 - Before /clear or ending a session: invoke `/progress` to checkpoint current state and next steps
@@ -39,6 +44,10 @@ Four principles applied in synergy across the coding cycle: clarify → simplify
 - **Goal-Driven Execution** — Convert every task into a verifiable success criterion before coding. Reject vague goals ("make it work", "more secure").
   **Why:** without a pass/fail criterion, there is no stopping condition → the task drifts and demands constant clarifications.
   **How to apply:** transform the request into a test or measurement ("add validation" → "write tests for invalid inputs, make them pass"). For multi-step tasks, plan with a verification criterion per step. (adopted 2026-05-27, from karpathy)
+
+- **Test-first (operational rule from Goal-Driven Execution)** — when a testable contract exists (function, API, module with assertable behavior), write the failing test → validate with user → make it pass. Skip for scripts, exploration, config, docs.
+  **Why:** test-first exposes Claude's interpretation as a short, readable artifact (the test) before any implementation — amplifies the human's ability to catch interpretation drift early, and gives a trivial pass/fail stopping condition. User remains test-after; this rule is specific to Claude as an agent.
+  **How to apply:** on any task with a testable contract, write the failing test first, surface it to the user for validation, then implement until green. For non-testable work (one-shot scripts, data exploration notebooks, YAML/TOML config, documentation), no test-first requirement. (adopted 2026-05-27, derived from karpathy-4)
 
 ## Global Do NOT
 - Never bury an operational step in a parenthetical or subordinate clause — always promote it to its own paragraph with numbering or bold. The model (Sonnet or Opus) systematically skips steps nested in second-tier typography. (learned 2026-04, from dotfiles)
