@@ -1,4 +1,48 @@
 ## Dernière mise à jour
+Date : 2026-05-27
+Session : 638ff394-772d-467a-8266-5a8553a65dac (karpathy-inspired-guidelines)
+
+## Tâches complétées
+- **Évaluation comparative Karpathy vs Shanraisshan** : analyse méticuleuse des deux repos, verdict — Karpathy comme boussole conceptuelle, Shanraisshan comme auditeur d'implémentation (rôles distincts, non concurrents)
+- **Présentation des 4 principes Karpathy** un par un avec exemples EXAMPLES.md : Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution
+- **Décision d'intégration** : 4 principes en synergie (pas extraction partielle), option A (section dans CLAUDE.md user), format D1 distillé, position L1 entre State Verification et Global Do NOT
+- **Uniformisation CLAUDE.md en anglais** : décision d'homogénéiser la langue (meilleur alignement training distribution modèle), traduction des 3 "Global Do NOT" existants avec relecture critique de chaque formulation
+- **Intégration Karpathy dans CLAUDE.md user** : section "Coding Discipline (Karpathy)" ajoutée, 4 principes annotés `adopted 2026-05-27`, commit `3ec0bfe` poussé
+- **Audit de conformité HumanLayer** : confrontation du CLAUDE.md résultant aux best practices humanlayer.dev — score 6/6, seule réserve actionnable = ligne 15 (état transitoire /pr skill)
+- **Ajout section "Version Control"** : 3 règles (conventional commits + pre-commit, atomic granularity, branch workflow + distinguo complexe vs perso), déménagement de la ligne Conventional Commits hors Communication, commit `1031427` poussé
+- **Ajout règle Test-first** dans Coding Discipline (Karpathy) : règle opérationnelle dérivée de Goal-Driven Execution, spécifique à Claude en tant qu'agent (user reste test-after), périmètre d'exemption explicité (scripts, exploration, config, docs), commit `1031427` poussé
+- **Retrait ligne /pr "workflow under finalization"** du CLAUDE.md user (anti-pattern HumanLayer : état transitoire consomme attention permanente)
+- **TODO.md enrichi** : enrichissement (β) entrée "Migrer PR template" pour couvrir aussi la skill `/pr` + ajout nouvelle entrée "Audit mettre de l'ordre dans le workflow agentique" avec condition de déclenchement (stabilité workflow, pas date), commit `70ef137` poussé
+
+## En cours
+- Rien — session clôturée proprement
+
+## Prochaines étapes
+1. **Finaliser le workflow agentique** (PR template, ADR, éléments workflow CLI à arbitrer) — condition de déclenchement pour l'audit TODO
+2. **Créer skill `/pr`** une fois les 3 questions structurantes tranchées (où vivent ADR, quels artefacts en PR, template fixe vs modulaire) — cf. TODO.md entrée "Migrer PR template + skill /pr"
+3. **Reprendre methodology-trial** : Phase 1a implémentation memory-grep (priorité non négociable avant Étape 2) — cf. progress.md entrée 2026-04-28
+4. **Audit workflow agentique** après finalisation — cf. TODO.md entrée "Audit mettre de l'ordre"
+5. **`/immunize`** à la prochaine passe (inbox en attente)
+
+## Écarts vs PRD
+Aucun (pas de PRD.md dans ce repo)
+
+## Décisions prises
+- Karpathy comme boussole conceptuelle (4 principes en synergie), Shanraisshan comme auditeur d'implémentation — rôles distincts
+- CLAUDE.md user uniformisé en anglais (format natif modèle, meilleur alignement)
+- Section "Coding Discipline (Karpathy)" : option A (dans CLAUDE.md), format D1 distillé, position L1
+- Règle Test-first spécifique à Claude agent (user reste test-after) : option A (ligne dans CLAUDE.md user, dérivée de Karpathy 4)
+- Section "Version Control" en position L1 (entre Communication et Session Discipline)
+- Politique de tests : scope projet uniquement (Karpathy 4 couvre l'universel)
+- Report skill `/pr` : workflow pas encore finalisé, créer la skill avant stabilisation ancrerait les décisions provisoires — audit post-finalisation
+- TODO.md : fusion β (entrée PR template + skill `/pr` sous un item) + entrée audit séparée
+
+## Blocages
+Aucun
+
+---
+
+## Dernière mise à jour
 Date : 2026-04-28 (campagne methodology-trial — pivot candidats Étape 2+)
 Session : (prolongation post-Étape 1, brainstorm candidats outils utiles écosystème Claude Code)
 
