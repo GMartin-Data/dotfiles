@@ -62,6 +62,9 @@
     "GitHub.copilot-chat"
   ],
   "github.copilot.nextEditSuggestions.enabled": true,
+  // Copilot - logs de diagnostic (Agent Debug Logs + /troubleshoot)
+  "github.copilot.chat.agentDebugLog.fileLogging.enabled": true,
+  "github.copilot.chat.fileLogging.enabled": true,
   // Gemini Code Assist - autocomplétion désactivée, Cloud Code reste actif
   "geminicodeassist.inlineCompletion.enable": false,
   "python.analysis.extraPaths": [],
