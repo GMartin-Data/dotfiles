@@ -117,8 +117,8 @@ Jamais l'inverse (amender un document sans ADR justificatif = perte de traçabil
 
 - `/prd` produit un PRD allégé (8 sections : Problem, Goals, Non-goals, Users & scenarios, Acceptance criteria, Constraints, Open questions, Hors-cible). Pas de stack, pas d'archi, pas de phases d'impl.
 - `/claude-md` reste seule source de vérité stack et conventions.
-- `/planning` (à créer, ne pas nommer `/plan` — collision avec built-in Claude Code) produit PLAN.md à partir de PRD + CLAUDE.md.
-- `/adr` (à créer) produit un ADR atomique par invocation.
+- `/planning` (nommée ainsi, pas `/plan` — collision avec built-in Claude Code) produit PLAN.md à partir de PRD + CLAUDE.md.
+- `/adr` produit un ADR atomique par invocation.
 - `/progress` et `/catchup` restent les outils de session, sans changement structurel.
 
 ---
