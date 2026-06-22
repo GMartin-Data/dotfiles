@@ -26,20 +26,30 @@ Session : 73071d5c-aa41-4162-ab7f-9a05242b3df4 (adr-workflow-refonte)
   setup-eval-cwd.sh alignée (Périmètre cible / Hors-cible) ; nouvel eval
   `interview-mvp-tiers-vocabulary` (classe `vocabulary`) couvrant le contrat
   palier MVP. Commits `8c3b66b` + `ef02125`
+- **README d'eval pour `/adr` et `/planning`** créés (calqués sur
+  prd/evals/README.md, adaptés au comportement réel de chaque command :
+  modes/supersession/immutabilité pour /adr ; gate semi-frozen / classe
+  vocabulary / model opus pour /planning). Les deux flaggés "écrit, non
+  exécuté". Commit `3aac2ed`
 
 ## En cours
-- Rien — 9 commits atomiques sur main, working tree propre (seul
+- Rien — 11 commits atomiques sur main, working tree propre (seul
   `docs/rpi-audit-findings.md` reste untracked, exclu volontairement)
 
 ## Prochaines étapes
-1. **Exécuter les evals `/adr` (7) et `/planning` (5, dont le nouveau
-   vocabulary)** via protocole A→B→A — nécessite sessions B vierges + humain
-   comme canal. Les commandes sont spécifiées et le corpus est à jour, mais
-   aucun run n'a été exécuté.
-2. **README d'eval pour `/adr` et `/planning`** (doctrine + protocole + état du
-   corpus). Absent pour les deux — calquer sur prd/evals/README.md.
-3. **Amender `planning.md` si un run A→B→A révèle un gap** sur le vocabulaire
-   MVP — le nouvel eval est le juge.
+1. **[CAMPAGNE DÉDIÉE — session A neuve] Exécuter les evals `/adr` (7) et
+   `/planning` (5)** via protocole A→B→A. ⚠️ GOURMAND EN CONTEXTE : A doit
+   ingérer 12 transcriptions opus intégrales → une campagne complète sature une
+   session A (le README /prd estime déjà 30-40 % pour 3 evals). NE PAS lancer en
+   fin de session — démarrer A à 0 %. Découper en deux vagues (adr 7, puis
+   planning 5), checkpoint + /clear entre les deux. Protocole détaillé dans les
+   README d'eval de chaque command.
+2. **Amender `planning.md` / `adr.md` si un run A→B→A révèle un gap** — les evals
+   sont le juge (le vocabulaire MVP de /planning est le plus fragile, jamais
+   éprouvé).
+3. **README d'eval racine / index** (optionnel) : `/prd` `/claude-md` ont un
+   tableau "État du corpus" ; envisager un index unique des 4 corpus si la
+   duplication devient gênante.
 4. Reliquat sessions précédentes : methodology-trial Phase 1a memory-grep ;
    `/immunize` inbox.
 
