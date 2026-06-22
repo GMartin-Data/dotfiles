@@ -182,19 +182,13 @@ Valider. Ne poser la question ouverte originale que si la proposition est rejet�
 
 Proposer une architecture haut niveau basée sur les réponses précédentes. Valider.
 
-### Phase 11 — Phases d'implémentation
-
-"Comment découper ça en phases ?"
-
-Proposer 2-3 phases avec livrables clairs. Chaque phase doit être indépendamment valorisable.
-
-### Phase 12 — Risques
+### Phase 11 — Risques
 
 "Quels sont les principaux risques ?"
 
 Proposer 2-3 risques basés sur le contexte. Demander des stratégies de mitigation ou les proposer.
 
-### Phase 13 — Critères de succès
+### Phase 12 — Critères de succès
 
 "Comment savoir que v1 est terminé ?"
 
@@ -240,9 +234,8 @@ Attendre validation.
 ```
 Validation bloc 3/3 — Exécution
 
-8. Phases : [nombre] phases
-9. Risques : [nombre] identifiés
-10. Critère de succès : [résumé]
+8. Risques : [nombre] identifiés
+9. Critère de succès : [résumé]
 
 Confirmes-tu ce bloc ? (oui / corrections)
 ```
@@ -306,18 +299,6 @@ Générer le PRD avec les sections ci-dessous. Si une phase a été skippée, **
 ## Architecture technique
 [Uniquement si Phase 10 a été exécutée : architecture haut niveau, interactions composants]
 
-## Phases d'implémentation
-
-### Phase 1 : [Nom]
-**Objectif :** [But]
-**Livrables :**
-- ✅ Livrable A
-- ✅ Livrable B
-**Validation :** [Comment savoir que la phase est terminée]
-
-### Phase 2 : [Nom]
-...
-
 ## Risques & Mitigations
 | Risque | Impact | Mitigation |
 |--------|--------|------------|
@@ -338,4 +319,4 @@ Générer le PRD avec les sections ci-dessous. Si une phase a été skippée, **
 Après avoir créé le PRD :
 1. Confirmer le chemin du fichier
 2. Souligner les éventuelles hypothèses faites
-3. Suggérer les prochaines étapes immédiates (créer CLAUDE.md projet via `/claude-md`, revoir des sections, démarrer la Phase 1 d'implémentation, etc.)
+3. Suggérer les prochaines étapes immédiates (créer CLAUDE.md projet via `/claude-md`, produire le PLAN via `/planning`, revoir des sections, etc.)
