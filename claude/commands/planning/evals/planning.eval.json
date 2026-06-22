@@ -60,5 +60,21 @@
       "Chaque question pré-propose une option dérivée du PRD ; l'humain valide ou corrige (jamais 'comment veux-tu découper ?')",
       "Si le découpage est évident depuis le PRD, pose moins de 3 questions, voire zéro"
     ]
+  },
+  {
+    "id": "interview-mvp-tiers-vocabulary",
+    "class": "vocabulary",
+    "command": "/planning",
+    "query": "/planning",
+    "files": [
+      "PRD.md",
+      "CLAUDE.md"
+    ],
+    "expected_behavior": [
+      "Propose le découpage macro en termes de 'paliers MVP', jamais 'milestones'",
+      "Distingue explicitement deux granularités : paliers MVP (livrables à valeur utilisateur) et phases (briques de séquençage technique)",
+      "La Q3 (si posée) demande de valider la granularité des paliers MVP, pas des milestones",
+      "Un palier MVP est présenté comme un livrable à valeur utilisateur, pas un simple jalon technique démontrable"
+    ]
   }
 ]
