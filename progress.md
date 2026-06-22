@@ -1,4 +1,47 @@
 ## Dernière mise à jour
+Date : 2026-06-22 11:20
+Session : 42307f88-526d-4e04-b0a1-d834575ee902 (enhance-workflow)
+
+## Tâches complétées
+- **Matrice de responsabilité documentaire déplacée vers emplacement canonique** : `docs/responsability-matrix.md` (vide, mal placé, mal orthographié) → `docs/methodology/responsibility-matrix.md`. Cohérence vérifiée avec CLAUDE.md + planning.md + auto-référence de la matrice. Commit `8c03a2e`
+- **Convention ADR ajoutée** (`docs/methodology/conventions/adr.md`) : satellite de la matrice — immuabilité corps / mutabilité statut, 5 relations inter-ADR, numérotation. Commit `7e48387`
+- **Section "Documentary Methodology" reformulée** dans claude/CLAUDE.md : la matrice est référence conceptuelle (pas Read runtime obligatoire) ; lecture runtime seulement au replanning Phase 3. Commit `2c9ddfe`
+- **Commande `/planning` créée et rendue invocable** (symlink runtime manquant ajouté). Commit `10504d5`
+- **`/prd` refactorée** : découpage en phases retiré du PRD (migré vers /planning), renumérotation Risques/Critères. Commit `4a851e9`
+- **Commande `/adr` créée** (option 2 : création + supersession bidirectionnelle ; mode argument `--from-context` ; aucune trace de source dans l'artefact) + corpus 7 evals. Test-first respecté (evals validés avant code). Commit `fce314a`
+- **Corpus 4 evals `/planning`** (bootstrap minimal, doctrine d'émergence) : gate, pré-flight PRD-absent/nominal, interview_cap. Commit `7de32b5`
+- **Exemption direct-sur-main déclarée** : `~/dotfiles/CLAUDE.md` créé (manquait), désambiguïsé du payload `claude/CLAUDE.md`. Commit `1fab091`
+
+## En cours
+- Rien — 8 commits atomiques sur main, working tree propre (seul `docs/rpi-audit-findings.md` reste untracked, exclu volontairement)
+
+## Prochaines étapes
+1. **[CHANTIER DÉDIÉ — session vierge] Refonte conceptuelle PRD = produit cible** (et non PRD=v1). Décision de fond prise cette session, NON encore implémentée. ORDRE IMPOSÉ par la méthodo : (a) écrire un ADR actant le passage PRD=v1 → PRD=cible + conséquences sur le `frozen` et le découpage ; (b) SEULEMENT ensuite amender prd.md (~10 occurrences "v1") + matrice. Premier vrai cas d'usage de `/adr`.
+2. **Exécuter les evals `/adr` (7) et `/planning` (4)** via protocole A→B→A — nécessite sessions B vierges + humain comme canal. Les deux commandes sont écrites/spécifiées mais PAS exécutées contre leur corpus.
+3. **README d'eval pour `/adr` et `/planning`** (calqué sur prd/evals/README.md : doctrine + protocole + état du corpus). Absent pour les deux.
+4. **Combler le trou v1→v2 dans la matrice** — sera traité par la refonte (étape 1) ou ratifié séparément.
+5. Reliquat session précédente : methodology-trial Phase 1a memory-grep ; `/immunize` inbox.
+
+## Écarts vs PRD
+Aucun (pas de PRD.md dans ce repo)
+
+## Décisions prises
+- **Matrice : emplacement canonique** `docs/methodology/responsibility-matrix.md` (sous-dossier methodology/ + orthographe responsi-bility)
+- **Rôle de la matrice** : référence conceptuelle dont les commandes dérivent leurs règles (prompts autonomes), PAS un Read runtime obligatoire ; Read seulement au replanning Phase 3
+- **`/adr` périmètre** : option 2 (création + supersession bidirectionnelle), PAS option 3 (cycle complet) — le trivial (Status Accepted/Deprecated) reste manuel ; Simplicity First
+- **`/adr` mode selon source** : argument explicite `--from-context` (déterminisme > détection floue), PAS auto-détection
+- **`/adr` trace de source** : AUCUNE dans l'artefact (overlap avec git blame ; donnée fausse-par-construction si co-décision ; zone immuable)
+- **Workflow dotfiles** : exemption direct-sur-main inconditionnelle (mono-user, pas de CI ; garde-fou = rituel evals, pas topologie git) — option 1, déterminisme
+- **Evals = mécanisme de test des slash-commands** (Evaluation-Driven Development, Anthropic) : contrat comportemental observable, protocole A→B→A. C'est l'équivalent test-first pour un artefact-prompt
+- **`/planning` bootstrap 4 evals** : protéger le fragile (interview_cap, attesté fragile par lesson one-question-at-a-time), pas l'important-mais-blindé (scope_guard, doublement défendu dans le prompt) — doctrine d'émergence
+- **DÉCISION DE FOND (à instruire par ADR avant implémentation) : PRD = produit cible, MVP = itérations successives.** Colle au réel (client exprime besoin → PRD interprète → MVP raisonnables planifiés). Conséquences à peser : déstabilise le `frozen` du PRD, repose la question du document-par-itération.
+
+## Blocages
+Aucun. Note : la refonte PRD=cible (étape 1) est volontairement différée en session dédiée — pas un blocage, un séquençage discipliné (un concept à la fois).
+
+---
+
+## Dernière mise à jour
 Date : 2026-05-27
 Session : 638ff394-772d-467a-8266-5a8553a65dac (karpathy-inspired-guidelines)
 
