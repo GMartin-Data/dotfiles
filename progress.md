@@ -1,4 +1,78 @@
 ## Dernière mise à jour
+Date : 2026-06-22 15:45
+Session : 73071d5c-aa41-4162-ab7f-9a05242b3df4 (adr-workflow-refonte)
+
+## Tâches complétées
+- **ADR-0001 créé et acté** (`adr/0001-prd-produit-cible.md`, Accepted) : PRD =
+  produit cible, frozen = baseline versionnée révisable par ADR. Premier usage réel
+  de `/adr`. Commit `91396bc`
+- **`/prd` aligné sur ADR-0001** : ~8 occurrences "v1" → "cible", "frozen" →
+  "baseline", "Évolutions futures (v2+)" → "Au-delà de la cible", frontière
+  PRD↔/planning matérialisée dans le template. Commit `6ec98a3`
+- **Matrice alignée sur ADR-0001** : ligne PRD (frozen→baseline, out-of-scope v1
+  →hors-cible, ajout "découpage MVP/itérations" dans "Ne contient JAMAIS"),
+  règle 5 + Phase 0 reformulées. Commit `94b174f`
+- **ADR-0002 créé et acté** (`adr/0002-mvp-palier-dans-plan.md`, Accepted,
+  Extends ADR-0001) : MVP = palier de valeur nommé dans le PLAN (modèle C —
+  PLAN unique, deux granularités : palier MVP + phase). Commit `3adf29d`
+- **Matrice : frontière MVP positive** ajoutée (sous-section "Où vivent les MVP",
+  ligne PLAN mise à jour avec les deux granularités, lien ADR-0002). Mentions
+  "/planning à créer" et "/adr à créer" corrigées (les deux existent). Commits
+  `2522e3d` + `a35b83b`
+- **`/planning` aligné sur ADR-0002** : "milestone" → "palier MVP" partout
+  (intro, règles, Q3, synthèse, template), lien ADR-0002, résidu "v1" corrigé
+  dans le pré-flight PRD. Commit `a32a06f`
+- **Evals `/planning` : drift corrigé + coverage ADR-0002** : fixture PRD du
+  setup-eval-cwd.sh alignée (Périmètre cible / Hors-cible) ; nouvel eval
+  `interview-mvp-tiers-vocabulary` (classe `vocabulary`) couvrant le contrat
+  palier MVP. Commits `8c3b66b` + `ef02125`
+
+## En cours
+- Rien — 9 commits atomiques sur main, working tree propre (seul
+  `docs/rpi-audit-findings.md` reste untracked, exclu volontairement)
+
+## Prochaines étapes
+1. **Exécuter les evals `/adr` (7) et `/planning` (5, dont le nouveau
+   vocabulary)** via protocole A→B→A — nécessite sessions B vierges + humain
+   comme canal. Les commandes sont spécifiées et le corpus est à jour, mais
+   aucun run n'a été exécuté.
+2. **README d'eval pour `/adr` et `/planning`** (doctrine + protocole + état du
+   corpus). Absent pour les deux — calquer sur prd/evals/README.md.
+3. **Amender `planning.md` si un run A→B→A révèle un gap** sur le vocabulaire
+   MVP — le nouvel eval est le juge.
+4. Reliquat sessions précédentes : methodology-trial Phase 1a memory-grep ;
+   `/immunize` inbox.
+
+## Écarts vs PRD
+Aucun (pas de PRD.md dans ce repo)
+
+## Décisions prises
+- **ADR-0001 : PRD = produit cible, frozen = baseline versionnée** (pas immuable
+  au sens ADR) : révision via ADR si la cible change, édition silencieuse
+  interdite. Frozen ≠ immuable : gelé contre la dérive non-tracée, pas contre
+  le changement légitime.
+- **ADR-0002 : MVP = palier de valeur dans le PLAN (modèle C)** : PLAN unique,
+  deux granularités ("palier MVP" = livrable à valeur utilisateur ; "phase" =
+  brique technique). Rejet de A (conflation milestone/MVP) et B (multi-PLAN).
+  Porte de sortie vers B via futur ADR de supersession si un projet réel l'exige.
+- **ADR-0002 relation : Extends ADR-0001** (étend sans contredire ; ADR-0001
+  reste Accepted intouché — ce n'est pas une supersession).
+- **"frozen" redéfini comme baseline** : la matrice, /prd et /planning utilisent
+  maintenant "baseline révisable par ADR" au lieu de "frozen" ou "gelé" — levée
+  de l'ambiguïté immuable vs versionnée.
+- **Classe d'eval `vocabulary` créée** pour /planning : teste le vocabulaire
+  produit (palier MVP vs milestone), distinct de `interview_cap` (qui teste le
+  plafond de questions). Doctrine d'émergence respectée — classe née d'un besoin
+  réel (ADR-0002), pas par anticipation.
+- **Ordre canonique de replanning respecté à chaque étape** : ADR → document
+  cible → outil → eval. Deux chaînes complètes dans la session.
+
+## Blocages
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-22 11:20
 Session : 42307f88-526d-4e04-b0a1-d834575ee902 (enhance-workflow)
 
