@@ -19,6 +19,12 @@
 - Lessons learned accumulate in tasks/lessons-inbox.md (via /immunize)
 - One concept at a time — validate before moving to next step
 
+## Documentary Methodology
+- Single source of truth for documentary governance (which document holds what, non-overlap rules, write cycles by project phase): `~/dotfiles/docs/methodology/responsibility-matrix.md`
+- Commands embed their own scope rules (autonomous prompts). The matrix is the reference those rules derive from — keep duplicated rules in sync with it; do not let them drift.
+- Read the matrix at runtime only at replanning decision points (Phase 3): when a drift or inflection must be routed to the right document (PLAN vs CLAUDE.md vs PRD vs ADR).
+- Project-specific deviations (lightweight ADRs for exploratory projects, direct-commit exemptions) belong in the project's CLAUDE.md, not here.
+
 ## State Verification (pre-flight before claiming)
 - Before asserting any fact about repo state (git log, file contents, config schema, command/tool existence, external API), run the verifying command first (`git log`, `Read`, `grep`, web search) and quote the result
 - Never describe state from memory or inference — if you can't verify, say "I don't know" instead of guessing
