@@ -1,4 +1,51 @@
 ## Dernière mise à jour
+Date : 2026-06-22 16:30
+Session : 73071d5c-aa41-4162-ab7f-9a05242b3df4 (fix hook block-rm-rf)
+
+## Tâches complétées
+- **Fix `claude/hooks/block-rm-rf.sh`** : le hook bloquait des commandes non-`rm`
+  (`cp -r`, `ls -lr`, `sort -r`, `grep --recursive`, `echo "rm -rf"`...).
+  - **Cause racine** : le scope `if: "Bash(rm *)"` est best-effort et FAIL-OPEN
+    (doc Claude Code) — Claude Code lance le hook sur les commandes composites
+    (pipes, `&&`, `$()`, assignations en tête) dès qu'il ne peut PAS prouver
+    qu'elles ne sont pas `rm`. Le commentaire du hook (« scoped, pas besoin de
+    re-vérifier que c'est un rm ») reposait sur une prémisse fausse.
+  - **Cause aggravante** : l'ancien regex scannait la commande ENTIÈRE → matchait
+    tout flag `r/R/f` de n'importe quelle commande + les chaînes littérales
+    `--force`/`--recursive`/`rm -rf` (contenu d'arguments grep/echo).
+  - **Correctif** : le hook re-vérifie qu'un mot-commande `rm` est présent (split
+    sur séparateurs shell + `$()`, repère `rm`/`*/rm` après `VAR=val` et lanceurs
+    sudo/xargs/...), et n'analyse que les tokens APRÈS `rm`. `settings.json`
+    laissé intact (le `if:` reste un pré-filtre best-effort ; la robustesse vit
+    dans le hook). Commit `4104c0b`
+  - **Validé 35/35** sur le hook réel (entrée JSON stdin) : toutes les formes
+    destructrices restent bloquées (`rm -rf`/`-Rf`/`--force`, `sudo`/`xargs`/`$()`
+    rm -rf) ; tous les faux positifs passent (`cp -r`, `ls -lr`, `grep -rf`,
+    `rmdir`, `rm.bak`).
+
+## En cours
+- Rien — fix committé (`4104c0b`), working tree propre (seul
+  `docs/rpi-audit-findings.md` reste untracked).
+
+## Prochaines étapes
+- Reprise du fil principal : voir checkpoint `adr-workflow-refonte` ci-dessous
+  (campagne evals A→B→A en session dédiée, etc.).
+
+## Décisions prises
+- **Re-vérifier `rm` dans le hook plutôt que durcir le `if:`** : le `if:` étant
+  fail-open par conception, on ne peut pas s'y fier comme garde ; le resserrer
+  n'apporterait aucune garantie. La robustesse appartient au hook (la doc
+  recommande « the script does its own validation »). Ne pas cumuler les deux.
+- **Scope des cas-limites** : `xargs rm -rf` / `sudo rm -rf` → bloqués (rm réel) ;
+  `rmdir` / `rm.bak` / `grep -rf` → passent (`rm` n'est pas le mot-commande, ou
+  `-rf` n'appartient pas à `rm`).
+
+## Blocages
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-22 15:45
 Session : 73071d5c-aa41-4162-ab7f-9a05242b3df4 (adr-workflow-refonte)
 
