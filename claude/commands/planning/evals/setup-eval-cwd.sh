@@ -47,9 +47,9 @@ expose un flux trié par date via une petite API + une vue web.
 - En tant qu'utilisateur, je veux consulter le flux trié par date, afin de voir
   les nouveautés en premier.
 
-## Périmètre v1
-| Inclus | Exclu (v2+) |
-|--------|-------------|
+## Périmètre cible
+| Dans la cible | Hors-cible |
+|---------------|------------|
 | Ingestion RSS + GitHub | Newsletters par email |
 | Déduplication par hash de contenu | Dédup sémantique (embeddings) |
 | API REST de lecture | Authentification multi-utilisateur |
@@ -68,7 +68,7 @@ write_claude_md() {
 
 ## Stack
 - Python 3.12, package manager uv
-- FastAPI (API REST), httpx (ingestion), SQLite (stockage v1)
+- FastAPI (API REST), httpx (ingestion), SQLite (stockage)
 
 ## Conventions
 - Conventional Commits, tests pytest, ruff pour le lint
