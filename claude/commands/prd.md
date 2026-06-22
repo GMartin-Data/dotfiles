@@ -22,7 +22,9 @@ Si le fichier existe :
 ```
 Le fichier {output-filename} existe déjà.
 
-Un PRD est un document de cadrage stable, destiné à être figé après T0.
+Un PRD décrit le produit cible. C'est une baseline versionnée : elle ne dérive
+pas par édition silencieuse. Une inflexion réelle de la cible passe par un ADR
+(qui acte le changement), puis un amendement contrôlé — pas par une réécriture.
 Si tu veux vraiment le réécrire, supprime-le manuellement d'abord :
   rm {output-filename}
 
@@ -73,7 +75,7 @@ Conserver en mémoire ce résumé pour les Phase 8 et Phase 10 allégées.
 1. **Une question à la fois** — ne jamais surcharger avec plusieurs questions
 2. **Options A/B/C** — proposer des choix quand des alternatives discrètes existent
 3. **Valider avant de continuer** — reformuler uniquement sur les réponses ambiguës
-4. **YAGNI** — challenger le scope creep, suggérer de reporter en v2+
+4. **YAGNI** — challenger le scope creep, distinguer ce qui est dans la cible de ce qui la dépasse
 5. **Expliquer les trade-offs** — quand l'utilisateur hésite, fournir le contexte de décision
 6. **Langue** — interview et PRD produits en français
 
@@ -122,9 +124,9 @@ Proposer des stories basées sur les réponses précédentes. L'utilisateur conf
 
 ### Phase 6 — Périmètre
 
-"Qu'est-ce qui est dans v1 vs reporté à plus tard ?"
+"Qu'est-ce qui est dans la cible vs hors cible ?"
 
-Pousser vers un scope minimal viable. Nommer explicitement ce qui est HORS scope. Regrouper par catégorie si utile :
+Pousser vers un périmètre cible cohérent. Nommer explicitement ce qui est HORS scope. Regrouper par catégorie si utile :
 - Fonctionnalités core
 - Aspects techniques
 - Intégrations
@@ -190,7 +192,7 @@ Proposer 2-3 risques basés sur le contexte. Demander des stratégies de mitigat
 
 ### Phase 12 — Critères de succès
 
-"Comment savoir que v1 est terminé ?"
+"Comment savoir que la cible est atteinte ?"
 
 Pousser vers des critères concrets et testables. Proposer des indicateurs mesurables.
 
@@ -221,7 +223,7 @@ Attendre "oui" ou équivalent. Sur corrections, reformuler et revalider ce bloc 
 Validation bloc 2/3 — Scope
 
 5. User Stories : [nombre] stories définies
-6. Périmètre v1 : [items clés inclus] / Exclu : [items clés hors scope]
+6. Périmètre cible : [items clés inclus] / Hors cible : [items clés exclus]
 7. Stack : [choix principaux]
 
 Confirmes-tu ce bloc ? (oui / corrections)
@@ -269,7 +271,7 @@ Générer le PRD avec les sections ci-dessous. Si une phase a été skippée, **
 - En tant que [utilisateur], je veux [action], afin de [bénéfice]
 - ...
 
-## Fonctionnalités v1
+## Fonctionnalités (cible)
 ### [Composant 1]
 - ✅ Feature A
 - ✅ Feature B
@@ -277,9 +279,9 @@ Générer le PRD avec les sections ci-dessous. Si une phase a été skippée, **
 ### [Composant 2]
 - ✅ Feature C
 
-## Périmètre v1
-| ✅ Inclus | ❌ Exclu (v2+) |
-|-----------|----------------|
+## Périmètre cible
+| ✅ Dans la cible | ❌ Hors cible |
+|------------------|---------------|
 | ... | ... |
 
 ## Stack technique
@@ -308,8 +310,9 @@ Générer le PRD avec les sections ci-dessous. Si une phase a été skippée, **
 - ✅ [Critère mesurable 1]
 - ✅ [Critère mesurable 2]
 
-## Évolutions futures (v2+)
-[Fonctionnalités explicitement reportées, considérations futures]
+## Au-delà de la cible
+[Fonctionnalités qui dépassent la cible actuelle, considérations futures. Le
+découpage de la cible en itérations relève de `/planning`, pas de cette section.]
 ```
 
 ---
