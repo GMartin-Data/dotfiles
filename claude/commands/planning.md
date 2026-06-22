@@ -8,8 +8,10 @@ model: opus
 # Planning
 
 Produit le `PLAN.md` d'un projet : la **photo finale** de l'architecture cible
-et le **découpage ordonné** en phases. Dérivé de `PRD.md` (le *quoi/pourquoi*)
-et `CLAUDE.md` (la *stack/conventions*).
+et le **découpage ordonné** de la cible en **deux granularités** (cf. ADR-0002) —
+des **paliers MVP** (livrables à valeur utilisateur) regroupant des **phases**
+(briques de séquençage technique). Dérivé de `PRD.md` (le *quoi/pourquoi*, la
+cible) et `CLAUDE.md` (la *stack/conventions*).
 
 **Fichier de sortie** : `$ARGUMENTS` (défaut : `PLAN.md`).
 
@@ -48,7 +50,7 @@ Puis s'arrêter. Ne pas régénérer.
 
 **Avant toute interaction**, lire les deux documents source :
 
-1. **PRD.md** — en extraire : problème, user stories, périmètre v1, format de
+1. **PRD.md** — en extraire : problème, user stories, périmètre cible, format de
    sortie (si présent), architecture technique (si présente), critères de succès.
 2. **CLAUDE.md** — en extraire : stack, conventions, contraintes transverses.
 
@@ -87,9 +89,9 @@ responsabilité documentaire.
 
 PLAN.md **contient uniquement** :
 - Architecture haut niveau (les composants et leurs interactions — **quoi**, pas pourquoi)
-- Découpage en phases (séquence ordonnée, indépendamment valorisables)
+- **Paliers MVP** (livrables à valeur utilisateur, jalons démontrables regroupant des phases — cf. ADR-0002)
+- Découpage en **phases** (briques de séquençage technique, indépendamment valorisables)
 - Séquence d'exécution (ordre, dépendances, parallélisations)
-- Milestones (jalons macro regroupant des phases)
 
 PLAN.md **ne contient JAMAIS** :
 - **Décision atomique justifiée** (pourquoi choix A plutôt que B) → va en ADR.
@@ -133,9 +135,10 @@ mécaniquement) :
 > "Ordre proposé : [séquence]. [Phase X] et [Phase Y] me semblent
 > parallélisables / strictement séquentielles. Confirmes-tu ?"
 
-**Q3 — Granularité des milestones**
-> "Je regrouperais ces phases en [N] milestones : [proposition]. Ce niveau de
-> jalon te convient, ou tu en veux plus / moins ?"
+**Q3 — Granularité des paliers MVP**
+> "Je regrouperais ces phases en [N] paliers MVP : [proposition]. Chaque palier
+> est un livrable à valeur utilisateur propre (pas un simple jalon technique).
+> Ce découpage en paliers te convient, ou tu en veux plus / moins ?"
 
 ---
 
@@ -150,7 +153,7 @@ Synthèse du PLAN à générer
 Architecture : [N composants — liste]
 Phases : [N phases — noms]
 Séquence : [linéaire / avec parallélisations]
-Milestones : [N jalons — noms]
+Paliers MVP : [N paliers — noms]
 
 Je génère PLAN.md ? (oui / corrections)
 ```
@@ -182,7 +185,8 @@ détailler — ne pas la gonfler artificiellement.
 
 ## Découpage en phases
 
-[Séquence ordonnée. Chaque phase indépendamment valorisable.]
+[Séquence ordonnée. Chaque phase indépendamment valorisable. Les phases se
+regroupent en paliers MVP (section dédiée plus bas).]
 
 ### Phase 1 — [Nom]
 **Objectif** : [ce que cette phase rend possible]
@@ -204,13 +208,15 @@ détailler — ne pas la gonfler artificiellement.
 [Ordre de réalisation, dépendances inter-phases, ce qui peut avancer en
 parallèle. Si strictement Phase 1 → 2 → 3, écrire « Linéaire ».]
 
-## Milestones
+## Paliers MVP
 
-[Jalons macro, plus grossiers que les phases. Un milestone regroupe souvent
-plusieurs phases et marque un état démontrable / livrable.]
+[Niveau macro, plus grossier que les phases. Un palier MVP regroupe plusieurs
+phases et marque un **livrable à valeur utilisateur propre** — pas un simple
+jalon technique (cf. ADR-0002). Chaque palier est un incrément vers la cible
+du PRD.]
 
-- [ ] **M1 — [Nom]** : [phases couvertes, état atteint]
-- [ ] **M2 — [Nom]** : [...]
+- [ ] **MVP1 — [Nom]** : [phases couvertes, valeur utilisateur livrée]
+- [ ] **MVP2 — [Nom]** : [...]
 
 ## Renvois
 
