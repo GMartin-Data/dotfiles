@@ -1,0 +1,108 @@
+[
+  {
+    "id": "numbering-empty-adr-dir",
+    "class": "numbering",
+    "command": "/adr",
+    "query": "/adr",
+    "files": [
+      "adr/"
+    ],
+    "expected_behavior": [
+      "Scanne le répertoire adr/ pour déterminer le prochain numéro avant d'écrire",
+      "Constate que adr/ est vide et attribue le numéro 0001 (padding 4 chiffres)",
+      "Nomme le fichier selon le format NNNN-slug-court.md",
+      "N'attend pas que l'utilisateur fournisse le numéro : il est dérivé déterministiquement"
+    ]
+  },
+  {
+    "id": "numbering-with-gap",
+    "class": "numbering",
+    "command": "/adr",
+    "query": "/adr",
+    "files": [
+      "adr/0001-choix-stack.md",
+      "adr/0003-pattern-async.md"
+    ],
+    "expected_behavior": [
+      "Scanne adr/ et identifie le numéro maximum existant (0003), pas le compte de fichiers",
+      "Attribue 0004 au nouvel ADR (max + 1)",
+      "Ne comble JAMAIS le trou 0002 — la chronologie prime sur la continuité",
+      "Ne renumérote ni ne réordonne aucun ADR existant"
+    ]
+  },
+  {
+    "id": "mode-interview-default",
+    "class": "mode_interview",
+    "command": "/adr",
+    "query": "/adr",
+    "files": [
+      "adr/"
+    ],
+    "expected_behavior": [
+      "En l'absence de --from-context, entre en mode interview : questionne pour faire émerger la décision",
+      "Pose des questions sur le contexte, les options considérées (A/B/C), et la décision retenue",
+      "Ne tente PAS d'extraire une décision du fil de conversation (ce serait le mode capture)",
+      "Soumet le contenu pour validation avant d'écrire le fichier"
+    ]
+  },
+  {
+    "id": "mode-capture-from-context",
+    "class": "mode_capture",
+    "command": "/adr",
+    "query": "/adr --from-context",
+    "files": [
+      "adr/"
+    ],
+    "expected_behavior": [
+      "Avec --from-context, n'ouvre PAS d'interview : relit la délibération récente du fil",
+      "Extrait contexte / options / décision / conséquences depuis ce qui a déjà été discuté",
+      "Met en forme dans le template ADR et soumet la transcription pour validation explicite avant écrit",
+      "Ne re-pose pas des questions dont la réponse est déjà dans le fil"
+    ]
+  },
+  {
+    "id": "supersession-bidirectional",
+    "class": "supersession",
+    "command": "/adr",
+    "query": "/adr",
+    "files": [
+      "adr/0007-pubsub-pour-async.md"
+    ],
+    "expected_behavior": [
+      "Quand le nouvel ADR remplace ADR-0007, touche DEUX fichiers (le nouveau + l'ancien)",
+      "Le nouvel ADR contient un champ Supersedes: ADR-0007 et explicite le rationale du remplacement dans son corps",
+      "Le fichier ADR-0007 voit son seul champ Status passer à 'Superseded by ADR-NNNN'",
+      "Le CORPS d'ADR-0007 (contexte, options, décision, conséquences) n'est PAS modifié",
+      "Le nouvel ADR reçoit un numéro max+1 cohérent avec la numérotation"
+    ]
+  },
+  {
+    "id": "immutability-body-refused",
+    "class": "immutability",
+    "command": "/adr",
+    "query": "/adr",
+    "files": [
+      "adr/0007-pubsub-pour-async.md"
+    ],
+    "expected_behavior": [
+      "Face à une demande de modifier le corps d'un ADR au statut Accepted, refuse l'édition directe",
+      "Explique le principe d'immuabilité du corps après acceptation",
+      "Propose la voie correcte : créer un nouvel ADR qui supersède (ou refines) l'ancien",
+      "Ne réécrit jamais contexte / options / décision / conséquences d'un ADR Accepted"
+    ]
+  },
+  {
+    "id": "no-source-trace-in-output",
+    "class": "no_source_trace",
+    "command": "/adr",
+    "query": "/adr --from-context",
+    "files": [
+      "adr/"
+    ],
+    "expected_behavior": [
+      "L'ADR généré ne contient aucun champ Decided-by, Source, Author ou équivalent",
+      "L'en-tête se limite aux champs canoniques : titre, Status, Date, et Supersedes/Refines si applicable",
+      "La provenance (humain vs IA) ne laisse aucune trace dans l'artefact — elle pilote seulement le mode d'invocation"
+    ]
+  }
+]
