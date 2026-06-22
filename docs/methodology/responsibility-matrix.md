@@ -14,7 +14,7 @@ Source de vérité unique par concept. Toute décision d'écriture future doit p
 |---|---|---|---|
 | **CLAUDE.md** | Stable (révisions rares, via ADR en Phase 3) | Conventions code, stack, contraintes projet transverses, style, AI workflow guidelines | Goals projet, décisions ad-hoc, état de session, phases d'implémentation |
 | **PRD.md** | Baseline versionnée du produit **cible** : ne dérive pas par édition silencieuse ; révision = ADR en Phase 3 (cf. [`adr/0001`](../../adr/0001-prd-produit-cible.md)) | Problem, goals, non-goals, users & scenarios, acceptance criteria, constraints, open questions, hors-cible | Stack, architecture, phases d'implémentation, risques techniques, décisions de design, découpage en MVP/itérations |
-| **PLAN.md** | Semi-frozen (révision = ADR obligatoire) | Milestones ordonnés, séquence d'exécution, architecture haut niveau, découpage en phases | Décisions atomiques avec rationale, état session, conventions code |
+| **PLAN.md** | Semi-frozen (révision = ADR obligatoire) | Architecture haut niveau, séquence d'exécution, **deux granularités** (cf. [`adr/0002`](../../adr/0002-mvp-palier-dans-plan.md)) : **paliers MVP** (livrables à valeur) et **phases** (briques de séquençage technique) qu'ils regroupent | Décisions atomiques avec rationale, état session, conventions code |
 | **adr/NNNN-*.md** | Corps immuable, statut mutable | UNE décision = UN fichier. Voir [`conventions/adr.md`](conventions/adr.md) pour cycle de vie complet, vocabulaire des relations et règles pratiques. | État de session, listing exhaustif de toutes les micro-décisions |
 | **progress.md** | Living, court | Où j'en suis, prochaine action concrète, blockers de session | Décisions (vont en ADR), changements de plan (vont en ADR puis PLAN), conventions |
 
@@ -84,6 +84,17 @@ Jamais l'inverse (amender un document sans ADR justificatif = perte de traçabil
 ---
 
 ## Frontières floues — résolutions explicites
+
+**Où vivent les MVP successifs** (cf. [`adr/0002`](../../adr/0002-mvp-palier-dans-plan.md))
+- PRD = la **cible** (le *quoi* ultime). Ne contient jamais le découpage en MVP.
+- PLAN = le **découpage de la cible** en paliers de valeur (MVP) et en phases techniques.
+- Un **MVP/palier** = livrable à valeur utilisateur propre, regroupant une ou plusieurs phases.
+  Une **phase** = brique de séquençage technique. Deux niveaux distincts, un seul PLAN.
+- Test : « est-ce un livrable que l'utilisateur peut éprouver ? » Oui → palier MVP. Non
+  (brique interne) → phase. « Est-ce que ça change la cible ? » Oui → ADR + amende le PRD,
+  pas le PLAN.
+- Modèle C (PLAN unique). Si un projet réel sue sous ce modèle, un ADR de supersession
+  vers un PLAN-par-itération devient le déclencheur — pas avant.
 
 **PRD vs PLAN : "ce qu'on construit"**
 - PRD = *quoi* et *pourquoi* (orienté problème/utilisateur)
