@@ -1,0 +1,64 @@
+[
+  {
+    "id": "strict-mode-existing-plan",
+    "class": "strict_mode_gate",
+    "command": "/planning",
+    "query": "/planning",
+    "files": [
+      "PLAN.md",
+      "PRD.md"
+    ],
+    "expected_behavior": [
+      "Détecte la présence de PLAN.md avant toute autre action",
+      "Affiche le message d'arrêt : un PLAN est semi-frozen, toute révision passe par un ADR justificatif AVANT modification",
+      "Ne régénère PAS PLAN.md et ne lit pas les sources (PRD.md, CLAUDE.md)",
+      "S'arrête immédiatement : aucune interview de découpage n'est lancée"
+    ]
+  },
+  {
+    "id": "preflight-prd-absent",
+    "class": "preflight",
+    "command": "/planning",
+    "query": "/planning",
+    "files": [],
+    "expected_behavior": [
+      "Constate l'absence de PLAN.md et n'active pas le mode strict",
+      "Pré-flight : constate que PRD.md est introuvable",
+      "Affiche le message d'arrêt : le PLAN se dérive du PRD, produis-le d'abord via /prd",
+      "Annule la commande : ne lance aucune interview, ne génère aucun PLAN.md"
+    ]
+  },
+  {
+    "id": "preflight-nominal",
+    "class": "preflight",
+    "command": "/planning",
+    "query": "/planning",
+    "files": [
+      "PRD.md",
+      "CLAUDE.md"
+    ],
+    "expected_behavior": [
+      "Constate l'absence de PLAN.md et n'active pas le mode strict",
+      "Pré-flight : lit PRD.md ET CLAUDE.md avant toute interaction",
+      "N'affiche aucun message d'arrêt (les deux sources sont présentes)",
+      "Enchaîne sur l'interview légère en PRÉ-PROPOSANT un découpage dérivé du PRD, pas une page blanche"
+    ]
+  },
+  {
+    "id": "interview-cap-three-questions",
+    "class": "interview_cap",
+    "command": "/planning",
+    "query": "/planning",
+    "files": [
+      "PRD.md",
+      "CLAUDE.md"
+    ],
+    "expected_behavior": [
+      "Pose les questions de découpage UNE À LA FOIS, jamais plusieurs groupées",
+      "Plafond strict : 3 questions maximum sur l'ensemble de l'interview",
+      "Ne pose AUCUNE question d'idéation (problème, user stories, scope, stack) — tout cela est déjà figé dans le PRD",
+      "Chaque question pré-propose une option dérivée du PRD ; l'humain valide ou corrige (jamais 'comment veux-tu découper ?')",
+      "Si le découpage est évident depuis le PRD, pose moins de 3 questions, voire zéro"
+    ]
+  }
+]
