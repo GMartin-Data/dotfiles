@@ -13,7 +13,7 @@ Source de vérité unique par concept. Toute décision d'écriture future doit p
 | Document | Cycle de vie | Contenu unique | Ne contient JAMAIS |
 |---|---|---|---|
 | **CLAUDE.md** | Stable (révisions rares, via ADR en Phase 3) | Conventions code, stack, contraintes projet transverses, style, AI workflow guidelines | Goals projet, décisions ad-hoc, état de session, phases d'implémentation |
-| **PRD.md** | Frozen après approval (amendements rares, via ADR en Phase 3) | Problem, goals, non-goals, users & scenarios, acceptance criteria, constraints, open questions, out-of-scope (v1) | Stack, architecture, phases d'implémentation, risques techniques, décisions de design |
+| **PRD.md** | Baseline versionnée du produit **cible** : ne dérive pas par édition silencieuse ; révision = ADR en Phase 3 (cf. [`adr/0001`](../../adr/0001-prd-produit-cible.md)) | Problem, goals, non-goals, users & scenarios, acceptance criteria, constraints, open questions, hors-cible | Stack, architecture, phases d'implémentation, risques techniques, décisions de design, découpage en MVP/itérations |
 | **PLAN.md** | Semi-frozen (révision = ADR obligatoire) | Milestones ordonnés, séquence d'exécution, architecture haut niveau, découpage en phases | Décisions atomiques avec rationale, état session, conventions code |
 | **adr/NNNN-*.md** | Corps immuable, statut mutable | UNE décision = UN fichier. Voir [`conventions/adr.md`](conventions/adr.md) pour cycle de vie complet, vocabulaire des relations et règles pratiques. | État de session, listing exhaustif de toutes les micro-décisions |
 | **progress.md** | Living, court | Où j'en suis, prochaine action concrète, blockers de session | Décisions (vont en ADR), changements de plan (vont en ADR puis PLAN), conventions |
@@ -32,7 +32,7 @@ Six règles strictes. Toute violation = source de drift garantie.
 
 4. **User stories → acceptance criteria du PRD.** Pas de document `US.md` séparé. Les stories sont des checkboxes vérifiables dans la section dédiée du PRD.
 
-5. **Phases d'implémentation → PLAN.md.** Pas PRD. Le PRD est gelé après approval ; les phases d'impl évoluent.
+5. **Phases d'implémentation → PLAN.md.** Pas PRD. Le PRD est une baseline (révisable par ADR, pas au fil de l'eau) ; les phases d'impl évoluent librement dans le PLAN.
 
 6. **Risques → deux destinations selon état :**
    - Risque non résolu → section "Open questions" du PRD
@@ -55,7 +55,7 @@ Avant d'écrire un contenu nouveau, se poser :
 
 ### Phase 0 — Définition (one-shot par projet)
 - Interview `/claude-md` → CLAUDE.md (stable)
-- Interview `/prd` → PRD.md (frozen après validation)
+- Interview `/prd` → PRD.md (baseline du produit cible, révisable par ADR)
 
 Les deux productions sont indépendantes en contenu et peuvent être menées dans n'importe quel ordre.
 
@@ -104,7 +104,7 @@ Jamais l'inverse (amender un document sans ADR justificatif = perte de traçabil
 
 ## Conséquences architecturales pour les outils
 
-- `/prd` produit un PRD allégé (8 sections : Problem, Goals, Non-goals, Users & scenarios, Acceptance criteria, Constraints, Open questions, Out-of-scope v1). Pas de stack, pas d'archi, pas de phases d'impl.
+- `/prd` produit un PRD allégé (8 sections : Problem, Goals, Non-goals, Users & scenarios, Acceptance criteria, Constraints, Open questions, Hors-cible). Pas de stack, pas d'archi, pas de phases d'impl.
 - `/claude-md` reste seule source de vérité stack et conventions.
 - `/planning` (à créer, ne pas nommer `/plan` — collision avec built-in Claude Code) produit PLAN.md à partir de PRD + CLAUDE.md.
 - `/adr` (à créer) produit un ADR atomique par invocation.
