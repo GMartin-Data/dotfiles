@@ -62,9 +62,9 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
 ## Composants actuels
 
-**Commands** (7) : `catchup`, `claude-md`, `immunize`, `learning-tracker`, `prd`, `progress`, `tech-watch`
+**Commands** (10) : `adr`, `catchup`, `claude-md`, `grill`, `immunize`, `learning-tracker`, `planning`, `prd`, `progress`, `tech-watch`
 
-> Les commands `claude-md` et `prd` ont un sous-dossier compagnon (`commands/<name>/`) qui matérialise la **progressive disclosure** : `reference/` (assets runtime — chargés par la command à l'exécution) et `evals/` (corpus de tests A→B→A — interne au repo, non symlinké). Pattern symétrique à celui des skills, mais conservé en command pour préserver l'invocation explicite.
+> Cinq commands ont un sous-dossier compagnon (`commands/<name>/`) qui matérialise la **progressive disclosure**. Deux types d'assets y vivent : `evals/` (corpus de tests A→B→A — interne au repo, non symlinké) pour `adr`, `claude-md`, `grill`, `planning`, `prd` ; et `reference/` (assets runtime — chargés par la command à l'exécution, symlinké) pour `claude-md` uniquement. Pattern symétrique à celui des skills, mais conservé en command pour préserver l'invocation explicite.
 
 **Skills** (3) : `coach-pedagogique`, `code-mentor`, `dp-coach`
 

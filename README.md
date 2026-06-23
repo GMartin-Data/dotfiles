@@ -97,7 +97,7 @@ Configuration versionnée et portable entre machines. Architecture détaillée e
 | Hooks | `claude/hooks/*` | Événementiel | Automatismes déclenchés par l'harness |
 | Agent memory | `claude/agent-memory/<agent>/` | Lu/écrit par subagents | Mémoire custom portable |
 
-**Commands** : catchup, claude-md, immunize, learning-tracker, prd, progress, tech-watch
+**Commands** : adr, catchup, claude-md, grill, immunize, learning-tracker, planning, prd, progress, tech-watch
 
 **Hooks** : learning-tracker-brief (SessionStart), block-force-push, block-rm-rf, protect_env (PreToolUse), ruff-check (PostToolUse)
 
