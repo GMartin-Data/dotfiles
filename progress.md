@@ -1,4 +1,80 @@
 ## Dernière mise à jour
+Date : 2026-06-23 16:30
+Session : 4e0e35cc-bdad-40fa-8836-fbf7fb421aec (learning-skill — suite)
+
+## Tâches complétées
+
+- **README claude/ enrichi** : listings Commands et Skills étoffés d'une glose
+  d'une ligne par item (format Hooks étendu à Commands + Skills). Checklist
+  « Ajouter une command » mise à jour (format liste-avec-glose). Compteurs et
+  parité vérifiés. Commit `0412a99`
+
+- **Contrôle web Skill Creator officiel (Anthropic)** — vérifié sur source
+  primaire (`anthropics/claude-plugins-official`, SKILL.md officiel lu verbatim) :
+  plugin Claude Code réel, annoncé 2026-03-03, 4 modes (Create/Eval/Improve/
+  Benchmark), 4 sous-agents (Executor/Grader/Comparator/Analyzer). L'Evaluation
+  Tool de la Console est un outil *distinct* (prompts à variables, pas harnais
+  SKILL.md). Résultat : ton rituel A→B→A maison a reconstruit par anticipation
+  la structure qu'Anthropic vient d'outiller (format `grill.eval.json` ≈
+  `evals/evals.json` officiel).
+
+- **ADR-0009 créé** (Proposed) : délibération rituel maison A→B→A vs Skill
+  Creator officiel. Recommandation Option C (hybride : moteur officiel + doctrine
+  maison souveraine). Réserve identifiée : inconnue (a) format, inconnue (b)
+  exécution. Commit `53f4c2e`
+
+- **Essai pilote de traductibilité** : eval maison `output-no-file-written`
+  (invariant hors-transcription : « zéro fichier écrit ») converti au format
+  `evals.json` officiel. Inconnue (a) levée favorablement : assertions officielles
+  absorbent la doctrine maison, invariants hors-transcription deviennent
+  *programmables* (sha256, ls). Frange irréductible : jugement de présentation →
+  qualitatif (eval-viewer), non pass/fail. Inconnue (b) (exécution) : reste
+  ouverte — plugin sur disque = version légère sans agents/scripts/eval-viewer.
+  Corpus pilote versé dans `grill/evals/pilot-skill-creator/`. Commit `7fc6ff2`
+
+- **TODO.md mis à jour** : entrée « Run live du Skill Creator officiel → trancher
+  ADR-0009 ». Déclencheur : prochain besoin réel d'eval (teach éprouvé ou corpus
+  /grill). Portée : run live valide le *moteur* une fois ; adoption par skill au
+  fil de l'eau (pas big-bang). Commit `7fc6ff2`
+
+- **Confrontation best practices shanraisshan** (skills) — vérifié : frontmatter
+  conforme, corps aligné Pocock. Aucun chantier. Acté dans le commit teach.
+
+## En cours
+
+Rien — working tree propre (`docs/rpi-audit-findings.md` untracked, hors périmètre).
+
+## Prochaines étapes
+
+1. **Re-router `methodology-trial`** (archive `tasks/learning-tracker-archive/`)
+   — prochaine étape : `/claude-md` sur memory-grep + Phase 1a implémentation.
+2. **Créer le workspace teach** (repo dédié, `MISSION.md` à rédiger) — à la
+   première vraie session d'apprentissage AI Engineer.
+3. **Run live Skill Creator** (cf. `TODO.md`) — déclenché par prochain besoin
+   d'eval réel ; sur succès → trancher ADR-0009 en Accepted (Option C).
+4. **Campagne evals A→B→A `/grill`** — corpus spécifié, jamais exécuté.
+5. **Campagne evals A→B→A `/adr` et `/planning`** — état inchangé.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **ADR-0009 laissé Proposed** (reco) : inconnue (b) exécution non levée —
+  run live déclenché par besoin réel, pas à blanc.
+- **TODO.md** = bonne destination pour le run live (chantier futur conditionnel) ;
+  ADR-0009 = délibération ; pilote = preuve figée. Non-overlap respectée.
+- **Adoption par skill** (teach/code-mentor/etc.) se fait au fil de l'eau après
+  run live du moteur — pas en big-bang.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-23 14:45
 Session : 4e0e35cc-bdad-40fa-8836-fbf7fb421aec (learning-skill)
 
