@@ -123,6 +123,39 @@ Jamais l'inverse (amender un document sans ADR justificatif = perte de traçabil
 
 ---
 
+## Couche learning — non-overlap des outils d'apprentissage
+
+La doctrine de source-de-vérité-unique s'applique aussi au domaine de
+l'apprentissage. La couche learning a été refondue autour de la skill `teach`
+(cf. [`adr/0007`](../../adr/0007-teach-emplacement-frontieres.md) et ses
+satellites 0004, 0005, 0006, 0008). Quatre outils, chacun un moment distinct,
+**zéro overlap** :
+
+| Outil | Détient | Ne fait JAMAIS |
+|---|---|---|
+| **`teach`** (skill, human-triggered) | Enseigne le concept / la compétence. Colonne vertébrale stateful (workspace dédié). | Déchiffrer du code existant, accompagner une livraison réelle, drill exécuté |
+| **`code-mentor`** (skill) | Déchiffre du code *existant* par questionnement socratique. | Enseigner un concept neuf, écrire du code |
+| **`coach-pedagogique`** (skill) | Accompagne la *livraison* d'un vrai artefact (scaffolding 1-4). | Expliquer un concept ponctuel, coder à la place de l'apprenant |
+| **`dp-coach`** (skill) | Drille une sous-compétence par **exécution + analyse** déterministe. | Enseigner un concept, review de code existant |
+
+**Sources de vérité uniques de la couche** :
+- **État de progression** → `learning-records/` du workspace teach. Source unique.
+  Les trois autres outils y émettent en **flux unidirectionnel** (record proposé,
+  copié par l'humain — cf. [`adr/0008`](../../adr/0008-mecanique-pont-record-propose.md)).
+  Exception assumée : le `PROGRESS.md` de `coach-pedagogique` porte un état de
+  *nature distincte* (scaffolding-sur-livraison, intra-projet), pas de la
+  progression — il ne duplique donc pas les records (cf.
+  [`adr/0006`](../../adr/0006-pont-etat-learning-records.md)).
+- **Rétention long terme (storage strength)** → **Anki**, via le script et le
+  format partagés de `code-mentor`. Source unique. Les quiz HTML in-lesson de
+  `teach` ne servent que la *fluency* immédiate, jamais le storage (cf.
+  [`adr/0005`](../../adr/0005-retention-unifiee-anki.md)).
+
+Précédent posé : tout futur outil d'apprentissage occupe une niche distincte des
+quatre, ou est absorbé — pas de cinquième outil redondant.
+
+---
+
 ## Index des satellites
 
 Documents satellites approfondissant un type de document spécifique :
