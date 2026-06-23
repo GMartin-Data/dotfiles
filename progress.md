@@ -1,4 +1,78 @@
 ## Dernière mise à jour
+Date : 2026-06-23 11:20
+Session : 68f0e867-7529-4404-85a1-e7ccf74c3cc5 (grill-implementation)
+
+## Tâches complétées
+
+- **ADR-0003 créé et acté** (`adr/0003-grill-delegue-adr-sans-invoquer.md`,
+  Accepted) : `/grill` délègue à `/adr` par instruction (jamais par invocation
+  programmatique). Pour N décisions : ordre topologique, relations suggérées
+  (Refines/Extends/Constrains), items autoportants, bloc copiable + invite
+  visible, zéro fichier écrit. Commit `a32be56`
+- **`/grill` implémentée** (`claude/commands/grill.md`) : slash-command
+  user-scope, famille méthodologique `/prd`/`/planning`/`/adr`. Revue adverse
+  pré-gel d'un PRD ou PLAN — parcourt l'arbre de dépendances des décisions, lève
+  implicites et tensions inter-sections. Entrée `$ARGUMENTS` + fallback
+  `prd.md`→`plan.md`. Stop déterministe : ledger OPEN/RESOLVED/DEFERRED, zéro
+  OPEN garanti. Anti-trivialité : l'absence de section « Open questions » ne
+  court-circuite pas le grill. Symlink actif + déclaré dans `install.sh`.
+  Commit `cbc1ccb`
+- **Corpus evals `/grill`** : 5 evals (preflight-artifact-absent,
+  no-open-questions-section, deferred-branch-in-output,
+  input-explicit-arg-over-fallback, output-no-file-written) +
+  `setup-eval-cwd.sh` + `README.md`. Fixture `prd.md` avec contradiction
+  délibérée (Contrainte hors-ligne vs critère de résumé externe). Commit `0924d56`
+- **`.gitignore` : `docs/handoff/` ignoré** — handoffs = notes de travail
+  jetables (précédent `AUDIT_PROGRESS.md`). Commit `5832dc4`
+- **`install.sh` : parité restaurée** — `adr.md` et `planning.md` manquaient ;
+  un bootstrap neuf aurait laissé `/adr` et `/planning` sans symlink. 10/10
+  commands source désormais déclarées. Commit `88020d2`
+
+## En cours
+
+Rien — 5 commits committés, working tree propre (seul
+`docs/rpi-audit-findings.md` reste untracked, hors périmètre).
+
+## Prochaines étapes
+
+1. **Campagne evals A→B→A `/grill`** — 5 evals spécifiées, aucune encore
+   exécutée. Protocole : `cd ~/dotfiles/claude/commands/grill/evals &&
+   ./setup-eval-cwd.sh <id>` → session B fraîche → transcription → jugement en
+   session A.
+2. **Fixture PLAN pour les evals `/grill`** — le corpus ne couvre que des PRD ;
+   la condition d'arrêt PLAN (chaque décision archi confrontée à ≥1 alternative)
+   n'a pas encore de fixture.
+3. **Campagne evals A→B→A `/adr` et `/planning`** — leurs corpus sont écrits
+   mais jamais exécutés (état inchangé depuis session précédente).
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce repo de configuration).
+
+## Décisions prises
+
+- **Nom `grill` retenu** : collision vérifiée négative — absent de `claude
+  --help`, des 5 skills bundled, et des commands existantes.
+- **Source de vérité réelle** : `dotfiles/claude/commands/grill.md` (pas
+  `~/.claude/commands/` — correction d'une imprécision du handoff ; `~/.claude/`
+  ne contient que les symlinks).
+- **Portée v1 : PRD et PLAN**, une invocation = un artefact, type déduit de la
+  structure du fichier résolu (pas de flag `--prd`/`--plan`).
+- **Persistance de la liste de sortie : option 2** (bloc copiable + invite
+  visible), pas de fichier scratch versionné — évite un artefact zombie périmé
+  dès le premier `/adr` créé (cf. ADR-0003).
+- **`docs/handoff/` ignoré** (pas commité) : les handoffs de conception sont des
+  notes de travail jetables une fois l'implémentation terminée.
+- **`install.sh` mis à jour hors périmètre `/grill`** : l'écart
+  `adr.md`/`planning.md` existait avant cette session ; corrigé en commit séparé.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-22 16:30
 Session : 73071d5c-aa41-4162-ab7f-9a05242b3df4 (fix hook block-rm-rf)
 
