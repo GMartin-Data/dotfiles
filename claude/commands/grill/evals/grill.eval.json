@@ -1,0 +1,78 @@
+[
+  {
+    "id": "preflight-artifact-absent",
+    "class": "preflight",
+    "command": "/grill",
+    "query": "/grill",
+    "files": [],
+    "expected_behavior": [
+      "Tente la résolution d'entrée : aucun argument, cherche prd.md puis plan.md à la racine puis dans docs/",
+      "Constate qu'aucun artefact source n'existe dans le CWD",
+      "S'arrête et demande explicitement le chemin de l'artefact à l'humain",
+      "Ne grille rien, n'invente aucun contenu, ne produit aucune liste de décisions"
+    ]
+  },
+  {
+    "id": "no-open-questions-section",
+    "class": "anti_triviality",
+    "command": "/grill",
+    "query": "/grill",
+    "files": [
+      "prd.md"
+    ],
+    "expected_behavior": [
+      "Résout l'entrée sur prd.md et identifie le type PRD",
+      "Constate que la section 'Open questions' est absente ou vide",
+      "Ne conclut PAS que la condition d'arrêt est trivialement satisfaite : grille quand même les tensions inter-sections",
+      "Soulève au moins une tension entre deux sections du PRD (ex : une Contrainte qui contredit un critère d'acceptation, un hors-cible en tension avec une user story)",
+      "Le ledger de branches n'est pas vide : au moins une branche OPEN est ouverte puis conduite à RESOLVED"
+    ]
+  },
+  {
+    "id": "deferred-branch-in-output",
+    "class": "ledger_terminal_state",
+    "command": "/grill",
+    "query": "/grill",
+    "files": [
+      "prd.md"
+    ],
+    "expected_behavior": [
+      "Maintient un ledger visible OPEN/RESOLVED/DEFERRED, rafraîchi à chaque résolution",
+      "Quand une branche ne peut être résolue (input externe manquant), la marque DEFERRED avec la raison, jamais laissée OPEN",
+      "Le ledger se termine avec ZÉRO branche OPEN",
+      "La liste de sortie 'Decisions to formalize' reflète la branche DEFERRED (elle n'est pas silencieusement omise)"
+    ]
+  },
+  {
+    "id": "input-explicit-arg-over-fallback",
+    "class": "input_resolution",
+    "command": "/grill docs/specs/custom-prd.md",
+    "query": "/grill docs/specs/custom-prd.md",
+    "files": [
+      "prd.md",
+      "docs/specs/custom-prd.md"
+    ],
+    "expected_behavior": [
+      "Un prd.md existe à la racine ET un fichier passé en argument explicite existe sous docs/specs/",
+      "L'argument explicite docs/specs/custom-prd.md est PRIORITAIRE : c'est lui qui est grillé",
+      "Le prd.md de la racine (cible du fallback) est IGNORÉ tant qu'un argument explicite est fourni",
+      "Le type d'artefact est déduit du fichier résolu (l'argument), pas d'un flag"
+    ]
+  },
+  {
+    "id": "output-no-file-written",
+    "class": "no_side_effect",
+    "command": "/grill",
+    "query": "/grill",
+    "files": [
+      "prd.md"
+    ],
+    "expected_behavior": [
+      "Produit la liste 'Decisions to formalize' dans un bloc unique copiable, sans écrire aucun fichier",
+      "N'édite jamais l'artefact source (prd.md reste byte-identique)",
+      "Ne crée aucun ADR : les items taggés ADR sont du matériau pour /adr, pas des fichiers écrits",
+      "Items ADR ordonnés topologiquement (parents avant enfants) avec relation suggérée (Refines/Extends/Constrains) quand dépendance",
+      "Affiche une invite finale VISIBLE et isolée demandant à l'humain de copier la liste avant de poursuivre"
+    ]
+  }
+]
