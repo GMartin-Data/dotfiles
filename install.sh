@@ -38,7 +38,6 @@ link "$DOTFILES_DIR/claude/commands/immunize.md"    "$HOME/.claude/commands/immu
 link "$DOTFILES_DIR/claude/commands/catchup.md"    "$HOME/.claude/commands/catchup.md"
 link "$DOTFILES_DIR/claude/commands/progress.md"    "$HOME/.claude/commands/progress.md"
 link "$DOTFILES_DIR/claude/commands/tech-watch.md"  "$HOME/.claude/commands/tech-watch.md"
-link "$DOTFILES_DIR/claude/commands/learning-tracker.md" "$HOME/.claude/commands/learning-tracker.md"
 link "$DOTFILES_DIR/claude/commands/claude-md.md"   "$HOME/.claude/commands/claude-md.md"
 link "$DOTFILES_DIR/claude/commands/prd.md"         "$HOME/.claude/commands/prd.md"
 link "$DOTFILES_DIR/claude/commands/planning.md"    "$HOME/.claude/commands/planning.md"
@@ -54,7 +53,6 @@ link "$DOTFILES_DIR/claude/hooks/block-force-push.sh"        "$HOME/.claude/hook
 link "$DOTFILES_DIR/claude/hooks/block-rm-rf.sh"             "$HOME/.claude/hooks/block-rm-rf.sh"
 link "$DOTFILES_DIR/claude/hooks/protect_env.py"             "$HOME/.claude/hooks/protect_env.py"
 link "$DOTFILES_DIR/claude/hooks/ruff-check.sh"              "$HOME/.claude/hooks/ruff-check.sh"
-link "$DOTFILES_DIR/claude/hooks/learning-tracker-brief.py"  "$HOME/.claude/hooks/learning-tracker-brief.py"
 
 # Skills (dossiers entiers — chaque skill est un dossier isolé qu'on contrôle)
 link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mentor"
@@ -71,13 +69,9 @@ link "$DOTFILES_DIR/claude/templates"            "$HOME/.claude/templates"
 
 # Agents (fichiers individuels)
 link "$DOTFILES_DIR/claude/agents/tech-watch-scorer.md" "$HOME/.claude/agents/tech-watch-scorer.md"
-link "$DOTFILES_DIR/claude/agents/learning-tracker.md" "$HOME/.claude/agents/learning-tracker.md"
 
 # Agents (dossier scripts partagé)
 link "$DOTFILES_DIR/claude/agents/scripts"              "$HOME/.claude/agents/scripts"
-
-# Agent memory (dossiers entiers)
-link "$DOTFILES_DIR/claude/agent-memory/learning-tracker" "$HOME/.claude/agent-memory/learning-tracker"
 
 echo ""
 echo "=== Symlinks créés. ==="

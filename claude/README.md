@@ -62,7 +62,7 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
 ## Composants actuels
 
-**Commands** (10) : `adr`, `catchup`, `claude-md`, `grill`, `immunize`, `learning-tracker`, `planning`, `prd`, `progress`, `tech-watch`
+**Commands** (9) : `adr`, `catchup`, `claude-md`, `grill`, `immunize`, `planning`, `prd`, `progress`, `tech-watch`
 
 > Cinq commands ont un sous-dossier compagnon (`commands/<name>/`) qui matérialise la **progressive disclosure**. Deux types d'assets y vivent : `evals/` (corpus de tests A→B→A — interne au repo, non symlinké) pour `adr`, `claude-md`, `grill`, `planning`, `prd` ; et `reference/` (assets runtime — chargés par la command à l'exécution, symlinké) pour `claude-md` uniquement. Pattern symétrique à celui des skills, mais conservé en command pour préserver l'invocation explicite.
 
@@ -84,14 +84,13 @@ diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
 
 **Skills** (3) : `coach-pedagogique`, `code-mentor`, `dp-coach`
 
-**Agents** (2) : `learning-tracker` (stateful, mémoire persistante), `tech-watch-scorer` (stateless)
+**Agents** (1) : `tech-watch-scorer` (stateless)
 
 **Rules** (3) : `python.md`, `dbt-sql.md`, `terraform.md`
 
 **Templates** (4) : `python-uv.md`, `dbt-uv.md`, `terraform.md`, `pro-banking.md` (overlay)
 
-**Hooks** (5) :
-- `learning-tracker-brief.py` — SessionStart, dashboard vélocité passif
+**Hooks** (4) :
 - `block-force-push.sh` — PreToolUse sur `git push*`
 - `block-rm-rf.sh` — PreToolUse sur `rm *`
 - `protect_env.py` — PreToolUse (Bash/Read/Edit/Write) sur `.env`

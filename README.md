@@ -97,13 +97,13 @@ Configuration versionnée et portable entre machines. Architecture détaillée e
 | Hooks | `claude/hooks/*` | Événementiel | Automatismes déclenchés par l'harness |
 | Agent memory | `claude/agent-memory/<agent>/` | Lu/écrit par subagents | Mémoire custom portable |
 
-**Commands** : adr, catchup, claude-md, grill, immunize, learning-tracker, planning, prd, progress, tech-watch
+**Commands** : adr, catchup, claude-md, grill, immunize, planning, prd, progress, tech-watch
 
-**Hooks** : learning-tracker-brief (SessionStart), block-force-push, block-rm-rf, protect_env (PreToolUse), ruff-check (PostToolUse)
+**Hooks** : block-force-push, block-rm-rf, protect_env (PreToolUse), ruff-check (PostToolUse)
 
 **Skills** : coach-pedagogique, code-mentor, dp-coach
 
-**Subagents** : learning-tracker (stateful), tech-watch-scorer (stateless)
+**Subagents** : tech-watch-scorer (stateless)
 
 **Plugin à réinstaller manuellement** : `pyright-lsp@claude-plugins-official`
 
