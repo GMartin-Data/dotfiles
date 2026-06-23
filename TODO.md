@@ -53,3 +53,44 @@
 **Comment :** le test de parité source ↔ install.sh est déjà esquissé dans la checklist de `claude/README.md` (one-liner `diff`). L'étendre aux deux README et l'empaqueter en script appelable. Décider à ce moment-là entre script manuel (`maintain`-style) et hook bloquant.
 
 **Réf :** session grill-implementation du 2026-06-23 — trois oublis successifs (symlink `install.sh`, `README.md`, `claude/README.md`) en ajoutant `/grill`, racine commune avec les oublis `adr`/`planning` des sessions antérieures.
+
+---
+
+## Run live du Skill Creator officiel → trancher l'adoption (ADR-0009)
+
+**Quand :** au **prochain besoin réel** de lancer un eval — soit `teach` une fois
+éprouvé en usage, soit le corpus `/grill` (écrit mais jamais exécuté en A→B→A).
+Pas avant, pas à blanc : c'est le besoin d'évaluer qui déclenche, pas le calendrier.
+
+**Quoi :** installer la version **complète** du plugin
+`skill-creator@claude-plugins-official` (le plugin présent sur disque est une
+version légère : SKILL.md seul, sans `agents/grader.md`, `scripts/aggregate_benchmark`,
+ni `eval-viewer/`), puis faire un vrai run Executor/Grader sur un eval converti.
+Objectif : lever l'**inconnue (b) d'ADR-0009** — l'outil tient-il à l'exécution ?
+(L'inconnue (a) — le format `assertions` exprime-t-il les invariants comportementaux
+fins — a été levée favorablement par l'essai pilote du 2026-06-23, cf. corpus
+`claude/commands/grill/evals/pilot-skill-creator/`.)
+
+**Pourquoi attendre :** *build-before-automating* appliqué à mon propre outillage
+d'evals. Le run live à blanc serait du yak-shaving : il se justifie quand il sert
+une évaluation réellement voulue, pas pour valider l'outil dans le vide. Le vrai
+chantier reste `teach` + la trajectoire AI Engineer ; l'outillage d'evals est un
+méta-chantier qui ne doit pas le précéder.
+
+**Comment :**
+1. `/plugin install skill-creator@claude-plugins-official` (version complète) puis
+   `/reload-plugins`.
+2. Reprendre l'eval pilote déjà converti (`output-no-file-written`) et le faire
+   tourner via les sous-agents ; vérifier que le grader sait exécuter l'assertion
+   programmable `sha256 unchanged` et que l'eval-viewer rend le résultat.
+3. **Portée :** le run live valide le *moteur* une fois pour toutes (il ne dépend
+   pas de la skill testée). L'**adoption par skill** (teach, code-mentor,
+   coach-pedagogique, dp-coach) se fait ensuite au fil de l'eau, chacune migrant
+   son corpus quand elle est éprouvée — pas un big-bang.
+4. Sur succès → passer **ADR-0009 en Accepted (Option C hybride)** : moteur officiel
+   + doctrine maison (classes comportementales, fixtures à tension). Sur échec
+   d'exécution → repli Option B documenté par amendement de 0009 avant Accepted.
+
+**Réf :** ADR-0009 (Proposed) ; essai pilote de traductibilité du 2026-06-23
+(session learning-skill) ; SKILL.md officiel vérifié dans
+`anthropics/claude-plugins-official`.

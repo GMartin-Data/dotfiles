@@ -122,6 +122,33 @@ et l'Option B redevient défendable. Un essai du plugin sur **un** eval `/grill`
 - Si la réserve d'expressivité échoue à l'essai, repli sur Option B documenté par
   un amendement de cet ADR avant passage en `Accepted`.
 
+## Essai pilote (2026-06-23) — inconnue (a) levée
+
+La réserve « les `assertions` officielles expriment-elles les invariants
+comportementaux fins ? » a été testée par conversion réelle de l'eval maison le
+plus exigeant (`output-no-file-written`, classe `no_side_effect`) au format officiel
+`evals.json`. Corpus figé :
+[`claude/commands/grill/evals/pilot-skill-creator/`](../claude/commands/grill/evals/pilot-skill-creator/).
+
+Résultat : **inconnue (a) levée favorablement.**
+- Les 5 `expected_behavior` se traduisent ; l'invariant double « bloc + aucun
+  fichier » se scinde en 2 assertions discriminantes (gain de granularité).
+- Les invariants hors-transcription deviennent **programmables** (`sha256`, `ls`),
+  ce que le SKILL.md officiel encourage — la friction manuelle du rituel maison
+  (vérifier hors-transcription) s'automatise.
+- **Frange irréductible** : « invite finale *visible et isolée* » est un jugement de
+  présentation. Le SKILL.md officiel assume cette limite (« don't force assertions
+  onto things that need human judgment ») → reste qualitatif (eval-viewer), pas
+  pass/fail. C'est la seule part de la doctrine maison qui ne se réduit pas à une
+  assertion.
+
+**Inconnue (b) — l'outil tient-il à l'exécution ? — reste OUVERTE.** Le plugin
+installé est une version légère (SKILL.md seul, sans `agents/`, `scripts/`,
+`eval-viewer/`) ; aucun run Executor/Grader n'a été exécuté. Le run live est
+planifié dans [`TODO.md`](../TODO.md) (« Run live du Skill Creator officiel »),
+déclenché par le prochain besoin réel d'eval (teach éprouvé, ou corpus `/grill`).
+Cet ADR passe en `Accepted` (Option C) **après** ce run live — pas avant.
+
 ## Notes de vérification (source primaire)
 
 - Plugin officiel : `anthropics/claude-plugins-official`, chemin

@@ -1,0 +1,39 @@
+{
+  "skill_name": "grill",
+  "evals": [
+    {
+      "id": 1,
+      "name": "output-no-file-written",
+      "prompt": "/grill",
+      "expected_output": "A single copy-pasteable 'Decisions to formalize' block, with ADR items ordered parents-before-children and a suggested relation when there is a dependency, followed by a visible isolated prompt asking the human to copy the list. No file is written, no ADR created, prd.md is left byte-identical.",
+      "files": ["prd.md"],
+      "assertions": [
+        {
+          "text": "Output contains a single copy-pasteable 'Decisions to formalize' block",
+          "passed": null,
+          "evidence": ""
+        },
+        {
+          "text": "ADR-tagged items are ordered topologically (parents before children) with a suggested relation (Refines/Extends/Constrains) on dependent items",
+          "passed": null,
+          "evidence": ""
+        },
+        {
+          "text": "A visible, isolated final prompt asks the human to copy the list before proceeding",
+          "passed": null,
+          "evidence": ""
+        },
+        {
+          "text": "No new file appears in the CWD after the run (checked against the filesystem, not the transcript)",
+          "passed": null,
+          "evidence": ""
+        },
+        {
+          "text": "prd.md is byte-identical before and after the run (sha256 unchanged)",
+          "passed": null,
+          "evidence": ""
+        }
+      ]
+    }
+  ]
+}
