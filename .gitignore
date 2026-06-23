@@ -4,3 +4,6 @@ __pycache__/
 
 # Audit metadata — local working notes, not part of the repo
 AUDIT_PROGRESS.md
+
+# Handoff documents — design source notes, disposable once implemented
+docs/handoff/
