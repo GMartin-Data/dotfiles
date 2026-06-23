@@ -66,6 +66,22 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
 > Cinq commands ont un sous-dossier compagnon (`commands/<name>/`) qui matérialise la **progressive disclosure**. Deux types d'assets y vivent : `evals/` (corpus de tests A→B→A — interne au repo, non symlinké) pour `adr`, `claude-md`, `grill`, `planning`, `prd` ; et `reference/` (assets runtime — chargés par la command à l'exécution, symlinké) pour `claude-md` uniquement. Pattern symétrique à celui des skills, mais conservé en command pour préserver l'invocation explicite.
 
+### Ajouter une command — checklist multi-fichiers
+
+Créer une command touche **quatre lieux**. En oublier un laisse une dérive silencieuse (command absente d'un bootstrap neuf, ou doc périmée). À refaire à chaque ajout :
+
+1. **Source** — écrire `claude/commands/<name>.md` (+ `commands/<name>/evals/` si corpus de tests).
+2. **Symlink** — déclarer la ligne `link` dans `install.sh`, puis créer le symlink effectif (`ln -sfn`).
+3. **README racine** — ajouter `<name>` à la ligne `**Commands**` de `README.md`.
+4. **README claude** — ajouter `<name>` à la ligne `**Commands** (N)` de ce fichier, **incrémenter le compteur `(N)`**, et étendre la note des sous-dossiers compagnons si la command a un `evals/`.
+
+Test de parité (sortie vide = OK) :
+
+```bash
+diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
+     <(grep -oP 'commands/\K[a-z-]+\.md' install.sh | sed 's/\.md$//' | sort -u)
+```
+
 **Skills** (3) : `coach-pedagogique`, `code-mentor`, `dp-coach`
 
 **Agents** (2) : `learning-tracker` (stateful, mémoire persistante), `tech-watch-scorer` (stateless)

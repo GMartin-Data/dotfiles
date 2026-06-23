@@ -39,3 +39,17 @@
 **Pourquoi :** procéder par tâtonnements crée des décisions oubliées et des redécouvertes coûteuses. L'audit produit le repère stable nécessaire pour aiguiller les décisions futures sans réinventer à chaque fois.
 
 **Réf :** discussion session karpathy-inspired-guidelines du 2026-05-27.
+
+---
+
+## Check de parité automatisé pour l'ajout d'une command
+
+**Quand :** si l'oubli multi-fichiers se reproduit **malgré** la checklist manuelle (une 3e occurrence après celles de la session grill). Pas avant — la checklist est le palier léger, déjà en place.
+
+**Quoi :** un garde-fou exécutable (script `scripts/check-commands-parity.sh`, voire hook PreToolUse/commit) qui vérifie la parité `claude/commands/*.md` ↔ lignes `link` d'`install.sh` ↔ ligne `**Commands**` des deux README, et échoue en listant les écarts.
+
+**Pourquoi attendre :** YAGNI / build before automating. La checklist « Ajouter une command » de `claude/README.md` (palier 1, déjà écrite) est le test minimal. On n'écrit le garde-fou exécutable que si la discipline humaine prouve son insuffisance — sinon c'est de l'automatisation spéculative pour un repo mono-utilisateur.
+
+**Comment :** le test de parité source ↔ install.sh est déjà esquissé dans la checklist de `claude/README.md` (one-liner `diff`). L'étendre aux deux README et l'empaqueter en script appelable. Décider à ce moment-là entre script manuel (`maintain`-style) et hook bloquant.
+
+**Réf :** session grill-implementation du 2026-06-23 — trois oublis successifs (symlink `install.sh`, `README.md`, `claude/README.md`) en ajoutant `/grill`, racine commune avec les oublis `adr`/`planning` des sessions antérieures.
