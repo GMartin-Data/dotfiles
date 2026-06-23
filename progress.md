@@ -1,5 +1,5 @@
 ## Dernière mise à jour
-Date : 2026-06-23 11:20
+Date : 2026-06-23 11:45
 Session : 68f0e867-7529-4404-85a1-e7ccf74c3cc5 (grill-implementation)
 
 ## Tâches complétées
@@ -27,10 +27,21 @@ Session : 68f0e867-7529-4404-85a1-e7ccf74c3cc5 (grill-implementation)
 - **`install.sh` : parité restaurée** — `adr.md` et `planning.md` manquaient ;
   un bootstrap neuf aurait laissé `/adr` et `/planning` sans symlink. 10/10
   commands source désormais déclarées. Commit `88020d2`
+- **README synchronisés avec les 10 commands réelles** — `README.md` et
+  `claude/README.md` listaient 7 commands ; ajout de `adr`, `grill`, `planning`,
+  compteur `(7)`→`(10)`, et note des sous-dossiers compagnons corrigée (5
+  commands ont un `evals/`, seul `claude-md` a un `reference/`). Commit `7311fcc`
+- **Immunisation contre l'oubli multi-fichiers** — racine commune des oublis
+  `install.sh`/README de cette session et des sessions `adr`/`planning` :
+  ajouter une command est un geste multi-fichiers sans checklist. Palier 1 (fait)
+  : checklist « Ajouter une command » + one-liner de parité dans
+  `claude/README.md`. Palier 2 (différé) : check de parité automatisé versé à
+  `TODO.md`, déclenché si l'oubli se reproduit malgré la checklist. Commit
+  `b5d6236`
 
 ## En cours
 
-Rien — 5 commits committés, working tree propre (seul
+Rien — 8 commits committés, working tree propre (seul
 `docs/rpi-audit-findings.md` reste untracked, hors périmètre).
 
 ## Prochaines étapes
@@ -65,6 +76,11 @@ Aucun (pas de PRD pour ce repo de configuration).
   notes de travail jetables une fois l'implémentation terminée.
 - **`install.sh` mis à jour hors périmètre `/grill`** : l'écart
   `adr.md`/`planning.md` existait avant cette session ; corrigé en commit séparé.
+- **Répartition checklist vs TODO selon la nature** : la checklist d'ajout de
+  command est une *convention durable* (→ `claude/README.md`, faite maintenant car
+  besoin déjà prouvé) ; le check automatisé est une *évolution différée
+  conditionnelle* (→ `TODO.md`, YAGNI tant que la checklist suffit). Chaque chose
+  où sa nature l'appelle, pas les deux dans `TODO.md`.
 
 ## Blocages
 
