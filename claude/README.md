@@ -62,7 +62,16 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
 ## Composants actuels
 
-**Commands** (9) : `adr`, `catchup`, `claude-md`, `grill`, `immunize`, `planning`, `prd`, `progress`, `tech-watch`
+**Commands** (9) :
+- `adr` — crée un ADR atomique (mode interview ou capture), avec supersession bidirectionnelle
+- `catchup` — reconstruit le contexte de travail après `/clear` ou reprise de session
+- `claude-md` — interview structurée produisant un CLAUDE.md projet (détection d'instance Cruft/PRD)
+- `grill` — revue adverse d'un PRD/PLAN avant gel ; lève implicites et tensions, ne modifie aucun artefact
+- `immunize` — consolide `lessons-inbox.md` : promeut les patterns récurrents, archive le bruit
+- `planning` — génère PLAN.md (architecture cible + phases) à partir de PRD + CLAUDE.md
+- `prd` — interview structurée produisant un PRD (détection d'instance Cruft)
+- `progress` — sauvegarde un checkpoint d'avancement dans `progress.md` (human-in-the-loop)
+- `tech-watch` — pipeline de veille techno : fetch, score et classe des sources
 
 > Cinq commands ont un sous-dossier compagnon (`commands/<name>/`) qui matérialise la **progressive disclosure**. Deux types d'assets y vivent : `evals/` (corpus de tests A→B→A — interne au repo, non symlinké) pour `adr`, `claude-md`, `grill`, `planning`, `prd` ; et `reference/` (assets runtime — chargés par la command à l'exécution, symlinké) pour `claude-md` uniquement. Pattern symétrique à celui des skills, mais conservé en command pour préserver l'invocation explicite.
 
@@ -72,8 +81,8 @@ Créer une command touche **quatre lieux**. En oublier un laisse une dérive sil
 
 1. **Source** — écrire `claude/commands/<name>.md` (+ `commands/<name>/evals/` si corpus de tests).
 2. **Symlink** — déclarer la ligne `link` dans `install.sh`, puis créer le symlink effectif (`ln -sfn`).
-3. **README racine** — ajouter `<name>` à la ligne `**Commands**` de `README.md`.
-4. **README claude** — ajouter `<name>` à la ligne `**Commands** (N)` de ce fichier, **incrémenter le compteur `(N)`**, et étendre la note des sous-dossiers compagnons si la command a un `evals/`.
+3. **README racine** — ajouter `<name>` à la ligne `**Commands**` de `README.md` (listing nominal court).
+4. **README claude** — ajouter une puce `<name> — <glose d'une ligne>` à la liste `**Commands** (N)` de ce fichier, **incrémenter le compteur `(N)`**, et étendre la note des sous-dossiers compagnons si la command a un `evals/`.
 
 Test de parité (sortie vide = OK) :
 
@@ -82,7 +91,11 @@ diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
      <(grep -oP 'commands/\K[a-z-]+\.md' install.sh | sed 's/\.md$//' | sort -u)
 ```
 
-**Skills** (4) : `teach`, `coach-pedagogique`, `code-mentor`, `dp-coach`
+**Skills** (4) — couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/responsibility-matrix.md), section Couche learning) :
+- `teach` — enseigne un concept/compétence ; colonne vertébrale stateful (workspace dédié, human-triggered)
+- `code-mentor` — déchiffre du code *existant* par questionnement socratique ; produit des flashcards Anki
+- `coach-pedagogique` — accompagne la *livraison* d'un vrai artefact par scaffolding dégressif (niveaux 1-4)
+- `dp-coach` — drille une sous-compétence par exécution + analyse déterministe du code (deliberate practice)
 
 **Agents** (1) : `tech-watch-scorer` (stateless)
 
