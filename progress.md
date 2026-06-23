@@ -1,4 +1,94 @@
 ## Dernière mise à jour
+Date : 2026-06-23 14:45
+Session : 4e0e35cc-bdad-40fa-8836-fbf7fb421aec (learning-skill)
+
+## Tâches complétées
+
+- **Refonte couche learning — architecture teach adoptée**. 5 ADRs (0004-0008,
+  tous Accepted), 6 commits atomiques sur main. Handoff complet exécuté.
+
+- **ADR-0004** : `reference/` en Markdown (chaîne PKM), `lessons/` HTML Tufte
+  conservé. Seul écart assumé au design Pocock. Commit `5fb08d3` (groupe)
+
+- **ADR-0005** : rétention unifiée via Anki — quiz HTML in-lesson reclassés
+  fluency-only ; `teach` réutilise `code-mentor/scripts/anki-export.py` et son
+  format sans duplication. Commit `5fb08d3`
+
+- **ADR-0006** : `learning-records` = source d'état unique. `coach-pedagogique`
+  garde son `PROGRESS.md` intra-projet (nature distincte : scaffolding-sur-
+  livraison), émet en plus un record de synthèse unidirectionnel. Option A
+  tranchée par l'humain. Commit `5fb08d3`
+
+- **ADR-0007** (parent) : `teach` adopté comme colonne vertébrale stateful,
+  `learning-tracker` tué, motif 4 outils / 1 état / 1 rétention, `dp-coach`
+  conservé (niche distincte confirmée par l'humain). Commit `5fb08d3`
+
+- **ADR-0008** : mécanique du pont d'état — record proposé/affiché en bloc
+  copiable, jamais écrit hors CWD (symétrique au pattern existant code-mentor +
+  précédent ADR-0003). Mécanique tranchée par l'humain. Commit `6e9d8a6`
+
+- **Skill `teach` créée** (`claude/skills/teach/` — SKILL.md + 4 fichiers de
+  format). Adaptée des 3 ADRs, pédagogie Pocock conservée verbatim ailleurs.
+  Symlink runtime actif + déclaré dans `install.sh`. Commit `cb38733`
+
+- **`learning-tracker` supprimé** : command, agent, hook SessionStart,
+  entrée settings.json, 4 lignes install.sh, symlinks runtime. État (`MEMORY.md`
+  + `completed-topics.md`) archivé dans `tasks/learning-tracker-archive/` avec
+  README de provenance (suivi actif `methodology-trial` découvert à l'exécution
+  — surfacé plutôt que détruit). Commit `2f3eced`
+
+- **3 outils branchés sur le pont d'état** (`code-mentor`, `dp-coach`,
+  `coach-pedagogique`) : chacun gagne une étape de fin de session proposant un
+  learning-record copiable. Commit `6e9d8a6`
+
+- **Matrice de responsabilité étendue** : section « Couche learning » ajoutée
+  (table non-overlap 4 outils, 2 sources de vérité, backlinks ADRs). Commit
+  `0929944`
+
+- **Confrontation best practices shanraisshan** : frontmatter conforme (champs,
+  caps, disable-model-invocation) + convention maison (3 skills existantes, même
+  pattern). Corps aligné Pocock qui fait autorité. Aucun chantier supplémentaire.
+
+## En cours
+
+Rien — working tree propre (`docs/rpi-audit-findings.md` untracked, hors
+périmètre).
+
+## Prochaines étapes
+
+1. **Re-router `methodology-trial`** (archive `tasks/learning-tracker-archive/`)
+   — prochaine étape : `/claude-md` sur memory-grep + Phase 1a implémentation.
+   Branches ouvertes : étapes 2-4 (ingestion API, webscraping, stack hors-Python).
+   À coller dans progress.md du projet concerné ou ouvrir ce projet en session.
+2. **Créer le workspace teach** pour la vraie mission AI Engineer (repo dédié,
+   `MISSION.md` à rédiger) — déclenché à la première vraie session d'apprentissage.
+3. **Campagne evals A→B→A `/grill`** — 5 evals spécifiées, aucune exécutée.
+4. **Campagne evals A→B→A `/adr` et `/planning`** — état inchangé.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Pont d'état (ADR-0006) — Option A** : learning-records source unique,
+  `PROGRESS.md` de coach-pedagogique conservé comme état de nature distincte
+  (scaffolding-sur-livraison), pont unidirectionnel par record de synthèse.
+- **dp-coach** : survit comme niche distincte (exécution+analyse déterministe
+  ≠ quiz conceptuel).
+- **Mécanique pont (ADR-0008)** : record proposé/copié, jamais écrit hors CWD.
+- **`MEMORY.md` learning-tracker** : archivé (pas détruit) — suivi `methodology-trial`
+  actif découvert à l'exécution, décision d'archivage plutôt que de destruction.
+- **Best practices** : acter le verdict (conforme), pas de chantier séparé.
+- **`reference/` en Markdown** (ADR-0004) : seul écart assumé au design Pocock.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-23 11:45
 Session : 68f0e867-7529-4404-85a1-e7ccf74c3cc5 (grill-implementation)
 
