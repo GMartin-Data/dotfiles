@@ -41,6 +41,8 @@ link "$DOTFILES_DIR/claude/commands/tech-watch.md"  "$HOME/.claude/commands/tech
 link "$DOTFILES_DIR/claude/commands/learning-tracker.md" "$HOME/.claude/commands/learning-tracker.md"
 link "$DOTFILES_DIR/claude/commands/claude-md.md"   "$HOME/.claude/commands/claude-md.md"
 link "$DOTFILES_DIR/claude/commands/prd.md"         "$HOME/.claude/commands/prd.md"
+link "$DOTFILES_DIR/claude/commands/planning.md"    "$HOME/.claude/commands/planning.md"
+link "$DOTFILES_DIR/claude/commands/adr.md"         "$HOME/.claude/commands/adr.md"
 link "$DOTFILES_DIR/claude/commands/grill.md"       "$HOME/.claude/commands/grill.md"
 
 # Commands — runtime reference assets (progressive disclosure).
