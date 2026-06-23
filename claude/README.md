@@ -82,7 +82,7 @@ diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
      <(grep -oP 'commands/\K[a-z-]+\.md' install.sh | sed 's/\.md$//' | sort -u)
 ```
 
-**Skills** (3) : `coach-pedagogique`, `code-mentor`, `dp-coach`
+**Skills** (4) : `teach`, `coach-pedagogique`, `code-mentor`, `dp-coach`
 
 **Agents** (1) : `tech-watch-scorer` (stateless)
 

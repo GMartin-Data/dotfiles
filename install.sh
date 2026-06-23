@@ -55,6 +55,7 @@ link "$DOTFILES_DIR/claude/hooks/protect_env.py"             "$HOME/.claude/hook
 link "$DOTFILES_DIR/claude/hooks/ruff-check.sh"              "$HOME/.claude/hooks/ruff-check.sh"
 
 # Skills (dossiers entiers — chaque skill est un dossier isolé qu'on contrôle)
+link "$DOTFILES_DIR/claude/skills/teach"        "$HOME/.claude/skills/teach"
 link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mentor"
 link "$DOTFILES_DIR/claude/skills/dp-coach"     "$HOME/.claude/skills/dp-coach"
 link "$DOTFILES_DIR/claude/skills/coach-pedagogique" "$HOME/.claude/skills/coach-pedagogique"

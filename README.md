@@ -101,7 +101,7 @@ Configuration versionnée et portable entre machines. Architecture détaillée e
 
 **Hooks** : block-force-push, block-rm-rf, protect_env (PreToolUse), ruff-check (PostToolUse)
 
-**Skills** : coach-pedagogique, code-mentor, dp-coach
+**Skills** : teach, coach-pedagogique, code-mentor, dp-coach
 
 **Subagents** : tech-watch-scorer (stateless)
 
