@@ -76,6 +76,30 @@ En fin de session :
 3. Identifie ensemble les points clés à retenir (3-5 max)
 4. Fusionne le buffer de session avec d'éventuelles flashcards de synthèse
 5. Affiche les flashcards générées et propose l'export
+6. **Propose un learning-record** pour le workspace `teach` (cf. ci-dessous)
+
+### Émettre un learning-record (pont d'état)
+
+Le workspace `teach` détient la source de vérité unique de la progression
+(cf. [`adr/0006`](../../../adr/0006-pont-etat-learning-records.md) et
+[`adr/0008`](../../../adr/0008-mecanique-pont-record-propose.md)). Cette skill ne
+tourne pas dans ce workspace ; elle ne l'écrit donc **jamais** elle-même.
+
+Si la session a produit un insight non-trivial démontré par l'apprenant (et
+seulement dans ce cas — pas pour du simple survol), affiche en fin de session un
+**bloc copiable** contenant un learning-record prêt à coller :
+
+```
+# <titre court — deviendra le NNNN-slug.md>
+
+<1-3 phrases : ce qui a été compris et pourquoi ça change la suite>
+
+Source: code-mentor session, <date>
+```
+
+Format : [LEARNING-RECORD-FORMAT.md](../teach/LEARNING-RECORD-FORMAT.md). Tu
+**proposes** le record ; l'humain le colle dans le workspace teach de la mission
+concernée. Ne force pas, n'écris pas de fichier hors du CWD.
 
 ## Documentation externe (Context7)
 

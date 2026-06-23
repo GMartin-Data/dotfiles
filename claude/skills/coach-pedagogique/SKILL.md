@@ -40,6 +40,38 @@ Accompagner selon le niveau du concept concerné (cf. `references/niveaux.md`).
 
 Mettre à jour `PROGRESS.md` après chaque tâche complétée.
 
+`PROGRESS.md` vit à la racine du **vrai projet** (le CWD) : c'est l'état de
+scaffolding *sur cette livraison* — niveaux 1-4, table de concepts, historique de
+sessions. Volatile, intra-livraison. Cette skill l'écrit directement (c'est son
+CWD).
+
+### Step 5 — Émettre un learning-record de synthèse (pont d'état)
+
+Le workspace `teach` détient la source de vérité unique de la **progression**
+d'apprentissage (cf.
+[`adr/0006`](../../../adr/0006-pont-etat-learning-records.md) et
+[`adr/0008`](../../../adr/0008-mecanique-pont-record-propose.md)). C'est un état de
+**nature différente** de `PROGRESS.md` : un insight de progression durable, pas du
+scaffolding-sur-projet. Les deux ne doivent jamais se dupliquer.
+
+Le workspace teach n'est pas le CWD (on est dans le vrai projet). Cette skill ne
+l'écrit donc **jamais**. En fin de session de coaching, si l'apprenant a démontré
+une vraie montée en compétence (p. ex. franchissement de niveau sur un concept en
+livrant l'artefact), affiche un **bloc copiable** de synthèse :
+
+```
+# <concept — maîtrise démontrée par la livraison>
+
+<1-2 phrases : compétence démontrée, niveau atteint, via quel livrable (Y)>
+
+Source: coach-pedagogique session, <date>
+```
+
+Format : [LEARNING-RECORD-FORMAT.md](../teach/LEARNING-RECORD-FORMAT.md). Tu
+**proposes** le record ; l'humain le colle dans le workspace teach concerné.
+`PROGRESS.md` (scaffolding) et ce record (progression) restent strictement
+distincts.
+
 ---
 
 ## Règle absolue

@@ -95,6 +95,31 @@ Format :
 - 2+ échecs → plus facile ou sous-compétence plus petite
 - Oscillation → niveau correct
 
+### 7. Émettre un learning-record (pont d'état)
+
+Cette skill est amnésique entre invocations (cf. Limitations connues). Le pont
+d'état résout cette amnésie côté progression : le workspace `teach` détient la
+source de vérité unique (cf.
+[`adr/0006`](../../../adr/0006-pont-etat-learning-records.md) et
+[`adr/0008`](../../../adr/0008-mecanique-pont-record-propose.md)).
+
+Quand une sous-compétence **franchit un seuil** durant la série (p. ex. « résout
+désormais les drills window-functions sans aide » après 3+ réussites consécutives),
+affiche en fin de série un **bloc copiable** :
+
+```
+# <sous-compétence — ce qui est désormais acquis>
+
+<1-2 phrases : seuil franchi, niveau atteint, ce que ça débloque>
+
+Source: dp-coach session, <date>
+```
+
+Format : [LEARNING-RECORD-FORMAT.md](../teach/LEARNING-RECORD-FORMAT.md). Tu
+**proposes** le record ; l'humain le colle dans le workspace teach concerné. Cette
+skill n'écrit jamais hors de son CWD. N'émets un record que pour un franchissement
+réel — pas pour une simple réussite isolée.
+
 ## Références
 
 - `references/python-drills.md` — Exercices Python
