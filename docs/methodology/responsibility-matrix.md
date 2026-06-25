@@ -53,6 +53,8 @@ Avant d'écrire un contenu nouveau, se poser :
 
 ## Cycles d'écriture par phase de projet
 
+> **Track léger (petits projets personnels)** — un projet mono-utilisateur, sans collaborateurs, sans distribution publique et à durée de vie non-critique est exempté de PLAN.md et d'ADR ; il vit sur CLAUDE.md + progress.md. Critère et conséquences complets : [`adr/0011`](../../adr/0011-track-leger-petits-projets.md). Les cycles ci-dessous décrivent le workflow complet, applicable aux autres projets.
+
 ### Phase 0 — Définition (one-shot par projet)
 - Interview `/claude-md` → CLAUDE.md (stable)
 - Interview `/prd` → PRD.md (baseline du produit cible, révisable par ADR)
