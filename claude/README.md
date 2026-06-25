@@ -91,6 +91,22 @@ diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
      <(grep -oP 'commands/\K[a-z-]+\.md' install.sh | sed 's/\.md$//' | sort -u)
 ```
 
+### Ajouter une skill — checklist multi-fichiers
+
+Une skill est un **dossier** (`skills/<name>/SKILL.md`), pas un fichier — sinon les quatre lieux sont les mêmes qu'une command. En oublier un laisse la même dérive silencieuse :
+
+1. **Source** — écrire `claude/skills/<name>/SKILL.md` (frontmatter `name`/`description` + corps). Le dossier entier est l'unité ; les assets compagnons y vivent.
+2. **Symlink** — déclarer la ligne `link` du **dossier** dans `install.sh` (bloc Skills), puis créer le symlink effectif (`ln -sfn`).
+3. **README racine** — ajouter `<name>` à la ligne `**Skills**` de `README.md` (listing nominal court).
+4. **README claude** — ajouter une puce `<name> — <glose>` sous la famille pertinente de la liste `**Skills** (N)` de ce fichier, et **incrémenter le compteur `(N)`**.
+
+Test de parité (sortie vide = OK) :
+
+```bash
+diff <(ls -d claude/skills/*/ | xargs -n1 basename | sort) \
+     <(grep -oP 'skills/\K[a-z-]+' install.sh | sort -u)
+```
+
 **Skills** (5) :
 
 Couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/responsibility-matrix.md), section Couche learning) :
