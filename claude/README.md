@@ -91,11 +91,16 @@ diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
      <(grep -oP 'commands/\K[a-z-]+\.md' install.sh | sed 's/\.md$//' | sort -u)
 ```
 
-**Skills** (4) — couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/responsibility-matrix.md), section Couche learning) :
+**Skills** (5) :
+
+Couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/responsibility-matrix.md), section Couche learning) :
 - `teach` — enseigne un concept/compétence ; colonne vertébrale stateful (workspace dédié, human-triggered)
 - `code-mentor` — déchiffre du code *existant* par questionnement socratique ; produit des flashcards Anki
 - `coach-pedagogique` — accompagne la *livraison* d'un vrai artefact par scaffolding dégressif (niveaux 1-4)
 - `dp-coach` — drille une sous-compétence par exécution + analyse déterministe du code (deliberate practice)
+
+Revue :
+- `code-review` — première passe sur le diff (bugs, sécurité, invariants, conventions) ; **surcharge** la bundled, signale sans appliquer (cf. [ADR-0010](../adr/0010-surcharge-code-review-user-scope.md))
 
 **Agents** (1) : `tech-watch-scorer` (stateless)
 
