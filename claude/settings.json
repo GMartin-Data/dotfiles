@@ -67,5 +67,6 @@
   },
   "alwaysThinkingEnabled": false,
   "effortLevel": "xhigh",
-  "theme": "dark-daltonized"
+  "theme": "dark-daltonized",
+  "tui": "fullscreen"
 }
