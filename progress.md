@@ -1,4 +1,74 @@
 ## Dernière mise à jour
+Date : 2026-06-25 12:50
+Session : e4803760-f2e4-4101-87e2-0fe29a19b618 (implement-code-review-reloaded)
+
+## Tâches complétées
+
+- **Skill `/code-review` surchargée (user-scope) créée et livrée.** Première passe
+  de revue qui surcharge la bundled `/code-review` (vérifié : skill user-scope >
+  bundled sur nom identique). Signale uniquement, jamais d'auto-fix (`allowed-tools`
+  sans Edit/Write → garde-fou structurel). Effort `high` par défaut. Encode mes
+  conventions (structlog/pathlib/type-hints, Kimball/ref(), Terraform-variables), la
+  frontière hooks/simplify (pas de redondance ruff), et la reconnaissance de la
+  complexité délibérée (fail-closed, validation redondante à source unique).
+  Délégation des findings `(ADR)` par instruction (pattern /grill, ADR-0003), jamais
+  par invocation. Commit `03165b1`
+
+- **ADR-0010 créé puis Accepted** : surcharge user-scope de /code-review. Mode
+  capture (délibération dans le fil). 4 arbitrages tranchés : frontière revue/hooks/
+  simplify · reconnaissance complexité délibérée · ledger→/adr par instruction ·
+  effort high. Commits `272dc08` (Proposed) → `39edfe2` (Accepted, validé à l'usage).
+
+- **État des lieux vérifié contre le réel** (v2.1.191) : /code-review signale par
+  défaut (--fix requis pour appliquer), /simplify = cleanup-only séparé depuis
+  v2.1.154. Hooks cartographiés (ruff = lint/format ; force-push/rm-rf/protect_env =
+  runtime) — aucun ne fait de revue correction/sécurité du diff.
+
+- **Calibrage contre un diff réel** (search-work-app, commit G2 `45b65b3`) : run n°1
+  = 1 faux positif (None-coords, alors que _parse droppe déjà les None) ; correction
+  ciblée « résoudre tout doute vérifiable avant d'émettre » ; run n°2 = 0 faux
+  positif, complexité délibérée reconnue 3/3, 0 vrai finding raté. Commit `03165b1`
+
+- **Intégration repo** : ligne symlink dans `install.sh`, listing skill dans
+  `claude/README.md` (compteur 4→5, famille « Revue » distincte de la couche
+  learning). Commit `03165b1`.
+
+- **Run réel de la skill sur "geocode-failure hardening diff"** (search-work-app) :
+  résolu à l'item backlog H1 **non implémenté** → la skill s'est arrêtée sans
+  inventer de revue (procédure §1 respectée). A confirmé au passage que H1 vise un
+  vrai défaut existant (geocode_city hors try/except → 500 brut au lieu du 502 D2).
+
+## En cours
+
+Rien — working tree propre, 3 commits poussés sur origin/main (`b75b414..39edfe2`).
+
+## Prochaines étapes
+
+1. **Éprouver `/code-review` à l'usage** sur de vrais diffs de projets variés
+   (Python applicatif, dbt, Terraform) — vérifier la frontière hooks et le taux de
+   faux positifs hors du cas search-work-app.
+2. **(report des étapes de la session précédente, inchangées)** Re-router
+   `methodology-trial` ; créer le workspace teach ; run live Skill Creator
+   (→ trancher ADR-0009) ; campagnes evals A→B→A `/grill`, `/adr`, `/planning`.
+
+## Décisions prises
+
+- **Surcharge plutôt que command à nom distinct** (ADR-0010, Option B) : surcharge le
+  réflexe /code-review sans doublon ; la skill user-scope l'emporte sur la bundled.
+- **Signale, n'applique jamais** : garde-fou rendu structurel (pas d'Edit/Write dans
+  allowed-tools), pas seulement déclaratif. Le fix-avec-nettoyage reste à /simplify.
+- **Ledger→/adr par instruction, pas par invocation** : applique le précédent
+  ADR-0003 (une command ne pilote pas une autre) à la famille des commands de revue.
+- **Procédure durcie après calibrage** : interdiction des findings spéculatifs
+  vérifiables dans le repo — résoudre le doute par lecture avant d'émettre.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-23 16:30
 Session : 4e0e35cc-bdad-40fa-8836-fbf7fb421aec (learning-skill — suite)
 
