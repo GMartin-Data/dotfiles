@@ -1,4 +1,56 @@
 ## Dernière mise à jour
+Date : 2026-06-25 14:15
+Session : e4803760-f2e4-4101-87e2-0fe29a19b618 (implement-code-review-reloaded — clôture)
+
+## Tâches complétées
+
+- **Documentation entièrement synchronisée** — audit des 5 pièces documentaires après
+  livraison de la skill. Deux dérives corrigées : README racine oubliait `code-review`
+  dans le listing Skills (ligne 104) ; README claude n'avait pas de checklist pour
+  l'ajout d'une skill (seulement pour les commands). Ajout de la section « Ajouter une
+  skill — checklist multi-fichiers » avec test de parité (`diff ls-d / grep install.sh`)
+  vérifié fonctionnel. Tests de parité skills ET commands passent (sortie vide). Commit
+  `a68ec63`.
+
+- **`/immunize` exécuté** — consolidation de `tasks/lessons-inbox.md` (6 entrées,
+  plage 2026-04-27 → 2026-05-26). 2 règles promues en `## Global Do NOT` (3 → 5) :
+  (1) pas de `.claudeignore` / Read-Glob-Grep non `.gitignore`-aware, (2) conventions
+  figées en session = contraintes dures pour les phases suivantes. 4 entrées archivées
+  dans `tasks/lessons-archive.md` (créé). Inbox vidée. Commit `60308da`.
+
+## En cours
+
+Rien — working tree propre, `origin/main` à jour (`60308da`).
+
+## Prochaines étapes
+
+1. **`/insights` du 2026-06-26** (demain) — vérifier le critère de succès de la règle
+   `State Verification` : la catégorie « Hallucinated state » doit avoir baissé ou
+   disparu du top-3 friction. Entrée archivée dans `lessons-archive.md` pour traçabilité.
+2. **Éprouver `/code-review` sur des diffs variés** (dbt, Terraform) — compléter le
+   calibrage au-delà du cas Python search-work-app.
+3. **(report session précédente)** Re-router `methodology-trial` ; workspace teach ;
+   run live Skill Creator (→ trancher ADR-0009) ; campagnes evals `/grill`/`/adr`/`/planning`.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Checklist skill distincte de la checklist command** : une skill est un dossier
+  (pas un fichier `.md`), le test de parité est différent — méritait sa propre section.
+- **`lessons-archive.md` créé** (n'existait pas) : les 4 entrées y sont versées
+  avec contenu intégral + note d'archivage, conformément à la contrainte
+  « jamais supprimer sans archiver ».
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-25 12:50
 Session : e4803760-f2e4-4101-87e2-0fe29a19b618 (implement-code-review-reloaded)
 
