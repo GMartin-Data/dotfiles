@@ -1,6 +1,6 @@
 # ADR-0010 : Surcharge user-scope de `/code-review` adaptée à mon workflow
 
-Status: Proposed
+Status: Accepted
 Date: 2026-06-25
 
 ## Contexte
