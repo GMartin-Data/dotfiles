@@ -1,5 +1,31 @@
 # TODO — Workflow PRD/progress/catchup
 
+## Évaluation de maturité (2026-06-28)
+
+Scoring des items différés avec la grille 3 axes du protocole `/insights` v3
+(Impact 1-3 / Coût 1-3 / Risque 1-3, sans score composite), augmentée d'une colonne
+**Déclencheur atteint ?** — un item à fort impact mais dont la condition n'est pas
+remplie ne doit pas être lancé (automatisation spéculative, contraire à YAGNI /
+build-before-automating).
+
+| Item | Impact | Coût | Risque | Déclencheur atteint ? |
+|---|:---:|:---:|:---:|---|
+| Hook `/clear` → force `/progress` | 2 | 2 | 3 | ❌ ~10 cycles manuels non comptés |
+| Check de parité commands automatisé | 1 | 2 | 1 | ❌ pas de 3ᵉ récurrence malgré la checklist |
+| Migrer PR template + skill `/pr` | 2 | 3 | 2 | 🟡 (a) prêt / (b) bloqué (workflow non finalisé) |
+| Audit « mettre de l'ordre » workflow | 3 | 3 | 2 | ❌ stabilité du workflow non atteinte |
+| Run live Skill Creator → ADR-0009 | 2 | 3 | 2 | ❌ pas de besoin réel d'eval survenu |
+
+**Verdict :** aucun item mûr à déclencher. Seul **(a)** de « Migrer PR template »
+(déplacement du `pull_request_template.md` vers le repo Cookiecutter, indépendant de
+la finalisation du workflow) a son déclencheur atteint — candidat « petit format »
+au prochain passage. Décision 2026-06-28 : respecter tous les différés (la grille
+confirme ce que les conditions de chaque item disaient déjà). Le fix
+`block-force-push.sh` (seul item à déclencheur « bug reproductible ») a été traité
+cette session, commit `595eef1`.
+
+---
+
 ## Évolution prévue : automatisation du checkpoint pré-clear
 
 **Quand :** après ~10 cycles manuels du workflow PRD → CLAUDE.md → progress → catchup.
