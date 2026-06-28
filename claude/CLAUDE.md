@@ -8,6 +8,11 @@
 - Respond in user's language (default: French)
 - All code, comments, docstrings, commits: English
 
+## Response Style
+- Keep each turn well under the output-token cap: lead with a 3-bullet (or short-table) summary, then ask before expanding into a long explanation.
+- Work in small increments — one logical step per turn — rather than emitting one very long response that risks hitting the API output-token limit and wiping the turn.
+- Long artifacts (code, docs, audits) belong in files written incrementally, not in a single oversized chat message.
+
 ## Version Control
 - Commits: Conventional Commits format (enforced by pre-commit)
 - Commit granularity: atomic per logical grouping (one purpose per commit, may span multiple files)
