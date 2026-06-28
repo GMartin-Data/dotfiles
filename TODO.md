@@ -94,29 +94,3 @@ méta-chantier qui ne doit pas le précéder.
 **Réf :** ADR-0009 (Proposed) ; essai pilote de traductibilité du 2026-06-23
 (session learning-skill) ; SKILL.md officiel vérifié dans
 `anthropics/claude-plugins-official`.
-
----
-
-## Corriger le faux positif de regex de `block-force-push.sh`
-
-**Quand :** prochaine passe sur les hooks — bug reproductible, pas conditionnel.
-
-**Quoi :** la regex `push\s+.*(-f|--force)|push\s+(-f|--force)` (ligne 7 de
-`claude/hooks/block-force-push.sh`) matche `-f` **n'importe où** après `push`, y
-compris dans un nom de branche. `git push origin feat/phase-1b-frontmatter` est
-bloqué à tort car « **-f**rontmatter » contient la sous-chaîne `-f`. Resserrer la
-regex pour ne matcher `-f`/`--force` que comme **option isolée** (précédée d'un
-espace/début et suivie d'un espace/fin), p. ex. `push\b.*(\s|^)(-f|--force)(\s|$)`,
-ou parser les tokens de la commande plutôt qu'un `grep` sur la chaîne brute.
-
-**Pourquoi :** un faux positif sur un `git push` légitime force des contournements
-(push nu via upstream préconfiguré) et érode la confiance dans le garde-fou. Le
-hook doit bloquer le geste dangereux exact (`--force` / `-f` en option), pas une
-sous-chaîne fortuite dans un argument.
-
-**Comment :** ajouter un cas de test (nom de branche contenant `-f`, p. ex.
-`feat/x-frontmatter`) qui doit passer, et un cas `git push --force` / `git push -f`
-qui doit être bloqué, avant de resserrer la regex. Vérifier aussi `--force-with-lease`.
-
-**Réf :** session memory-grep du 2026-06-25 — blocage rencontré en poussant
-`feat/phase-1b-frontmatter`.
