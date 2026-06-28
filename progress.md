@@ -1,4 +1,78 @@
 ## Dernière mise à jour
+Date : 2026-06-28 22:39
+Session : 6e0d1aa1-def3-48c6-87b3-9b0e639c25fc (insights-cycle-juin + fix block-force-push)
+
+## Tâches complétées
+
+- **Cycle `/insights` de juin bouclé (protocole v3).** Issue de rappel #1 (créée
+  le 26/06 par la routine remote) traitée de bout en bout : scoring 3 axes des 8
+  suggestions du rapport `report-2026-06-28-221616.html`, top 3 proposé, UNE action
+  retenue (`response-style-token-budget`). Étape 1 (relecture mois précédent) sautée
+  — première exécution, pas de note antérieure. Note `[INSIGHTS 2026-06-26]` écrite
+  dans `lessons-inbox.md` (critère : part de sessions wipe sur token-limit nettement
+  < 8/22 ; revue 2026-07-26). Commit `0dc22e6`.
+
+- **Action insights appliquée** : section `## Response Style` ajoutée au
+  `claude/CLAUDE.md` global (résumé 3 bullets avant développement, increments courts,
+  artefacts longs en fichiers) — attaque la friction n°1 du rapport (≥8/22 sessions
+  perdues sur erreurs API « 500 output token maximum »). Synchro `~/.claude/CLAUDE.md`
+  faite. Commit `0dc22e6`. Issue #1 fermée avec commentaire de clôture.
+
+- **Routine remote `/insights` améliorée** (`trig_01CMHnwqgZYkdspEHeY3KsFj`, via
+  RemoteTrigger) : le prompt demande désormais d'ajouter `Closes #N` au commit
+  d'application (fermeture auto de l'issue au push) et d'afficher le numéro de l'issue
+  créée. Reste activée, prochain run 26/07 7h30 Paris. (Friction identifiée ce cycle :
+  fermeture #1 manuelle car le commit ne référençait pas l'issue.)
+
+- **Fix `claude/hooks/block-force-push.sh` (TODO #6).** La regex matchait `-f`
+  n'importe où après `push` → tout nom de branche contenant la sous-chaîne (`-frontmatter`,
+  `-final`, `-feature`) bloqué à tort. Resserrée aux **tokens d'option** (word boundary) ;
+  `--force-with-lease` désormais bloqué aussi (décision humaine). Test-first : harness
+  15 cas validé rouge (11/15) → vert (15/15). Item retiré de `TODO.md`. Commit `595eef1`.
+  Ferme la boucle ouverte par `f49a62d` (qui avait documenté ce faux positif).
+
+## En cours
+
+Rien — working tree propre, 2 commits sur main (`0dc22e6`, `595eef1`).
+
+## Prochaines étapes
+
+1. **Revue action insights** : 2026-07-26, relire `[INSIGHTS 2026-06-26]` et vérifier
+   le critère (taguer `[VALIDÉ]` si atteint). La routine redéclenche une issue ce jour-là.
+2. **(optionnel)** Mettre à jour la mémoire `project_insights_routine.md` pour documenter
+   le mécanisme `Closes #N` ajouté au prompt de la routine.
+3. **TODO.md — items différés restants** (tous conditionnels, aucun déclenché) : hook
+   `/clear`→`/progress`, check de parité commands, migration PR template + skill `/pr`,
+   audit workflow agentique, run live Skill Creator (ADR-0009).
+4. Reliquat de fond inchangé : éprouver `/code-review` sur diffs variés ; re-router
+   `methodology-trial` ; workspace teach ; campagnes evals `/grill`/`/adr`/`/planning`.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Une seule action insights ce cycle** (`response-style-token-budget`) : règle de
+  discipline v3 non négociable. 🥈 audit des hooks et 🥉 flag des bugs de hooks reportés
+  au prochain `/insights` si toujours pertinents.
+- **`response-style-token-budget` placé dans `## Communication` voisinage** (nouvelle
+  section `## Response Style` après Communication) : cohérence thématique forme des réponses.
+- **`--force-with-lease` bloqué** par le hook (choix humain) : reste un push réécrivant
+  l'historique distant → traité comme `--force`.
+- **Correctif hook = resserrement regex, pas réécriture en parseur de tokens** : Simplicity
+  First — la regex à word boundary couvre le contrat validé (15/15) sans sur-ingénierie.
+  Limite résiduelle assumée et signalée : argument commençant littéralement par `-f`.
+- **Fix `block-force-push` traité hors règle « une action/cycle »** : item `TODO.md`
+  indépendant à déclencheur « bug reproductible », distinct du cycle insights.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-25 14:15
 Session : e4803760-f2e4-4101-87e2-0fe29a19b618 (implement-code-review-reloaded — clôture)
 
