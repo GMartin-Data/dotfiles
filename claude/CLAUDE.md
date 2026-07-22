@@ -17,6 +17,7 @@
 - Commits: Conventional Commits format (enforced by pre-commit)
 - Commit granularity: atomic per logical grouping (one purpose per commit, may span multiple files)
 - Branch workflow: default to feature/fix branch → PR → main for any complex project. Exemptions (commits direct on main) must be declared in the project's CLAUDE.md
+- Feature-completion ritual: before opening the PR (or merging a feature branch), run `/code-review` on the branch diff and triage findings before merge. Human-triggered ritual — no hook/automation unless forgetting it proves recurrent. (adopted 2026-07-22)
 
 ## Session Discipline
 - Before /clear or ending a session: invoke `/progress` to checkpoint current state and next steps
