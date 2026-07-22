@@ -58,12 +58,19 @@ Avant d'écrire un contenu nouveau, se poser :
 ### Phase 0 — Définition (one-shot par projet)
 - Interview `/claude-md` → CLAUDE.md (stable)
 - Interview `/prd` → PRD.md (baseline du produit cible, révisable par ADR)
+- Avant gel du PRD : revue adverse `/grill` sur le PRD — fait surgir les décisions
+  implicites et les contradictions inter-sections qu'une relecture linéaire ne voit
+  pas. Les décisions candidates se résolvent (open questions du PRD) ou se
+  formalisent via `/adr` **avant** le gel.
 
 Les deux productions sont indépendantes en contenu et peuvent être menées dans n'importe quel ordre.
 
 ### Phase 1 — Planning (one-shot par projet)
 - Lit PRD + CLAUDE.md
 - Produit PLAN.md (semi-frozen)
+- Avant gel du PLAN : revue adverse `/grill` sur le PLAN (seconde invocation — un
+  artefact par invocation, jamais les deux). Mêmes débouchés : résolution ou `/adr`
+  avant gel.
 
 ### Phase 2 — Implementation (cycle répété)
 - Start session : `/catchup` lit progress.md (+ ADRs récents si pertinents)
@@ -82,6 +89,9 @@ Ordre canonique dans tous les cas :
 2. Le document cible est amendé en conséquence
 
 Jamais l'inverse (amender un document sans ADR justificatif = perte de traçabilité).
+
+`/grill` n'intervient **jamais** en Phase 3 : re-litiger un artefact gelé est hors
+de son scope. Un drift se traite par l'ordre canonique ci-dessus, pas par re-grill.
 
 ---
 
@@ -120,6 +130,7 @@ Jamais l'inverse (amender un document sans ADR justificatif = perte de traçabil
 - `/prd` produit un PRD allégé (8 sections : Problem, Goals, Non-goals, Users & scenarios, Acceptance criteria, Constraints, Open questions, Hors-cible). Pas de stack, pas d'archi, pas de phases d'impl.
 - `/claude-md` reste seule source de vérité stack et conventions.
 - `/planning` (nommée ainsi, pas `/plan` — collision avec built-in Claude Code) produit PLAN.md à partir de PRD + CLAUDE.md.
+- `/grill` stress-teste un PRD **ou** un PLAN avant gel (un artefact par invocation, type déduit du fichier). Ne modifie jamais l'artefact source, n'écrit aucun fichier ; délègue la formalisation des décisions candidates à `/adr` par instruction, jamais par invocation (cf. [`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)).
 - `/adr` produit un ADR atomique par invocation.
 - `/progress` et `/catchup` restent les outils de session, sans changement structurel.
 
