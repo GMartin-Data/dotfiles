@@ -12,7 +12,7 @@ build-before-automating).
 |---|:---:|:---:|:---:|---|
 | Hook `/clear` → force `/progress` | 2 | 2 | 3 | ❌ ~10 cycles manuels non comptés |
 | Check de parité commands automatisé | 1 | 2 | 1 | ❌ pas de 3ᵉ récurrence malgré la checklist |
-| Migrer PR template + skill `/pr` | 2 | 3 | 2 | 🟡 (a) prêt / (b) bloqué (workflow non finalisé) |
+| Migrer PR template + skill `/pr` | 2 | 3 | 2 | (a) ✅ fait 2026-07-22 / (b) bloqué (workflow non finalisé) |
 | Audit « mettre de l'ordre » workflow | 3 | 3 | 2 | ❌ stabilité du workflow non atteinte |
 | Run live Skill Creator → ADR-0009 | 2 | 3 | 2 | ❌ pas de besoin réel d'eval survenu |
 
@@ -41,7 +41,7 @@ cette session, commit `595eef1`.
 ## Migrer PR template vers python-project-template + créer skill `/pr`
 
 **Quoi :**
-- (a) `.github/pull_request_template.md` (anciennement dans `scaffolds/python-uv/`) doit vivre dans le repo Cookiecutter `GMartin-Data/python-project-template`, sous `{{ cookiecutter.project_slug }}/.github/`
+- (a) ✅ **Fait le 2026-07-22** — `pull_request_template.md` migré dans le repo Cookiecutter sous `{{ cookiecutter.project_slug }}/.github/` (PR #1 mergée, commit `f2dc721`). Contenu restauré depuis `744ba61^` de dotfiles, à l'identique.
 - (b) skill `~/.claude/skills/pr/SKILL.md` pour les PR créées par Claude (qui n'utilisent pas le template GitHub natif via `gh pr create --body`)
 
 **Pourquoi :**
