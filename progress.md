@@ -1,4 +1,96 @@
 ## Dernière mise à jour
+Date : 2026-07-22 20:20
+Session : 74a20185-8bbc-4a4d-971b-c289b9f06f6f (grill-matrice + rituel code-review + clôture TODO (a))
+
+## Tâches complétées
+
+- **Créneau `/grill` inscrit dans la matrice de responsabilité** (4 points chirurgicaux
+  dérivés de `grill.md`, aucune règle inventée) : Phase 0 (grill du PRD avant gel),
+  Phase 1 (grill du PLAN, un artefact par invocation), frontière négative Phase 3
+  (jamais de re-grill d'un artefact gelé), ligne `/grill` dans « Conséquences
+  architecturales pour les outils » avec lien ADR-0003. La matrice dit *quand* griller,
+  la command garde le *comment*. Commit `41d9d12`.
+
+- **Drift `claude/settings.json` analysé et ratifié** : `~/.claude/settings.json` est
+  un symlink vers le repo → toute sauvegarde de réglage du CLI (`/model`, `/effort`…)
+  écrit dans le working tree. Diff = passage à Fable 5 par défaut (choix humain) +
+  réordonnancement de clés par le sérialiseur. Ratifié selon le précédent `0fc02e5`.
+  Commit `8f3b895`.
+
+- **Rituel `/code-review` de fin de feature adopté en convention** (CLAUDE.md global,
+  section Version Control) : avant PR/merge d'une feature branch, `/code-review` sur
+  le diff + triage des findings. Human-triggered, daté (adopted 2026-07-22).
+  Commit `d26c0c0`.
+
+- **Digest du template Cookiecutter écrit** : `~/explain/digest-python-project-template-cruft.md`
+  (réappropriation post-dette de compréhension). Redécouvertes clés : 16 notes
+  pédagogiques dans `~/notes-templating/`, 25 décisions v1 figées dans `_sources/`,
+  v2 = reconstruction pédagogique du 2026-04-18 (20 commits). Non commité (repo
+  `~/explain`, à la main de l'humain).
+
+- **Analyse de couplage dotfiles ↔ template** : couplage unidirectionnel (dotfiles →
+  template), conditionnel (détection `.cruft.json` dans les pré-flights `/prd` et
+  `/claude-md`), à dégradation gracieuse. Verdict : les deux briques restent
+  composables non couplées — utilisables l'une sans l'autre.
+
+- **TODO item (a) clos — PR template migré vers le repo Cookiecutter** : contenu
+  restauré depuis `744ba61^` à l'identique (pas de Jinja-isation), placé sous
+  `{{ cookiecutter.project_slug }}/.github/`. PR #1 squash-mergée (`f2dc721`),
+  branche supprimée, refs purgées. `TODO.md` mis à jour (grille + corps d'item).
+  Commit dotfiles `0458aa1`.
+
+- **Mémoire `feedback_no_coauthor` étendue** : jamais d'attribution Claude dans les
+  corps de PR non plus (rejet humain du footer lors du `gh pr create`). Commits ET
+  PR bodies, tous repos.
+
+## En cours
+
+Rien — working trees propres des deux côtés (dotfiles : 4 commits poussés
+`41d9d12..0458aa1` ; template : `f2dc721` sur main). Seul le digest `~/explain`
+reste non commité (choix humain).
+
+## Prochaines étapes
+
+1. **Revue action insights : 2026-07-26** — relire `[INSIGHTS 2026-06-26]`, vérifier
+   le critère token-limit (< 8/22 sessions), taguer `[VALIDÉ]` si atteint. La routine
+   remote ouvrira l'issue ce jour-là.
+2. **(à ta main)** Committer le digest dans `~/explain`.
+3. **Éprouver `/code-review` sur diffs variés** (dbt, Terraform) — le rituel
+   nouvellement adopté générera les occasions naturelles.
+4. **TODO.md — items différés restants** (aucun déclencheur atteint) : hook
+   `/clear`→`/progress`, parité commands, skill `/pr` (volet b), audit workflow,
+   run live Skill Creator.
+5. Reliquat de fond inchangé : campagnes evals `/grill`/`/adr`/`/planning` (session
+   dédiée à 0 %) ; re-router `methodology-trial` ; workspace teach ; (optionnel)
+   MAJ mémoire `project_insights_routine.md`.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Pas de hook pour `/code-review`** : « feature achevée » n'est pas un événement
+  détectable (commit/push/Stop misfirent tous) ; les hooks du repo sont des garde-fous
+  déterministes bon marché, pas des revues coûteuses ; la skill n'est éprouvée que
+  sur Python. Convention humaine = palier 1, symétrique de `/progress`-avant-`/clear`.
+- **Pas d'entrée TODO palier 2** pour l'automatisation du rituel : zéro occurrence
+  d'oubli — l'entrée naîtra à la première occurrence réelle (doctrine d'émergence).
+- **Squelettes `claude/templates/` non retouchés** malgré leur présomption de
+  bootstrap template : consommés manuellement uniquement (« Jamais par Claude » per
+  README), zéro occurrence de friction — fix différé au premier projet hors-Cruft gêné.
+- **Migration PR template à l'identique** (pas d'adaptation Jinja) : Surgical Changes,
+  le contenu était déjà générique et aligné sur la stack du template.
+- **Squash-merge pour la PR #1** : conforme à la doctrine du template lui-même
+  (« PR title becomes the squash commit message »).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-06-28 22:39
 Session : 6e0d1aa1-def3-48c6-87b3-9b0e639c25fc (insights-cycle-juin + fix block-force-push)
 
