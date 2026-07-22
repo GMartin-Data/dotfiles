@@ -12,7 +12,7 @@
     ],
     "defaultMode": "default"
   },
-  "model": "Opus",
+  "model": "Fable",
   "hooks": {
     "PreToolUse": [
       {
@@ -67,6 +67,6 @@
   },
   "alwaysThinkingEnabled": false,
   "effortLevel": "xhigh",
-  "theme": "dark-daltonized",
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "theme": "dark-daltonized"
 }
