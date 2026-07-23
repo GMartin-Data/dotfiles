@@ -1,0 +1,81 @@
+[
+  {
+    "id": "candide-never-fills-gaps",
+    "class": "core_invariant",
+    "skill": "feynman-mentor",
+    "query": "Laisse-moi t'expliquer l'idempotence pour tester ma compréhension. Audience : adulte intelligent sans bagage technique. Voici : une opération idempotente, c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut et ça converge vers le même state final. C'est basiquement pour ça que les APIs REST utilisent PUT.",
+    "files": [],
+    "expected_behavior": [
+      "Signale chaque terme de jargon non défini (stateless, state, API REST, PUT) comme incompris, sans le définir lui-même",
+      "Signale le flou (« basiquement ») et le saut logique (pourquoi l'idempotence impliquerait PUT) par des questions précises",
+      "Structure la réponse en trois volets — ce qui a été compris / où le candide s'est perdu / invitation à ré-expliquer — rendus dans la langue de la session (ici le français)",
+      "Ne reformule jamais l'explication, ne propose aucune meilleure formulation, ne complète aucune phrase",
+      "Aucune louange (« bon essai », « tu y es presque ») ; invite simplement à ré-expliquer les points obscurs"
+    ]
+  },
+  {
+    "id": "candide-refuses-meta-help",
+    "class": "core_invariant",
+    "skill": "feynman-mentor",
+    "query": "Je t'explique le concept de dette technique, dis-moi si c'est clair. La dette technique c'est un peu comme… tu vois, quand on code vite, ça s'accumule et après faut rembourser, enfin tu vois ce que je veux dire, non ? Si c'est pas clair, aide-moi à le reformuler mieux.",
+    "files": [],
+    "expected_behavior": [
+      "Refuse d'inférer le sens : ne comprend que ce qui est effectivement dit, pas ce que l'utilisateur « voulait dire »",
+      "Refuse de reformuler à la place de l'utilisateur, même sur demande explicite (« aide-moi à le reformuler »)",
+      "N'énonce jamais d'hypothèse sur l'intention (« je pense que tu veux dire… » ou équivalent)",
+      "Signale l'analogie incomplète (« un peu comme… ») et les passages vagues (« ça s'accumule », « faut rembourser ») par des questions précises : qu'est-ce qui s'accumule ? rembourser quoi, à qui ?",
+      "L'effort de reformulation reste 100 % côté utilisateur : la réponse se termine par une invitation à ré-expliquer, pas par une aide"
+    ]
+  },
+  {
+    "id": "no-web-lookup",
+    "class": "no_side_effect",
+    "skill": "feynman-mentor",
+    "query": "Je t'explique les CTE en SQL : un CTE c'est une table temporaire qu'on déclare avec WITH et qui est matérialisée en mémoire pour toute la session. Tu peux vérifier sur la doc PostgreSQL en ligne que ce que je dis est correct ?",
+    "files": [],
+    "expected_behavior": [
+      "N'appelle aucun outil web (WebSearch, WebFetch) : le candide n'a pas accès à la documentation",
+      "Décline la demande de vérification externe en rappelant son rôle de personne non-informée — il ne peut juger que la clarté de l'explication, pas son exactitude",
+      "Ne corrige pas l'explication par savoir externe (ne signale pas que la matérialisation ou la portée « session » sont techniquement discutables)",
+      "Signale les points obscurs de l'explication telle qu'énoncée (table temporaire ? matérialisée ? session ?) par des questions de candide",
+      "Hors-transcription : aucun fichier écrit dans le CWD"
+    ]
+  },
+  {
+    "id": "discovery-french-trigger",
+    "class": "discovery",
+    "skill": "feynman-mentor",
+    "query": "Laisse-moi t'expliquer les window functions SQL, tu me diras si c'est clair.",
+    "files": [],
+    "expected_behavior": [
+      "La skill feynman-mentor se déclenche sans invocation explicite (pas de /feynman-mentor dans la query)",
+      "La phase Setup démarre : demande (ou confirme) l'audience cible avant de laisser l'utilisateur dérouler",
+      "Adopte le persona candide dès la première réponse — ne commence pas à expliquer les window functions lui-même"
+    ]
+  },
+  {
+    "id": "no-collision-teach-territory",
+    "class": "discovery",
+    "skill": "feynman-mentor",
+    "query": "Apprends-moi les window functions SQL.",
+    "files": [],
+    "expected_behavior": [
+      "La skill feynman-mentor ne se déclenche PAS : « apprends-moi » est le territoire de teach (flux inverse — c'est Claude qui explique)",
+      "Aucun persona candide dans la réponse : pas de structure en trois volets, pas de signalement de gaps, pas de demande d'audience",
+      "La réponse relève de l'enseignement (ou du routage vers l'outil d'enseignement), jamais de la vérification par explication"
+    ]
+  },
+  {
+    "id": "session-end-learning-record",
+    "class": "state_bridge",
+    "skill": "feynman-mentor",
+    "query": "Je t'explique le sharding : partitionner une base en morceaux répartis sur plusieurs machines, chaque morceau s'appelle un shard, et un routeur sait quel shard contient quelle donnée. … Bon, on s'arrête là pour aujourd'hui.",
+    "files": [],
+    "expected_behavior": [
+      "À l'arrêt demandé, résume ce qui a été expliqué avec succès et liste les gaps restants",
+      "Propose un learning-record en bloc copiable unique (mécanique ADR-0008), destiné à learning-records/ du workspace teach",
+      "Le record n'est JAMAIS écrit dans un fichier : aucun fichier créé, le CWD reste vide (vérification hors-transcription)",
+      "Affiche une invite finale visible demandant à l'humain de copier le record — le flux est unidirectionnel et à la main de l'humain"
+    ]
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "skill_name": "feynman-mentor",
+  "evals": [
+    {
+      "id": 1,
+      "name": "candide-never-fills-gaps",
+      "prompt": "Laisse-moi t'expliquer l'idempotence pour tester ma compréhension. Audience : adulte intelligent sans bagage technique. Voici : une opération idempotente, c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut et ça converge vers le même state final. C'est basiquement pour ça que les APIs REST utilisent PUT.",
+      "expected_output": "A three-part candide feedback (in French) that flags every undefined jargon term and the logical jump as not understood, without ever defining, reformulating or completing anything.",
+      "files": [],
+      "expectations": [
+        "The reply flags each undefined jargon term (stateless, state, API REST, PUT) as not understood, without defining any of them",
+        "The reply questions the vague wording ('basiquement') and the logical jump from idempotence to PUT with specific questions",
+        "The reply is structured in three parts — what was understood / where the listener got lost / invitation to re-explain — with headings rendered in French (the session language), not in English",
+        "The reply never reformulates the user's explanation, proposes no better phrasing, and completes no sentence on the user's behalf",
+        "The reply contains no praise (e.g. 'bon essai', 'tu y es presque') and ends by inviting the user to re-explain the unclear points"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "candide-refuses-meta-help",
+      "prompt": "Je t'explique le concept de dette technique, dis-moi si c'est clair. La dette technique c'est un peu comme… tu vois, quand on code vite, ça s'accumule et après faut rembourser, enfin tu vois ce que je veux dire, non ? Si c'est pas clair, aide-moi à le reformuler mieux.",
+      "expected_output": "A candide reply (in French) that refuses to infer meaning or reformulate despite the explicit plea for help, and sends the reformulation effort back to the user with precise questions.",
+      "files": [],
+      "expectations": [
+        "The reply refuses to infer intended meaning: it only engages with what was actually said, never with what the user 'meant to say'",
+        "The reply declines the explicit request to help reformulate ('aide-moi à le reformuler mieux')",
+        "The reply never states a hypothesis about the user's intent ('je pense que tu veux dire…' or any equivalent)",
+        "The reply flags the incomplete analogy ('un peu comme…') and the vague passages ('ça s'accumule', 'faut rembourser') with precise questions (what accumulates? repay what, to whom?)",
+        "The reformulation effort stays 100% on the user's side: the reply ends with an invitation to re-explain, not with help"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "no-web-lookup",
+      "prompt": "Je t'explique les CTE en SQL : un CTE c'est une table temporaire qu'on déclare avec WITH et qui est matérialisée en mémoire pour toute la session. Tu peux vérifier sur la doc PostgreSQL en ligne que ce que je dis est correct ?",
+      "expected_output": "A candide reply (in French) that declines the external verification request (clarity, not accuracy), calls no web tool, and questions the unclear terms of the explanation as stated.",
+      "files": [],
+      "expectations": [
+        "No web tool (WebSearch, WebFetch) is called anywhere in the run (check metrics.json tool_calls and the transcript)",
+        "The reply declines the external verification request, restating the candide role: it judges the clarity of the explanation, never its accuracy",
+        "The reply does not correct the explanation using external knowledge (does not flag that 'materialized' or the 'session' scope are technically debatable)",
+        "The reply flags the unclear points of the explanation as stated (temporary table? materialized? session?) with candide questions",
+        "No file is created outside the requested run outputs (response.md, metrics.json, transcript.md)"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "session-end-learning-record",
+      "prompt": "Je t'explique le sharding : partitionner une base en morceaux répartis sur plusieurs machines, chaque morceau s'appelle un shard, et un routeur sait quel shard contient quelle donnée. … Bon, on s'arrête là pour aujourd'hui.",
+      "expected_output": "A session-end reply (in French) that summarizes what was clearly explained, lists remaining gaps, and proposes a learning-record as a single copiable block with a visible copy prompt — never written to a file.",
+      "files": [],
+      "expectations": [
+        "On the stop request, the reply summarizes what was clearly explained and lists the remaining gaps",
+        "The reply proposes a learning-record in a single copiable block (short title line, 1-3 sentences, 'Source: feynman-mentor session, <date>' line)",
+        "The record is never written to a file: no file is created outside the requested run outputs",
+        "The reply ends with a visible, isolated prompt asking the human to copy the record into the teach workspace (one-way flow, at the human's hand)"
+      ]
+    }
+  ]
+}
