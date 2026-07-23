@@ -174,7 +174,7 @@ Pour chaque langage présent dans le projet :
 « Comment les assistants IA doivent-ils travailler sur ce projet ? »
 - Fichiers de contexte à lire en premier ?
 - Fichier de suivi d'avancement ?
-- Fichiers à ignorer (.claudeignore) ?
+- Fichiers à ignorer (permissions.deny dans settings.json) ?
 - Commandes fréquentes ?
 
 ### Phase 9 — Infrastructure (si applicable)
@@ -265,5 +265,5 @@ Après avoir créé le(s) fichier(s) CLAUDE.md :
 1. Confirmer les chemins des fichiers
 2. Si hiérarchique ou hybride, lister tous les fichiers créés
 3. Suggérer de les ajouter au contrôle de version
-4. Rappeler de créer `.claudeignore` si discuté
+4. Rappeler de configurer `permissions.deny` dans `settings.json` si discuté
 5. Si des serveurs MCP ont été mentionnés, rappeler de vérifier `claude mcp list`

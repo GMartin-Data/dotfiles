@@ -28,7 +28,7 @@ Inclure si discuté :
 - [ ] **CI/CD** — Lint, tests, déploiement
 - [ ] **Workflow IA** — Fichiers de contexte, suivi d'avancement, commandes
 - [ ] **Infrastructure** — Base de données, logging, serveurs MCP
-- [ ] **Fichiers à ignorer** — Contenu du .claudeignore
+- [ ] **Fichiers à ignorer** — Règles permissions.deny dans settings.json
 - [ ] **Points d'attention** — Secrets, quirks d'API, pièges
 
 ### Structure documentaire

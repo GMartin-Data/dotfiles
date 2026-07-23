@@ -65,7 +65,7 @@ Générer avec ces sections (omettre si N/A) :
 ### Commandes fréquentes
 
 ## Fichiers à ignorer
-[.claudeignore content or patterns]
+[permissions.deny rules in settings.json]
 
 ## Points d'attention
 [Warnings, secrets, pitfalls]
