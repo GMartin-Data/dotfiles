@@ -1,4 +1,180 @@
 ## Dernière mise à jour
+Date : 2026-07-23 11:45
+Session : e82b3af7-63bb-42a3-9cd8-4dc89894c389 (feynman-mentor — Phases 4-5 : code-review, triage, commits)
+
+## Tâches complétées
+
+- **Phase 4 — `/code-review` exécuté sur le diff non commité** (session fraîche,
+  comme planifié). Périmètre couvert en entier : 6 fichiers modifiés + ADR-0012 +
+  les 6 fichiers de la skill. Vérifications levées avant émission : cross-références
+  ADR/format toutes valides, test de parité skills OK, compteurs cohérents (3 docs),
+  liens relatifs fonctionnels via symlink, claim « pattern code-mentor » exact.
+  Résultat : **2 findings MEDIUM, 0 CRITICAL/HIGH, aucun item (ADR)**.
+
+- **Triage humain + corrections appliquées** (hors invocation skill — l'humain a
+  tranché « Ok ») :
+  1. `setup-eval-cwd.sh` : en-tête périmé réécrit (prétendait la skill non
+     intégrée à install.sh ; risque de `rm` du symlink actif). Prérequis devenu
+     « vérifier le symlink » au lieu de « le créer/supprimer à la main ».
+  2. `adr/0012` : `Proposed` → `Accepted` (décision implémentée, matrice adossée,
+     corpus 6/6 vert = porte de validation franchie ; cohérent avec le passage
+     d'ADR-0009 à Accepted dans le même diff).
+
+- **Phase 5 — 5 commits atomiques sur main** (découpage de l'esquisse respecté) :
+  `0ff56f7` docs(adr) ADR-0012 + matrice · `c787ee0` feat(skills) feynman-mentor ·
+  `eaa67bb` test(skills) corpus 6 evals · `cea4c14` docs(adr) accept ADR-0009 ·
+  `2c26da6` docs(todo) clôture item Skill Creator.
+
+- **Item TODO « Run live Skill Creator » clos** : ligne de grille annotée
+  ✅ 2026-07-23, section retirée du corps (41 lignes — précédent `block-force-push`
+  pour le retrait complet, précédent item (a) pour l'annotation de grille).
+
+- **Question méta effort tranchée** : `/code-review` garde `effort: high` (valeur
+  du frontmatter, calibrée 0 faux positif) — pas de `xhigh` en argument ; le
+  `xhigh` de session reste un curseur séparé, à la main de l'humain.
+
+## En cours
+
+Rien — Phases 0-5 closes, la procédure d'ajout de skill est déroulée de bout en
+bout. Seul `progress.md` (ce checkpoint) reste à committer, puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis **push des 6 commits**
+   vers `origin/main` (rien n'est encore poussé).
+2. **Revue action insights : 2026-07-26** — relire `[INSIGHTS 2026-06-26]`,
+   vérifier le critère token-limit, taguer `[VALIDÉ]` si atteint. La routine
+   remote ouvrira l'issue ce jour-là.
+3. **(à ta main)** Committer `~/explain` (digest + procédure d'ajout de skill).
+4. **Éprouver `/code-review` sur diffs variés** (dbt, Terraform) — ce run-ci
+   était documentaire/shell ; le calibrage hors-Python reste à faire.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Effort de la revue = `high` du frontmatter** (pas l'`xhigh` de session) :
+  régime calibré ADR-0010, diff majoritairement documentaire.
+- **Les 2 findings acceptés tels quels** par l'humain, corrigés avant commit —
+  ADR-0012 passé `Accepted` plutôt que maintenu `Proposed` en validation différée.
+- **Clôture TODO par retrait complet** de la section (item entièrement consommé),
+  pas d'annotation résiduelle dans le corps.
+- **`progress.md` exclu des commits de feature** : le checkpoint part dans son
+  propre commit de fin de session.
+- **Horodatage** : anomalie relevée sans correction — le checkpoint précédent
+  (même jour) affiche 12:15, postérieur à l'heure système actuelle (11:45).
+  Historique laissé intact.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
+Date : 2026-07-23 12:15
+Session : 0d7a14d7-fe41-40c5-91e1-b8ae985dddc4 (feynman-mentor — procédure complète + run live ADR-0009)
+
+## Tâches complétées
+
+- **Procédure d'ajout de skill documentée** : `~/explain/procedure-ajout-skill-dotfiles.md`
+  (6 phases : cadrage → evals test-first → implémentation → tests → /code-review →
+  livraison). Non commitée (repo ~/explain à la main de l'humain).
+
+- **Skill `feynman-mentor` importée et cadrée (Phase 0)** : archive claude.ai
+  (2025-12-29) extraite, lue intégralement, placée dans `claude/skills/feynman-mentor/`.
+  Audit best practices (doc officielle Anthropic + shanraisshan) : conforme sur
+  l'essentiel, 4 arbitrages levés et tranchés par l'humain — pont ADR-0008,
+  `disable-model-invocation: false`, triggers reformulés (français, sans collision
+  `teach`), `allowed-tools: Read` (candide structurel, pattern ADR-0010).
+
+- **ADR-0012 créé** (Proposed, Extends ADR-0007) : 5ᵉ niche couche learning
+  « vérification de compréhension par explication », 4 modalités d'intégration.
+  Amendé en cours de session : template de feedback rendu dans la langue de session.
+
+- **Matrice amendée** : 5ᵉ ligne couche learning, compteurs 4→5, précédent → « pas de
+  sixième outil redondant ». Ordre canonique respecté (ADR → document → outil → eval).
+
+- **Corpus d'evals écrit test-first** (`claude/skills/feynman-mentor/evals/`) :
+  6 evals / 4 classes (`core_invariant` ×2, `discovery` ×2, `no_side_effect`,
+  `state_bridge`), format maison + `setup-eval-cwd.sh` + README. Rouge par
+  construction contre le SKILL.md importé.
+
+- **SKILL.md adapté** : chaque changement trace vers une eval (triggers FR pushy,
+  frontière négative teach, tool discipline, template trois volets en langue de
+  session, section learning-record ADR-0008 quasi-inconditionnelle).
+
+- **RUN LIVE Skill Creator exécuté — ADR-0009 tranché et acté `Accepted`** :
+  découverte : les miroirs marketplace contiennent le moteur COMPLET (la « version
+  légère » de juin est périmée). Chaîne exécutée intégralement : conversion
+  `evals.json` officiel → 8 Executors (with/without) → 8 Graders → benchmark
+  officiel **100 % vs 17,5 % baseline (delta +0.82)** → analyste → viewer statique.
+  4 evals comportementales à 1.00.
+
+- **Discovery arbitrée après diagnostic de proxy biaisé** : `run_eval.py` teste un
+  pseudo-command en `claude -p` — inadapté aux skills conversationnelles (0-1/3).
+  Contre-épreuve en conditions réelles (skill installée, 6 sessions fraîches) :
+  **3/3 positif candide, 3/3 négatif sans candide → corpus 6/6 vert**. Friction
+  documentée dans le README d'evals (protocole de référence classe `discovery` =
+  conditions réelles).
+
+- **Intégration Phase 2 complète** : `install.sh` (ligne link), README racine,
+  `claude/README.md` (compteur 5→6 + glose), symlink actif, **test de parité OK**.
+
+## En cours
+
+Rien — Phases 0-3 closes, 6/6 vert. Phase 4 (audit) volontairement reportée en
+session fraîche (29 % de contexte restant + indépendance du réviseur).
+
+## Prochaines étapes
+
+1. **[SESSION FRAÎCHE] Phase 4 — `/code-review` sur le diff NON COMMITÉ** (pas un
+   diff de branche — exemption direct-sur-main). Périmètre exact :
+   - Modifiés : `README.md`, `adr/0009` (statut), `claude/README.md`, matrice, `install.sh`
+   - Untracked : `adr/0012-*.md`, `claude/skills/feynman-mentor/` (SKILL.md,
+     references/, evals/ — dont evals.json officiel)
+2. **Triage des findings**, puis **Phase 5 — commits atomiques**. Esquisse de
+   découpage (à affiner au triage) :
+   - `docs(adr): ADR-0012 + amendement matrice` (décision + document cible)
+   - `feat(skills): add feynman-mentor` (skill + install.sh + READMEs)
+   - `test(skills): feynman-mentor eval corpus` (evals/ maison + officiel)
+   - `docs(adr): accept ADR-0009 after live Skill Creator run`
+3. **`TODO.md` : clore l'item « Run live Skill Creator »** (déclencheur atteint et
+   consommé cette session).
+4. Reliquat inchangé : revue insights 2026-07-26 ; committer `~/explain` (digest +
+   procédure) ; éprouver `/code-review` sur dbt/Terraform.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **ADR-0012 (Option C)** : 5ᵉ niche intégrée à la couche learning, 4 modalités.
+- **ADR-0009 acté `Accepted`** (décision humaine) : run live concluant, moteur
+  officiel = exécuteur, doctrine maison souveraine.
+- **Record quasi-inconditionnel** (vs conditionnel chez code-mentor) : exigé par la
+  modalité 1 d'ADR-0012 et l'eval `state_bridge`.
+- **Triggers cités en français** (langue d'usage réelle), corps de description en
+  anglais — matching sémantique, valeur illustrative.
+- **Classe `discovery` : protocole de référence = conditions réelles** (proxy
+  officiel biaisé pour les skills conversationnelles — documenté au README d'evals).
+- **Workspace de run hors repo** (scratchpad) : un sibling dans `claude/skills/`
+  aurait cassé le test de parité. Artefacts éphémères ; la trace durable vit dans
+  le README d'evals.
+- **Écart d'ordre assumé** (demande humaine) : intégration Phase 2 effectuée avant
+  clôture complète de Phase 3 — défendable, le rouge résiduel était un problème de
+  découvrabilité, pas de comportement.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-22 20:20
 Session : 74a20185-8bbc-4a4d-971b-c289b9f06f6f (grill-matrice + rituel code-review + clôture TODO (a))
 
