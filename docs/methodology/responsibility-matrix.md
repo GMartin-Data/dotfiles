@@ -141,8 +141,9 @@ de son scope. Un drift se traite par l'ordre canonique ci-dessus, pas par re-gri
 La doctrine de source-de-vérité-unique s'applique aussi au domaine de
 l'apprentissage. La couche learning a été refondue autour de la skill `teach`
 (cf. [`adr/0007`](../../adr/0007-teach-emplacement-frontieres.md) et ses
-satellites 0004, 0005, 0006, 0008). Quatre outils, chacun un moment distinct,
-**zéro overlap** :
+satellites 0004, 0005, 0006, 0008), puis étendue par
+[`adr/0012`](../../adr/0012-feynman-mentor-niche-verification-par-explication.md).
+Cinq outils, chacun un moment distinct, **zéro overlap** :
 
 | Outil | Détient | Ne fait JAMAIS |
 |---|---|---|
@@ -150,10 +151,11 @@ satellites 0004, 0005, 0006, 0008). Quatre outils, chacun un moment distinct,
 | **`code-mentor`** (skill) | Déchiffre du code *existant* par questionnement socratique. | Enseigner un concept neuf, écrire du code |
 | **`coach-pedagogique`** (skill) | Accompagne la *livraison* d'un vrai artefact (scaffolding 1-4). | Expliquer un concept ponctuel, coder à la place de l'apprenant |
 | **`dp-coach`** (skill) | Drille une sous-compétence par **exécution + analyse** déterministe. | Enseigner un concept, review de code existant |
+| **`feynman-mentor`** (skill) | Vérifie la compréhension par **explication** : l'utilisateur énonce, Claude-candide signale les trous sans reformuler ni combler. | Enseigner un concept, guider socratiquement, produire un artefact, driller par exécution |
 
 **Sources de vérité uniques de la couche** :
 - **État de progression** → `learning-records/` du workspace teach. Source unique.
-  Les trois autres outils y émettent en **flux unidirectionnel** (record proposé,
+  Les quatre autres outils y émettent en **flux unidirectionnel** (record proposé,
   copié par l'humain — cf. [`adr/0008`](../../adr/0008-mecanique-pont-record-propose.md)).
   Exception assumée : le `PROGRESS.md` de `coach-pedagogique` porte un état de
   *nature distincte* (scaffolding-sur-livraison, intra-projet), pas de la
@@ -165,7 +167,7 @@ satellites 0004, 0005, 0006, 0008). Quatre outils, chacun un moment distinct,
   [`adr/0005`](../../adr/0005-retention-unifiee-anki.md)).
 
 Précédent posé : tout futur outil d'apprentissage occupe une niche distincte des
-quatre, ou est absorbé — pas de cinquième outil redondant.
+cinq, ou est absorbé — pas de sixième outil redondant.
 
 ---
 
