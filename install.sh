@@ -60,6 +60,7 @@ link "$DOTFILES_DIR/claude/skills/code-mentor"  "$HOME/.claude/skills/code-mento
 link "$DOTFILES_DIR/claude/skills/dp-coach"     "$HOME/.claude/skills/dp-coach"
 link "$DOTFILES_DIR/claude/skills/coach-pedagogique" "$HOME/.claude/skills/coach-pedagogique"
 link "$DOTFILES_DIR/claude/skills/code-review"  "$HOME/.claude/skills/code-review"
+link "$DOTFILES_DIR/claude/skills/feynman-mentor" "$HOME/.claude/skills/feynman-mentor"
 
 # Rules (fichiers individuels — glob-scoped, chargés à la demande par Claude Code)
 link "$DOTFILES_DIR/claude/rules/python.md"     "$HOME/.claude/rules/python.md"

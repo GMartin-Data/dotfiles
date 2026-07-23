@@ -107,13 +107,14 @@ diff <(ls -d claude/skills/*/ | xargs -n1 basename | sort) \
      <(grep -oP 'skills/\K[a-z-]+' install.sh | sort -u)
 ```
 
-**Skills** (5) :
+**Skills** (6) :
 
 Couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/responsibility-matrix.md), section Couche learning) :
 - `teach` — enseigne un concept/compétence ; colonne vertébrale stateful (workspace dédié, human-triggered)
 - `code-mentor` — déchiffre du code *existant* par questionnement socratique ; produit des flashcards Anki
 - `coach-pedagogique` — accompagne la *livraison* d'un vrai artefact par scaffolding dégressif (niveaux 1-4)
 - `dp-coach` — drille une sous-compétence par exécution + analyse déterministe du code (deliberate practice)
+- `feynman-mentor` — vérifie la compréhension par explication : l'utilisateur énonce, Claude-candide signale les trous sans les combler (cf. [ADR-0012](../adr/0012-feynman-mentor-niche-verification-par-explication.md))
 
 Revue :
 - `code-review` — première passe sur le diff (bugs, sécurité, invariants, conventions) ; **surcharge** la bundled, signale sans appliquer (cf. [ADR-0010](../adr/0010-surcharge-code-review-user-scope.md))
