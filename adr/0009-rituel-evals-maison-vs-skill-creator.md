@@ -1,6 +1,6 @@
 # ADR-0009 : Rituel d'evals maison (A→B→A) vs Skill Creator officiel d'Anthropic
 
-Status: Proposed
+Status: Accepted
 Date: 2026-06-23
 
 ## Contexte
