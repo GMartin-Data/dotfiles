@@ -1,4 +1,62 @@
 ## Dernière mise à jour
+Date : 2026-07-26 11:14
+Session : edf854f6-6e59-4338-9d10-5853f84ae96a (cycle /insights juillet — protocole v3 complet)
+
+## Tâches complétées
+
+- **Cycle mensuel /insights 2026-07-26 bouclé de bout en bout** (issue #2, ouverte
+  à 7h34 par la routine `trig_01CMHnwqgZYkdspEHeY3KsFj`) :
+  1. **Étape 1 — revue de juin** : critère token-limit **✅ atteint** (1 session
+     perdue sur 28 vs 8/22, fenêtre incluant encore le pré-fix) → entrée
+     `[INSIGHTS 2026-06-26]` taguée `[VALIDÉ]` + ligne de verdict datée.
+  2. **Étape 2 — scoring** : 8 suggestions notées (grille Impact/Coût/Risque) ;
+     top 3 = 🥇 scope discipline, 🥈 hook anti-trailer, 🥉 teaching style.
+  3. **Étape 3 — choix** : 🥇 scope-discipline ; entrée `[INSIGHTS 2026-07-26]`
+     écrite dans `tasks/lessons-inbox.md` (critère : zéro interruption en recon
+     au rapport d'août ; revue 2026-08-26).
+  4. **Étape 4 — application** : section `## Scope Discipline (reconnaissance)`
+     ajoutée à `claude/CLAUDE.md` (gate limité à l'exploration multi-fichiers,
+     clause anti-sur-gating pour questions simples). Commit `d4f15cd` poussé,
+     issue #2 fermée automatiquement via `Closes #2` (vérifié CLOSED à 11h09).
+- **Issue #1 vérifiée déjà CLOSED** (28/06, cycle précédent) — rien à faire.
+- **Item « Revue action insights 2026-07-26 » du checkpoint précédent : clos.**
+
+## En cours
+
+Rien — cycle clos, `main` poussée, working tree clean. Seul ce checkpoint reste
+à committer.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Prochain cycle /insights : 2026-08-26** (issue #3 via la routine). Critère à
+   vérifier : zéro interruption utilisateur pendant une phase de reconnaissance.
+   Candidates reportées si toujours pertinentes : 🥈 hook PreToolUse anti-trailer,
+   🥉 section Teaching style.
+3. **(reporté, à ta main)** Committer `~/explain` (digest + procédure d'ajout de skill).
+4. **(reporté)** Éprouver `/code-review` sur diffs variés (dbt, Terraform).
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Cadence /insights maintenue mensuelle** : échantillon ~28 sessions nécessaire
+  aux verdicts, discipline « une action/cycle » calibrée sur ce rythme, 2 cycles
+  sur 2 validés. Option notée sans engagement : pulse de mi-parcours (~le 10,
+  vérif du seul critère en cours, sans rapport ni action).
+- **Section Scope Discipline ciblée recon uniquement** — le « smallest diff » du
+  rapport n'est pas dupliqué (déjà couvert par Surgical Changes/Karpathy).
+- **Un seul commit pour le cycle** (précédent `0dc22e6` du cycle de juin).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-23 11:45
 Session : e82b3af7-63bb-42a3-9cd8-4dc89894c389 (feynman-mentor — Phases 4-5 : code-review, triage, commits)
 
