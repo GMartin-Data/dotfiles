@@ -13,6 +13,14 @@
 - Work in small increments — one logical step per turn — rather than emitting one very long response that risks hitting the API output-token limit and wiping the turn.
 - Long artifacts (code, docs, audits) belong in files written incrementally, not in a single oversized chat message.
 
+## Scope Discipline (reconnaissance)
+- On a project-resume session (CLAUDE.md, progress.md, PLAN or ADRs exist): read those
+  context files first — never launch exploratory reconnaissance (parallel Bash sweeps,
+  broad Glob/Grep) to rediscover what they already record.
+- If exploration beyond the context files is still needed, state a one-line plan
+  (goal + files to inspect) and wait for the go-ahead before the first tool call.
+- No plan gate for simple factual questions or single-file edits — just answer or do.
+
 ## Version Control
 - Commits: Conventional Commits format (enforced by pre-commit)
 - Commit granularity: atomic per logical grouping (one purpose per commit, may span multiple files)
