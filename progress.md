@@ -27,14 +27,16 @@ Session : d2a940f5-f097-46e2-84f6-cf91da3cfb08 (audit CLAUDE.md global — P1, b
 
 ## Prochaines étapes
 
-1. **Batch A — décisions de design d'abord** : (a) localisation du corpus (les
-   evals ciblent le CLAUDE.md global, pas une command — `claude/commands/*/evals/`
-   ne convient pas tel quel) ; (b) modèle(s) cible(s) des runs — les verdicts
-   sont dépendants du tier (l'humain alterne Opus/Fable selon les sessions ;
-   une règle inutile pour Fable peut rester utile pour Opus).
-2. **Batch A — exécution** : écrire les 5 fixtures (doctrine maison : tension
-   délibérée), run Skill Creator, verdict par règle → retrait du prompt si pass
-   sans règle (l'eval reste en garde de non-régression aux changements de modèle).
+1. ~~Batch A — décisions de design~~ **Tranchées post-checkpoint** (`df9f5d8`,
+   section « Décisions de design — batch A » du doc d'audit) : corpus dans
+   `claude/evals/claude-md/` ; tiers de benchmark = tiers réellement en service
+   (Fable/Opus/Sonnet + Haiku ciblé sur DN1/SV1, vérifié par grep des pins
+   `model:`) ; verdict à 3 issues (retrait / maintien global / relocalisation
+   command-scope si échec limité aux tiers faibles).
+2. **Batch A — exécution** (aucune décision ouverte) : écrire les 5 fixtures
+   (doctrine maison : tension délibérée), run Skill Creator sur les tiers
+   définis, verdict par règle selon la règle à 3 issues (les evals restent en
+   garde de non-régression aux changements de modèle).
 3. **P2 (autonomie graduée)** après clôture P1 — périmètre d'entrée : règles
    Cat. D (RS1, RS2, « one concept at a time » ; SD1 réévaluée cycle 2026-09).
 4. **P3** : proposer la métrique ratio méta/produit au cycle /insights 2026-08-26.
