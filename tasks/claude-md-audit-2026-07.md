@@ -93,6 +93,33 @@ pas des garde-fous modèle. Compressions mineures possibles, non prioritaires.
 3. **Cat. C** : compression opportuniste en passant, rien de proactif.
 4. **Cat. D** : listées comme périmètre d'entrée du chantier P2.
 
+## Décisions de design — batch A (actées 2026-07-27, déléguées par l'humain)
+
+- **Tiers de benchmark = tiers réellement en service sur le prompt** (vérifié
+  par grep des pins `model:`, 2026-07-27) — pas seulement les modèles de session :
+  - **Fable / Opus** : sessions interactives (alternance humaine) + commands
+    pinnées opus (`/prd`, `/planning`, `/adr`, `/grill`).
+  - **Sonnet** : `/claude-md`, `/progress`, `/immunize` (+ agent
+    `tech-watch-scorer` — exposition des subagents au global à confirmer au run).
+  - **Haiku** : `/catchup` uniquement.
+- **Règle de verdict (remplace le retrait binaire)** :
+  1. Pass sans règle sur tous les tiers consommateurs → retrait du global.
+  2. Fail sur Opus ou Fable → la règle reste au global.
+  3. Fail uniquement sur Sonnet/Haiku → **relocalisation** dans les prompts des
+     commands pinnées concernées (pattern DN3) : le global converge vers les
+     besoins des tiers frontière, les renforts tiers-faibles vivent dans les
+     prompts qui y tournent. Équivalent mono-utilisateur du « per-model-tier
+     prompts » d'Anthropic.
+- **Couverture Haiku ciblée** : `/catchup` est procédural et read-only — ne
+  tester sur Haiku que DN1 (étapes enfouies) et SV1 (vérification d'état).
+  DN2/DN5/K3 (interaction longue, coding) : hors périmètre Haiku.
+- **Volume estimé** : ~34 runs (5 règles × {Fable, Opus, Sonnet} × avec/sans
+  + 2 règles × Haiku × avec/sans) — automatisés par le moteur.
+- **Localisation du corpus** : `claude/evals/claude-md/` (nouveau répertoire) —
+  les fixtures ciblent le payload global, pas une command ;
+  `claude/commands/<cmd>/evals/` reste réservé aux commands.
+- **Moteur d'exécution** : Skill Creator officiel (déjà acté, ADR-0009 Option C).
+
 ## Statut
 
 - [x] Inventaire (2026-07-27)
