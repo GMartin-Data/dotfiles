@@ -38,6 +38,7 @@ if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-clou
 # ALIASES PERSONNELS
 # ============================================================
 alias maintain='bash ~/scripts/maintenance.sh'
+alias git='LC_ALL=C.UTF-8 git'   # git output in English (reading Claude Code transcripts)
 
 # ============================================================
 # GPG - Permet la saisie de passphrase dans le terminal
