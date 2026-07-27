@@ -1,4 +1,69 @@
 ## Dernière mise à jour
+Date : 2026-07-27 15:51
+Session : d2a940f5-f097-46e2-84f6-cf91da3cfb08 (audit CLAUDE.md global — P1, batch B)
+
+## Tâches complétées
+
+- **Analyse workflow vs fireside chat équipe Claude Code** (Cat Wu / Thariq
+  Shihipar, AI Engineer World's Fair, via simonwillison.net 2026-07-21) :
+  3 insights retenus et priorisés — P1 audit du CLAUDE.md global par evals,
+  P2 autonomie graduée, P3 ratio méta/produit.
+- **P1 lancé — inventaire complet** : 17 règles auditées, 4 catégories (A garde-fou
+  modèle → eval ; B sagesse mal placée → réécrire ; C fait → garder ; D → P2),
+  dans `tasks/claude-md-audit-2026-07.md`. Triage validé par l'humain.
+- **P1 batch B (Cat. B) exécuté — 2 commits** :
+  1. `eec3141` — DN3 (cohérence cross-phase) retirée du global, relocalisée dans
+     les contrôles pré-validation de `/prd` (jointures Phases 6/11/12) et
+     `/planning` (cohérence PRD ↔ PLAN).
+  2. `c9ac076` — section Karpathy compressée (~45 → ~15 lignes) ; version
+     intégrale (Why/How, dates) → `docs/methodology/karpathy-discipline.md`.
+- Mineur : alias `git` LC_ALL=C.UTF-8 (sortie git en anglais) — `429b890`, poussé.
+
+## En cours
+
+- **P1 batch A (evals)** : 5 fixtures avec/sans règle à spécifier (DN1, DN2, DN5,
+  SV1, K3), moteur Skill Creator (ADR-0009 Option C), puis run et verdicts.
+  Statut détaillé : `tasks/claude-md-audit-2026-07.md`.
+
+## Prochaines étapes
+
+1. **Batch A — décisions de design d'abord** : (a) localisation du corpus (les
+   evals ciblent le CLAUDE.md global, pas une command — `claude/commands/*/evals/`
+   ne convient pas tel quel) ; (b) modèle(s) cible(s) des runs — les verdicts
+   sont dépendants du tier (l'humain alterne Opus/Fable selon les sessions ;
+   une règle inutile pour Fable peut rester utile pour Opus).
+2. **Batch A — exécution** : écrire les 5 fixtures (doctrine maison : tension
+   délibérée), run Skill Creator, verdict par règle → retrait du prompt si pass
+   sans règle (l'eval reste en garde de non-régression aux changements de modèle).
+3. **P2 (autonomie graduée)** après clôture P1 — périmètre d'entrée : règles
+   Cat. D (RS1, RS2, « one concept at a time » ; SD1 réévaluée cycle 2026-09).
+4. **P3** : proposer la métrique ratio méta/produit au cycle /insights 2026-08-26.
+5. (reportés) Committer `~/explain` ; éprouver `/code-review` sur diffs variés.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Priorisation P1 → P2 → P3** : P1 peu coûteux et prérequis de confiance de P2 ;
+  P3 est le résultat attendu, mesuré avant d'être corrigé.
+- **Batch B avant batch A** : B n'exige pas de preuve (relocalisations), établit
+  la baseline que les evals de A doivent juger, et immunise P1 contre le frein
+  manuel démontré (ADR-0009 : corpus jamais exécuté).
+- **SV1 : Option A** — pas de réécriture avant verdict d'eval ; coût de faux
+  retrait le plus élevé de l'inventaire, coût de maintien faible.
+- **SD1 (Scope Discipline) exclue de l'audit** — adoptée la veille (action du
+  cycle /insights 2026-07) ; réévaluation au cycle 2026-09, avec données.
+
+## Blocages
+
+Aucun. `claude/settings.json` modifié hors session (switch de modèle opéré par
+l'humain dans une autre session) — volontairement laissé hors de ce commit.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-26 11:14
 Session : edf854f6-6e59-4338-9d10-5853f84ae96a (cycle /insights juillet — protocole v3 complet)
 

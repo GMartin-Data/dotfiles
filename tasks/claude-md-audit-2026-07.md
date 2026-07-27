@@ -96,7 +96,16 @@ pas des garde-fous modèle. Compressions mineures possibles, non prioritaires.
 ## Statut
 
 - [x] Inventaire (2026-07-27)
-- [ ] Triage validé par l'humain
-- [ ] Batch evals exécuté (verdicts par règle)
-- [ ] Batch réécriture appliqué au payload `claude/CLAUDE.md`
-- [ ] Sync `~/.claude/CLAUDE.md` + commit
+- [x] Triage validé par l'humain (2026-07-27) — y compris compression Karpathy
+      et relocalisation DN3
+- [x] Batch réécriture (Cat. B) appliqué — 2 commits : DN3 relocalisée
+      (`eec3141`), Karpathy compressée (`c9ac076`). **SV1 volontairement non
+      réécrite** (Option A actée 2026-07-27) : elle reste entière dans le global
+      jusqu'au verdict de son eval — la preuve avant le retrait.
+- [ ] Batch evals (Cat. A) : spécifier 5 fixtures avec/sans règle (DN1, DN2,
+      DN5, SV1, K3), moteur Skill Creator (ADR-0009 Option C), puis run et
+      verdicts par règle
+- [ ] Retraits/réécritures post-verdicts + commit
+
+Note sync : `~/.claude/CLAUDE.md` est un symlink vers le payload — aucune étape
+de sync nécessaire.
