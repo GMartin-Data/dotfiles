@@ -198,6 +198,28 @@ Pousser vers des critères concrets et testables. Proposer des indicateurs mesur
 
 ---
 
+## Contrôle de cohérence inter-phases
+
+<!-- Règle relocalisée depuis le CLAUDE.md global (audit 2026-07, DN3 —
+     tasks/claude-md-audit-2026-07.md) : sagesse process PRD, pas un garde-fou
+     modèle transverse. -->
+
+Avant la validation finale, vérifier que les réponses collectées forment une
+chaîne sans contradiction — les phases ont été remplies séparément, les
+incohérences apparaissent aux jointures :
+
+- **Hors-cible (Phase 6) vs Risques (Phase 11)** : aucun risque retenu ne porte
+  sur un élément déclaré hors cible ; aucune mitigation ne réintroduit un exclu.
+- **Hors-cible (Phase 6) vs Critères de succès (Phase 12)** : aucun critère ne
+  mesure une fonctionnalité exclue.
+- **Risques (Phase 11) vs Critères (Phase 12)** : aucun critère ne repose
+  silencieusement sur un risque majeur laissé sans mitigation.
+
+Si une contradiction apparaît, la signaler et la résoudre avec l'utilisateur
+avant de présenter les blocs de validation.
+
+---
+
 ## Validation finale en 3 blocs
 
 Avant de générer le PRD, valider le contenu collecté en **3 blocs thématiques séparés**. Présenter chaque bloc individuellement, attendre validation explicite avant le suivant.

@@ -142,6 +142,27 @@ mécaniquement) :
 
 ---
 
+## Contrôle de cohérence PRD ↔ PLAN
+
+<!-- Règle relocalisée depuis le CLAUDE.md global (audit 2026-07, DN3 —
+     tasks/claude-md-audit-2026-07.md) : sagesse process PLAN, pas un garde-fou
+     modèle transverse. -->
+
+Avant la synthèse finale, vérifier que le découpage dérivé ne contredit pas le
+PRD :
+
+- Aucune phase ni aucun palier MVP ne planifie un élément listé hors cible dans
+  le PRD.
+- Chaque critère de succès du PRD est couvert par au moins une phase — sinon,
+  signaler le trou de couverture.
+- Les mitigations de risques retenues dans le PRD ont une place identifiable
+  dans la séquence.
+
+Signaler toute contradiction détectée avant la validation — ne jamais la
+résoudre silencieusement.
+
+---
+
 ## Validation finale avant écriture
 
 Avant de générer le fichier, présenter une **synthèse compacte** du plan dérivé

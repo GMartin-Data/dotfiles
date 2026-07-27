@@ -1,0 +1,102 @@
+# Audit CLAUDE.md global — règles prescriptives vs modèles actuels (P1)
+
+> **Contexte.** Déclencheur : fireside chat Cat Wu / Thariq Shihipar (équipe Claude
+> Code, AI Engineer World's Fair, 2026-07-21, via simonwillison.net). Constats
+> applicables : prompt système réduit de 80% sur les modèles frontière ; les listes
+> d'interdits et les absolus (« always/never ») dégradent la qualité ; les
+> comportements indésirables se traitent par **evals comportementales** rejouées à
+> chaque changement de modèle, pas par prohibitions permanentes dans le prompt.
+>
+> **Principe de l'audit** : chaque règle du CLAUDE.md global calibrée sur un modèle
+> antérieur est une *hypothèse à re-tester*, pas un acquis. On ne garde dans le
+> prompt que ce qui échoue encore sans la règle.
+>
+> **Méthode d'eval** : moteur Skill Creator officiel (ADR-0009, Option C actée) —
+> la baseline `with_skill vs without_skill` se transpose en `avec règle vs sans
+> règle`. Pas de nouveau corpus manuel A→B→A (frein démontré, cf. ADR-0009).
+
+## Catégories de triage
+
+- **A — Garde-fou modèle** : compense une faiblesse d'un modèle antérieur
+  (Sonnet/Opus 2026-04). → Eval avec/sans règle sur modèle actuel ; si le modèle
+  passe sans la règle, on la retire (l'eval reste, rejouée à chaque changement de
+  modèle).
+- **B — Sagesse process mal placée** : règle légitime mais formulée en absolu ou
+  logée au mauvais niveau (globale alors que command-scoped suffirait). → Réécrire
+  en probabiliste et/ou relocaliser. Pas besoin d'eval.
+- **C — Fait / convention** : information factuelle ou préférence stable. →
+  Conserver (compression éventuelle).
+- **D — Différé P2** : règle liée au degré d'autonomie (laisse courte). → Hors
+  périmètre P1, traiter dans le chantier autonomie graduée.
+
+## Inventaire
+
+### Section « Global Do NOT »
+
+| ID | Règle (condensé) | Origine | Cat. | Proposition |
+|---|---|---|---|---|
+| DN1 | Never bury an operational step in a parenthetical | 2026-04, dotfiles — vise explicitement « Sonnet or Opus » | **A** | Eval avec/sans : fixture = prompt avec étape opérationnelle nichée en subordonnée ; `expected_behavior` : étape exécutée. Si pass sans règle → retirer |
+| DN2 | Never collapse prescribed separations (one question at a time, etc.) | 2026-04, memory-grep — « The model systematically erases » | **A** | Eval avec/sans : fixture = spec imposant séquencement + pression UX au regroupement ; `expected_behavior` : catégories séquencées |
+| DN3 | Always verify cross-phase consistency (exclusions → risques → critères) | 2026-04, memory-grep | **B** | Sagesse process PRD/PLAN, pas un garde-fou modèle. Relocaliser dans les prompts de `/prd` et `/planning` (qui embarquent déjà leurs scope rules) ; retirer du global |
+| DN4 | `.claudeignore` n'existe pas ; seul `permissions.deny` exclut | 2026-04, dotfiles | **C** | Fait, toujours vrai, coût faible. Conserver, compressible en 1 ligne. (Le nettoyage repo est fait — commit 3b84318) |
+| DN5 | Conventions mid-session = contraintes dures, jamais suggestions | 2026-04, dotfiles | **A** | Eval avec/sans : fixture = convention verrouillée en phase 1, input phase 3 qui la viole ; `expected_behavior` : violation signalée + fix proposé |
+
+### Section « State Verification »
+
+| ID | Règle | Origine | Cat. | Proposition |
+|---|---|---|---|---|
+| SV1 | Never describe state from memory ; always run verifying command first | non datée | **A/B** | Les modèles Fable-class font du pre-flight par défaut. Eval avec/sans (fixture : question sur l'état git sans commande préalable possible en mémoire). Si pass → remplacer le bloc par 1 ligne probabiliste (« when asserting repo/config state, prefer running the verifying command ») |
+
+### Section « Coding Discipline (Karpathy) » — ~45 lignes, bloc le plus lourd
+
+| ID | Règle | Origine | Cat. | Proposition |
+|---|---|---|---|---|
+| K1 | Think Before Coding (« never pick silently ») | 2026-05-27 | **A/B** | Comportement largement par défaut des modèles actuels. Compresser en 1 ligne |
+| K2 | Simplicity First (no unrequested features…) | 2026-05-27 | **B** | Aligné sur les défauts du modèle. Compresser en 1 ligne |
+| K3 | Surgical Changes (no adjacent refactor, flag don't fix) | 2026-05-27 | **A** | Le sur-refactor résiduel existe encore. Eval avec/sans : fixture = fix demandé dans un fichier avec code mort adjacent ; `expected_behavior` : zéro ligne adjacente modifiée, code mort signalé non supprimé |
+| K4 | Goal-Driven Execution (critère vérifiable avant code) | 2026-05-27 | **B** | Sagesse process à conserver — c'est le socle du chantier P2 (autonomie si critère pass/fail). Compresser le Why/How |
+| K5 | Test-first (failing test → validation user → green) | 2026-05-27 | **C** | Contrat de workflow humain-agent distinctif, pas une compensation de faiblesse. Conserver le protocole ; compresser le boilerplate Why |
+
+**Proposition globale section** : compresser de ~45 lignes à ~10 (principes en
+one-liners + protocole test-first détaillé). Les blocs « Why / How to apply » sont
+de la pédagogie pour l'humain — leur place est dans un doc de référence, pas dans
+le contexte injecté à chaque session.
+
+### Section « Response Style »
+
+| ID | Règle | Cat. | Proposition |
+|---|---|---|---|
+| RS1 | Turn « well under the output-token cap », résumé 3 bullets d'abord | **D** | Différé P2. Noter : la motivation (turn wipé par la limite de tokens) est probablement obsolète avec le context management actuel |
+| RS2 | One logical step per turn | **D** | Différé P2 (cœur du chantier autonomie graduée) |
+| RS3 | Artefacts longs en fichiers, pas en chat | **C** | Conserver — bonne pratique indépendante du modèle |
+
+### Section « Scope Discipline (reconnaissance) »
+
+| ID | Règle | Origine | Cat. | Proposition |
+|---|---|---|---|---|
+| SD1 | Plan gate avant exploration hors fichiers de contexte | **2026-07-26** (action insights cycle 2026-07) | **D*** | **Trop récente pour audit** — adoptée il y a 1 jour, aucune donnée d'usage. Réévaluer au cycle /insights 2026-09 avec données. La toucher maintenant violerait la règle d'une-action-par-cycle |
+
+### Sections conservées telles quelles (Cat. C)
+
+Identity, Communication, Version Control, Session Discipline (sauf « one concept
+at a time » → D/P2), Documentary Methodology : faits, conventions et pointeurs —
+pas des garde-fous modèle. Compressions mineures possibles, non prioritaires.
+
+## Plan d'exécution proposé (à valider)
+
+1. **Batch evals (Cat. A)** : DN1, DN2, DN5, SV1, K3 — 5 fixtures avec/sans règle,
+   moteur Skill Creator (doctrine maison : classes comportementales, fixtures à
+   tension délibérée). Verdict par règle : pass sans règle → retrait du prompt,
+   l'eval reste comme garde de non-régression au prochain changement de modèle.
+2. **Batch réécriture directe (Cat. B, sans eval)** : DN3 (relocaliser), K1-K2-K4
+   (compresser), SV1-fallback si eval échoue (probabiliste).
+3. **Cat. C** : compression opportuniste en passant, rien de proactif.
+4. **Cat. D** : listées comme périmètre d'entrée du chantier P2.
+
+## Statut
+
+- [x] Inventaire (2026-07-27)
+- [ ] Triage validé par l'humain
+- [ ] Batch evals exécuté (verdicts par règle)
+- [ ] Batch réécriture appliqué au payload `claude/CLAUDE.md`
+- [ ] Sync `~/.claude/CLAUDE.md` + commit
