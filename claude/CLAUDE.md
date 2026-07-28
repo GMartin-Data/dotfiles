@@ -62,7 +62,5 @@ Rationale and detailed heuristics: `~/dotfiles/docs/methodology/karpathy-discipl
   exploration, config, docs.
 
 ## Global Do NOT
-- Never bury an operational step in a parenthetical or subordinate clause — always promote it to its own paragraph with numbering or bold. The model (Sonnet or Opus) systematically skips steps nested in second-tier typography. (learned 2026-04, from dotfiles)
 - When a spec prescribes a separation (one question at a time, binary criteria, behavior vs implementation, deliverables vs polish), never collapse the categories for the sake of efficiency — sequence them instead. The model systematically erases these boundaries whenever the UX seems to invite a shortcut. (learned 2026-04, from memory-grep)
 - Never assume a `.claudeignore` file or `.gitignore`-aware Read/Glob/Grep — the only official file-exclusion mechanism is `permissions.deny` in settings.json. Read/Glob/Grep see every file regardless of `.gitignore`. Any CLAUDE.md mentioning `.claudeignore` is factually wrong. (learned 2026-04, from dotfiles)
-- In a multi-phase session, treat conventions decided mid-session (naming, language, allowed scopes, locked rules) as hard constraints for all subsequent phases — never as soft suggestions. If a later input violates a previously-locked convention, flag it explicitly and propose a fix rather than accepting it passively. (learned 2026-04, from dotfiles)
