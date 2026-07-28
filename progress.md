@@ -1,4 +1,99 @@
 ## Dernière mise à jour
+Date : 2026-07-28 16:05
+Session : 8ab937ba-56ef-4310-a873-5d5aa43741ea
+
+## Tâches complétées
+
+- **`docs/methodology/workflow-overview.md` écrit et commité** (`391eeab`,
+  539 lignes, 12 diagrammes Mermaid). Vue dérivée non-normative, bandeau de
+  préséance matrice. 7 sections : cycle de vie projet (4 diagrammes, un par
+  phase), carte documentaire, graphe des outils (scindé projet / session),
+  cycle de vie ADR (stateDiagram-v2), 4 chemins de lecture, renvois +
+  index des 12 ADRs, incohérences relevées.
+- **Section 4 ajoutée hors brief initial** : cycle de vie ADR (Proposed →
+  Accepted → Superseded/Deprecated) + tableau des 5 relations. Comblait un
+  angle mort — aucune des 4 sections prévues ne portait la machine à états.
+- **Trois incohérences relevées et instruites une par une** (§7 du doc,
+  signalées sans correction conformément au mandat).
+- **Debug aperçu Mermaid VS Code** : non résolu, glitch intermittent.
+  Écarté comme non bloquant — le doc rend correctement (12 blocs validés
+  au parseur mermaid-cli 11).
+
+## En cours
+
+- Rien d'actif — doc commité, ce checkpoint à committer.
+- Modif `claude/settings.json` toujours en working tree : switch de modèle
+  volontaire, **ne jamais la committer** (consigne reconduite).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`, progress.md seul).
+2. **Corriger les incohérences 7.1 et 7.2 — décisions déjà prises, à appliquer
+   en différé avec Fable 5** :
+   - **7.1** — section « Décisions prises » de progress.md : n'y mettre qu'un
+     **pointeur vers l'ADR**, jamais la décision elle-même (évite la
+     duplication et le drift). À expliciter dans la matrice et/ou le prompt
+     de `/progress`, qui dit aujourd'hui « liste des choix faits pendant cette
+     session » — formulation qui invite à dupliquer.
+   - **7.2** — cocher un acceptance criterion du PRD change **l'état**, pas
+     **la cible** : seule l'édition du *contenu* (modifier, ajouter,
+     supprimer un critère) exige un ADR. Distinction implicite, à formuler
+     dans la matrice.
+3. **7.3 — PRIORITAIRE, non résolu, à instruire avec Fable 5 sur les deux
+   repos (dotfiles + template Cruft)**. Seul écart *factuel* des trois
+   (7.1/7.2 étaient des intentions non écrites) :
+   - **Volet A — gate bloquante.** La matrice affirme que CLAUDE.md et PRD
+     se font « dans n'importe quel ordre ». Or `/claude-md` **interdit la
+     poursuite** si `.cruft.json` est présent ET `PRD.md` absent. Sur instance
+     Cruft, l'ordre PRD → CLAUDE.md est donc imposé, pas libre. Question
+     ouverte : la gate est-elle voulue (→ amender la matrice) ou trop stricte
+     (→ assouplir la command en avertissement) ? Souvenir perdu, d'où
+     l'inspection croisée.
+   - **Volet B — champs fantômes.** Le pré-flight de `/claude-md` lit le PRD
+     pour en extraire « stack technique, architecture, phases
+     d'implémentation » — précisément ce que la matrice **interdit** au PRD
+     et que les 8 sections du PRD allégé ne contiennent pas. Lecture
+     silencieusement vide sur tout PRD conforme ; résidu d'un format antérieur.
+4. **Valider puis implémenter le routage SPIKE** dans l'ordre
+   ADR → eval failing → grill.md → sync matrice.
+5. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3).
+6. **SD1** : réévaluation au cycle /insights 2026-09.
+7. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Ajout d'une 5e section au doc** (cycle de vie ADR) au-delà des 4 livrables
+  du brief — validé en séance, comble un angle mort réel.
+- **§3 scindé en deux diagrammes** (outils projet / outils de session) : le
+  découpage suit une frontière réelle du workflow (Phases 0-1 vs Phase 2),
+  et résout au passage un placement Dagre ingérable.
+- **§1 éclaté en 4 diagrammes** (un par phase) plutôt qu'un graphe à
+  4 subgraphs : les flèches inter-subgraphs rendaient le placement erratique.
+- **Les incohérences restent des signalements** : les intentions dégagées en
+  séance (7.1, 7.2) ne sont PAS écrites dans le doc — une vue non-normative
+  ne tranche pas, elle signale. Leur formalisation passera par la matrice.
+- **Track léger, précision PRD** : le PRD n'est pas exclu mais optionnel et
+  allégé ; `/prd` reste disponible mais son interview est disproportionnée à
+  ce niveau d'enjeu.
+- **Glitch Mermaid écarté** : diagnostic non concluant (extension réinstallée,
+  syntaxe validée, GPU testé) ; intermittent, sans impact sur le livrable.
+
+## Blocages
+
+- **Aperçu Mermaid VS Code intermittent** — non bloquant pour la production
+  du doc, mais gêne la relecture visuelle. Piste non explorée : inspection
+  DOM du canvas via `Developer: Open Webview Developer Tools` (la console
+  ne montrait aucune erreur, seulement du bruit standard de webview).
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-28 14:39
 Session : 66b3a267-c78b-42f6-a8ae-29e0b5914e89
 
