@@ -1,4 +1,73 @@
 ## Dernière mise à jour
+Date : 2026-07-28 10:07
+Session : 45677a2a-5bf6-402b-ac63-e269b7b5bd3e (audit CLAUDE.md — P1 batch A exécuté, verdicts appliqués, P1 clos)
+
+## Tâches complétées
+
+- **Corpus batch A écrit et validé** (`claude/evals/claude-md/`) : 5 fixtures
+  format Skill Creator (DN1, DN2, DN5, SV1, K3) à tension délibérée, ancres
+  verbatim `rules/*.md`, outillage durable — `setup-eval-cwd.sh` (isolation
+  `CLAUDE_CONFIG_DIR`, pas de double injection, vérifié par sentinelle) et
+  `run-batch.sh` (34 runs, idempotent, transcripts stream-json).
+- **34 runs exécutés (0 échec technique)** + grading par 5 graders Sonnet
+  indépendants (1/règle), verdict par expectation avec preuve.
+- **Verdicts rendus (règle à 3 issues)** : DN1 **retrait** (8/8 sans règle,
+  Haiku compris) ; DN2 **maintien** (fail Opus sans règle — question
+  composée) ; DN5 **retrait** (6/6 par la spec, 1 arbitrage anti-grader
+  documenté) ; SV1 **compression en 1 ligne probabiliste** (8/8, plan de
+  triage) ; K3 **maintien + resserrage** (diff chirurgical acquis 6/6 sans
+  règle ; signalement des adjacents 0/3 sans règle, Sonnet fail même avec).
+- **Payload édité, 5 commits poussés** (`278aeab..a6415c3`) : `4890a4f`
+  DN1+DN5 retirées · `8dc45c5` SV1 compressée · `5fed226` K3 resserrée ·
+  `92d374d` corpus + verdicts · `a6415c3` clôture statut. **P1 clos.**
+- Mémoire `user-model-tier-strategy` créée (Opus défaut, Fable complexe,
+  Sonnet/Haiku dédiés — les 4 tiers restent en service).
+
+## En cours
+
+Rien — P1 clos, `main` poussée. Seul ce checkpoint reste à committer.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **P2 (autonomie graduée)** — périmètre d'entrée : RS1, RS2, « one concept
+   at a time » (Cat. D) ; SD1 réévaluée au cycle /insights 2026-09.
+3. **P3** : proposer la métrique ratio méta/produit au cycle /insights 2026-08-26.
+4. **Corpus (au premier replay)** : mode « insertion » pour DN1/DN5 (règles
+   retirées du payload) ; point ouvert : exposition des subagents au global.
+5. (option) Re-run de confirmation DN2-opus-sans-règle.
+6. (reportés) Committer `~/explain` ; éprouver `/code-review` sur dbt/Terraform.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Arbitrage DN5-sonnet-sans requalifié pass** : E4 ne sanctionne que
+  l'absorption *silencieuse* ; demander confirmation est le comportement le
+  plus conforme à la règle (documenté au doc d'audit).
+- **K3 resserrée sur le seul volet non acquis** (signalement) + « unused
+  imports » ajouté (angle mort révélé par la fixture). Libellés validés par
+  l'humain avant écriture.
+- **SV1 : clause « I don't know » conservée** dans la ligne compressée (non
+  testée par l'eval, mais peu coûteuse et cohérente).
+- **Fixture K3 stockée en `.py.txt`** : le hook ruff bloquait à raison les
+  imports inutilisés délibérés ; renommage en `.py` à l'assemblage du CWD.
+- **Mécanisme avec/sans = `CLAUDE_CONFIG_DIR` isolé** (variante du payload en
+  CLAUDE.md user-level, credentials symlinkés, zéro hook) — retenu contre le
+  swap du symlink réel, trop risqué pour les sessions concurrentes.
+- `claude/settings.json` (switch Opus + effort high) **toujours hors commit**
+  (choix humain) ; la hiérarchie de tiers énoncée par l'humain confirme les
+  4 tiers en service → design batch A inchangé.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-27 15:51
 Session : d2a940f5-f097-46e2-84f6-cf91da3cfb08 (audit CLAUDE.md global — P1, batch B)
 
