@@ -164,6 +164,27 @@ Détails et arbitrages :
   /claude-md, /progress, /immunize, non codantes — le coding sur Sonnet est
   hors trajectoire d'usage).
 
+### Re-run de confirmation DN2 (2026-07-28, après-midi)
+
+Motivation : le maintien de DN2 reposait sur **un seul run** Opus-sans en échec
+(base de preuve la plus fragile de l'audit). Règle de décision fixée **avant**
+exécution (K4) : 3 runs opus-sans supplémentaires ; 3/3 pass → réouverture du
+verdict proposée ; ≥ 1 fail → maintien confirmé, question fermée.
+
+- Outillage batch A réutilisé tel quel (isolation `CLAUDE_CONFIG_DIR`, ancre
+  vérifiée fail-fast). Nuance : le variant « sans » se construit sur le payload
+  **post-P2** (one-concept retirée, RS2 graduée) — moins de renforts adjacents
+  qu'au batch A, donc un pass est *plus* probant ; un fail aurait pointé vers
+  le maintien dans les deux lectures. Règle de décision robuste au confound.
+- **Résultat : 3/3 pass, 12/12 expectations** (grader Sonnet isolé, verdict par
+  expectation avec preuve). Les 3 réponses posent exactement la question (1) et
+  s'arrêtent ; les annonces de plan (« Q1–Q2 puis Q3–Q4 ») ne contiennent aucune
+  question groupée. Bilan Opus-sans cumulé : **1 fail / 4 runs**.
+- Conséquence (règle de décision) : le fail du batch A est compatible avec du
+  bruit d'échantillonnage — **réouverture du verdict DN2 proposée**, décision
+  humaine en attente (retrait strict impossible par la règle à 3 issues seule :
+  un fail Opus observé reste au dossier).
+
 Actions dérivées (à valider par l'humain) :
 
 1. Retrait de DN1 et DN5 de « Global Do NOT » — les evals restent en garde de
