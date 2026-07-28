@@ -9,8 +9,8 @@
 - All code, comments, docstrings, commits: English
 
 ## Response Style
-- Keep each turn well under the output-token cap: lead with a 3-bullet (or short-table) summary, then ask before expanding into a long explanation.
-- Work in small increments — one logical step per turn — rather than emitting one very long response that risks hitting the API output-token limit and wiping the turn.
+- Lead with a short summary (a few bullets or a small table); ask before expanding into a long explanation.
+- Graduated autonomy: when an explicit pass/fail criterion covers the path (failing test, eval, expected diff, verifying command), chain the steps and report against the criterion; without one, advance one logical step per turn and validate before continuing.
 - Long artifacts (code, docs, audits) belong in files written incrementally, not in a single oversized chat message.
 
 ## Scope Discipline (reconnaissance)
@@ -31,7 +31,6 @@
 - Before /clear or ending a session: invoke `/progress` to checkpoint current state and next steps
 - Project-specific conventions live in each project's CLAUDE.md
 - Lessons learned accumulate in tasks/lessons-inbox.md (via /immunize)
-- One concept at a time — validate before moving to next step
 
 ## Documentary Methodology
 - Single source of truth for documentary governance (which document holds what, non-overlap rules, write cycles by project phase): `~/dotfiles/docs/methodology/responsibility-matrix.md`
