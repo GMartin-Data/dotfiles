@@ -1,4 +1,107 @@
 ## Dernière mise à jour
+Date : 2026-07-28 20:35
+Session : 52367291-8782-4293-b092-37d446601828
+
+## Tâches complétées
+
+- **Incohérences 7.1 et 7.2 corrigées** (`bbd9333`, `9224c6f`) : matrice —
+  « Décisions prises » de progress.md = journal de pointeurs vers les ADRs
+  (exemption track léger ADR-0011 explicitée) ; cocher un acceptance criterion
+  = état, éditer le contenu = révision (nouveau bloc « Frontières floues » +
+  parenthèse Phase 2). Prompt `/progress` aligné (placeholder pointeurs).
+  Overview §7.1/§7.2 statués « Résolu ».
+- **7.3 instruit par inspection croisée dotfiles + template-v2.** Chronologie
+  reconstituée : gate du 2026-04-27 (`a34871a`, délibérée, eval-pinnée,
+  campagne 6/6) ; matrice du 2026-06-22 écrite sans la voir (« n'importe quel
+  ordre ») ; ADR-0011 du 2026-06-25 crée un deadlock (déclaration track léger
+  → CLAUDE.md → gate → PRD que le track léger rend optionnel). Le template ne
+  prescrit aucun ordre (P7.5 : pas de CLAUDE.md seedé) — la gate est une
+  doctrine dotfiles pure.
+- **Volet A résolu et livré** (`10c2a94`) : gate track-léger aware (override
+  sur confirmation explicite, consignation ADR-0011 dans le CLAUDE.md généré —
+  la déclaration exigée) ; matrice Phase 0 réécrite avec la règle de fond
+  (indépendance de **contenu** ≠ d'**élaboration**, flux unidirectionnel
+  PRD → CLAUDE.md : recommandé / imposé sur Cruft / libre hors produit) ;
+  champ fantôme « phases d'implémentation » retiré du pré-flight ;
+  « périmètre v1 » → « cible » (le sweep ADR-0001 n'avait jamais atteint
+  claude-md.md) ; instance-aware-flow.md mis en cohérence (2 retouches).
+- **Rejeu d'evals scopé, verdict 2/2 PASS** : eval gate amendée PASS 7/7
+  (2 tours, chemin override inclus) ; non-régression avec-PRD PASS 6/6
+  (⚠️ initial du grader = troncature de transcription, tranché par un tour
+  supplémentaire) ; rouge prouvé par inspection textuelle (pas de session
+  brûlée). Sessions B automatisées en `claude -p` stream-json (précédent
+  batch A) au lieu du copier-coller humain ; grader Sonnet isolé.
+- **Volet B requalifié — diagnostic initial inversé** : le pré-flight lit
+  fidèlement le `/prd` réel (14 sections dont Stack technique, Architecture
+  technique, Risques & Mitigations — `prd.md:277-338`) ; le fantôme est le
+  « PRD allégé (8 sections) » de la matrice, jamais implémenté dans la
+  command ni acté par ADR. Overview §7.3 statué (A résolu, B chantier).
+
+## En cours
+
+- Rien — ce checkpoint à committer. `claude/settings.json` : plus de modif en
+  working tree (le retour Fable 5/xhigh a restauré l'état commité — le
+  « revert naturel » prévu).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **CHANTIER volet B (session fraîche — consistant)** : conformer `/prd` au
+   PRD allégé de la matrice. Chemin : ADR « format PRD canonique » (les
+   8 sections n'ont jamais été actées ; satellite `conventions/prd.md`
+   candidat — son critère de création est atteint) → refonte format de sortie
+   + Phases 8/10 de `/prd` → pré-flight `/claude-md` (« stack technique,
+   architecture » restants) + branche Phase 2 « PRD sans Cruft »
+   d'instance-aware-flow.md → les deux corpus d'evals. Pièces au dossier :
+   le `/prd` réel n'a pas de section Open questions (où la règle 6 de la
+   matrice route les risques non résolus).
+3. **Prioriser volet B vs routage SPIKE** (en file : ADR → eval failing →
+   grill.md → sync matrice) — décision d'ordonnancement à prendre.
+4. Adjacents signalés non corrigés : `setup-eval-cwd.sh` suppose un TTY
+   (`cruft create` sans `--no-input` ; contournement session : `yes '' |`) ;
+   fixtures `/tmp/claude-md-eval-*` laissées (hook block-rm-rf), purge
+   manuelle ou reboot.
+5. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3). **SD1** : cycle 2026-09.
+6. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+Aucun ADR écrit cette session (choix assumé, premier point ci-dessous). Choix
+de portée session :
+
+- **Pas d'ADR pour 7.1/7.2/7.3-A** : formalisations d'intentions et de
+  décisions déjà existantes (la gate date d'`a34871a`), pas de décisions
+  nouvelles — l'intro §7 de l'overview reformulée en conséquence ; la trace
+  durable vit dans les documents amendés eux-mêmes et leurs commits.
+- **Interprétation 7.1 ratifiée en séance** : les choix de portée session
+  (échouant au test des 6 mois) se notent directement — l'alternative
+  (section 100 % pointeurs) contredisait la pratique et ADR-0011.
+- **Verdict 7.3-A** : gate voulue (archéologie git) ; la matrice reçoit la
+  règle de fond (élaboration/contenu) plutôt qu'une exception documentée ;
+  l'override track léger ferme le deadlock en faisant du CLAUDE.md généré le
+  porteur de la déclaration ADR-0011.
+- **Rejeu scopé plutôt que campagne complète** : rouge décidable par
+  inspection textuelle, vert non → 3 runs + grading isolé. Refus de différer
+  fondé sur l'anti-pattern documenté « corpus jamais exécuté » (ADR-0009) et
+  sur la contrepartie de l'exemption direct-sur-main.
+- **7.3-A en un seul commit** (eval + command + références + matrice +
+  overview) : un purpose, atomicité respectée.
+- **Hook block-rm-rf respecté** : pas de contournement pour le nettoyage des
+  fixtures.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-28 16:05
 Session : 8ab937ba-56ef-4310-a873-5d5aa43741ea
 
