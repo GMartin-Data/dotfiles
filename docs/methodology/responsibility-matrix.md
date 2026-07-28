@@ -13,7 +13,7 @@ Source de vérité unique par concept. Toute décision d'écriture future doit p
 | Document | Cycle de vie | Contenu unique | Ne contient JAMAIS |
 |---|---|---|---|
 | **CLAUDE.md** | Stable (révisions rares, via ADR en Phase 3) | Conventions code, stack, contraintes projet transverses, style, AI workflow guidelines | Goals projet, décisions ad-hoc, état de session, phases d'implémentation |
-| **PRD.md** | Baseline versionnée du produit **cible** : ne dérive pas par édition silencieuse ; révision = ADR en Phase 3 (cf. [`adr/0001`](../../adr/0001-prd-produit-cible.md)) | Problem, goals, non-goals, users & scenarios, acceptance criteria, constraints, open questions, hors-cible | Stack, architecture, phases d'implémentation, risques techniques, décisions de design, découpage en MVP/itérations |
+| **PRD.md** | Baseline versionnée du produit **cible** : ne dérive pas par édition silencieuse ; révision = ADR en Phase 3 (cf. [`adr/0001`](../../adr/0001-prd-produit-cible.md)) | Le *quoi/pourquoi* produit — canvas canonique de 11 sections, acté par [`adr/0013`](../../adr/0013-format-prd-canonique.md). Voir [`conventions/prd.md`](conventions/prd.md) | Stack, architecture, phases d'implémentation, risques techniques, décisions de design, découpage en MVP/itérations |
 | **PLAN.md** | Semi-frozen (révision = ADR obligatoire) | Architecture haut niveau, séquence d'exécution, **deux granularités** (cf. [`adr/0002`](../../adr/0002-mvp-palier-dans-plan.md)) : **paliers MVP** (livrables à valeur) et **phases** (briques de séquençage technique) qu'ils regroupent | Décisions atomiques avec rationale, état session, conventions code |
 | **adr/NNNN-*.md** | Corps immuable, statut mutable | UNE décision = UN fichier. Voir [`conventions/adr.md`](conventions/adr.md) pour cycle de vie complet, vocabulaire des relations et règles pratiques. | État de session, listing exhaustif de toutes les micro-décisions |
 | **progress.md** | Living, court | Où j'en suis, prochaine action concrète, blockers de session, pointeurs vers les ADRs de session | Décisions in extenso (vont en ADR ; ici seul le pointeur — cf. « progress vs ADR »), changements de plan (vont en ADR puis PLAN), conventions |
@@ -153,7 +153,7 @@ de son scope. Un drift se traite par l'ordre canonique ci-dessus, pas par re-gri
 
 ## Conséquences architecturales pour les outils
 
-- `/prd` produit un PRD allégé (8 sections : Problem, Goals, Non-goals, Users & scenarios, Acceptance criteria, Constraints, Open questions, Hors-cible). Pas de stack, pas d'archi, pas de phases d'impl.
+- `/prd` produit un PRD conforme au canvas canonique de 11 sections ([`conventions/prd.md`](conventions/prd.md), acté par [`adr/0013`](../../adr/0013-format-prd-canonique.md)). Pas de stack, pas d'archi, pas de phases d'impl.
 - `/claude-md` reste seule source de vérité stack et conventions.
 - `/planning` (nommée ainsi, pas `/plan` — collision avec built-in Claude Code) produit PLAN.md à partir de PRD + CLAUDE.md.
 - `/grill` stress-teste un PRD **ou** un PLAN avant gel (un artefact par invocation, type déduit du fichier). Ne modifie jamais l'artefact source, n'écrit aucun fichier ; délègue la formalisation des décisions candidates à `/adr` par instruction, jamais par invocation (cf. [`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)).
@@ -204,7 +204,7 @@ Documents satellites approfondissant un type de document spécifique :
 | Satellite | Sujet | Statut |
 |---|---|---|
 | [`conventions/adr.md`](conventions/adr.md) | Cycle de vie ADR, vocabulaire des relations, règles pratiques | Actif |
-| `conventions/prd.md` | Format et structure du PRD | À créer si besoin |
+| [`conventions/prd.md`](conventions/prd.md) | Canvas canonique du PRD (11 sections), tests de frontière | Actif |
 | `conventions/plan.md` | Format et structure du PLAN | À créer si besoin |
 | `conventions/progress.md` | Format de progress.md | À créer si besoin |
 | `conventions/claude-md.md` | Format de CLAUDE.md | À créer si besoin |
