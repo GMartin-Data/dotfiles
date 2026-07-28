@@ -1,4 +1,72 @@
 ## Dernière mise à jour
+Date : 2026-07-28 12:22
+Session : 27552b11-42c8-468f-b3a8-48ae050b6aeb (P2 autonomie graduée — cadrage, verdicts, application)
+
+## Tâches complétées
+
+- **P2 (autonomie graduée) exécuté de bout en bout** : cadrage pédagogique
+  (mécanisme symlink vérifié : édition du payload = effet immédiat), interview
+  1-question-à-la-fois (axe + 3 verdicts, tous tranchés par l'humain), diff
+  validé avant application, 2 commits poussés (`8ef1502`, `7b6dcc5`).
+- **Axe de gradation acté : critère vérifiable** — la laisse s'allonge quand un
+  critère pass/fail explicite couvre le chemin (test rouge, eval, diff attendu,
+  commande de vérification) ; sinon un pas logique par tour. K4 = socle.
+- **Verdicts appliqués au payload** (`8ef1502`) : RS1 compressée en préférence
+  de style (motivation token-cap retirée) · RS2 réécrite en bullet « Graduated
+  autonomy » · « one concept at a time » retirée de Session Discipline (fusion
+  dans RS2 graduée). RS3 intacte (Cat. C).
+- **Trace d'audit écrite** (`7b6dcc5`) : section « P2 » dans
+  `tasks/claude-md-audit-2026-07.md` — méthode (pas d'eval possible sur des
+  règles de confiance), table des verdicts, statut P2 avec observation ouverte.
+
+## En cours
+
+Rien — P2 clos côté édition, `main` poussée. Seul ce checkpoint reste à
+committer. Reste ouverte : la case « observation à l'usage » du statut P2.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Observation à l'usage de la règle graduée** — pas de critère chiffré
+   dédié ; effet observé aux cycles /insights (prochain : 2026-08-26).
+3. **P3** : proposer la métrique ratio méta/produit au cycle /insights 2026-08-26.
+4. **SD1** : réévaluation au cycle /insights 2026-09.
+5. **Corpus batch A (au premier replay)** : mode « insertion » pour DN1/DN5 ;
+   point ouvert : exposition des subagents au global.
+6. (option) Re-run de confirmation DN2-opus-sans-règle.
+7. (reportés) Committer `~/explain` ; éprouver `/code-review` sur dbt/Terraform.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Pas d'eval pour les règles Cat. D** : elles encodent un choix humain de
+  confiance — aucune vérité indépendante de la préférence → interview de
+  cadrage au lieu d'un batch avec/sans.
+- **RS1 : ambiguïté corrélation/causalité documentée** — le `[VALIDÉ]` du cycle
+  2026-07 portait sur une fenêtre incluant le pré-fix harness ; le gate
+  « demander avant de développer » survit comme préférence, le chiffre
+  « 3 bullets » assoupli.
+- **One-concept : terrain entièrement couvert** — rythme → RS2 graduée,
+  séparations prescrites → DN2 (maintenue P1), pacing pédagogique → skills
+  learning. Retrait sec.
+- **Placement chirurgical** : la règle graduée occupe l'emplacement de RS2 dans
+  Response Style — pas de section `## Autonomy` dédiée (1 ligne ne justifie pas
+  un header, payload en cours d'amincissement).
+- **Un seul commit payload** : les 3 changements forment un groupement logique
+  unique (RS2 absorbe one-concept, RS1 partage la section).
+- `claude/settings.json` (Fable→Opus, xhigh→high) **toujours hors commit**
+  (choix humain, précédent des sessions antérieures).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-28 10:07
 Session : 45677a2a-5bf6-402b-ac63-e269b7b5bd3e (audit CLAUDE.md — P1 batch A exécuté, verdicts appliqués, P1 clos)
 
