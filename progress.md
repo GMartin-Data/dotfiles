@@ -1,4 +1,65 @@
 ## Dernière mise à jour
+Date : 2026-07-28 13:46
+Session : 27552b11-42c8-468f-b3a8-48ae050b6aeb (suite — re-run DN2 clos, ~/explain commité)
+
+## Tâches complétées
+
+- **Re-run de confirmation DN2 exécuté et tranché** (règle de décision fixée
+  avant run, K4) : 3 runs opus-sans supplémentaires (outillage batch A, payload
+  post-P2), grader Sonnet isolé — **3/3 pass, 12/12 expectations**. Bilan
+  cumulé opus-sans : 1 fail / 4 runs. Décision humaine : **maintien confirmé,
+  question fermée** (fail réel observé, n=4 n'exclut pas un taux faible, coût
+  faible vs valeur des séparations prescrites, pas de filet en session).
+  Commits `b9331fe` (trace) + `8199b48` (clôture), poussés.
+- **`~/explain` commité** (délégation humaine explicite, dérogation ponctuelle
+  au « à ta main ») : digest Cookiecutter + procédure d'ajout de skill,
+  commit `a49d0b0` poussé — les 4 autres éléments du repo laissés intacts.
+  Item reporté depuis le 2026-07-22 : clos.
+- **Backlog immédiatement actionnable : zéro.** Il ne reste que du daté
+  (/insights 2026-08-26 : observation P2 + métrique P3 ; SD1 2026-09) et du
+  dormant à déclencheur (mode insertion corpus au premier replay, /code-review
+  dbt/Terraform, items TODO.md tous ❌ — grille revérifiée ce jour).
+
+## En cours
+
+Rien — seul ce checkpoint reste à committer.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Cycle /insights 2026-08-26** (issue automatique) : observation de la règle
+   graduée P2 + proposition de la métrique ratio méta/produit (P3).
+3. **SD1** : réévaluation au cycle /insights 2026-09.
+4. **Corpus batch A (au premier replay)** : mode « insertion » désormais requis
+   pour DN1/DN5 *et rejeu DN2* ; point ouvert : exposition des subagents.
+5. (dormant) Éprouver `/code-review` sur dbt/Terraform au prochain diff réel.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Règle de décision DN2 fixée avant exécution** (3/3 pass → réouverture
+  proposée ; ≥1 fail → maintien) — robuste au confound payload post-P2 (moins
+  de renforts adjacents : un pass est plus probant, un fail pointait maintien
+  dans les deux lectures).
+- **Maintien DN2 malgré 3/3 pass** : honnêteté statistique — n=4 écarte un taux
+  d'échec élevé, pas un taux faible (~10-25 %) ; le fail batch A était un
+  comportement réel, pas un artefact de grading.
+- **Première exécution live de la règle « Graduated autonomy »** (commitée le
+  matin même) : chaîne setup → 3 runs → grading → application de la règle de
+  décision enchaînée sans validation intermédiaire, critère pass/fail couvrant.
+- **Commit `~/explain` limité aux 2 fichiers dotfiles** : les éléments des
+  autres fils de travail (journal, rétro-todo, procédure armement) exclus.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-28 12:22
 Session : 27552b11-42c8-468f-b3a8-48ae050b6aeb (P2 autonomie graduée — cadrage, verdicts, application)
 
