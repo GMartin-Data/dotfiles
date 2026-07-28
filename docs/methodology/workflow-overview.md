@@ -507,27 +507,28 @@ pas par édition silencieuse » tout en prescrivant, en Phase 2, de « cocher le
 acceptance criteria » — sans que la distinction entre « éditer le PRD » et
 « cocher dans le PRD » soit écrite nulle part.
 
-### 7.3 — `/claude-md` lit le PRD, sans ordre imposé en Phase 0 *(prioritaire)*
+### 7.3 — `/claude-md` lit le PRD, sans ordre imposé en Phase 0
 
-> Contrairement à 7.1 et 7.2 — des intentions claires mais non formulées — ce
-> point est un **écart factuel** : la matrice affirme quelque chose que la
-> command contredit. À instruire en inspectant conjointement ce repo et le
-> template Cruft.
+> **Volet A (ordre imposé) résolu (2026-07-28)** — l'instruction croisée
+> dotfiles + template a montré que la gate est *voulue* : délibérée, motivée et
+> pinnée par eval depuis 2026-04-27 ; la matrice, écrite deux mois après, ne
+> l'avait pas vue. La matrice (Phase 0) formule désormais la règle réelle :
+> indépendance de **contenu**, pas d'**élaboration** — flux d'information
+> unidirectionnel PRD → CLAUDE.md, ordre recommandé en général, imposé sur
+> instance Cruft, avec override track léger explicite à la gate (ADR-0011),
+> qui résout au passage le deadlock déclaration-dans-CLAUDE.md ↔ gate-exige-PRD.
+>
+> **Volet B (champs lus) requalifié en chantier, non résolu** — le diagnostic
+> initial était inversé : le pré-flight lit fidèlement ce que `/prd` produit
+> *réellement* (son format de sortie contient bien « Stack technique » et
+> « Architecture technique ») ; le fantôme est le « PRD allégé (8 sections) »
+> de la matrice, jamais implémenté dans la command ni acté par ADR. Résolution
+> doctrinale à venir : conformer `/prd` à la matrice (ADR format PRD canonique
+> → refonte `/prd` → pré-flight `/claude-md` → les deux corpus d'evals). Seul
+> vrai champ fantôme, corrigé immédiatement : « phases d'implémentation »,
+> sorties du PRD depuis 2026-06-22.
 
-La matrice pose que CLAUDE.md et PRD.md sont « indépendants en contenu et peuvent
-être menés dans n'importe quel ordre ». Le pré-flight de `/claude-md` lit pourtant
-`PRD.md` s'il existe, pour en extraire « stack technique, architecture, phases
-d'implémentation ».
-
-Deux conséquences non documentées :
-
-- **Sur une instance Cruft, l'ordre est imposé, pas libre.** `/claude-md`
-  applique une gate bloquante : `.cruft.json` présent + `PRD.md` absent →
-  poursuite interdite. Le PRD doit donc précéder CLAUDE.md dans ce cas de figure,
-  ce que la formulation « n'importe quel ordre » de la matrice ne laisse pas
-  prévoir. Hors instance Cruft, l'ordre reste effectivement libre.
-- **Les champs lus n'existent plus dans le PRD.** Le pré-flight cherche « stack
-  technique, architecture, phases d'implémentation » — précisément ce que la
-  matrice **exclut** du PRD, et qui ne figure pas dans les 8 sections du PRD
-  allégé. Ce pré-flight semble dater d'un format de PRD antérieur à la doctrine
-  actuelle.
+Le point relevé : la matrice affirmait que CLAUDE.md et PRD « peuvent être menés
+dans n'importe quel ordre » alors que `/claude-md` impose PRD d'abord sur
+instance Cruft (gate bloquante), et son pré-flight lisait des champs supposés
+absents du PRD conforme.

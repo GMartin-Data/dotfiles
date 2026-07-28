@@ -24,7 +24,7 @@ Pré-remplir depuis les artefacts et demander une confirmation unique sur le ter
 
 Sur « oui », passer à la Phase 2.
 
-**Ne pas glisser sur le territoire `/prd`** (problème résolu, utilisateurs cibles, valeur, user stories). Si on est ici, c'est que la gate conditionnelle de `claude-md.md` est passée — donc `PRD.md` existe et le cadrage produit est déjà figé. Le rôle de Phase 1 est un checkpoint sur le nom et la structure, pas une re-élicitation de l'intention produit.
+**Ne pas glisser sur le territoire `/prd`** (problème résolu, utilisateurs cibles, valeur, user stories). Le rôle de Phase 1 est un checkpoint sur le nom et la structure, jamais une élicitation de l'intention produit : soit `PRD.md` existe et le cadrage est déjà figé, soit le projet est hors workflow Cruft ou en track léger confirmé à la gate (ADR-0011) — et le cadrage produit n'appartient de toute façon pas à cette interview.
 
 ---
 
@@ -49,7 +49,7 @@ Extraire la section « Stack technique » du PRD, pré-remplir, demander confirm
 Pré-proposer un workflow par défaut cohérent avec l'instance :
 
 > « Workflow IA pré-proposé :
-> - Context files : PRD.md (intention figée), progress.md (état courant via /progress)
+> - Context files : PRD.md (intention figée — omettre si track léger sans PRD), progress.md (état courant via /progress)
 > - Progress tracking : progress.md mis à jour via `/progress`
 > - Frequent commands : [lister d'après Cruft — ex. `uv run`, `dbt build`, `terraform plan`]
 >

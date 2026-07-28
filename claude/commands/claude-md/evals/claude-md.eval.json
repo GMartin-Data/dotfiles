@@ -12,9 +12,11 @@
     "expected_behavior": [
       "Step 0 : lit CLAUDE.md à la racine, constate son absence, n'affiche pas la gate replace/extend/abort",
       "Détecte la présence de .cruft.json et l'absence de PRD.md",
-      "Affiche le message d'arrêt standard expliquant le workflow Cruft → /prd → /claude-md",
-      "Mentionne explicitement que le cadrage produit (problème, utilisateurs, périmètre v1) doit être figé avant les conventions techniques",
-      "S'arrête immédiatement : pas de Bloc 1, pas de Bloc 2, pas de question d'interview"
+      "Affiche le message d'arrêt expliquant le workflow Cruft → /prd → /claude-md",
+      "Mentionne explicitement que le cadrage produit (problème, utilisateurs, périmètre cible) doit être figé avant les conventions techniques",
+      "Propose l'override track léger (ADR-0011 : PRD optionnel), soumis à confirmation humaine explicite",
+      "S'arrête et attend : pas de Bloc 1, pas de Bloc 2, pas de question d'interview sans confirmation track léger ni PRD produit",
+      "Sur confirmation explicite du track léger, poursuit le pré-flight sans PRD et annonce que le CLAUDE.md généré consignera la classification (renvoi ADR-0011)"
     ]
   },
   {

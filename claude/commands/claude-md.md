@@ -29,7 +29,7 @@ S'il est **absent** (Read échoue), enchaîner directement sur le pré-flight.
 
 1. **`.cruft.json`** — si présent à la racine du CWD, lire `context.cookiecutter` pour extraire : `project_name`, `python_version`, `license`, `branch_protection_profile`, et les flags `use_dbt` / `use_terraform`.
 2. **Arborescence racine** — lister les dossiers présents (`src/`, `dbt/`, `terraform/`, `tests/`, `docs/`, `.github/`, etc.). L'arbo fait foi : un post-hook Cruft supprime les dossiers non retenus.
-3. **`PRD.md`** — si présent, le lire pour récupérer : problème, utilisateurs, interface, stack technique, architecture, phases d'implémentation.
+3. **`PRD.md`** — si présent, le lire pour récupérer : problème, utilisateurs, interface, stack technique, architecture.
 
 Si **aucun** de ces trois artefacts n'existe : procéder à l'interview standard complète (toutes les phases).
 
@@ -39,19 +39,28 @@ Si **au moins un** est présent : afficher le pré-flight en **deux blocs distin
 
 **Avant tout autre affichage, appliquer cette gate :**
 
-Si `.cruft.json` est **présent** ET `PRD.md` est **absent** : **interdire la poursuite** et afficher le message d'arrêt :
+Si `.cruft.json` est **présent** ET `PRD.md` est **absent** : **bloquer la poursuite** et afficher le message d'arrêt :
 
 ```
 Instance Cruft détectée, mais aucun PRD.md à la racine.
 
 Le workflow projet est : Cruft → /prd → /claude-md.
-Le cadrage produit (problème, utilisateurs, périmètre v1) doit être figé
+Le cadrage produit (problème, utilisateurs, périmètre cible) doit être figé
 avant les conventions techniques. Lance /prd d'abord, puis reviens ici.
 
-Commande annulée.
+Exception — track léger (ADR-0011 : PRD optionnel). Si ce projet est
+mono-utilisateur, sans collaborateurs, sans distribution publique et à
+durée de vie non-critique, réponds « track léger » et l'interview se
+poursuit sans PRD.
 ```
 
-Puis s'arrêter. Ne pas continuer le pré-flight.
+Puis s'arrêter et attendre. Deux issues :
+
+- L'utilisateur relance après `/prd` : parcours nominal.
+- L'utilisateur confirme **track léger** : poursuivre le pré-flight sans PRD et
+  consigner la classification dans le CLAUDE.md généré (section renvoyant à
+  ADR-0011) — c'est la déclaration que l'ADR exige. Ne jamais activer cet
+  override sans confirmation humaine explicite.
 
 Si `.cruft.json` est **absent** : pas de gate, le scénario est hors workflow Cruft (projet existant, dotfiles, tooling, scripts) — poursuivre normalement avec le pré-flight, même sans PRD.
 

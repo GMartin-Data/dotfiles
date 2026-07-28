@@ -63,7 +63,17 @@ Avant d'écrire un contenu nouveau, se poser :
   pas. Les décisions candidates se résolvent (open questions du PRD) ou se
   formalisent via `/adr` **avant** le gel.
 
-Les deux productions sont indépendantes en contenu et peuvent être menées dans n'importe quel ordre.
+Les deux productions sont **indépendantes en contenu** (non-overlap : aucune
+section ne migre de l'un à l'autre) mais **pas en élaboration** : le flux
+d'information est unidirectionnel — `/claude-md` consomme le PRD quand il existe
+(pré-remplissage, fichiers de contexte), `/prd` ne lit jamais CLAUDE.md. L'ordre
+PRD → CLAUDE.md est donc **recommandé** en général (écrire les documents gelés
+dans l'ordre de leurs dépendances d'information minimise les révisions par ADR),
+**imposé** sur instance Cruft (gate de `/claude-md`, dont l'allègement présuppose
+le PRD) — sauf track léger confirmé à la gate
+([`adr/0011`](../../adr/0011-track-leger-petits-projets.md) : PRD optionnel,
+override explicite) — et **libre** hors workflow produit (dotfiles, tooling,
+scripts).
 
 ### Phase 1 — Planning (one-shot par projet)
 - Lit PRD + CLAUDE.md
