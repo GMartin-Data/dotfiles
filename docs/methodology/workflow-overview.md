@@ -496,19 +496,16 @@ règle).
 
 ### 7.2 — Le PRD comme lieu de cochage vs baseline non-dérivante
 
-La matrice décrit le PRD comme une baseline qui « ne dérive pas par édition
-silencieuse » : toute révision passe par un ADR. Elle prescrit par ailleurs, en
-Phase 2, de « cocher les acceptance criteria du PRD » au fil de l'implémentation.
+> **Résolu (2026-07-28)** — la distinction état/cible est formulée dans la
+> matrice (bloc « PRD : cocher un critère vs réviser la baseline ») : cocher un
+> acceptance criterion enregistre un **état**, la **cible** reste intacte —
+> aucun ADR ; seule l'édition du *contenu* (modifier, ajouter, supprimer un
+> critère) révise la baseline et suit l'ordre canonique de Phase 3.
 
-Cocher une checkbox modifie le fichier sans ADR. L'intention est vraisemblablement
-que le cochage ne touche pas au *contenu* de la baseline (il enregistre un état
-d'avancement, il ne révise pas la cible) — mais la distinction entre « éditer le
-PRD » et « cocher dans le PRD » n'est écrite nulle part. Un lecteur strict de la
-règle hésitera.
-
-Question sous-jacente non tranchée : un état d'avancement dans un document
-baseline, plutôt que dans progress.md, est-il conforme au principe de source de
-vérité unique ?
+Le point relevé : la matrice décrivait le PRD comme une baseline qui « ne dérive
+pas par édition silencieuse » tout en prescrivant, en Phase 2, de « cocher les
+acceptance criteria » — sans que la distinction entre « éditer le PRD » et
+« cocher dans le PRD » soit écrite nulle part.
 
 ### 7.3 — `/claude-md` lit le PRD, sans ordre imposé en Phase 0 *(prioritaire)*
 

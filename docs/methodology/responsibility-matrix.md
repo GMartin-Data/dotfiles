@@ -74,7 +74,8 @@ Les deux productions sont indépendantes en contenu et peuvent être menées dan
 
 ### Phase 2 — Implementation (cycle répété)
 - Start session : `/catchup` lit progress.md (+ ADRs récents si pertinents)
-- Pendant : code selon PLAN courant, coche acceptance criteria du PRD
+- Pendant : code selon PLAN courant, coche acceptance criteria du PRD (état,
+  pas révision — cf. « PRD : cocher un critère vs réviser la baseline »)
 - Sur décision non-triviale : écrit ADR **avant** d'en coder la conséquence
 - End session : `/progress` met à jour progress.md → `/clear`
 
@@ -112,6 +113,14 @@ de son scope. Un drift se traite par l'ordre canonique ci-dessus, pas par re-gri
 - PRD = *quoi* et *pourquoi* (orienté problème/utilisateur)
 - PLAN = *comment* et *dans quel ordre* (orienté exécution)
 - Test : un lecteur non-technique doit pouvoir lire le PRD seul. Un dev qui prend la suite doit pouvoir lire PLAN + CLAUDE.md sans PRD pour exécuter.
+
+**PRD : cocher un critère vs réviser la baseline**
+- Cocher un acceptance criterion (`[ ]` → `[x]`) enregistre un **état**
+  d'avancement ; la **cible** reste intacte. Aucun ADR — c'est le geste nominal
+  de Phase 2, pas une dérive de la baseline.
+- Modifier, ajouter ou supprimer un critère (le *contenu*) révise la cible →
+  ADR puis amendement, comme toute révision du PRD (Phase 3).
+- Test : le diff touche-t-il autre chose que des cases à cocher ? Oui → révision.
 
 **PLAN vs ADR : "décisions techniques"**
 - PLAN = décisions consolidées en architecture cible (la photo finale)
