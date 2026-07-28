@@ -51,8 +51,7 @@ Rationale and detailed heuristics: `~/dotfiles/docs/methodology/karpathy-discipl
   volume) before implementing; don't pick an interpretation silently.
 - **Simplicity First** — minimum code that solves the problem; no unrequested
   features or speculative abstractions; error handling at real boundaries only.
-- **Surgical Changes** — every changed line traces to the request; flag adjacent
-  improvements (dead code, naming) without fixing them silently.
+- **Surgical Changes** — flag adjacent improvements (dead code, naming, unused imports) without fixing them silently.
 - **Goal-Driven Execution** — convert the task into a verifiable success
   criterion before coding; one verification criterion per step.
 - **Test-first (Claude-specific)** — when a testable contract exists: failing
