@@ -1,4 +1,75 @@
 ## Dernière mise à jour
+Date : 2026-07-28 14:39
+Session : 66b3a267-c78b-42f6-a8ae-29e0b5914e89
+
+## Tâches complétées
+
+- **Analyse critique du transcript Pocock** (« prototype skill », concept de
+  fidélité des discussions de design) vs workflow existant. Verdict : le critère
+  d'escalade de fidélité comble un vrai angle mort (branches indélibérables en
+  Phase 0/1) ; la plomberie Pocock (copy-paste prototype → prod, code-as-asset)
+  contredit test-first et la matrice — « adopter le routage, pas le blanchiment ».
+- **Design d'implémentation du routage SPIKE** proposé (non validé) : 3e tag
+  `SPIKE` dans l'output de /grill + critère d'éligibilité (« un argument peut-il
+  trancher, ou seulement une observation ? ») ; ledger `DEFERRED (→ spike [N])`
+  sans 4e état ; exécution manuelle sur branche jetable (build before
+  automating) ; capture via /adr (mode capture), la branche meurt. Chemin
+  d'implémentation : ADR (Extends ADR-0003) → eval failing → grill.md → sync
+  matrice → épreuve sur projet réel.
+- **Session doc « workflow overview » cadrée** : `docs/methodology/workflow-overview.md`,
+  vue dérivée **non-normative** (précédent karpathy-discipline.md), bandeau de
+  préséance matrice, 4 livrables (cycle de vie, carte documentaire, graphe des
+  outils, chemins de lecture), couche learning hors scope.
+- **Prompt de session écrit** : `tasks/prompt-session-workflow-overview.md`
+  (fichier jetable, périmètre de lecture vérifié contre le repo — non commité).
+
+## En cours
+
+- Rien d'actif — ce checkpoint à committer.
+- Modif `claude/settings.json` = switch temporaire de modèle, volontaire —
+  **ne jamais la committer** ; la laisser en working tree (revert naturel
+  quand le switch ne servira plus).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`, progress.md seul —
+   exclure claude/settings.json) puis push.
+2. **Session dédiée doc overview** : Opus 5, effort high, coller le prompt de
+   `tasks/prompt-session-workflow-overview.md` ; supprimer le fichier après usage.
+3. **Après la doc : valider puis implémenter le routage SPIKE** dans l'ordre
+   ADR → eval failing → grill.md → sync matrice.
+4. **Cycle /insights 2026-08-26** (issue automatique) : observation règle
+   graduée P2 + métrique ratio méta/produit (P3).
+5. **SD1** : réévaluation au cycle /insights 2026-09.
+6. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Verdict Pocock** : adopter le critère de routage (escalade de fidélité),
+  rejeter le blanchiment (le livrable d'un spike est une décision ADR, jamais
+  du code à transplanter — l'implémentation repart test-first).
+- **Ordre des chantiers** : doc overview AVANT implémentation SPIKE — l'écriture
+  du doc sert de revue du système avant de le modifier.
+- **Statut du futur doc** : vue dérivée non-normative, la matrice garde la
+  préséance ; zéro règle réénoncée.
+- **Ledger /grill** (dans le design SPIKE, à confirmer) : réutiliser
+  `DEFERRED (→ spike)` plutôt qu'un état `ROUTED` dédié — zéro concept nouveau.
+- **Modèle pour la session doc** : Opus 5 / effort high — tâche scaffoldée à
+  validation par étape, conforme à la stratégie de tiers (Fable réservé à un
+  éventuel audit critique de la matrice, hors scope ici).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-28 13:46
 Session : 27552b11-42c8-468f-b3a8-48ae050b6aeb (suite — re-run DN2 clos, ~/explain commité)
 
