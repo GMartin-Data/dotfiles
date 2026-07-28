@@ -1,0 +1,1 @@
+- Never bury an operational step in a parenthetical or subordinate clause — always promote it to its own paragraph with numbering or bold. The model (Sonnet or Opus) systematically skips steps nested in second-tier typography. (learned 2026-04, from dotfiles)

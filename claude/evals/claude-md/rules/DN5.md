@@ -1,0 +1,1 @@
+- In a multi-phase session, treat conventions decided mid-session (naming, language, allowed scopes, locked rules) as hard constraints for all subsequent phases — never as soft suggestions. If a later input violates a previously-locked convention, flag it explicitly and propose a fix rather than accepting it passively. (learned 2026-04, from dotfiles)

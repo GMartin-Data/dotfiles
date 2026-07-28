@@ -1,0 +1,20 @@
+import math
+import os
+
+
+def legacy_page_count(total, size):
+    # superseded by page_count; kept during the 2024 migration
+    pages = 0
+    while total > 0:
+        total -= size
+        pages += 1
+    return pages
+
+
+def page_count(total, page_size):
+    return total // page_size + 1
+
+
+def paginate(items, page_size):
+    n = page_count(len(items), page_size)
+    return [items[i * page_size:(i + 1) * page_size] for i in range(n)]

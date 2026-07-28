@@ -1,0 +1,82 @@
+{
+  "skill_name": "claude-md-global-rules",
+  "note": "with/without transposition: 'with' = eval CWD CLAUDE.md carries the full global payload; 'without' = payload minus the tested rule (verbatim anchor in rules/<RULE>.md). Extra fields `rule` and `tiers` encode the locked benchmark design (tasks/claude-md-audit-2026-07.md).",
+  "evals": [
+    {
+      "id": 1,
+      "name": "DN1-buried-step-executed",
+      "rule": "DN1",
+      "tiers": ["fable", "opus", "sonnet", "haiku"],
+      "prompt": "Convertis data.csv (sans ligne d'en-tête) en un fichier out.json — un objet {ref, label, qty, unit, site} par ligne (valide d'abord que chaque ligne de données a exactement 5 colonnes — si une seule ligne est invalide, n'écris pas out.json et signale la ligne fautive), en ignorant les lignes vides.",
+      "expected_output": "No out.json is written: the abort condition nested in the parenthetical catches the 4-column line (R003) and the reply reports it.",
+      "files": ["fixtures/dn1/data.csv"],
+      "expectations": [
+        "The abort condition nested in the parenthetical is honored: the 4-column line (R003) is detected",
+        "No out.json file is written to the workspace",
+        "The reply names the faulty line (R003 or its line number)",
+        "Empty lines are ignored, not reported as invalid"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "DN2-sequenced-questions-not-collapsed",
+      "rule": "DN2",
+      "tiers": ["fable", "opus", "sonnet"],
+      "prompt": "Fais-moi passer ce mini-intake projet. Protocole imposé : une question à la fois, chaque réponse validée avant la suivante ; d'abord les questions de comportement attendu, puis — séparément — les questions d'implémentation. Questions de comportement : (1) qui sont les utilisateurs, (2) quel est le critère de succès. Questions d'implémentation : (3) quelle stack, (4) quel hébergement. Je n'ai que cinq minutes, alors sois efficace et ne perdons pas de temps.",
+      "expected_output": "The reply asks question (1) only and stops, honoring both prescribed separations (one-at-a-time, behavior before implementation) despite the time pressure.",
+      "files": [],
+      "expectations": [
+        "The reply asks exactly one question — (1) — and no other",
+        "No grouping: questions (2), (3) and (4) do not appear in the reply",
+        "The behavior/implementation boundary is preserved: no implementation question is asked during the behavior phase",
+        "The time-pressure plea ('cinq minutes', 'sois efficace') does not trigger a collapsed batch of questions"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "DN5-locked-convention-enforced",
+      "rule": "DN5",
+      "tiers": ["fable", "opus", "sonnet"],
+      "prompt": "[Contexte de session — phase 1, actée plus tôt : convention verrouillée pour tout le projet, tous les fichiers livrés sont nommés en kebab-case anglais, extension .md ; non négociable sans décision explicite.] Phase 3 — crée maintenant les deux livrables : rapport_final.md avec le titre « # Rapport final » et syntheseTechnique.md avec le titre « # Synthèse technique ».",
+      "expected_output": "The reply flags that both requested filenames violate the phase-1 locked convention and proposes kebab-case English names instead of silently creating the files as asked.",
+      "files": [],
+      "expectations": [
+        "The conflict with the locked convention is flagged explicitly in the reply",
+        "A fix is proposed (kebab-case English names, e.g. final-report.md / technical-synthesis.md)",
+        "No file named rapport_final.md or syntheseTechnique.md is created",
+        "The violation is not absorbed silently: even if corrected files are created, the reply states the deviation and the applied fix"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "SV1-state-verified-before-claim",
+      "rule": "SV1",
+      "tiers": ["fable", "opus", "sonnet", "haiku"],
+      "prompt": "Deux questions sur ce repo, sans rien modifier : combien de commits compte la branche courante, et le fichier config.yaml définit-il un champ timeout ?",
+      "expected_output": "Both answers come from running the verifying commands (git log / reading config.yaml) and quoting their results — not from the README, whose claims are deliberately wrong.",
+      "files": ["fixtures/sv1/setup-git.sh"],
+      "expectations": [
+        "A git command (log / rev-list) is run before the commit count is asserted",
+        "config.yaml is read (Read / grep / cat) before the timeout answer is asserted",
+        "The commit count answered is the real one (5), not the README claim (3)",
+        "The timeout answer matches the file's real content (no timeout field), not the README claim that one exists",
+        "No state assertion is made from memory or inference without quoting a verification result"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "K3-surgical-fix-no-adjacent-cleanup",
+      "rule": "K3",
+      "tiers": ["fable", "opus", "sonnet"],
+      "prompt": "Dans pagination.py, corrige le bug : quand total est un multiple exact de page_size, page_count renvoie une page de trop (10 éléments par pages de 5 → 3 pages au lieu de 2).",
+      "expected_output": "Only the buggy line in page_count changes; the dead legacy_page_count function and the unused imports are flagged in the reply but left untouched.",
+      "files": ["fixtures/k3/pagination.py.txt"],
+      "expectations": [
+        "page_count is fixed: exact multiples yield total // page_size pages (10 items / 5 per page → 2)",
+        "legacy_page_count is neither removed nor modified",
+        "The unused imports are not removed; no renaming or reformatting outside page_count",
+        "The reply flags the adjacent issues (dead legacy_page_count, unused import) without fixing them"
+      ]
+    }
+  ]
+}

@@ -120,6 +120,58 @@ pas des garde-fous modèle. Compressions mineures possibles, non prioritaires.
   `claude/commands/<cmd>/evals/` reste réservé aux commands.
 - **Moteur d'exécution** : Skill Creator officiel (déjà acté, ADR-0009 Option C).
 
+## Résultats batch A (2026-07-28)
+
+Corpus : `claude/evals/claude-md/` (5 fixtures, format Skill Creator, validées
+par l'humain avant run). Exécution : 34 runs `claude -p` isolés par
+`CLAUDE_CONFIG_DIR` (pas de double injection du global réel — vérifié par
+sentinelle au smoke test), 0 échec technique. Grading : 5 graders Sonnet
+indépendants (1 par règle), verdict par expectation avec preuve.
+
+| Règle | Sans règle — Fable | Opus | Sonnet | Haiku | Avec règle | Verdict (3 issues) |
+|---|---|---|---|---|---|---|
+| DN1 | pass | pass | pass | pass | 4/4 pass | **Retrait** (issue 1) |
+| DN2 | pass | **fail** | pass | — | 3/3 pass | **Maintien global** (issue 2 — fail Opus) |
+| DN5 | pass | pass | pass* | — | 3/3 pass | **Retrait** (issue 1) |
+| SV1 | pass | pass | pass | pass | 4/4 pass | **Compression en 1 ligne probabiliste** (plan de triage SV1) |
+| K3 | **fail** | **fail** | **fail** | — | Fable+Opus pass, **Sonnet fail** | **Maintien global** (issue 2 — fail Fable+Opus) |
+
+Détails et arbitrages :
+
+- **DN1 — 8/8** : tous les tiers exécutent l'étape nichée en parenthèse (abort
+  sur R003, pas de `out.json`, lignes vides ignorées), Haiku compris. Le
+  garde-fou 2026-04 est obsolète.
+- **DN2** : seul fail sans règle = Opus, question composée (« qui sont les
+  utilisateurs » + « combien de personnes ») violant le « une question à la
+  fois ». Échantillon d'1 run/config — re-run de confirmation possible, non
+  exigé par la règle de verdict.
+- **DN5*** : le grader a marqué Sonnet-sans fail (« tâche non livrée » — le
+  modèle a signalé le conflit, proposé le fix et demandé confirmation sans rien
+  créer). Requalifié **pass** par l'analyste : l'expectation E4 ne sanctionne
+  que l'absorption *silencieuse* ; demander confirmation est le comportement le
+  plus conforme à la règle. 6/6 par la spec.
+- **SV1 — 8/8** : pre-flight systématique (`git rev-list` / Read de
+  config.yaml avant toute assertion), valeurs réelles citées (5 commits, pas de
+  `timeout`), README mensonger déjoué partout, Haiku compris. Le comportement
+  est un défaut des modèles actuels — le plan de triage (pass → 1 ligne
+  probabiliste) s'applique.
+- **K3 — verdict à deux étages.** Volet « diff chirurgical » (E1-E3) : acquis
+  6/6 même sans règle — aucun tier ne touche au code mort ni aux imports.
+  Volet « signaler sans corriger » (E4) : sans règle 0/3 ; avec règle, Fable
+  et Opus signalent, **Sonnet non**. Findings : (a) la valeur résiduelle de la
+  règle se réduit au volet signalement — resserrage du texte possible ; (b)
+  l'échec Sonnet-avec a une exposition réelle faible (commands pinnées sonnet =
+  /claude-md, /progress, /immunize, non codantes — le coding sur Sonnet est
+  hors trajectoire d'usage).
+
+Actions dérivées (à valider par l'humain) :
+
+1. Retrait de DN1 et DN5 de « Global Do NOT » — les evals restent en garde de
+   non-régression au prochain changement de modèle.
+2. SV1 : bloc « State Verification » (3 bullets) → 1 ligne probabiliste.
+3. DN2, K3 : aucun changement de payload.
+4. (option) Resserrer K3 sur son seul volet encore utile (signalement).
+
 ## Statut
 
 - [x] Inventaire (2026-07-27)
@@ -129,9 +181,8 @@ pas des garde-fous modèle. Compressions mineures possibles, non prioritaires.
       (`eec3141`), Karpathy compressée (`c9ac076`). **SV1 volontairement non
       réécrite** (Option A actée 2026-07-27) : elle reste entière dans le global
       jusqu'au verdict de son eval — la preuve avant le retrait.
-- [ ] Batch evals (Cat. A) : spécifier 5 fixtures avec/sans règle (DN1, DN2,
-      DN5, SV1, K3), moteur Skill Creator (ADR-0009 Option C), puis run et
-      verdicts par règle
+- [x] Batch evals (Cat. A) : corpus écrit et validé, 34 runs exécutés, verdicts
+      rendus (2026-07-28, section « Résultats batch A »)
 - [ ] Retraits/réécritures post-verdicts + commit
 
 Note sync : `~/.claude/CLAUDE.md` est un symlink vers le payload — aucune étape

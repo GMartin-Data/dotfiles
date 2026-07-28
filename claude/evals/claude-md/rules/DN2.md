@@ -1,0 +1,1 @@
+- When a spec prescribes a separation (one question at a time, binary criteria, behavior vs implementation, deliverables vs polish), never collapse the categories for the sake of efficiency — sequence them instead. The model systematically erases these boundaries whenever the UX seems to invite a shortcut. (learned 2026-04, from memory-grep)
