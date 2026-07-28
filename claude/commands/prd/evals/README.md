@@ -7,10 +7,11 @@ Corpus d'évaluation pour mesurer le **comportement post-invocation** de la slas
 `/prd` est une slash-command : son déclenchement est explicite (l'utilisateur tape `/prd`), il n'y a pas de logique d'auto-invocation à tester. Les evals mesurent ce qui se passe **après** l'invocation :
 
 - **Strict-mode gate** correct (si `PRD.md` existe → arrêt avec message standard, pas de gate replace/extend/abort)
-- **Pré-flight** correct (lit `.cruft.json` quand présent, vérifie l'arbo réelle pour `dbt/` / `terraform/`)
-- **Allègement des Phases 8 et 10** quand instance Cruft détectée
-- **Skip criteria** des Phases 7, 9, 10 respectés selon les conditions explicites
-- **Validation finale en 3 blocs** (cadrage / scope / exécution) — un bloc à la fois
+- **Absence de pré-flight** (ADR-0013) : aucune lecture de `.cruft.json`, aucun résumé d'instance, Phase 1 directe — y compris sur instance Cruft
+- **Séquence d'interview** conforme au nouveau contrat (Phase 2 = Objectifs ; une question à la fois)
+- **Skip criteria** des Phases 8 et 10 respectés selon les conditions explicites
+- **Validation finale en 3 blocs** (cadrage / scope / contrat & inconnues) — un bloc à la fois
+- **Canvas de sortie** : les 11 sections de `conventions/prd.md` (ADR-0013), frontières tenues (stack routée vers CLAUDE.md, risques en open questions)
 
 Approche **Evaluation-Driven Development** (Anthropic, [best practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices)) : les evals sont la source de vérité pour mesurer si la command résout de vrais problèmes. On démarre minimal et on étoffe par nécessité observée — parallèle pytest-coverage, pas de couverture spéculative.
 
@@ -42,13 +43,16 @@ Chaque eval suit ce schéma :
 | Classe | Mesure | Exemple |
 |---|---|---|
 | `strict_mode_gate` | Arrêt immédiat si fichier de sortie déjà présent | `strict-mode-existing-prd` |
-| `preflight` | Lecture correcte de `.cruft.json`, vérification arbo, annonce d'allègement | `preflight-cruft-instance`, `no-preflight-empty-cwd` |
-| `lightening` | Phases 8 et 10 effectivement court-circuitées, pas juste annoncées allégées (futur) | — |
-| `skip_criteria` | Phases 7, 9, 10 skippées selon conditions explicites (futur) | — |
-| `block_validation` | Validation finale présentée bloc par bloc, attente explicite entre chaque (futur) | — |
-| `output_quality` | Structure du PRD généré (futur, plus coûteux à juger) | — |
+| `no_preflight` | Aucun pré-flight Cruft, même sur instance (ADR-0013) | `no-preflight-cruft-instance` |
+| `interview_sequence` | Ordre des phases (Problème → Objectifs), une question à la fois | `interview-start-empty-cwd` |
+| `output_quality` | PRD final conforme au canvas 11 sections, frontières tenues | `output-canvas-11-sections` |
+| `skip_criteria` | Phases 8 et 10 skippées selon conditions explicites, evals dédiées (futur — la Phase 10 est couverte en creux par `output_quality`) | — |
+| `block_validation` | Validation finale bloc par bloc (futur — couverte en creux par `output_quality`) | — |
 
-Démarrage minimal : 3 evals (`strict_mode_gate` + 2 × `preflight` couvrant les deux branches). On ajoute par classe une fois qu'un cas réel le justifie.
+Corpus courant : 4 evals. On ajoute par classe une fois qu'un cas réel le justifie.
+
+Champ optionnel `script` : tours utilisateur pré-écrits pour les evals
+multi-tours (description inline ou renvoi vers `fixtures/`).
 
 ## Fixtures
 
@@ -63,18 +67,32 @@ Démarrage minimal : 3 evals (`strict_mode_gate` + 2 × `preflight` couvrant les
   ⚠️ Le suffixe `-v2` est **obligatoire**. Sans lui, le repo correspond à une ancienne tentative périmée qui fausserait les tests.
 - **Création** : `cruft create ~/python-project-template-v2` (automatisé par `setup-eval-cwd.sh`)
 - **Note** : si le template génère un `PRD.md` par défaut, le script le supprime — sinon le strict-mode gate bloquerait l'eval.
-- **Eval concernée** : `preflight-cruft-instance`
+- **Eval concernée** : `no-preflight-cruft-instance`
 
 ### CWD vide
 
 - **Création** : `mkdir -p <cwd>` (rien d'autre)
-- **Eval concernée** : `no-preflight-empty-cwd`
+- **Evals concernées** : `interview-start-empty-cwd`, `output-canvas-11-sections`
+  (cette dernière suit le script de tours `fixtures/output-canvas-interview-script.md`)
 
 Fixtures **éphémères** : créées à la demande sous `/tmp/`, jetées après test. La reproductibilité est garantie par l'état local de `~/python-project-template-v2`, pas par des snapshots versionnés ici.
 
 ## Exécution — protocole A → B → A
 
 L'isolation contextuelle reste utile même sans logique d'auto-invocation : elle garantit un CWD propre (pas de fichiers parasites de la session A) et une transcription figée (l'auteur juge un artefact, pas un déroulé live).
+
+**Sessions B automatisées** (protocole de référence depuis 2026-07-28, précédent
+batch A / gate `/claude-md`) : `drive-session.py <input.jsonl> <output.jsonl>
+<cwd> [flags claude]` — pilote `claude -p` en stream-json et n'envoie le tour
+utilisateur N+1 qu'après l'événement `result` du tour N. ⚠️ Ne **jamais** piper
+l'input d'un coup (`cat in.jsonl | claude -p …`) : les messages en attente sont
+livrés en bloc, l'interview n'est pas exercée tour par tour (observé 2026-07-28 :
+15 tours consommés en 3, faux FAIL sur la séquence de phases). Le copier-coller
+humain reste le fallback interactif. Grading par agent Sonnet isolé, verdict
+par expectation avec preuve. Flags de référence : `--model opus --settings
+'{"effortLevel":"high"}'` (le pin opus du frontmatter + l'`effortLevel: xhigh`
+du settings réel produisent un 400 en mode `-p`), plus `--permission-mode
+acceptEdits` pour les evals qui écrivent le PRD.
 
 | Rôle | Qui | CWD | Mission |
 |---|---|---|---|
@@ -106,7 +124,7 @@ L'isolation contextuelle reste utile même sans logique d'auto-invocation : elle
 
 - **`/catchup` ne restaure pas tout.** À la reprise de A après `/clear`, `/catchup` relit `progress.md` et le git log — pas ce README. Si le protocole a besoin d'un détail, il doit aussi être dans `progress.md`. Ce README porte la doctrine durable ; `progress.md` porte la feuille de route opérationnelle.
 
-- **Durée de session B.** Les `expected_behavior` portent sur les premiers échanges (gate strict-mode → pré-flight → première question d'interview). Inutile de dérouler l'interview complète — `/prd` est plus longue que `/claude-md` (13 phases + 3 blocs de validation). Couper dès que les invariants sont observés ou clairement ratés.
+- **Durée de session B.** Pour les evals early-behavior, les `expected_behavior` portent sur les premiers échanges (gate strict-mode → première question d'interview) : couper dès que les invariants sont observés ou clairement ratés. Seule `output-canvas-11-sections` déroule l'interview complète (12 phases + 3 blocs), via son script de tours.
 
 - **Choix du modèle.** `/prd` fixe `model: opus` dans son frontmatter (cadrage stratégique). Les sessions B doivent tourner sur Opus pour refléter le comportement réel — un test sur Sonnet ou Haiku mesure autre chose.
 
@@ -142,11 +160,9 @@ Ajouter une eval **quand** :
 
 ## Axes futurs (non bloquants)
 
-- **Allègement effectif** : eval `lightening-*` qui vérifie que les Phases 8 et 10 sont court-circuitées (pas juste annoncées allégées) — ex. Phase 8 qui ne pose qu'**une seule question ouverte** au lieu de l'interview complète
-- **Skip criteria** : evals dédiées par condition (interface = web → Phase 7 skippée ; "prototype" en Phase 6 → Phase 9 skippée ; 1 seul composant → Phase 10 skippée)
-- **Block validation** : eval `block_validation-*` qui vérifie la séquence en 3 blocs séparés (cadrage / scope / exécution), un seul à la fois, attente explicite de validation
+- **Skip criteria** : evals dédiées par condition (interface = web → Phase 8 skippée ; absence de "prototype" → Phase 10 exécutée — le chemin avec-erreurs n'est pas couvert par le corpus courant)
+- **Routage en séance** : eval dédiée où l'utilisateur pousse stack/architecture dès la Phase 1 (la tension Contraintes est couverte, le routage précoce non)
 - **Cross-modèles** : rejouer le corpus sur Sonnet (mesurer la dégradation vs Opus baseline)
-- **Output quality** : evals `output_quality-*` jugées sur le PRD final — plus coûteux car nécessite de dérouler l'interview entière + les 3 blocs de validation
 - **Argument-hint** : eval avec `/prd custom-name.md` pour vérifier la prise en compte de `$ARGUMENTS`
 
 ## État du corpus
@@ -154,4 +170,4 @@ Ajouter une eval **quand** :
 | Command | Statut | Nombre d'evals | Dernière mise à jour |
 |---|---|---|---|
 | `/claude-md` | ✅ bootstrap (post-pivot command) | 2 | 2026-04-27 |
-| `/prd` | ✅ bootstrap (post-pivot command) | 3 | 2026-04-27 |
+| `/prd` | ✅ conformé au canvas ADR-0013 | 4 | 2026-07-28 |

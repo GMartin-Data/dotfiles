@@ -1,5 +1,5 @@
 ---
-description: Interview structurée pour produire un PRD (avec détection d'instance Cruft pour alléger les phases techniques)
+description: Interview structurée pour produire un PRD conforme au canvas canonique de 11 sections
 argument-hint: [output-filename]
 allowed-tools: Read, Write, Glob
 model: opus
@@ -8,6 +8,11 @@ model: opus
 # PRD Interview
 
 Processus d'interview structurée pour produire un PRD à travers un questionnement incrémental.
+
+**Canvas de référence** : `~/dotfiles/docs/methodology/conventions/prd.md`
+(acté par ADR-0013). Cette commande en dérive — elle n'invente aucune section.
+En cas de doute sur le contenu d'une section ou une frontière (stack,
+architecture, risques), la convention fait foi.
 
 **Fichier de sortie** : `$ARGUMENTS` (défaut : `PRD.md`).
 
@@ -38,38 +43,6 @@ Puis s'arrêter. Ne pas continuer l'interview.
 
 ---
 
-## Pré-flight — détection d'instance Cruft
-
-**Avant Phase 1**, vérifier la présence d'un fichier `.cruft.json` à la racine du CWD.
-
-Si **absent** : procéder à l'interview standard (toutes les phases).
-
-Si **présent**, exécuter ces deux étapes dans l'ordre **avant** d'afficher le résumé :
-
-1. **Lire `.cruft.json`** (section `context.cookiecutter`) pour récupérer Python version, project_name, license, branch_protection_profile, dbt_adapter, terraform_provider.
-2. **Vérifier l'arbo réelle** du CWD pour confirmer la présence (ou l'absence) effective des dossiers `dbt/` et `terraform/`. Un post-hook Cruft supprime ces dossiers si non retenus — **l'arbo fait foi**, pas le `.cruft.json` seul. Cette vérification doit être une action explicite (un `Listed directory` ou équivalent), pas une déduction tacite.
-
-Puis afficher le résumé détecté :
-
-```
-Instance Cruft détectée. Stack pré-déterminée :
-
-- Python [version] (package manager : uv)
-- Project name : [project_name]
-- License : [license]
-- Branch protection : [branch_protection_profile]
-- dbt : [oui avec adapter / non]
-- Terraform : [oui avec provider / non]
-
-Les Phases 8 (Stack technique) et 10 (Architecture) seront allégées
-en conséquence — les autres phases restent intégrales (l'intention
-produit reste à cadrer).
-```
-
-Conserver en mémoire ce résumé pour les Phase 8 et Phase 10 allégées.
-
----
-
 ## Règles d'interaction
 
 1. **Une question à la fois** — ne jamais surcharger avec plusieurs questions
@@ -79,11 +52,20 @@ Conserver en mémoire ce résumé pour les Phase 8 et Phase 10 allégées.
 5. **Expliquer les trade-offs** — quand l'utilisateur hésite, fournir le contexte de décision
 6. **Langue** — interview et PRD produits en français
 
+**Frontière du PRD** (non négociable, cf. convention) : le PRD dit le *quoi*
+et le *pourquoi*, jamais le *comment*. Si l'utilisateur apporte de la stack,
+de l'architecture ou des mitigations techniques pendant l'interview, l'en
+remercier et router : stack/techno → CLAUDE.md (`/claude-md`), architecture →
+PLAN.md (`/planning`), risque tranché → ADR. Rien de tout cela n'entre dans
+le PRD.
+
 ---
 
 ## Séquence d'interview
 
-Progresser à travers les phases dans l'ordre. Les phases 7, 9 et 10 peuvent être **skippées** selon les critères explicites ci-dessous. **Toutes les autres phases sont obligatoires.**
+Progresser à travers les phases dans l'ordre. Les phases 8 et 10 peuvent être
+**skippées** selon les critères explicites ci-dessous. **Toutes les autres
+phases sont obligatoires.**
 
 ### Phase 1 — Problème
 
@@ -91,9 +73,15 @@ Progresser à travers les phases dans l'ordre. Les phases 7, 9 et 10 peuvent êt
 
 Reformuler pour valider la compréhension.
 
-**À noter pour le critère de skip de Phase 10** : identifier combien de composants techniques sont mentionnés dans la réponse (ex. "un script" = 1 composant ; "ingestion + transformation + API" = 3 composants).
+### Phase 2 — Objectifs
 
-### Phase 2 — Utilisateurs
+"Si le produit réussit, qu'est-ce qui aura changé, concrètement ?"
+
+Pousser vers 2-4 objectifs produit formulés en résultats (pas en
+fonctionnalités). Ils seront vérifiés par les indicateurs de la Phase 12 —
+un objectif invérifiable est un signal à challenger dès maintenant.
+
+### Phase 3 — Utilisateurs
 
 "Qui sont les utilisateurs cibles ?"
 - A) Usage personnel uniquement
@@ -102,41 +90,51 @@ Reformuler pour valider la compréhension.
 
 Expliquer les implications d'overhead de chaque choix. Si B ou C, demander une brève description de persona.
 
-### Phase 3 — Interface
+### Phase 4 — Interface
 
 "Comment les utilisateurs vont-ils interagir avec ce projet ?"
 
 Proposer des options selon le contexte du problème (CLI, extension, application web, API, script batch, etc.).
 
-### Phase 4 — Workflow
+### Phase 5 — Workflow nominal
 
 "Que se passe-t-il quand l'utilisateur déclenche l'action principale ?"
 
 Proposer des options concrètes (téléchargement auto, copie dans le clipboard, aperçu, etc.).
 
-### Phase 5 — User Stories
+### Phase 6 — User stories
 
 "Définissons 3-5 user stories clés. Complète cette phrase :"
 
 > "En tant que [utilisateur], je veux [action], afin de [bénéfice]"
 
-Proposer des stories basées sur les réponses précédentes. L'utilisateur confirme, modifie ou ajoute.
+Proposer des stories basées sur les réponses précédentes. L'utilisateur
+confirme, modifie ou ajoute.
 
-### Phase 6 — Périmètre
+**Destination** : ces stories deviendront des **checkboxes vérifiables** dans
+la section Acceptance criteria (scénarios nominaux) — jamais une section
+narrative séparée. Formuler chaque story pour qu'elle soit testable.
 
-"Qu'est-ce qui est dans la cible vs hors cible ?"
+### Phase 7 — Périmètre
 
-Pousser vers un périmètre cible cohérent. Nommer explicitement ce qui est HORS scope. Regrouper par catégorie si utile :
-- Fonctionnalités core
-- Aspects techniques
-- Intégrations
-- Déploiement
+"Qu'est-ce qui est dans la cible, exclu à jamais, ou remis à plus tard ?"
 
-**À noter pour le critère de skip de Phase 9** : capturer si le projet est décrit comme "prototype" ou "exploration" dans la réponse.
+Pousser vers un périmètre cohérent en **trois listes distinctes** :
+- **Cible** : les fonctionnalités du produit visé (par composant si utile)
+- **Non-goals** : les exclusions délibérées — *jamais* — chacune avec son
+  rationale en une ligne
+- **Au-delà de la cible** : le différé — *pas maintenant* — candidat à une
+  future révision par ADR
 
-### Phase 7 — Format de sortie
+Test pour classer une exclusion : « une révision future de la cible
+pourrait-elle raisonnablement l'inclure ? » Oui → au-delà. Non → non-goal.
 
-**Critère de skip** : skipper cette phase si la réponse en Phase 3 (Interface) est "application web" ou "extension" (le format UI est défini par le framework, pas par l'utilisateur).
+**À noter pour le critère de skip de Phase 10** : capturer si le projet est
+décrit comme "prototype" ou "exploration" dans la réponse.
+
+### Phase 8 — Format de sortie
+
+**Critère de skip** : skipper cette phase si la réponse en Phase 4 (Interface) est "application web" ou "extension" (le format UI est défini par le framework, pas par l'utilisateur).
 
 Si le projet produit des fichiers/données de sortie :
 
@@ -144,57 +142,50 @@ Si le projet produit des fichiers/données de sortie :
 
 Demander un exemple ou proposer une structure selon le contexte.
 
-### Phase 8 — Stack technique
+### Phase 9 — Contraintes
 
-**Si pré-flight Cruft détecté** : la stack de base est déjà connue. Ne poser qu'une seule question ouverte :
+"Quelles exigences te sont imposées de l'extérieur ? (deadline, conformité,
+volumétrie, langue, environnement d'exécution...)"
 
-> "Stack de base déjà fixée par l'instance (cf. résumé pré-flight). As-tu besoin d'**APIs ou dépendances externes** spécifiques, d'une **authentification** particulière, ou d'une **cible de déploiement** (Cloud Run, GKE, etc.) ?"
+Appliquer le **test à deux axes** de la convention sur chaque réponse :
+- La contrainte **nomme une technologie** → elle va dans CLAUDE.md, même
+  imposée. N'en garder dans le PRD que l'exigence produit qui la motive,
+  *si elle existe indépendamment* (ex. « les données restent en UE » reste ;
+  « region europe-west1 » part vers CLAUDE.md).
+- **Exigence produit exogène non-technique** → section Contraintes.
 
-Si l'utilisateur répond "rien de plus", marquer la Phase comme validée et passer à Phase 9.
+Annoncer explicitement chaque routage vers CLAUDE.md pour que rien ne se perde.
 
-**Sinon** (pas de pré-flight) : interview complète.
+### Phase 10 — Comportement sur erreur
 
-"Des préférences ou contraintes techniques ?"
-- Langage/framework
-- APIs/dépendances externes
-- Besoins d'authentification
-- Cible de déploiement
+**Critère de skip** : skipper cette phase si la Phase 7 (Périmètre) contient les mots "prototype" ou "exploration" dans la description du projet.
 
-### Phase 9 — Gestion des erreurs
+"Qu'est-ce qui peut mal se passer ? Que doit-il se passer alors, du point de vue de l'utilisateur ?"
 
-**Critère de skip** : skipper cette phase si la Phase 6 (Périmètre) contient les mots "prototype" ou "exploration" dans la description du projet.
+Lister 3-5 modes de défaillance probables en s'appuyant sur l'interface et le
+workflow (Phases 4-5). Demander le **comportement attendu** par cas — jamais
+la solution technique (elle relève du PLAN). Chaque cas deviendra une checkbox
+d'acceptance criteria.
 
-"Qu'est-ce qui peut mal se passer ? Comment chaque cas doit-il être géré ?"
+### Phase 11 — Open questions
 
-Lister 3-5 modes de défaillance probables. S'appuyer sur la stack définie en Phase 8 pour poser des questions précises. Demander le comportement désiré par cas.
+"Quels risques ou inconnues restent sans réponse à ce stade ?"
 
-### Phase 10 — Architecture
+Proposer 2-3 inconnues plausibles basées sur le contexte. Chaque entrée est
+formulée **en question ouverte** — jamais en table risque/mitigation :
+- Risque **non résolu** → open question du PRD.
+- Risque déjà **tranché** par une décision → il n'a rien à faire ici : la
+  décision relève d'un ADR (la mitigation en devient une conséquence).
+  Le signaler et l'écarter du PRD.
 
-**Critère de skip** : skipper cette phase si la Phase 1 (Problème) ne mentionne qu'**un seul composant technique** ET qu'aucun pré-flight Cruft n'a révélé plusieurs composants.
+Une absence d'inconnues est un résultat valide (« Aucune » explicite).
 
-**Si pré-flight Cruft détecté avec plusieurs composants** (ex. `src/` + `dbt/` + `terraform/`) : au lieu de partir de zéro, pré-proposer une architecture dérivée des composants présents :
+### Phase 12 — Indicateurs de succès
 
-> "Composants détectés dans l'instance : [liste]. Je propose l'architecture suivante : [proposition]. Des ajustements ?"
+"Comment sauras-tu que les objectifs (Phase 2) sont atteints ?"
 
-Valider. Ne poser la question ouverte originale que si la proposition est rejetée.
-
-**Sinon** (multi-composants sans pré-flight) :
-
-"Comment les composants interagissent-ils ?"
-
-Proposer une architecture haut niveau basée sur les réponses précédentes. Valider.
-
-### Phase 11 — Risques
-
-"Quels sont les principaux risques ?"
-
-Proposer 2-3 risques basés sur le contexte. Demander des stratégies de mitigation ou les proposer.
-
-### Phase 12 — Critères de succès
-
-"Comment savoir que la cible est atteinte ?"
-
-Pousser vers des critères concrets et testables. Proposer des indicateurs mesurables.
+Pousser vers des seuils et métriques concrets, testables, rattachés aux
+objectifs. Chaque indicateur deviendra une checkbox d'acceptance criteria.
 
 ---
 
@@ -208,12 +199,18 @@ Avant la validation finale, vérifier que les réponses collectées forment une
 chaîne sans contradiction — les phases ont été remplies séparément, les
 incohérences apparaissent aux jointures :
 
-- **Hors-cible (Phase 6) vs Risques (Phase 11)** : aucun risque retenu ne porte
-  sur un élément déclaré hors cible ; aucune mitigation ne réintroduit un exclu.
-- **Hors-cible (Phase 6) vs Critères de succès (Phase 12)** : aucun critère ne
+- **Non-goals (Phase 7) vs Open questions (Phase 11)** : aucune question
+  ouverte ne re-litige une exclusion délibérée ; si c'est le cas, soit
+  l'exclusion n'est pas ferme (→ au-delà de la cible), soit la question est
+  sans objet.
+- **Non-goals (Phase 7) vs Indicateurs (Phase 12)** : aucun indicateur ne
   mesure une fonctionnalité exclue.
-- **Risques (Phase 11) vs Critères (Phase 12)** : aucun critère ne repose
-  silencieusement sur un risque majeur laissé sans mitigation.
+- **Open questions (Phase 11) vs Acceptance criteria (Phases 6/10/12)** :
+  aucun criterion ne dépend silencieusement d'une question ouverte ; si un
+  criterion n'est vérifiable qu'une fois une inconnue levée, le signaler.
+- **Contraintes (Phase 9)** : aucune contrainte retenue ne nomme une
+  technologie (le test à deux axes a été appliqué ; les éléments routés vers
+  CLAUDE.md ont été annoncés).
 
 Si une contradiction apparaît, la signaler et la résoudre avec l'utilisateur
 avant de présenter les blocs de validation.
@@ -230,7 +227,7 @@ Avant de générer le PRD, valider le contenu collecté en **3 blocs thématique
 Validation bloc 1/3 — Cadrage
 
 1. Problème : [une phrase]
-2. Solution : [une phrase]
+2. Objectifs : [liste courte]
 3. Utilisateurs : [type + persona si applicable]
 4. Interface : [choix]
 
@@ -244,22 +241,24 @@ Attendre "oui" ou équivalent. Sur corrections, reformuler et revalider ce bloc 
 ```
 Validation bloc 2/3 — Scope
 
-5. User Stories : [nombre] stories définies
-6. Périmètre cible : [items clés inclus] / Hors cible : [items clés exclus]
-7. Stack : [choix principaux]
+5. Fonctionnalités cibles : [items clés]
+6. Non-goals : [exclusions] / Au-delà de la cible : [différés]
+7. Format de sortie : [résumé, ou "skippé (UI)"]
 
 Confirmes-tu ce bloc ? (oui / corrections)
 ```
 
 Attendre validation.
 
-### Bloc 3 — Exécution
+### Bloc 3 — Contrat & inconnues
 
 ```
-Validation bloc 3/3 — Exécution
+Validation bloc 3/3 — Contrat & inconnues
 
-8. Risques : [nombre] identifiés
-9. Critère de succès : [résumé]
+8. Contraintes : [liste, ou "aucune"]
+9. Acceptance criteria : [N] scénarios nominaux, [N] comportements d'erreur
+   (ou "skippé"), [N] indicateurs
+10. Open questions : [liste, ou "aucune"]
 
 Confirmes-tu ce bloc ? (oui / corrections)
 ```
@@ -272,69 +271,64 @@ Attendre validation.
 
 ## Format de sortie
 
-Générer le PRD avec les sections ci-dessous. Si une phase a été skippée, **omettre la section correspondante** (ne pas mettre "N/A" ou placeholder).
+Générer le PRD avec les 11 sections du canvas canonique, dans cet ordre. Une
+section optionnelle skippée est **omise** (pas de "N/A" ni placeholder). Une
+section obligatoire sans contenu s'écrit explicitement (« Aucune »).
 
 ```markdown
 # PRD — [nom-du-projet]
 
 ## Résumé
-[2-3 paragraphes : problème, solution, proposition de valeur]
+[2-3 § : problème, solution produit en une phrase, proposition de valeur]
 
 ## Problème
-[Énoncé détaillé du problème]
+[Énoncé détaillé du problème, orienté utilisateur]
 
-## Solution
-[Approche en un paragraphe]
-
-## Utilisateurs cibles
-[Qui, échelle, persona si applicable]
-
-## User Stories
-- En tant que [utilisateur], je veux [action], afin de [bénéfice]
+## Objectifs
+- [Objectif produit formulé en résultat mesurable]
 - ...
+
+## Utilisateurs & scénarios
+[Qui : type, échelle, persona si applicable]
+[Scénarios d'usage : interface retenue, déroulé nominal]
 
 ## Fonctionnalités (cible)
 ### [Composant 1]
-- ✅ Feature A
-- ✅ Feature B
+- Feature A
+- Feature B
 
 ### [Composant 2]
-- ✅ Feature C
+- Feature C
 
-## Périmètre cible
-| ✅ Dans la cible | ❌ Hors cible |
-|------------------|---------------|
-| ... | ... |
-
-## Stack technique
-| Composant | Choix | Justification |
-|-----------|-------|---------------|
-| ... | ... | ... |
+## Non-goals
+- [Exclusion délibérée] — [rationale en une ligne]
 
 ## Format de sortie
-[Uniquement si Phase 7 a été exécutée : structure de sortie, exemples]
+[Uniquement si Phase 8 exécutée : forme du livrable, exemple à l'appui]
 
-## Gestion des erreurs
-[Uniquement si Phase 9 a été exécutée]
-| Cas d'erreur | Comportement |
-|--------------|--------------|
-| ... | ... |
+## Contraintes
+- [Exigence exogène non-technique]
+(ou « Aucune »)
 
-## Architecture technique
-[Uniquement si Phase 10 a été exécutée : architecture haut niveau, interactions composants]
+## Acceptance criteria
 
-## Risques & Mitigations
-| Risque | Impact | Mitigation |
-|--------|--------|------------|
-| ... | ... | ... |
+### Scénarios nominaux
+- [ ] En tant que [utilisateur], je peux [action vérifiable]
 
-## Critères de succès
-- ✅ [Critère mesurable 1]
-- ✅ [Critère mesurable 2]
+### Comportement sur erreur
+[Uniquement si Phase 10 exécutée]
+- [ ] Quand [cas d'erreur], le système [comportement attendu]
+
+### Indicateurs mesurables
+- [ ] [Seuil ou métrique rattaché à un objectif]
+
+## Open questions
+- [Risque non résolu ou inconnue, formulé en question]
+(ou « Aucune »)
 
 ## Au-delà de la cible
-[Fonctionnalités qui dépassent la cible actuelle, considérations futures. Le
-découpage de la cible en itérations relève de `/planning`, pas de cette section.]
+[Différé — candidat à une future révision de cible par ADR. Le découpage de
+la cible en itérations relève de `/planning`, pas de cette section.]
 ```
 
 ---
@@ -344,4 +338,8 @@ découpage de la cible en itérations relève de `/planning`, pas de cette secti
 Après avoir créé le PRD :
 1. Confirmer le chemin du fichier
 2. Souligner les éventuelles hypothèses faites
-3. Suggérer les prochaines étapes immédiates (créer CLAUDE.md projet via `/claude-md`, produire le PLAN via `/planning`, revoir des sections, etc.)
+3. Rappeler les éléments routés hors PRD pendant l'interview (stack →
+   CLAUDE.md, décisions tranchées → ADR), pour qu'ils ne se perdent pas
+4. Suggérer les prochaines étapes immédiates : revue adverse `/grill` avant
+   gel, créer le CLAUDE.md projet via `/claude-md`, produire le PLAN via
+   `/planning`

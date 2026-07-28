@@ -13,8 +13,9 @@ Usage: $0 <eval-id>
 
 Eval ids (see prd.eval.json):
   strict-mode-existing-prd      CWD with a pre-existing PRD.md (strict-mode gate)
-  preflight-cruft-instance      Fresh Cruft instance from \$TEMPLATE_PATH
-  no-preflight-empty-cwd        Empty CWD (no .cruft.json, no PRD.md)
+  no-preflight-cruft-instance   Fresh Cruft instance from \$TEMPLATE_PATH
+  interview-start-empty-cwd     Empty CWD (no .cruft.json, no PRD.md)
+  output-canvas-11-sections     Empty CWD (scripted full interview)
 
 Env vars:
   CRUFT_TEMPLATE_PATH           Override template path (default: ~/python-project-template-v2)
@@ -42,7 +43,7 @@ exists, not its content.
 EOF
         ;;
 
-    preflight-cruft-instance)
+    no-preflight-cruft-instance)
         if [[ ! -d "$TEMPLATE_PATH" ]]; then
             echo "error: template not found at $TEMPLATE_PATH" >&2
             echo "hint: set CRUFT_TEMPLATE_PATH or clone the template locally" >&2
@@ -69,7 +70,7 @@ EOF
         fi
         ;;
 
-    no-preflight-empty-cwd)
+    interview-start-empty-cwd|output-canvas-11-sections)
         mkdir -p "$CWD"
         ;;
 

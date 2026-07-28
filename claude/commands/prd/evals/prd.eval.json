@@ -9,15 +9,15 @@
     ],
     "expected_behavior": [
       "Détecte la présence du fichier de sortie (PRD.md) avant toute autre action",
-      "Affiche le message d'arrêt standard expliquant qu'un PRD est un document figé après T0",
+      "Affiche le message d'arrêt standard : un PRD est une baseline versionnée qui ne se réécrit pas silencieusement (ADR passe avant amendement)",
       "Mentionne l'alternative : suppression manuelle (rm PRD.md) si réécriture vraiment souhaitée",
       "Mentionne /progress comme exutoire pour documenter un écart vs PRD initial",
-      "S'arrête immédiatement : ne lit pas .cruft.json, ne lance pas le pré-flight, ne pose aucune question d'interview"
+      "S'arrête immédiatement : ne pose aucune question d'interview, ne lit aucun autre fichier du CWD"
     ]
   },
   {
-    "id": "preflight-cruft-instance",
-    "class": "preflight",
+    "id": "no-preflight-cruft-instance",
+    "class": "no_preflight",
     "command": "/prd",
     "query": "/prd",
     "files": [
@@ -28,24 +28,41 @@
     ],
     "expected_behavior": [
       "Vérification préalable : constate l'absence de PRD.md et n'arrête pas la commande",
-      "Pré-flight : lit .cruft.json (section context.cookiecutter), vérifie la présence réelle de dbt/ et terraform/ dans le CWD",
-      "Affiche le résumé d'instance Cruft (Python version, project_name, license, branch_protection, dbt oui/non, terraform oui/non)",
-      "Annonce explicitement que les Phases 8 (Stack technique) et 10 (Architecture) seront allégées",
-      "Démarre l'interview par la Phase 1 (Problème), pas par la Phase 8"
+      "Ne lit PAS .cruft.json et n'affiche AUCUN résumé d'instance Cruft (le pré-flight n'existe plus — ADR-0013)",
+      "N'annonce AUCUN allègement de phases (les phases Stack technique et Architecture n'existent plus)",
+      "Démarre l'interview directement par la Phase 1 (Problème), une seule question",
+      "Aucune question de stack ni d'architecture dans les échanges observés"
     ]
   },
   {
-    "id": "no-preflight-empty-cwd",
-    "class": "preflight",
+    "id": "interview-start-empty-cwd",
+    "class": "interview_sequence",
     "command": "/prd",
     "query": "/prd",
     "files": [],
+    "script": "une réponse scriptée à la Phase 1 (problème utilisateur), puis observation de la question suivante",
     "expected_behavior": [
       "Vérification préalable : constate l'absence de PRD.md et n'arrête pas la commande",
-      "Pré-flight : constate l'absence de .cruft.json, ne lit aucun fichier d'instance",
-      "N'affiche AUCUN résumé d'instance Cruft et n'annonce AUCUN allègement de Phase 8 ou 10",
-      "Enchaîne directement sur la Phase 1 (Problème) avec la question standard ouverte",
-      "Suit l'interview standard complète (toutes les phases, sous réserve des skip criteria explicites)"
+      "Démarre directement par la Phase 1 (Problème), une seule question, sans pré-flight ni résumé d'instance",
+      "Après la réponse au problème, la question suivante porte sur les Objectifs (résultats attendus du produit, pas fonctionnalités ni stack)",
+      "Une seule question à la fois sur l'ensemble des échanges observés"
+    ]
+  },
+  {
+    "id": "output-canvas-11-sections",
+    "class": "output_quality",
+    "command": "/prd",
+    "query": "/prd",
+    "files": [],
+    "script": "fixtures/output-canvas-interview-script.md — interview complète scriptée (prototype CLI mono-composant : Phase 10 skippée, Phase 8 exécutée ; tension délibérée : stack glissée dans la réponse Contraintes)",
+    "expected_behavior": [
+      "Le PRD généré contient exactement les sections du canvas canonique, dans l'ordre : Résumé, Problème, Objectifs, Utilisateurs & scénarios, Fonctionnalités (cible), Non-goals, Format de sortie, Contraintes, Acceptance criteria, Open questions, Au-delà de la cible",
+      "Aucune section Stack technique, Architecture technique, Solution, User Stories, Critères de succès ou Risques & Mitigations ; aucune table risque/impact/mitigation ; aucune table de périmètre ✅/❌",
+      "Les user stories n'apparaissent qu'en checkboxes '- [ ]' dans Acceptance criteria (sous-partie scénarios nominaux), jamais en section narrative",
+      "Acceptance criteria structurée en sous-parties : scénarios nominaux et indicateurs mesurables présents ; comportement sur erreur ABSENT (Phase 10 skippée — projet décrit comme prototype), sans placeholder",
+      "La contrainte technologique glissée dans les réponses (Python/uv) est routée vers CLAUDE.md avec annonce explicite pendant l'interview ; la section Contraintes ne nomme aucune technologie et conserve l'exigence produit (données locales)",
+      "Validation finale en 3 blocs séparés avant génération (cadrage / scope / contrat & inconnues), un bloc à la fois avec attente de validation",
+      "Le risque non résolu apparaît dans Open questions formulé en question — aucune mitigation proposée dans le PRD"
     ]
   }
 ]
