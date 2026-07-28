@@ -183,7 +183,9 @@ Actions dérivées (à valider par l'humain) :
       jusqu'au verdict de son eval — la preuve avant le retrait.
 - [x] Batch evals (Cat. A) : corpus écrit et validé, 34 runs exécutés, verdicts
       rendus (2026-07-28, section « Résultats batch A »)
-- [ ] Retraits/réécritures post-verdicts + commit
+- [x] Retraits/réécritures post-verdicts appliqués (2026-07-28) — 4 commits :
+      DN1+DN5 retirées (`4890a4f`), SV1 compressée (`8dc45c5`), K3 resserrée
+      (`5fed226`), corpus + verdicts (`92d374d`). **P1 clos.**
 
 Note sync : `~/.claude/CLAUDE.md` est un symlink vers le payload — aucune étape
 de sync nécessaire.
