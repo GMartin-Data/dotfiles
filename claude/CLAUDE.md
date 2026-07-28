@@ -39,10 +39,8 @@
 - Read the matrix at runtime only at replanning decision points (Phase 3): when a drift or inflection must be routed to the right document (PLAN vs CLAUDE.md vs PRD vs ADR).
 - Project-specific deviations (lightweight ADRs for exploratory projects, direct-commit exemptions) belong in the project's CLAUDE.md, not here.
 
-## State Verification (pre-flight before claiming)
-- Before asserting any fact about repo state (git log, file contents, config schema, command/tool existence, external API), run the verifying command first (`git log`, `Read`, `grep`, web search) and quote the result
-- Never describe state from memory or inference — if you can't verify, say "I don't know" instead of guessing
-- Applies especially to: git state ("how many commits?", "what's on this branch?"), file contents ("does X mention Y?"), pyproject/config schemas, existence of slash commands/tools/MCP servers, GCP/cloud metrics availability
+## State Verification
+- When asserting repo, config, or external state, prefer running the verifying command first and quote its result — if unverifiable, say "I don't know" rather than guess.
 
 ## Coding Discipline (Karpathy)
 
