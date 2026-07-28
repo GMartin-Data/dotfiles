@@ -189,3 +189,38 @@ Actions dérivées (à valider par l'humain) :
 
 Note sync : `~/.claude/CLAUDE.md` est un symlink vers le payload — aucune étape
 de sync nécessaire.
+
+## P2 — Autonomie graduée (verdicts 2026-07-28)
+
+Chantier issu du même fireside chat (cf. contexte en tête de doc). Périmètre
+d'entrée : les règles Cat. D — RS1, RS2, « one concept at a time » (Session
+Discipline). SD1 exclue (réévaluation au cycle /insights 2026-09).
+
+**Méthode — pourquoi pas d'eval.** Les règles D encodent un choix humain de
+confiance (longueur de laisse), pas un garde-fou modèle : il n'existe pas de
+comportement « correct » indépendant de la préférence humaine, donc pas de
+baseline avec/sans testable. Décision par interview de cadrage (1 question à la
+fois, 4 verdicts humains, 2026-07-28).
+
+**Axe de gradation acté : critère vérifiable.** La laisse s'allonge quand un
+critère pass/fail explicite couvre le chemin (test rouge, eval, diff attendu,
+commande de vérification) ; sans critère, un pas logique par tour avec
+validation. K4 (Goal-Driven Execution) est le mécanisme qui rend la laisse
+longue sûre — la règle graduée l'ancre sans le dupliquer.
+
+| Règle | Verdict | Application |
+|---|---|---|
+| RS1 (résumé 3 bullets, cap tokens) | **Compression en préférence de style** — motivation token-cap obsolète (fix harness) ; le `[VALIDÉ]` du cycle 2026-07 portait sur une fenêtre incluant le pré-fix (corrélation, pas causalité) | 1 ligne : « lead with a short summary; ask before expanding » |
+| RS2 (one logical step per turn) | **Réécriture graduée** sur l'axe critère vérifiable | Bullet « Graduated autonomy » dans Response Style |
+| « One concept at a time » (Session Discipline) | **Fusion dans la RS2 graduée** — rythme couvert par RS2, séparations prescrites par DN2 (maintenue P1), pacing pédagogique par les skills learning | Ligne retirée de Session Discipline ; « validate before continuing » absorbe « validate before moving to next step » |
+
+RS3 (artefacts longs en fichiers) : Cat. C, non touchée.
+
+## Statut P2
+
+- [x] Cadrage par interview (2026-07-28) — axe de gradation + 3 verdicts
+      tranchés par l'humain, diff validé avant application
+- [x] Payload édité et commité (`8ef1502`) — Response Style réécrite (RS1
+      compressée, RS2 graduée), ligne one-concept retirée de Session Discipline
+- [ ] Observation à l'usage : pas de critère chiffré dédié — effet observable
+      aux cycles /insights (interruptions, ratio méta/produit P3, 2026-08-26)
