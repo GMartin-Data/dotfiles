@@ -36,7 +36,7 @@ Session : [CLAUDE_SESSION_ID]
 - [si divergence identifiée, sinon "Aucun"]
 
 ## Décisions prises
-- [liste des choix faits pendant cette session]
+- [pointeurs vers les ADRs de session (« décision → adr/NNNN ») — jamais la décision in extenso, l'ADR est la source ; choix de portée session : notés directement ; track léger (sans ADR) : la décision s'écrit ici]
 
 ## Blocages
 - [si existants, sinon "Aucun"]

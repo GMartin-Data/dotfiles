@@ -475,27 +475,24 @@ ni avec les commands documentaires :
 
 ## 7 — Incohérences relevées
 
-Points de friction observés en construisant cette vue. **Signalés, non corrigés** —
-leur traitement éventuel relève d'un ADR, pas de ce document.
+Points de friction observés en construisant cette vue, signalés sans correction
+à la livraison (2026-07-28). Le statut de chaque point est tenu à jour ici ; le
+traitement lui-même vit dans la matrice, les commands ou un ADR — jamais dans ce
+document.
 
 ### 7.1 — « Décisions prises » dans progress.md vs la règle progress/ADR
 
-La matrice est explicite : progress.md **ne contient jamais** de décisions, qui
-« vont en ADR ». Le test associé — *ce contenu sera-t-il pertinent dans 6 mois ?* —
-range les décisions du côté ADR.
+> **Résolu (2026-07-28)** — la lecture *journal de bord* est actée et formulée
+> dans la matrice (bloc « progress vs ADR ») et le prompt de `/progress` : une
+> décision durable vit dans son ADR, la section n'en porte que le pointeur
+> (« décision → `adr/NNNN` ») ; les choix de portée session s'y notent
+> directement ; le track léger (ADR-0011) garde son exemption.
 
-Or `/progress` produit une section **« Décisions prises »** listant « les choix
-faits pendant cette session ». Deux lectures possibles, non tranchées par les
-sources :
-
-- La section est un *journal de bord* (trace volatile de ce qui a été décidé,
-  l'ADR restant la source durable) — pas de conflit, mais rien ne le dit.
-- La section est une *destination de décision* — conflit direct avec la règle.
-
-ADR-0011 ajoute une troisième lecture pour le track léger, où les décisions
-durables vont **explicitement** dans cette section, « pas en ADR ». Cette
-exemption est claire ; ce qui ne l'est pas, c'est le statut de la section dans le
-**track complet**.
+Le point relevé : la matrice interdisait les décisions dans progress.md, mais
+`/progress` produisait une section « Décisions prises » listant « les choix
+faits pendant cette session », sans trancher entre *journal de bord* (trace,
+l'ADR restant la source) et *destination de décision* (conflit direct avec la
+règle).
 
 ### 7.2 — Le PRD comme lieu de cochage vs baseline non-dérivante
 

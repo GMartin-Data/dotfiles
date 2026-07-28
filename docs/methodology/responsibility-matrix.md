@@ -16,7 +16,7 @@ Source de vérité unique par concept. Toute décision d'écriture future doit p
 | **PRD.md** | Baseline versionnée du produit **cible** : ne dérive pas par édition silencieuse ; révision = ADR en Phase 3 (cf. [`adr/0001`](../../adr/0001-prd-produit-cible.md)) | Problem, goals, non-goals, users & scenarios, acceptance criteria, constraints, open questions, hors-cible | Stack, architecture, phases d'implémentation, risques techniques, décisions de design, découpage en MVP/itérations |
 | **PLAN.md** | Semi-frozen (révision = ADR obligatoire) | Architecture haut niveau, séquence d'exécution, **deux granularités** (cf. [`adr/0002`](../../adr/0002-mvp-palier-dans-plan.md)) : **paliers MVP** (livrables à valeur) et **phases** (briques de séquençage technique) qu'ils regroupent | Décisions atomiques avec rationale, état session, conventions code |
 | **adr/NNNN-*.md** | Corps immuable, statut mutable | UNE décision = UN fichier. Voir [`conventions/adr.md`](conventions/adr.md) pour cycle de vie complet, vocabulaire des relations et règles pratiques. | État de session, listing exhaustif de toutes les micro-décisions |
-| **progress.md** | Living, court | Où j'en suis, prochaine action concrète, blockers de session | Décisions (vont en ADR), changements de plan (vont en ADR puis PLAN), conventions |
+| **progress.md** | Living, court | Où j'en suis, prochaine action concrète, blockers de session, pointeurs vers les ADRs de session | Décisions in extenso (vont en ADR ; ici seul le pointeur — cf. « progress vs ADR »), changements de plan (vont en ADR puis PLAN), conventions |
 
 ---
 
@@ -122,6 +122,13 @@ de son scope. Un drift se traite par l'ordre canonique ci-dessus, pas par re-gri
 - progress = état de session courante (volatile, écrasable)
 - ADR = décision durable (immuable)
 - Test : ce contenu sera-t-il pertinent dans 6 mois ? Oui → ADR. Non → progress.
+- La section « Décisions prises » de progress.md est un journal de bord, pas une
+  destination : une décision durable s'écrit dans son ADR et la section n'en porte
+  que le pointeur (« décision → `adr/NNNN` »), jamais la décision elle-même —
+  dupliquée, elle drifte. Les choix de portée session (qui échouent au test des
+  6 mois) s'y notent directement.
+- Exemption track léger ([`adr/0011`](../../adr/0011-track-leger-petits-projets.md)) :
+  sans couche ADR, la section porte les décisions durables elles-mêmes.
 
 ---
 
