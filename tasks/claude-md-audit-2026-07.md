@@ -181,9 +181,13 @@ verdict proposée ; ≥ 1 fail → maintien confirmé, question fermée.
   s'arrêtent ; les annonces de plan (« Q1–Q2 puis Q3–Q4 ») ne contiennent aucune
   question groupée. Bilan Opus-sans cumulé : **1 fail / 4 runs**.
 - Conséquence (règle de décision) : le fail du batch A est compatible avec du
-  bruit d'échantillonnage — **réouverture du verdict DN2 proposée**, décision
-  humaine en attente (retrait strict impossible par la règle à 3 issues seule :
-  un fail Opus observé reste au dossier).
+  bruit d'échantillonnage — réouverture du verdict proposée à l'humain.
+- **Décision humaine (2026-07-28) : maintien confirmé, question fermée.**
+  Motifs : fail Opus réel observé (la règle à 3 issues exige le maintien) ;
+  n=4 ne peut exclure un taux d'échec faible (~10-25 %) ; coût de la règle
+  faible vs valeur haute de la propriété protégée (séparations prescrites) ;
+  l'eval ne rejoue qu'aux changements de modèle — pas de filet en session.
+  L'item « (option) re-run DN2 » des prochaines étapes est consommé.
 
 Actions dérivées (à valider par l'humain) :
 
