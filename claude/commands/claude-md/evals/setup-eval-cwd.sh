@@ -42,7 +42,7 @@ create_cruft_instance() {
     fi
     mkdir -p "$CWD"
     cd "$CWD"
-    cruft create "$TEMPLATE_PATH" --output-dir "$CWD" >&2
+    cruft create "$TEMPLATE_PATH" --output-dir "$CWD" --no-input >&2
     GENERATED_DIR="$(find "$CWD" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
     if [[ -n "$GENERATED_DIR" && -d "$GENERATED_DIR" ]]; then
         shopt -s dotglob
