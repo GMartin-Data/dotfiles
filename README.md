@@ -27,6 +27,28 @@ Optimisé pour **Crostini (ChromeOS, Debian 12 bookworm)** et **Ubuntu 22.04**.
 
 ---
 
+## Documentation
+
+Pointeurs seulement — chaque document fait foi dans son périmètre, rien n'est
+réénoncé ici :
+
+- **`docs/methodology/responsibility-matrix.md`** — source de vérité de la
+  gouvernance documentaire (qui écrit quoi, non-overlap, cycles par phase).
+- **`docs/methodology/workflow-overview.md`** — vue d'ensemble dérivée,
+  non-normative : cycle de vie projet, carte documentaire, graphe des outils,
+  chemins de lecture.
+- **`docs/methodology/karpathy-discipline.md`** — rationale détaillé de la
+  discipline de codage résumée dans `claude/CLAUDE.md`.
+- **`adr/`** — décisions d'architecture du workflow (ADR atomiques, index dans
+  l'overview §6).
+- **Evals** — corpus par command dans `claude/commands/<cmd>/evals/` (README
+  dédié par corpus), corpus CLAUDE.md global dans `claude/evals/claude-md/`,
+  driver partagé `claude/evals/drive-session.py`.
+- **`tasks/`** — documents de travail datés (audits, lessons-inbox) ; voir
+  chaque fichier.
+
+---
+
 ## Installation sur une machine vierge
 
 ```bash
