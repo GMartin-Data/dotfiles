@@ -1,6 +1,6 @@
 # ADR-0014 : Routage SPIKE — `/grill` route les branches indélibérables vers une observation
 
-Status: Proposed
+Status: Accepted
 Date: 2026-07-29
 Extends: ADR-0003
 

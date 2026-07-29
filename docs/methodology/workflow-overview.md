@@ -48,7 +48,10 @@ flowchart LR
 CLAUDE.md et PRD.md sont indépendants en contenu : **l'ordre entre les deux est
 libre**. Seul le PRD passe la revue adverse avant gel — `/grill` ne *produit*
 rien, il signale des décisions candidates que l'humain résout en open question du
-PRD ou formalise via `/adr`, sans jamais invoquer la command lui-même
+PRD, formalise via `/adr`, ou — branche indélibérable, que seule une observation
+peut trancher — route en spike
+([`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)),
+sans jamais invoquer la command lui-même
 ([`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)).
 
 ### Phase 1 — Planning (one-shot)
@@ -352,8 +355,10 @@ flowchart LR
 ```
 
 `/claude-md` et `/prd` dans l'ordre qui t'arrange. Chaque `/grill` produit des
-décisions candidates : les mûres partent en `/adr`, les autres restent en open
-questions du PRD. Détail en [§1](#1--le-cycle-de-vie-dun-projet).
+décisions candidates : les mûres partent en `/adr`, les indélibérables se routent
+en spike ([`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)),
+les autres restent en open questions du PRD. Détail en
+[§1](#1--le-cycle-de-vie-dun-projet).
 
 ### « Je reprends une session »
 
@@ -440,7 +445,7 @@ complet — et cette bascule est elle-même une décision non-triviale, donc un 
 
 ### Index des ADRs
 
-Les treize ADRs du repo, tous en statut `Accepted` à ce jour.
+Les quatorze ADRs du repo, tous en statut `Accepted` à ce jour.
 
 | # | Titre | Relations |
 |---|---|---|
@@ -457,11 +462,12 @@ Les treize ADRs du repo, tous en statut `Accepted` à ce jour.
 | [0011](../../adr/0011-track-leger-petits-projets.md) | Track léger documentaire pour les petits projets personnels | — |
 | [0012](../../adr/0012-feynman-mentor-niche-verification-par-explication.md) | `feynman-mentor` — 5ᵉ niche de la couche learning | Extends 0007 |
 | [0013](../../adr/0013-format-prd-canonique.md) | Format PRD canonique — canvas fermé de 11 sections | — |
+| [0014](../../adr/0014-grill-routage-spike-branches-indeliberables.md) | Routage SPIKE — `/grill` route les branches indélibérables vers une observation | Extends 0003 |
 
 Structurants pour ce document : **0001** (nature du PRD), **0002** (MVP dans le
-PLAN), **0003** (délégation `/grill` → `/adr`), **0011** (track léger), **0013**
-(canvas PRD). Les ADRs **0004-0008** et **0012** concernent la couche learning,
-**0009** et **0010** l'outillage.
+PLAN), **0003** (délégation `/grill` → `/adr`, étendue par **0014** au routage
+spike), **0011** (track léger), **0013** (canvas PRD). Les ADRs **0004-0008** et
+**0012** concernent la couche learning, **0009** et **0010** l'outillage.
 
 Pour obtenir la vue courante des décisions actives, sans index à maintenir :
 
