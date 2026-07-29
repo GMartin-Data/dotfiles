@@ -125,6 +125,17 @@ L'isolation contextuelle garantit un CWD propre (pas de fichiers parasites de la
 session A) et une transcription figée (l'auteur juge un artefact, pas un déroulé
 live).
 
+**Sessions B automatisées** (protocole de référence, driver partagé
+[`claude/evals/drive-session.py`](../../../evals/drive-session.py) — généralisé au
+2ᵉ usage depuis le corpus `/prd`) : `drive-session.py <input.jsonl> <output.jsonl>
+<cwd> --model opus --settings '{"effortLevel":"high"}'` — pilote `claude -p` en
+stream-json et n'envoie le tour N+1 qu'après le `result` du tour N. Le grill étant
+interactif et long, les tours utilisateur sont **scriptés** en réponses
+conditionnelles neutres (cf.
+[`fixtures/spike-routing-interview-script.md`](fixtures/spike-routing-interview-script.md)
+pour l'eval spike — l'amorce de neutralité y est encodée). Le copier-coller humain
+reste le fallback interactif.
+
 | Rôle | Qui | CWD | Mission |
 |---|---|---|---|
 | **A (auteur)** | Session dans `~/dotfiles` | Projet | Monte les CWDs (`setup-eval-cwd.sh`), juge les transcriptions de B contre les `expected_behavior`, produit le rapport matrice |
@@ -245,9 +256,9 @@ Ajouter une eval **quand** :
 |---|---|---|---|---|
 | `/grill` | ✅ bootstrap | 6 | `preflight`, `anti_triviality`, `ledger_terminal_state`, `input_resolution`, `no_side_effect`, `spike_routing` | 2026-07-29 |
 
-⚠️ **Corpus écrit, non encore exécuté en A→B→A.** Les 6 evals sont spécifiées mais
-aucun run n'a validé le comportement réel de `/grill` contre elles.
-`spike-routing-indeliberable-branch` est **rouge par construction** contre le
-`grill.md` antérieur à ADR-0014 (aucun tag `SPIKE`, aucun critère de routage). Le
-corpus ne couvre que des fixtures PRD ; le grill d'un PLAN reste à doter d'un
-fixture.
+⚠️ **5 evals bootstrap spécifiées, jamais exécutées en A→B→A.** Seule
+`spike-routing-indeliberable-branch` a été exécutée : rouge par inspection contre
+le `grill.md` antérieur à ADR-0014, puis **PASS 6/6** le 2026-07-29 (session B
+automatisée Opus/high via le driver partagé, tours scriptés, grader Sonnet
+isolé) — porte de validation du passage d'ADR-0014 en `Accepted`. Le corpus ne
+couvre que des fixtures PRD ; le grill d'un PLAN reste à doter d'un fixture.
