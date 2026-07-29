@@ -1,4 +1,81 @@
 ## Dernière mise à jour
+Date : 2026-07-29 09:22
+Session : 81686209-0d5a-4710-8d12-cfb00c1ba57c
+
+## Tâches complétées
+
+- **Purge des 5 CWDs `/tmp/grill-eval-*` faite** (commande manuelle humaine —
+  item du checkpoint précédent clos).
+- **Audit de redondance des skills pédagogiques** (dp-coach / coach-pedagogique
+  vs teach) rendu en avis seul, rien consigné (demande humaine explicite) :
+  pas de redondance de contrat (frontières ADR-0007/0012 tiennent sur
+  4 discriminants), une zone grise surveillable (tasks in-browser de teach vs
+  drills exécutés), le vrai sujet est le non-usage — critère ADR-0007
+  (« un outil sans utilisateur n'est pas protégé »), décision sur données
+  d'usage le cas échéant.
+- **Audit `/immunize` vs fireside chat Cat Wu / Thariq** (relecture WebFetch de
+  la source déjà exploitée pour P1-P3, angle neuf) : 1 collision (inbox
+  colonisée par les fiches `[INSIGHTS]`, la règle « unique > 7 j → archive »
+  archiverait une fiche en attente de revue dès début août), 2 tensions de
+  fond (accumulation sans preuve ni éviction ; format prohibition « 90% true »),
+  1 destination manquante (incident → eval), 1 scorie (`argument-hint` mort).
+- **CHANTIER refonte cycle immunitaire ouvert — interview ADR menée à terme** :
+  8 décisions tranchées une-question-à-la-fois (décision 7 scindée 7a/7b),
+  toutes sur recommandation. **ADR-0015 rédigé** en `Proposed`
+  (`adr/0015-cycle-immunitaire-refonte-post-p1.md`, Extends ADR-0009) —
+  non commité à ce stade.
+
+## En cours
+
+- **CHANTIER refonte `/immunize`** — ADR-0015 `Proposed` rédigé, porte de
+  validation fixée (corpus rouge → refonte → vert → run réel A→B→A →
+  `Accepted`). Étape suivante : corpus d'evals failing. Ce checkpoint et
+  l'ADR à committer.
+
+## Prochaines étapes
+
+1. **Committer** : `docs(adr)` ADR-0015 (Proposed) puis `docs(progress)` ce
+   checkpoint ; push.
+2. **CHANTIER PRIORITAIRE (session fraîche) — exécution ADR-0015** dans
+   l'ordre canonique : corpus `claude/evals/immunize/` **failing d'abord**
+   (rouge contre la command actuelle : tri-destination absente, porte absente,
+   mode ajout absent, collision [INSIGHTS]) → refonte
+   `claude/commands/immunize.md` jusqu'au vert → sync (section « Cycle
+   immunitaire » de la matrice ; création `tasks/insights-actions.md` +
+   migration des 2 fiches ; en-tête `lessons-inbox.md` ; protocole /insights
+   là où il route ses fiches — mémoire projet + routine) → run réel A→B→A →
+   ADR-0015 `Accepted`.
+3. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3) + les 3 constats de la revue TODO.md. **SD1** :
+   cycle 2026-09.
+4. Mineur reporté : diagrammes overview §1/§5 non re-validés au parseur.
+5. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel ; eval « lot sous
+   carte blanche » si observé en usage réel ; fixture PLAN pour le corpus
+   /grill.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Refonte du cycle immunitaire → `adr/0015`** (Proposed — porte de
+  validation : evals rouge→vert + run réel avant `Accepted`).
+- Choix de portée session :
+  - Audit skills pédagogiques : avis rendu sans consignation (demande humaine).
+  - ADR-0015 rédigé directement au format maison après interview in-fil
+    (8 décisions AskUserQuestion), sans re-parcours `/adr`.
+  - Interview : une question par tour, décision 7 scindée 7a/7b (règle des
+    séparations prescrites).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-29 08:49
 Session : 4c7b48e5-1f64-42c8-b0ae-5b06d763ac9a
 
