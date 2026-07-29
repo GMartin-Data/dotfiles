@@ -178,8 +178,11 @@ flowchart LR
 - **progress.md n'écrit dans aucun document durable.** Une décision qui apparaît
   en session va en ADR, pas dans progress.md ; un changement de plan passe par
   ADR puis PLAN. Le test : *ce contenu sera-t-il pertinent dans 6 mois ?*
-- **PRD et CLAUDE.md ne se parlent pas.** Le PRD doit rester lisible par
-  quelqu'un qui ignore la stack ; la stack n'apparaît jamais dans le PRD.
+- **PRD et CLAUDE.md ne se parlent pas — en contenu.** Le PRD doit rester
+  lisible par quelqu'un qui ignore la stack ; la stack n'apparaît jamais dans
+  le PRD. L'indépendance est de **contenu**, pas d'**élaboration** : le flux
+  PRD → CLAUDE.md du §1 (moisson du pré-flight `/claude-md`) ordonne
+  l'élaboration sans qu'aucun des deux documents n'écrive dans l'autre.
 - **PLAN n'écrit pas dans PRD.** Découper la cible ne la change pas. Si le
   découpage révèle que la cible elle-même doit bouger, c'est un ADR + un
   amendement du PRD ([`adr/0002`](../../adr/0002-mvp-palier-dans-plan.md)).
