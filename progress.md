@@ -1,4 +1,78 @@
 ## Dernière mise à jour
+Date : 2026-07-29 08:13
+Session : c6e8602d-da20-474c-8f22-76a163636eec
+
+## Tâches complétées
+
+- **4 chantiers clos, 4 commits poussés** (`971f43e..d569d8e`) :
+  1. **Deny rules `settings.json` fixées** (`971f43e`, PRIORITAIRE du checkpoint
+     précédent) : règles `Write(**/.env*)` invalides supprimées — les règles
+     `Edit` existantes couvrent tous les outils d'édition. Vérifié : zéro
+     warning au re-run `claude -p`.
+  2. **`protect_env.py` — faux positif Bash corrigé** (`7001e83`, test-first
+     complet) : la branche Bash ne bloque plus que si le token résolu (chemin
+     complet capturé, `~` expansé, relatif au `cwd` du hook) pointe vers un
+     fichier **existant** — une mention en prose (message de commit) n'est
+     plus une référence. Rouge validé par l'humain, vert 12/12 (tests e2e
+     stdin JSON → exit code, unitaires migrés), preuve live : le commit du fix
+     lui-même contenait 4 fois le littéral bloqué la veille. Trous résiduels
+     documentés (globs, expansion de variables, `cd` en milieu de commande).
+  3. **Drift overview §1/§5 résolu** (`5502b59`) : prose et diagrammes alignés
+     sur la matrice Phase 0 post-volet A (indépendance de contenu ≠
+     d'élaboration, flux PRD → CLAUDE.md, ordre recommandé / imposé sur
+     Cruft / libre hors produit) ; fausse flèche `/claude-md` → `/grill`
+     du §5 corrigée au passage (grill ne lit jamais CLAUDE.md).
+  4. **`setup-eval-cwd.sh` claude-md TTY-free** (`d569d8e`) : `--no-input`
+     sur `cruft create` — le contournement `yes '' |` reconduit 2 sessions
+     n'est plus nécessaire. Rouge/vert vérifiés stdin fermé, fixture conforme.
+- **Fixtures `/tmp` purgées** (commande manuelle humaine ; les 11 anciennes
+  avaient déjà disparu au reboot). Item clos.
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3). **SD1** : cycle 2026-09.
+3. Adjacent signalé non corrigé : overview §2 « PRD et CLAUDE.md ne se
+   parlent pas » — vrai en contenu, ambigu depuis que le §1 affiche le flux
+   d'élaboration ; nuance « en contenu » candidate. Mineur : diagrammes §1/§5
+   non re-validés au parseur (mmdc absent) — aperçu VS Code suffisant.
+4. (dormant) 5 evals bootstrap `/grill` jamais exécutées — candidates au
+   driver partagé au prochain besoin ; corpus batch A mode « insertion » au
+   premier replay ; `/code-review` sur dbt/Terraform au prochain diff réel.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+Aucun ADR cette session (fixes et sync doc — pas de décision nouvelle durable).
+Choix de portée session :
+
+- **Sémantique `protect_env.py`** : bloquer sur existence réelle du fichier,
+  pas sur la chaîne — garde-fou contre l'accès par inadvertance, pas sandbox ;
+  trous résiduels assumés et documentés dans la docstring. Alternative écartée :
+  exemption des contextes quotés (bypass réel via `bash -c`).
+- **Tests migrés unitaire → e2e** (stdin JSON → exit code) : c'est le `cwd`
+  du contrat hook qui porte la nouvelle sémantique.
+- **Diagrammes non re-validés au parseur** : npx mermaid-cli = téléchargement
+  Chromium disproportionné pour 2 retouches à constructions déjà présentes.
+- **Hook block-rm-rf respecté** : purge des fixtures laissée à l'humain
+  (précédent reconduit), y compris celles créées par la vérification du jour.
+- **Adjacent §2 signalé sans correction** (Surgical Changes).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-29 06:35
 Session : 7fa1c297-cece-4de5-b36b-0999cb20ba0a
 
