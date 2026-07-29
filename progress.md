@@ -34,16 +34,28 @@ Session : c6e8602d-da20-474c-8f22-76a163636eec
 
 ## Prochaines étapes
 
-1. **Committer ce checkpoint** (`docs(progress)`) puis push.
-2. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
-   ratio méta/produit (P3). **SD1** : cycle 2026-09.
-3. Adjacent signalé non corrigé : overview §2 « PRD et CLAUDE.md ne se
+1. ~~Committer ce checkpoint~~ **Fait** (`250688f`) ; post-checkpoint : revue
+   des déclencheurs TODO.md (`84b2371`, 3 constats routés au cycle /insights)
+   et cet amendement.
+2. **PRIORITAIRE (session fraîche) — exécuter les 5 evals bootstrap `/grill`
+   en A→B→A** via le driver partagé (`claude/evals/drive-session.py`) :
+   `preflight-artifact-absent`, `no-open-questions-section`,
+   `deferred-branch-in-output`, `input-explicit-arg-over-fallback`,
+   `output-no-file-written`. Sessions B pilotées, graders Sonnet isolés,
+   verdict par expectation — protocole ADR-0009, précédent immédiat :
+   `spike-routing` PASS 6/6 avec le même outillage. Décision 2026-07-29
+   (post-checkpoint) : déclencheur dormant levé à la main — coût d'exécution
+   effondré depuis la généralisation du driver, dernier corpus du parc jamais
+   passé au réel (anti-pattern « corpus jamais exécuté », ADR-0009).
+3. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3) + les 3 constats de la revue TODO.md. **SD1** :
+   cycle 2026-09.
+4. Adjacent signalé non corrigé : overview §2 « PRD et CLAUDE.md ne se
    parlent pas » — vrai en contenu, ambigu depuis que le §1 affiche le flux
    d'élaboration ; nuance « en contenu » candidate. Mineur : diagrammes §1/§5
    non re-validés au parseur (mmdc absent) — aperçu VS Code suffisant.
-4. (dormant) 5 evals bootstrap `/grill` jamais exécutées — candidates au
-   driver partagé au prochain besoin ; corpus batch A mode « insertion » au
-   premier replay ; `/code-review` sur dbt/Terraform au prochain diff réel.
+5. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel.
 
 ## Écarts vs PRD
 
