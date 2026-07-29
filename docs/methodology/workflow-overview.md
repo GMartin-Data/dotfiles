@@ -38,15 +38,22 @@ Phase 2.
 ```mermaid
 %%{init: {'themeVariables': {'lineColor': '#c9d1d9'}}}%%
 flowchart LR
-    CM["/claude-md"] --> CMD[("CLAUDE.md")]
     PRDC["/prd"] --> PRDD[("PRD.md")]
+    PRDD -.->|"consommé s'il existe<br/>(pré-remplissage)"| CM["/claude-md"]
+    CM --> CMD[("CLAUDE.md")]
     PRDD --> G1["/grill sur PRD"]
     G1 -.->|décisions candidates| ADR1["/adr"]
     G1 --> FRZ1{{"gel du PRD"}}
 ```
 
-CLAUDE.md et PRD.md sont indépendants en contenu : **l'ordre entre les deux est
-libre**. Seul le PRD passe la revue adverse avant gel — `/grill` ne *produit*
+CLAUDE.md et PRD.md sont indépendants en **contenu**, pas en **élaboration** :
+le flux d'information est unidirectionnel — `/claude-md` consomme le PRD quand
+il existe, `/prd` ne lit jamais CLAUDE.md. L'ordre PRD → CLAUDE.md est donc
+**recommandé** en général, **imposé** sur instance Cruft (gate de `/claude-md`,
+avec override track léger explicite —
+[`adr/0011`](../../adr/0011-track-leger-petits-projets.md)) et **libre** hors
+workflow produit (cf. [matrice](responsibility-matrix.md), Phase 0). Seul le
+PRD passe la revue adverse avant gel — `/grill` ne *produit*
 rien, il signale des décisions candidates que l'humain résout en open question du
 PRD, formalise via `/adr`, ou — branche indélibérable, que seule une observation
 peut trancher — route en spike
@@ -343,18 +350,20 @@ structure ; celle-ci range par besoin — *« je suis là, je fais quoi ? »*.
 ```mermaid
 %%{init: {'themeVariables': {'lineColor': '#c9d1d9'}}}%%
 flowchart LR
-    S(["nouveau projet"]) --> A["/claude-md"]
-    S --> B["/prd"]
-    A --> C["/grill sur PRD"]
-    B --> C
+    S(["nouveau projet"]) --> B["/prd"]
+    B -->|"ordre recommandé"| A["/claude-md"]
+    B --> C["/grill sur PRD"]
     C --> D{{"gel du PRD"}}
     D --> E["/planning"]
+    A --> E
     E --> F["/grill sur PLAN"]
     F --> G{{"gel du PLAN"}}
     G --> H(["Phase 2"])
 ```
 
-`/claude-md` et `/prd` dans l'ordre qui t'arrange. Chaque `/grill` produit des
+`/prd` d'abord, `/claude-md` ensuite — ordre **recommandé** en général,
+**imposé** sur instance Cruft (gate de `/claude-md`, override track léger),
+**libre** hors workflow produit. Chaque `/grill` produit des
 décisions candidates : les mûres partent en `/adr`, les indélibérables se routent
 en spike ([`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)),
 les autres restent en open questions du PRD. Détail en
