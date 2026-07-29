@@ -131,10 +131,15 @@ live).
 <cwd> --model opus --settings '{"effortLevel":"high"}'` — pilote `claude -p` en
 stream-json et n'envoie le tour N+1 qu'après le `result` du tour N. Le grill étant
 interactif et long, les tours utilisateur sont **scriptés** en réponses
-conditionnelles neutres (cf.
-[`fixtures/spike-routing-interview-script.md`](fixtures/spike-routing-interview-script.md)
-pour l'eval spike — l'amorce de neutralité y est encodée). Le copier-coller humain
-reste le fallback interactif.
+conditionnelles neutres, versionnées dans `fixtures/` :
+[`resolve-normally-interview-script.md`](fixtures/resolve-normally-interview-script.md)
+(résolution normale — `no-open-questions-section`, `output-no-file-written`,
+`input-explicit-arg-over-fallback`),
+[`deferred-amorce-interview-script.md`](fixtures/deferred-amorce-interview-script.md)
+(amorce DEFERRED — `deferred-branch-in-output`) et
+[`spike-routing-interview-script.md`](fixtures/spike-routing-interview-script.md)
+(amorce de neutralité — eval spike). Le copier-coller humain reste le fallback
+interactif.
 
 | Rôle | Qui | CWD | Mission |
 |---|---|---|---|
@@ -189,6 +194,19 @@ reste le fallback interactif.
   argument/observation), pas un écart ; la documenter dans le rapport. En revanche,
   sur la question délibérable (périmètre de « tiers »), l'humain tranche
   normalement.
+
+- **La carte blanche scriptée induit une résolution en lot.** La clause « sur
+  toute autre question : je valide ta recommandation » des scripts de tours agit
+  comme une validation anticipée : la session B résout alors **toutes les
+  branches restantes en un seul tour** (constaté sur les 3 runs interactifs du
+  2026-07-29 — « résolues sous ta carte blanche »), contre la lettre de
+  `grill.md` (« une question à la fois, jamais en lot »). Conséquence pour le
+  grading : la cadence « ledger rafraîchi à chaque résolution » n'est **pas
+  observable** sous script — juger cet invariant sur les points de
+  rafraîchissement réels (départ, résolution isolée, final), pas sur le
+  tour-par-tour. Le comportement « lot sous carte blanche » est un constat réel
+  de `/grill`, candidat à une eval dédiée **si** observé en usage réel
+  (doctrine d'étoffage : pas de couverture spéculative).
 
 - **`no_side_effect` se vérifie hors transcription.** L'invariant « aucun fichier
   écrit » ne se lit pas seulement dans le déroulé : après la session B, vérifier
@@ -254,11 +272,20 @@ Ajouter une eval **quand** :
 
 | Command | Statut | Nombre d'evals | Classes | Dernière mise à jour |
 |---|---|---|---|---|
-| `/grill` | ✅ bootstrap | 6 | `preflight`, `anti_triviality`, `ledger_terminal_state`, `input_resolution`, `no_side_effect`, `spike_routing` | 2026-07-29 |
+| `/grill` | ✅ exécuté (6/6) | 6 | `preflight`, `anti_triviality`, `ledger_terminal_state`, `input_resolution`, `no_side_effect`, `spike_routing` | 2026-07-29 |
 
-⚠️ **5 evals bootstrap spécifiées, jamais exécutées en A→B→A.** Seule
-`spike-routing-indeliberable-branch` a été exécutée : rouge par inspection contre
-le `grill.md` antérieur à ADR-0014, puis **PASS 6/6** le 2026-07-29 (session B
-automatisée Opus/high via le driver partagé, tours scriptés, grader Sonnet
-isolé) — porte de validation du passage d'ADR-0014 en `Accepted`. Le corpus ne
-couvre que des fixtures PRD ; le grill d'un PLAN reste à doter d'un fixture.
+✅ **Corpus intégralement exécuté en A→B→A** (sessions B automatisées Opus/high
+via le driver partagé, tours scriptés, graders Sonnet isolés) :
+
+- `spike-routing-indeliberable-branch` : rouge par inspection contre le
+  `grill.md` antérieur à ADR-0014, puis **PASS 6/6** le 2026-07-29 — porte de
+  validation du passage d'ADR-0014 en `Accepted`.
+- Les **5 evals bootstrap** : exécutées le 2026-07-29, **PASS 21/22
+  expectations**. L'unique ⚠️ (cadence de rafraîchissement du ledger,
+  `deferred-branch-in-output` E1) requalifié ✅ avec réserve après arbitrage :
+  la carte blanche scriptée induit une résolution en lot (cf. §Frictions), la
+  cadence tour-par-tour n'est observable qu'en usage réel. Vérification
+  filesystem `no_side_effect` : `prd.md` byte-identique, zéro fichier créé.
+
+Le corpus ne couvre que des fixtures PRD ; le grill d'un PLAN reste à doter
+d'un fixture.
