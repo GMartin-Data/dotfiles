@@ -6,9 +6,7 @@
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Edit(**/.env)",
-      "Edit(**/.env.*)",
-      "Write(**/.env)",
-      "Write(**/.env.*)"
+      "Edit(**/.env.*)"
     ],
     "defaultMode": "default"
   },
