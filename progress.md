@@ -1,4 +1,77 @@
 ## Dernière mise à jour
+Date : 2026-07-29 06:35
+Session : 7fa1c297-cece-4de5-b36b-0999cb20ba0a
+
+## Tâches complétées
+
+- **CHANTIER routage SPIKE clos end-to-end, 5 commits poussés**
+  (`527f24f..6299dd6`) :
+  1. **ADR-0014 délibéré en interview** (6 décisions, toutes tranchées sur
+     recommandation) puis rédigé — Extends ADR-0003.
+  2. **Eval failing test-first** (`spike-routing-indeliberable-branch`, classe
+     `spike_routing`) : fixture à deux pièges (branche indélibérable + tension
+     délibérable — test de discrimination), rouge validé par inspection, puis
+     `grill.md` conformé (5 retouches) — vert par inspection 6/6.
+  3. **Sync matrice** (3 points : Phase 0, Phase 1, ligne `/grill`) +
+     **overview** (débouchés §1/§5, index 14 ADRs, ligne des structurants).
+  4. **Run réel A→B→A automatisé PASS 6/6** : session B Opus/high pilotée par
+     le driver, 9 tours scriptés en réponses conditionnelles (l'ordre des
+     questions du grill n'est pas prescrit — fixture versionnée au corpus),
+     grader Sonnet isolé, preuve verbatim par expectation. Porte franchie →
+     ADR-0014 `Accepted`.
+  5. **Driver généralisé au 2ᵉ usage** (doctrine d'émergence volet B) :
+     `claude/evals/drive-session.py` partagé, renvois `/prd` et `/grill` à jour.
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **PRIORITAIRE (demande humaine)** : fixer les deny rules de
+   `~/.claude/settings.json` — `Write(**/.env)` et `Write(**/.env.*)` ne
+   matchent aucun outil (warning à chaque `claude -p`) ; forme correcte :
+   `Edit(**/.env)` / `Edit(**/.env.*)` (les règles Edit couvrent tous les
+   outils d'édition de fichiers).
+3. Adjacents signalés non corrigés : drift overview §1/§5 (« ordre libre »
+   CLAUDE.md/PRD vs matrice post-volet A recommandé/imposé/libre — l'overview
+   prédate le volet A) ; fixtures `/tmp` à purger (2 grill + 7 prd +
+   2 claude-md, hook block-rm-rf) ; `setup-eval-cwd.sh` claude-md suppose un TTY.
+4. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3). **SD1** : cycle 2026-09.
+5. (dormant) 5 evals bootstrap `/grill` jamais exécutées — candidates au driver
+   partagé au prochain besoin ; corpus batch A mode « insertion » au premier
+   replay ; `/code-review` sur dbt/Terraform au prochain diff réel.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Routage SPIKE dans /grill → `adr/0014`** (Accepted en fin de session —
+  porte de validation : run réel A→B→A PASS 6/6).
+- Choix de portée session :
+  - Interview ADR question par question avec recommandation argumentée
+    (6 décisions, toutes tranchées par l'humain sur la recommandation).
+  - Rouge prouvé par inspection textuelle (pas de session brûlée) ; vert par
+    inspection accepté pour l'implémentation, mais run réel exigé avant
+    passage en `Accepted`.
+  - Tours de session B scriptés en **réponses conditionnelles** (pas
+    positionnelles) — l'ordre des questions du grill dépend de son arbre ;
+    amorce de neutralité encodée dans la fixture.
+  - Généralisation du driver déclenchée par le 2ᵉ usage, conformément à la
+    doctrine d'émergence posée au volet B.
+  - Priorisation du fix deny rules = demande humaine explicite en fin de session.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-29 05:35
 Session : b89022fd-8221-4140-b428-b5ff54364b92
 
