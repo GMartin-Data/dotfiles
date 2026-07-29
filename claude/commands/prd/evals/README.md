@@ -82,8 +82,9 @@ Fixtures **éphémères** : créées à la demande sous `/tmp/`, jetées après 
 L'isolation contextuelle reste utile même sans logique d'auto-invocation : elle garantit un CWD propre (pas de fichiers parasites de la session A) et une transcription figée (l'auteur juge un artefact, pas un déroulé live).
 
 **Sessions B automatisées** (protocole de référence depuis 2026-07-28, précédent
-batch A / gate `/claude-md`) : `drive-session.py <input.jsonl> <output.jsonl>
-<cwd> [flags claude]` — pilote `claude -p` en stream-json et n'envoie le tour
+batch A / gate `/claude-md`) : `claude/evals/drive-session.py <input.jsonl>
+<output.jsonl> <cwd> [flags claude]` (driver partagé, généralisé au 2ᵉ usage —
+corpus `/grill`, 2026-07-29) — pilote `claude -p` en stream-json et n'envoie le tour
 utilisateur N+1 qu'après l'événement `result` du tour N. ⚠️ Ne **jamais** piper
 l'input d'un coup (`cat in.jsonl | claude -p …`) : les messages en attente sont
 livrés en bloc, l'interview n'est pas exercée tour par tour (observé 2026-07-28 :
