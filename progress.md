@@ -1,4 +1,88 @@
 ## Dernière mise à jour
+Date : 2026-07-29 08:49
+Session : 4c7b48e5-1f64-42c8-b0ae-5b06d763ac9a
+
+## Tâches complétées
+
+- **Chantier PRIORITAIRE clos — 5 evals bootstrap `/grill` exécutées en A→B→A**
+  (`8fac46c`) : driver partagé, sessions B Opus/high automatisées (4 en
+  parallèle), tours conditionnels scriptés, graders Sonnet isolés, verdict par
+  expectation. **PASS 21/22** : preflight 4/4 · no-open-questions 5/5 ·
+  input-explicit 4/4 · output-no-file-written 5/5 (+ vérif filesystem :
+  `prd.md` byte-identique, zéro fichier créé dans les 5 CWDs) ·
+  deferred-branch 3/4 + 1 ⚠️ requalifié ✅ avec réserve (arbitrage humain).
+  L'anti-pattern « corpus jamais exécuté » (ADR-0009) est levé : les 6 evals
+  du corpus /grill ont toutes tourné au réel.
+- **Constat systémique documenté (README §Frictions)** : la carte blanche
+  scriptée (« sur toute autre question : je valide ta recommandation ») induit
+  une résolution **en lot** de toutes les branches restantes en un tour,
+  contre `grill.md` « une question à la fois » — observé sur les 3 runs
+  interactifs. Règle de grading associée : la cadence tour-par-tour du ledger
+  n'est pas observable sous script.
+- **2 fixtures versionnées** : `resolve-normally-interview-script.md` (3 evals)
+  et `deferred-amorce-interview-script.md` ; renvois README à jour, état du
+  corpus passé à « ✅ exécuté (6/6) ».
+- **Adjacent overview §2 clos** (`43f045a`) : « PRD et CLAUDE.md ne se parlent
+  pas » qualifié **en contenu** — indépendance de contenu ≠ d'élaboration, le
+  flux PRD → CLAUDE.md du §1 ordonne l'élaboration sans écriture croisée.
+- **README root — carte documentaire ajoutée** (`b9801fe`) : section
+  « Documentation » de pointeurs (matrice, overview, karpathy, adr/, corpus
+  d'evals + driver, tasks/) — le README ne couvrait que le bootstrap machine,
+  la couche méthodologique n'avait aucun point d'entrée depuis la racine.
+  Pointeurs seuls, zéro règle réénoncée (doctrine non-overlap). Large refresh
+  écarté : il dupliquerait la carte documentaire de l'overview.
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push. Backlog immédiatement
+  actionnable : zéro (que du daté et du dormant).
+
+## Prochaines étapes
+
+1. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3) + les 3 constats de la revue TODO.md. **SD1** :
+   cycle 2026-09.
+2. **Purge manuelle** des 5 CWDs `/tmp/grill-eval-*-20260729-083019` (hook
+   block-rm-rf, précédent reconduit).
+3. Mineur reporté : diagrammes overview §1/§5 non re-validés au parseur (mmdc
+   absent — téléchargement Chromium disproportionné).
+4. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel ; eval « lot sous
+   carte blanche » si observé en usage réel ; fixture PLAN pour le corpus
+   /grill.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+Aucun ADR cette session (exécution d'evals et sync doc). Choix de portée
+session :
+
+- **Arbitrage E1 `deferred-branch-in-output`** : ⚠️ du grader requalifié ✅
+  avec réserve — le reproche (rafraîchissement groupé du ledger) est exact
+  mais induit par le harnais (carte blanche scriptée), pas observable
+  autrement en mode scripté. Option « documenter sans rejouer » validée par
+  l'humain ; rejeu écarté car toute clause conditionnelle générique
+  réinviterait le lot.
+- **Scripts de tours mutualisés** (1 partagé par 3 evals + 1 amorce DEFERRED)
+  plutôt qu'un script par eval — les tours sont conditionnels, seule l'amorce
+  varie.
+- **4 sessions B en parallèle** (background) après sanity check séquentiel du
+  preflight — campagne bouclée en ~15 min sans incident.
+- **README : section pointeurs plutôt que large refresh** — un README qui
+  re-raconte le système recréerait le drift que la matrice combat ; son
+  périmètre reste le bootstrap machine.
+- **Hook block-rm-rf respecté** : purge des fixtures laissée à l'humain.
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-29 08:13
 Session : c6e8602d-da20-474c-8f22-76a163636eec
 
