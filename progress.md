@@ -1,4 +1,81 @@
 ## Dernière mise à jour
+Date : 2026-07-29 05:35
+Session : b89022fd-8221-4140-b428-b5ff54364b92
+
+## Tâches complétées
+
+- **Chantier volet B mené de bout en bout, 4 commits poussés**
+  (`2b028f3..93c8681`) :
+  1. **ADR-0013 délibéré en interview** (6 décisions structurantes) : canvas
+     PRD fermé de 11 sections. Satellite `conventions/prd.md` créé (2ᵉ après
+     adr.md — critère de création atteint) ; matrice amendée en 3 points
+     (cellule PRD → renvoi sans énumération, ligne `/prd`, index satellites).
+  2. **Refonte `/prd`** (`72b6766`) : phases Objectifs et Contraintes créées
+     (test à deux axes appliqué en séance, routage annoncé), pré-flight Cruft
+     supprimé, Risques → récolte d'open questions, contrôle inter-phases et
+     blocs de validation réécrits, bandeau « la convention fait foi ».
+  3. **Corpus `/prd` conformé et rejoué** : 4 evals (3 réécrites + 1
+     `output_quality` interview scriptée 15 tours). Rouge par inspection
+     contre HEAD, **vert 4/4 PASS** (sessions B Opus/high automatisées,
+     4 graders Sonnet isolés).
+  4. **Moisson `/claude-md` recâblée** (`c8bbb0b`) : harvest = problème/
+     objectifs/utilisateurs/contraintes (plus jamais stack/archi), ligne
+     Bloc 2, branche « PRD sans Cruft » d'instance-aware-flow réécrite ;
+     fixture avec-PRD promue au format canonique. **Rejeu scopé 2/2 PASS**
+     (gate 7/7 ; avec-PRD 6/6 après arbitrage anti-grader : le ⚠️ comparait
+     le Bloc 2 à instance-aware-flow.md au lieu du template de la command).
+  5. **Clôture** (`93c8681`) : ADR-0013 → `Accepted`, overview §7.3-B statué
+     « Résolu », index 13 ADRs, renvoi satellite.
+- **Outillage durable** : `drive-session.py` (driver turn-based pour
+  `claude -p` stream-json — le pipe naïf livre tous les tours en bloc, 2 faux
+  FAIL instruits puis requalifiés) ; flags de référence documentés au README
+  (pin `model:` + `effortLevel: xhigh` de session = 400 en mode `-p`).
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **CHANTIER routage SPIKE** (ordonnancement tranché cette session : après
+   volet B) : ADR (Extends ADR-0003) → eval failing → grill.md → sync matrice.
+3. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3). **SD1** : cycle 2026-09.
+4. Adjacents signalés non corrigés : fixtures `/tmp/prd-eval-*` (×7) et
+   `/tmp/claude-md-eval-*` (×2 nouvelles) — purge manuelle ou reboot (hook
+   block-rm-rf) ; `setup-eval-cwd.sh` de claude-md suppose toujours un TTY
+   (contournement `yes '' |` reconduit).
+5. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **Format PRD canonique → `adr/0013`** (Accepted en fin de session — porte
+  de validation : 6/6 evals vertes sur les deux corpus).
+- Choix de portée session :
+  - Interview ADR menée question par question avec recommandation argumentée
+    (6 décisions, toutes tranchées par l'humain).
+  - **Test-first avant commit rappelé par l'humain** sur la refonte `/prd` —
+    la proposition de committer sans rejeu contredisait la contrepartie de
+    l'exemption direct-sur-main ; plan de test validé puis exécuté.
+  - Rejeu `/claude-md` scopé à 2 evals (step0 en amont du diff, hors périmètre).
+  - Arbitrage anti-grader avec-PRD (précédent DN5) : ⚠️ requalifié ✅, preuve
+    verbatim ligne 85 amendée.
+  - Driver versionné dans le corpus `/prd` seul — généralisation au 2ᵉ usage
+    (doctrine d'émergence).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-28 20:35
 Session : 52367291-8782-4293-b092-37d446601828
 
