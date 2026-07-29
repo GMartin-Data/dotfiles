@@ -1,6 +1,6 @@
 # ADR-0013 : Format PRD canonique — canvas fermé de 11 sections
 
-Status: Proposed
+Status: Accepted
 Date: 2026-07-28
 
 ## Contexte

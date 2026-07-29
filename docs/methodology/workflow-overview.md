@@ -416,7 +416,7 @@ Le PRD, lui, n'est pas exclu : il est **optionnel**, et sa rédaction s'allège.
 `/prd` reste disponible mais son interview complète est souvent disproportionnée
 à ce niveau d'enjeu — quelques lignes de cadrage écrites à la main font l'affaire.
 S'il existe déjà, il peut rester gelé tel quel comme artefact historique, sans
-être conformé à la doctrine PRD-allégé.
+être conformé au canvas canonique (ADR-0013).
 
 Les décisions durables se consignent dans la section « Décisions prises » de
 progress.md, **pas en ADR** — c'est la contrepartie assumée de l'exemption.
@@ -435,11 +435,12 @@ complet — et cette bascule est elle-même une décision non-triviale, donc un 
 |---|---|
 | [`responsibility-matrix.md`](responsibility-matrix.md) | **Source de vérité.** Matrice principale, règles de non-overlap, cycles d'écriture, frontières floues |
 | [`conventions/adr.md`](conventions/adr.md) | Satellite ADR : cycle de vie détaillé, numérotation, template, rationale |
+| [`conventions/prd.md`](conventions/prd.md) | Satellite PRD : canvas canonique (11 sections), tests de frontière |
 | [`karpathy-discipline.md`](karpathy-discipline.md) | Discipline de code (clarifier → simplifier → cibler → vérifier). Même statut non-normatif que ce document |
 
 ### Index des ADRs
 
-Les douze ADRs du repo, tous en statut `Accepted` à ce jour.
+Les treize ADRs du repo, tous en statut `Accepted` à ce jour.
 
 | # | Titre | Relations |
 |---|---|---|
@@ -455,10 +456,12 @@ Les douze ADRs du repo, tous en statut `Accepted` à ce jour.
 | [0010](../../adr/0010-surcharge-code-review-user-scope.md) | Surcharge user-scope de `/code-review` | — |
 | [0011](../../adr/0011-track-leger-petits-projets.md) | Track léger documentaire pour les petits projets personnels | — |
 | [0012](../../adr/0012-feynman-mentor-niche-verification-par-explication.md) | `feynman-mentor` — 5ᵉ niche de la couche learning | Extends 0007 |
+| [0013](../../adr/0013-format-prd-canonique.md) | Format PRD canonique — canvas fermé de 11 sections | — |
 
 Structurants pour ce document : **0001** (nature du PRD), **0002** (MVP dans le
-PLAN), **0003** (délégation `/grill` → `/adr`), **0011** (track léger). Les ADRs
-**0004-0008** et **0012** concernent la couche learning, **0009** et **0010** l'outillage.
+PLAN), **0003** (délégation `/grill` → `/adr`), **0011** (track léger), **0013**
+(canvas PRD). Les ADRs **0004-0008** et **0012** concernent la couche learning,
+**0009** et **0010** l'outillage.
 
 Pour obtenir la vue courante des décisions actives, sans index à maintenir :
 
@@ -518,15 +521,18 @@ acceptance criteria » — sans que la distinction entre « éditer le PRD » et
 > instance Cruft, avec override track léger explicite à la gate (ADR-0011),
 > qui résout au passage le deadlock déclaration-dans-CLAUDE.md ↔ gate-exige-PRD.
 >
-> **Volet B (champs lus) requalifié en chantier, non résolu** — le diagnostic
-> initial était inversé : le pré-flight lit fidèlement ce que `/prd` produit
-> *réellement* (son format de sortie contient bien « Stack technique » et
-> « Architecture technique ») ; le fantôme est le « PRD allégé (8 sections) »
-> de la matrice, jamais implémenté dans la command ni acté par ADR. Résolution
-> doctrinale à venir : conformer `/prd` à la matrice (ADR format PRD canonique
-> → refonte `/prd` → pré-flight `/claude-md` → les deux corpus d'evals). Seul
-> vrai champ fantôme, corrigé immédiatement : « phases d'implémentation »,
-> sorties du PRD depuis 2026-06-22.
+> **Volet B (champs lus) résolu (2026-07-29)** — le diagnostic initial était
+> inversé : le pré-flight lisait fidèlement ce que `/prd` produisait
+> *réellement* (14 sections dont « Stack technique » et « Architecture
+> technique ») ; le fantôme était le « PRD allégé (8 sections) » de la matrice,
+> jamais implémenté dans la command ni acté par ADR. La délibération manquante
+> a eu lieu : [`adr/0013`](../../adr/0013-format-prd-canonique.md) acte un
+> canvas fermé de 11 sections (satellite
+> [`conventions/prd.md`](conventions/prd.md)), `/prd` y est conformé
+> (pré-flight Cruft et phases Stack/Architecture supprimés, risques → open
+> questions), la moisson du pré-flight `/claude-md` recâblée (contraintes
+> exogènes à traduire — plus jamais stack ni architecture), les deux corpus
+> d'evals rejoués verts.
 
 Le point relevé : la matrice affirmait que CLAUDE.md et PRD « peuvent être menés
 dans n'importe quel ordre » alors que `/claude-md` impose PRD d'abord sur
