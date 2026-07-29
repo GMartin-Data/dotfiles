@@ -10,7 +10,7 @@ build-before-automating).
 
 | Item | Impact | Coût | Risque | Déclencheur atteint ? |
 |---|:---:|:---:|:---:|---|
-| Hook `/clear` → force `/progress` | 2 | 2 | 3 | ❌ ~10 cycles manuels non comptés |
+| Hook `/clear` → force `/progress` | 2 | 2 | 3 | ✅ atteint 2026-07-29 — 14 cycles depuis le scoring (32 au total) ; évaluation routée au cycle /insights 2026-08-26 |
 | Check de parité commands automatisé | 1 | 2 | 1 | ❌ pas de 3ᵉ récurrence malgré la checklist |
 | Migrer PR template + skill `/pr` | 2 | 3 | 2 | (a) ✅ fait 2026-07-22 / (b) bloqué (workflow non finalisé) |
 | Audit « mettre de l'ordre » workflow | 3 | 3 | 2 | ❌ stabilité du workflow non atteinte |
@@ -23,6 +23,23 @@ au prochain passage. Décision 2026-06-28 : respecter tous les différés (la gr
 confirme ce que les conditions de chaque item disaient déjà). Le fix
 `block-force-push.sh` (seul item à déclencheur « bug reproductible ») a été traité
 cette session, commit `595eef1`.
+
+## Revue des déclencheurs (2026-07-29) — routée au cycle /insights 2026-08-26
+
+1. **Hook `/clear`** : déclencheur atteint (14 cycles manuels depuis le scoring,
+   comptés dans progress.md — la grille disait « non comptés »). Nuance pour la
+   délibération : **zéro oubli de `/progress` observé** sur ces 14 cycles ; la
+   doctrine « pas de hook tant que l'oubli n'est pas récurrent » (précédent du
+   rituel `/code-review`, CLAUDE.md global) peut légitimement conclure « pas de
+   hook ». Le déclencheur ouvre l'évaluation, pas l'implémentation.
+2. **Circularité `/pr` (b) ↔ audit workflow** : (b) attend « la structure du
+   template finalisée — voir audit workflow à venir » ; l'audit attend « PR
+   template, ADR, skill `/pr` […] finalisés ». Chacun bloque l'autre — deadlock
+   à trancher à la main avant tout déclenchement de l'un ou de l'autre.
+3. **Audit « mettre de l'ordre »** : scope partiellement absorbé depuis le
+   scoring — matrice consolidée (incohérences 7.1/7.2/7.3 résolues),
+   `workflow-overview.md` écrit, ADR-0013/0014 actés, audit CLAUDE.md global
+   P1/P2 exécuté par evals. Candidat à re-scoping, voire clôture partielle.
 
 ---
 
