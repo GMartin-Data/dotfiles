@@ -60,8 +60,11 @@ Avant d'écrire un contenu nouveau, se poser :
 - Interview `/prd` → PRD.md (baseline du produit cible, révisable par ADR)
 - Avant gel du PRD : revue adverse `/grill` sur le PRD — fait surgir les décisions
   implicites et les contradictions inter-sections qu'une relecture linéaire ne voit
-  pas. Les décisions candidates se résolvent (open questions du PRD) ou se
-  formalisent via `/adr` **avant** le gel.
+  pas. Les décisions candidates se résolvent (open questions du PRD), se
+  formalisent via `/adr`, ou — branche indélibérable, que seule une observation
+  peut trancher — se routent en spike
+  ([`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)),
+  **avant** le gel.
 
 Les deux productions sont **indépendantes en contenu** (non-overlap : aucune
 section ne migre de l'un à l'autre) mais **pas en élaboration** : le flux
@@ -79,8 +82,8 @@ scripts).
 - Lit PRD + CLAUDE.md
 - Produit PLAN.md (semi-frozen)
 - Avant gel du PLAN : revue adverse `/grill` sur le PLAN (seconde invocation — un
-  artefact par invocation, jamais les deux). Mêmes débouchés : résolution ou `/adr`
-  avant gel.
+  artefact par invocation, jamais les deux). Mêmes débouchés : résolution, `/adr`
+  ou routage spike avant gel.
 
 ### Phase 2 — Implementation (cycle répété)
 - Start session : `/catchup` lit progress.md (+ ADRs récents si pertinents)
@@ -156,7 +159,7 @@ de son scope. Un drift se traite par l'ordre canonique ci-dessus, pas par re-gri
 - `/prd` produit un PRD conforme au canvas canonique de 11 sections ([`conventions/prd.md`](conventions/prd.md), acté par [`adr/0013`](../../adr/0013-format-prd-canonique.md)). Pas de stack, pas d'archi, pas de phases d'impl.
 - `/claude-md` reste seule source de vérité stack et conventions.
 - `/planning` (nommée ainsi, pas `/plan` — collision avec built-in Claude Code) produit PLAN.md à partir de PRD + CLAUDE.md.
-- `/grill` stress-teste un PRD **ou** un PLAN avant gel (un artefact par invocation, type déduit du fichier). Ne modifie jamais l'artefact source, n'écrit aucun fichier ; délègue la formalisation des décisions candidates à `/adr` par instruction, jamais par invocation (cf. [`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)).
+- `/grill` stress-teste un PRD **ou** un PLAN avant gel (un artefact par invocation, type déduit du fichier). Ne modifie jamais l'artefact source, n'écrit aucun fichier ; délègue la formalisation des décisions candidates à `/adr` par instruction, jamais par invocation (cf. [`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)). Route les branches indélibérables en spike : item `SPIKE` autoportant, exécution manuelle sur branche jetable, capture via `/adr --from-context`, la branche meurt sans merge (cf. [`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)).
 - `/adr` produit un ADR atomique par invocation.
 - `/progress` et `/catchup` restent les outils de session, sans changement structurel.
 
