@@ -40,7 +40,13 @@ Sur « rien à ajouter », marquer la phase validée.
 
 ### Si PRD.md présent sans Cruft
 
-Extraire la section « Stack technique » du PRD, pré-remplir, demander confirmation rapide.
+Le PRD canonique ne porte aucune stack (ADR-0013) : rien à extraire. Mener la
+Phase 2 standard de `claude-md.md` (interview complète), en s'appuyant sur :
+
+- la section **Contraintes** du PRD — exigences exogènes à traduire en choix
+  techniques (ex. « les données restent en UE » → région d'hébergement) ;
+- l'enrichissement du pré-flight (`pyproject.toml`, lockfiles, configs) si le
+  projet a déjà du code.
 
 ---
 

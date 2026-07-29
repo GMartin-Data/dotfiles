@@ -29,7 +29,7 @@ S'il est **absent** (Read échoue), enchaîner directement sur le pré-flight.
 
 1. **`.cruft.json`** — si présent à la racine du CWD, lire `context.cookiecutter` pour extraire : `project_name`, `python_version`, `license`, `branch_protection_profile`, et les flags `use_dbt` / `use_terraform`.
 2. **Arborescence racine** — lister les dossiers présents (`src/`, `dbt/`, `terraform/`, `tests/`, `docs/`, `.github/`, etc.). L'arbo fait foi : un post-hook Cruft supprime les dossiers non retenus.
-3. **`PRD.md`** — si présent, le lire pour récupérer : problème, utilisateurs, interface, stack technique, architecture.
+3. **`PRD.md`** — si présent, le lire pour récupérer : problème, objectifs, utilisateurs & scénarios (dont interface), contraintes exogènes. Le PRD canonique ne porte ni stack ni architecture (ADR-0013) — les contraintes sont des exigences produit à **traduire** en conventions pendant l'interview, jamais à copier telles quelles.
 
 Si **aucun** de ces trois artefacts n'existe : procéder à l'interview standard complète (toutes les phases).
 
@@ -82,7 +82,7 @@ Présenter ce qui a été détecté. Le wording est libre et peut **enrichir** a
 Les phases suivantes seront **allégées ou pré-remplies**
 (parcours détaillé dans reference/instance-aware-flow.md) :
 
-- Phase 1 (Vue d'ensemble), Phase 2 (Stack) → confirmation rapide depuis Cruft+PRD
+- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD
 - Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)
 - Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo
 

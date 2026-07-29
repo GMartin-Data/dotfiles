@@ -60,20 +60,50 @@ case "$EVAL_ID" in
 
     preflight-cruft-with-prd)
         create_cruft_instance
-        # Add a minimal PRD.md fixture so the conditional gate passes.
+        # Add a PRD.md fixture so the conditional gate passes. Abridged but
+        # canonical-format (ADR-0013, conventions/prd.md) : the harvest reads
+        # problem/objectives/users/constraints — never stack nor architecture.
         cat > "$CWD/PRD.md" <<'EOF'
-# PRD — placeholder
+# PRD — demo-instance
+
+## Résumé
+Outil interne de consolidation de rapports CSV mensuels. Fixture d'eval au
+format canonique abrégé (ADR-0013).
 
 ## Problème
-Placeholder PRD used as a fixture for the preflight-cruft-with-prd eval.
-Its content is intentionally minimal — the eval only cares that PRD.md
-exists, not its content.
+Les rapports mensuels sont consolidés à la main, opération répétitive et
+sujette aux erreurs.
 
-## Utilisateurs cibles
-N/A (fixture).
+## Objectifs
+- Zéro consolidation manuelle.
 
-## Solution
-N/A (fixture).
+## Utilisateurs & scénarios
+Usage personnel (A). CLI : une commande sur un dossier de rapports produit le
+consolidé.
+
+## Fonctionnalités (cible)
+- Lecture des CSV mensuels, consolidation en un fichier annuel.
+
+## Non-goals
+- Aucune interface graphique — hors du besoin, jamais.
+
+## Contraintes
+- Les rapports contiennent des données clients : traitement local uniquement,
+  aucun service cloud.
+
+## Acceptance criteria
+
+### Scénarios nominaux
+- [ ] En tant qu'utilisateur, je peux consolider un dossier en une commande.
+
+### Indicateurs mesurables
+- [ ] 12 rapports mensuels consolidés sans édition manuelle.
+
+## Open questions
+- Les CSV ont-ils le même schéma sur toute l'année ?
+
+## Au-delà de la cible
+Export vers un tableur partagé (candidat à révision par ADR).
 EOF
         ;;
 
