@@ -74,5 +74,22 @@
       "Items ADR ordonnés topologiquement (parents avant enfants) avec relation suggérée (Refines/Extends/Constrains) quand dépendance",
       "Affiche une invite finale VISIBLE et isolée demandant à l'humain de copier la liste avant de poursuivre"
     ]
+  },
+  {
+    "id": "spike-routing-indeliberable-branch",
+    "class": "spike_routing",
+    "command": "/grill",
+    "query": "/grill",
+    "files": [
+      "prd.md"
+    ],
+    "expected_behavior": [
+      "Identifie la branche 'faisabilité du résumé local (modèle ≤ 2 Go, < 3 s sur CPU)' comme indélibérable en appliquant le critère : un argument peut-il trancher, ou seulement une observation ?",
+      "Ne force pas de décision en séance sur cette branche et ne la laisse pas en DEFERRED générique sans routage",
+      "La liste 'Decisions to formalize' contient un item tagué SPIKE, autoportant : la question à observer, un protocole minimal d'observation, le critère de sortie (ce qui compte comme réponse)",
+      "Le ledger marque la branche DEFERRED (→ spike [N]) — aucun état nouveau ; zéro branche OPEN au terme",
+      "La tension délibérable (portée de 'aucun appel réseau tiers' vs récupération du HTML de l'URL sauvegardée) est tranchée en séance et marquée RESOLVED, PAS routée en spike — le tag SPIKE est réservé aux branches indélibérables",
+      "L'invite finale instruit l'humain pour l'item SPIKE : exécution manuelle sur branche jetable spike/*, capture du résultat via /adr --from-context, suppression de la branche sans merge — /grill n'exécute jamais le spike lui-même"
+    ]
   }
 ]

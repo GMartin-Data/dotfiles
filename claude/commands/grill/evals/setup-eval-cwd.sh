@@ -15,6 +15,7 @@ Eval ids (see grill.eval.json):
   deferred-branch-in-output          prd.md with a branch needing external input (-> DEFERRED)
   input-explicit-arg-over-fallback   root prd.md + docs/specs/custom-prd.md (explicit arg wins)
   output-no-file-written             prd.md (checks zero side effect + copiable block + invite)
+  spike-routing-indeliberable-branch prd.md with one indeliberable branch (-> SPIKE) + one deliberable tension
 EOF
     exit 2
 }
@@ -70,6 +71,44 @@ la collection cherchable.
 EOF
 }
 
+# Writes a PRD with one DELIBERATE indeliberable branch (only an observation can
+# settle it: can a <=2 GB embedded model summarize in <3 s on laptop CPU?) plus
+# one deliberable ambiguity (an argument settles it: does fetching the saved
+# URL's own HTML count as a "third-party network call"?). Grill must route the
+# former to SPIKE and resolve the latter in-session — tagging both SPIKE, or
+# neither, fails the eval. Used by the spike-routing eval.
+write_prd_with_indeliberable_branch() {
+    cat > "$1/prd.md" <<'EOF'
+# PRD — link-saver (local-first)
+
+## Problème
+Un utilisateur sauvegarde des liens à la volée mais les retrouve mal : pas de
+titre, pas de résumé, juste une URL brute dans un fichier texte.
+
+## Solution
+Un service local qui ingère une URL, en extrait un titre, génère un résumé
+d'une phrase avec un modèle embarqué, et expose la collection cherchable.
+
+## User Stories
+- En tant qu'utilisateur, je veux coller une URL et obtenir un titre lisible,
+  afin de retrouver le lien plus tard.
+- En tant qu'utilisateur, je veux un résumé d'une phrase par lien, afin de
+  décider quoi rouvrir sans cliquer.
+
+## Critères de succès
+- Un lien collé reçoit un titre sous 3 secondes.
+- Un lien collé reçoit un résumé d'une phrase généré par un modèle embarqué de
+  2 Go maximum, en moins de 3 secondes.
+- La recherche retourne les liens pertinents sur un corpus de 500 entrées.
+
+## Contraintes
+- AUCUN appel réseau vers un service tiers en runtime (souveraineté des
+  données, pas de fuite d'URL).
+- Stockage local SQLite, pas de backend distant.
+- Matériel cible : laptop CPU, sans GPU.
+EOF
+}
+
 case "$EVAL_ID" in
     preflight-artifact-absent)
         mkdir -p "$CWD"
@@ -78,6 +117,11 @@ case "$EVAL_ID" in
     no-open-questions-section | output-no-file-written | deferred-branch-in-output)
         mkdir -p "$CWD"
         write_prd_with_tension "$CWD"
+        ;;
+
+    spike-routing-indeliberable-branch)
+        mkdir -p "$CWD"
+        write_prd_with_indeliberable_branch "$CWD"
         ;;
 
     input-explicit-arg-over-fallback)

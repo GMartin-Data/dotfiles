@@ -20,10 +20,17 @@ Les evals mesurent ce qui se passe **après** l'invocation :
   laissée `OPEN`) et reflétée dans la liste de sortie ; le ledger finit à zéro OPEN
 - **Aucun effet de bord** : produit un bloc copiable, n'écrit aucun fichier, n'édite
   pas l'artefact source, ne crée aucun ADR
+- **Routage SPIKE** : une branche indélibérable (seule une observation peut trancher,
+  pas un argument) sort en item tagué `SPIKE` autoportant et finit
+  `DEFERRED (→ spike [N])` au ledger ; les branches délibérables restent tranchées
+  en séance — jamais routées
 
 La décision de conception qui sous-tend la délégation à `/adr` (ordre topologique,
 relations suggérées, items autoportants, zéro fichier écrit) est tracée dans
-[`adr/0003`](../../../../adr/0003-grill-delegue-adr-sans-invoquer.md). Les
+[`adr/0003`](../../../../adr/0003-grill-delegue-adr-sans-invoquer.md) ; le routage
+SPIKE (critère argument/observation, 3ᵉ tag, exécution manuelle sur branche jetable,
+capture via `/adr --from-context`) dans
+[`adr/0014`](../../../../adr/0014-grill-routage-spike-branches-indeliberables.md). Les
 `expected_behavior` ci-dessous en sont la traduction observable.
 
 Approche **Evaluation-Driven Development** (Anthropic,
@@ -39,7 +46,7 @@ Chaque eval suit ce schéma :
 ```json
 {
   "id": "<eval-id>",
-  "class": "<preflight | anti_triviality | ledger_terminal_state | input_resolution | no_side_effect>",
+  "class": "<preflight | anti_triviality | ledger_terminal_state | input_resolution | no_side_effect | spike_routing>",
   "command": "/grill",
   "query": "<input utilisateur : '/grill' ou '/grill <chemin>'>",
   "files": ["<fixtures nécessaires, chemins relatifs au CWD>"],
@@ -66,6 +73,7 @@ Chaque eval suit ce schéma :
 | `ledger_terminal_state` | Branche irrésolvable → `DEFERRED` (jamais `OPEN`), reflétée en sortie ; ledger finit à zéro OPEN | `deferred-branch-in-output` |
 | `input_resolution` | Argument explicite prioritaire sur le fallback ; type déduit du fichier | `input-explicit-arg-over-fallback` |
 | `no_side_effect` | Bloc copiable, zéro fichier écrit, source intouchée, aucun ADR créé, ordre topologique + invite visible | `output-no-file-written` |
+| `spike_routing` | Branche indélibérable → item `SPIKE` autoportant + `DEFERRED (→ spike [N])` ; branche délibérable → tranchée en séance, jamais routée | `spike-routing-indeliberable-branch` |
 
 ## Fixtures
 
@@ -88,6 +96,20 @@ Toutes les fixtures sont **éphémères** : créées à la demande sous `/tmp/` 
   revue, et que `/grill` n'écrit aucun fichier
 - **Evals concernées** : `no-open-questions-section`, `deferred-branch-in-output`,
   `output-no-file-written`
+
+### `prd.md` avec une branche indélibérable plantée (+ une tension délibérable)
+
+- **Contenu** : un PRD `link-saver` local-first avec **deux** pièges de nature
+  différente. (1) **Indélibérable** : un critère d'acceptation exige un résumé
+  généré par un modèle embarqué ≤ 2 Go en < 3 s sur laptop CPU — aucun argument ne
+  peut dire si c'est faisable, seul un benchmark le peut. (2) **Délibérable** : la
+  contrainte « aucun appel réseau tiers » est ambiguë vis-à-vis de la récupération
+  du HTML de l'URL sauvegardée — un argument (définition du périmètre « tiers »)
+  tranche en séance.
+- **But** : vérifier la **discrimination** du routage — la branche (1) sort en
+  `SPIKE`, la branche (2) est `RESOLVED` en séance. Tout router en SPIKE, ou rien,
+  est un échec.
+- **Eval concernée** : `spike-routing-indeliberable-branch`
 
 ### `prd.md` racine (decoy) + `docs/specs/custom-prd.md` (cible explicite)
 
@@ -148,6 +170,14 @@ live).
   répond que **la décision dépend d'un arbitrage produit non encore rendu** — ce qui
   force le `DEFERRED`. Documenter cette amorce dans le rapport : c'est une condition
   du test, pas un écart.
+
+- **`spike-routing` demande une amorce de neutralité.** Si le grill pose à l'humain
+  la question indélibérable (« un modèle ≤ 2 Go tient-il les 3 s sur CPU ? »),
+  l'humain répond **« je ne peux pas le savoir sans l'essayer »** — jamais une
+  décision. C'est une condition du test (elle force l'application du critère
+  argument/observation), pas un écart ; la documenter dans le rapport. En revanche,
+  sur la question délibérable (périmètre de « tiers »), l'humain tranche
+  normalement.
 
 - **`no_side_effect` se vérifie hors transcription.** L'invariant « aucun fichier
   écrit » ne se lit pas seulement dans le déroulé : après la session B, vérifier
@@ -213,8 +243,11 @@ Ajouter une eval **quand** :
 
 | Command | Statut | Nombre d'evals | Classes | Dernière mise à jour |
 |---|---|---|---|---|
-| `/grill` | ✅ bootstrap | 5 | `preflight`, `anti_triviality`, `ledger_terminal_state`, `input_resolution`, `no_side_effect` | 2026-06-23 |
+| `/grill` | ✅ bootstrap | 6 | `preflight`, `anti_triviality`, `ledger_terminal_state`, `input_resolution`, `no_side_effect`, `spike_routing` | 2026-07-29 |
 
-⚠️ **Corpus écrit, non encore exécuté en A→B→A.** Les 5 evals sont spécifiées mais
-aucun run n'a validé le comportement réel de `/grill` contre elles. Le corpus ne
-couvre que des fixtures PRD ; le grill d'un PLAN reste à doter d'un fixture.
+⚠️ **Corpus écrit, non encore exécuté en A→B→A.** Les 6 evals sont spécifiées mais
+aucun run n'a validé le comportement réel de `/grill` contre elles.
+`spike-routing-indeliberable-branch` est **rouge par construction** contre le
+`grill.md` antérieur à ADR-0014 (aucun tag `SPIKE`, aucun critère de routage). Le
+corpus ne couvre que des fixtures PRD ; le grill d'un PLAN reste à doter d'un
+fixture.

@@ -16,7 +16,8 @@ et les contradictions latentes entre sections qu'une relecture linéaire ne voit
 Cette command **ne modifie jamais** l'artefact source et **n'écrit aucun fichier**
 (cf. [`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)). Elle produit
 une liste de décisions candidates que l'humain formalisera ensuite (résolutions
-d'open-questions dans le PRD, ou ADRs via `/adr`).
+d'open-questions dans le PRD, ADRs via `/adr`, ou spikes à exécuter — cf.
+[`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)).
 
 **Argument** : `$ARGUMENTS` (optionnel) = chemin explicite vers l'artefact à griller.
 Sans argument, résolution par fallback (voir ci-dessous). Une invocation grille **un
@@ -80,7 +81,17 @@ le type se déduit du fichier, jamais d'un argument redondant.
      command opère sur l'artefact et l'intention de l'humain, pas sur l'état
      d'implémentation.
 
-5. **Quand une question résout une branche**, la marquer `RESOLVED` et consigner la
+5. **Quand une branche résiste à la délibération**, appliquer le critère de routage
+   (cf. [`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)) :
+   **« un argument peut-il trancher, ou seulement une observation ? »** Si seule une
+   observation peut trancher (comportement réel d'un modèle sur une tâche,
+   performance mesurable, faisabilité d'une API), ne pas forcer de décision en
+   séance : router la branche vers un **spike** — item tagué `SPIKE` dans la liste
+   de sortie, branche marquée `DEFERRED (→ spike [N])` au ledger. Ne **jamais**
+   router une branche qu'un argument peut trancher : le tag `SPIKE` est réservé aux
+   branches indélibérables.
+
+6. **Quand une question résout une branche**, la marquer `RESOLVED` et consigner la
    décision qui l'a close.
 
 ---
@@ -95,8 +106,10 @@ le type se déduit du fichier, jamais d'un argument redondant.
   tension inter-sections est marquée `RESOLVED`.
 
 Si une branche ne peut **réellement pas** être résolue maintenant (input externe
-manquant), la marquer `DEFERRED` avec la raison plutôt que de la laisser `OPEN` — le
-ledger doit se terminer avec **zéro branche OPEN**.
+manquant, ou branche indélibérable routée en spike — raison `(→ spike [N])`), la
+marquer `DEFERRED` avec la raison plutôt que de la laisser `OPEN` — le ledger doit
+se terminer avec **zéro branche OPEN**. Le routage spike n'ajoute **aucun état** à
+la machine OPEN/RESOLVED/DEFERRED.
 
 > Garde-fou anti-trivialité : l'absence de section « Open questions » (ou une section
 > vide) ne satisfait PAS la condition d'arrêt. Les tensions inter-sections doivent
@@ -113,6 +126,11 @@ Terminer la session par une **liste unique**. Chaque décision porte un tag, l'u
 - **`ADR`** — un choix d'architecture/design non-trivial avec rationale ; l'humain
   lance `/adr` pour le formaliser. Cette command **n'écrit pas** l'ADR — elle
   produit le matériau pour `/adr`.
+- **`SPIKE`** — une branche indélibérable : seule une observation peut trancher,
+  pas un argument. L'humain exécutera le spike manuellement sur une branche jetable
+  `spike/*`, capturera la décision via `/adr --from-context`, puis supprimera la
+  branche **sans merge**. Cette command **n'exécute pas** le spike — elle produit
+  son cadrage.
 
 **Structure de la liste** (cf. [`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)) :
 
@@ -134,6 +152,17 @@ Format de chaque item :
     Contexte : la tension ou la branche qui l'a fait émerger (1-2 lignes).
     Options  : les alternatives pesées (pour un item ADR).
     Relation : Refines/Extends/Constrains l'item [M] — si dépendance. Sinon : aucune.
+```
+
+Format d'un item `SPIKE` (autoportant lui aussi — le spike se mène sans rouvrir
+ce grill) :
+
+```
+[N] (SPIKE) Question courte à observer
+    Question  : ce que l'observation doit trancher, en une phrase.
+    Contexte  : la branche indélibérable qui l'a fait émerger (1-2 lignes).
+    Protocole : l'observation minimale à mener (quoi monter, quoi mesurer).
+    Sortie    : ce qui compte comme réponse (seuil, comportement observé).
 ```
 
 **Invariants de l'output** :
@@ -161,6 +190,10 @@ Ensuite, formalise les items dans l'ordre (de haut en bas) :
   • items (ADR)             → lance /adr, colle l'item, déclare la
                               relation suggérée si présente
   • items (PRD open-question) → plie la résolution dans le PRD
+  • items (SPIKE)           → branche jetable spike/*, mène l'observation,
+                              capture la décision via /adr --from-context,
+                              puis supprime la branche SANS merge — le
+                              livrable est une décision, jamais du code
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
