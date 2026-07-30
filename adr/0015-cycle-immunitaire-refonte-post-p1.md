@@ -1,7 +1,10 @@
 # ADR-0015 : Refonte du cycle immunitaire — porte d'evals, triage tri-destination, éviction event-driven
 
-Status: Proposed
+Status: Accepted
 Date: 2026-07-29
+Accepted: 2026-07-30 — porte franchie : corpus rouge → vert par inspection,
+run réel A→B→A PASS 11/11 (composite 6/6 dont E6 requalifié ✅ sur preuve
+harnais ; add-mode 5/5 déterministe)
 Extends: ADR-0009
 
 ## Contexte
