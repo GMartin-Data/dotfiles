@@ -1,4 +1,96 @@
 ## Dernière mise à jour
+Date : 2026-07-30 08:10
+Session : bda2bbe2-b0f1-4228-8a84-db121a429757
+
+## Tâches complétées
+
+- **CHANTIER PRIORITAIRE clos — exécution ADR-0015 de bout en bout, 4 commits
+  poussés** (`4866965..8f3ee14`) :
+  1. **Corpus `claude/evals/immunize/` écrit failing d'abord** : 5 evals — les
+     4 angles du checkpoint + `project-rule-format-100-accurate` (ajout validé
+     en séance) — fixtures `meteo-pipeline` à piège vérifiable (hook réellement
+     buggé, tripwire > 7 j). Rouge par inspection validé par l'humain.
+  2. **Refonte `claude/commands/immunize.md` → vert par inspection 5/5** :
+     tri-destination, porte 3 issues, format 100 %-accurate, mode ajout,
+     éviction event-driven, dérivation matrice. Écart mineur assumé : les
+     candidates globales restent dans l'inbox taguées `[CANDIDATE-GLOBAL —
+     eval pending]` jusqu'au verdict (disposition non spécifiée par l'ADR).
+  3. **Sync** (`1e06cf8`) : section « Cycle immunitaire » de la matrice (table
+     6 emplacements + 2 flux), `tasks/insights-actions.md` créé + 2 fiches
+     migrées, en-tête inbox aligné, mémoire protocole /insights amendée,
+     routine remote `trig_01CMHnwqgZYkdspEHeY3KsFj` mise à jour (2
+     substitutions vérifiées à la réponse API, prochain run 2026-08-26).
+  4. **Run réel A→B→A** (`d117bf5`) : **PASS 11/11** — composite
+     `triage-complet` 6/6 (grader Sonnet isolé 5/6 + E6 requalifié ✅ sur
+     preuve harnais déterministe), `add-mode` 5/5 déterministe. Sessions B
+     Opus/high via driver partagé, garde anti-écriture-globale scriptée,
+     hash du CLAUDE.md global vérifié intact avant/après.
+  5. **ADR-0015 → `Accepted`** (`8f3ee14`).
+- **Leçons de harnais fixées et documentées** (README du corpus) : `Edit`
+  ajouté aux `allowed-tools` de la command (surfacé au premier run) ;
+  `--permission-mode acceptEdits` requis en `-p` pour une command qui écrit
+  (jamais vu sur grill/prd : zéro écriture) ; règle de grading « invariant
+  post-confirmation = frontières `result` du driver, jamais les tours user
+  (non échoés dans le flux) ».
+- **Purge des 4 CWDs `/tmp/immunize-eval-*` faite** (commande manuelle humaine).
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3) + les 3 constats de la revue TODO.md. L'issue de
+   rappel route désormais les fiches vers `tasks/insights-actions.md`.
+   **SD1** : cycle 2026-09.
+3. Adjacent signalé non corrigé : l'overview ignore le cycle immunitaire —
+   index des ADRs arrêté à 0014, `/immunize` absent du graphe des outils
+   (l'était déjà avant la refonte).
+4. Dormant nouveau (ADR-0015) : déclencheurs d'éviction D5 au prochain
+   changement de tier/modèle par défaut (rejeu corpus claude-md avec/sans) ;
+   première traversée réelle de la porte globale au premier candidat
+   générique de l'inbox réelle.
+5. Mineur reporté : diagrammes overview §1/§5 non re-validés au parseur.
+6. (dormant) Corpus batch A mode « insertion » au premier replay ;
+   `/code-review` sur dbt/Terraform au prochain diff réel ; eval « lot sous
+   carte blanche » si observé en usage réel ; fixture PLAN pour le corpus
+   /grill.
+
+## Écarts vs PRD
+
+Aucun (pas de PRD pour ce projet dotfiles).
+
+## Décisions prises
+
+- **ADR-0015 `Accepted`** — porte franchie (rouge → vert par inspection, run
+  réel PASS 11/11) → `adr/0015`.
+- Choix de portée session :
+  - 5ᵉ eval hors des 4 angles du checkpoint (`project-rule-format-100-accurate`,
+    couvre D2-projet + D3) — validée par l'humain avec le rouge.
+  - Run réel sur **config réelle**, sans isolation `CLAUDE_CONFIG_DIR` (le
+    corpus ne varie pas le payload) ; filets : garde anti-écriture-globale
+    dans le script de tours, hash global avant/après, global tracké git.
+  - `--permission-mode acceptEdits` préféré à `--dangerously-skip-permissions`
+    (précédent claude-md, config isolée lui) : auto-acceptation limitée au
+    CWD, une écriture globale hors CWD resterait bloquée.
+  - Arbitrage anti-grader E6 : ⚠️ requalifié ✅ sur preuve mécanique du flux
+    brut (tours user jamais échoés ; les 4 écritures entre les frontières
+    `result` des tours 1 et 2) — précédent DN5/deferred-branch reconduit,
+    preuve déterministe cette fois.
+  - D5 (éviction) et D7a (gouvernance) non couverts par eval de session —
+    assumé au README du corpus (déclencheurs inter-sessions / sync doc).
+  - Add-mode jugé sans grader : invariants 100 % mécaniques (diff filesystem
+    + transcription de 4 events).
+
+## Blocages
+
+Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-29 09:22
 Session : 81686209-0d5a-4710-8d12-cfb00c1ba57c
 
