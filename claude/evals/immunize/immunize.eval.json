@@ -1,0 +1,84 @@
+[
+  {
+    "id": "artifact-lesson-routes-to-artifact-fix",
+    "class": "tri_destination",
+    "command": "/immunize",
+    "query": "/immunize",
+    "files": [
+      "tasks/lessons-inbox.md",
+      "CLAUDE.md",
+      "hooks/check_partition.py"
+    ],
+    "expected_behavior": [
+      "Regroupe les 2 occurrences (2026-07-18, 2026-07-25) et identifie leur ancre : un artefact versionné du repo, hooks/check_partition.py, présent dans le CWD",
+      "Route le groupe vers la destination artefact : fix test-first de hooks/check_partition.py + test de non-régression au corpus de l'artefact — le plan affiche cette destination distinctement des promotions de règles",
+      "N'écrit AUCUNE règle prose malgré les 2+ occurrences : ni dans ## Do NOT du CLAUDE.md projet, ni en Global Do NOT",
+      "Ne propose jamais de règle contournant le bug (du type « ne pas écrire -- partition: en commentaire ») : c'est l'artefact qui est fautif, pas le comportement de session"
+    ]
+  },
+  {
+    "id": "global-candidate-blocked-at-eval-gate",
+    "class": "promotion_gate",
+    "command": "/immunize",
+    "query": "/immunize",
+    "files": [
+      "tasks/lessons-inbox.md",
+      "CLAUDE.md"
+    ],
+    "expected_behavior": [
+      "Identifie le pattern générique récurrent (2 occurrences, réutilisable tous projets) sans équivalent en Global Do NOT",
+      "N'écrit PAS la règle en ## Global Do NOT : aucune règle n'entre au global sans preuve d'eval",
+      "Déclenche la porte de promotion : propose une campagne avec/sans (fixture au corpus claude/evals/claude-md/, driver partagé) prouvant que le modèle échoue sans la règle",
+      "Énonce le verdict à 3 issues qui déterminera la destination : échec sur le tier par défaut → règle globale ; échec limité aux tiers pinnés → relocalisation dans les commands concernées ; aucun échec → pas de règle, leçon archivée avec sa preuve",
+      "La formulation candidate soumise à l'eval passe le test « quels cas rendraient cette règle fausse ? » (conditionnelle si la prohibition sèche est fausse par cas)"
+    ]
+  },
+  {
+    "id": "add-mode-append-then-stop",
+    "class": "add_mode",
+    "command": "/immunize \"Le backfill relancé deux fois a dupliqué les lignes du 2026-07-28 — l'ingestion n'est pas idempotente (pas de clé de dédup station_id + timestamp)\"",
+    "query": "/immunize \"Le backfill relancé deux fois a dupliqué les lignes du 2026-07-28 — l'ingestion n'est pas idempotente (pas de clé de dédup station_id + timestamp)\"",
+    "files": [
+      "tasks/lessons-inbox.md",
+      "CLAUDE.md"
+    ],
+    "expected_behavior": [
+      "Reconnaît l'argument : mode ajout, pas triage complet",
+      "Appende la leçon, datée du jour, à la fin de tasks/lessons-inbox.md puis s'arrête",
+      "Ne déroule AUCUNE étape de triage : pas d'inventaire, pas de regroupement, pas de plan, pas de demande de confirmation",
+      "L'entrée existante du 2026-07-10 (unique, > 7 j — candidate à l'archivage si un triage tournait) reste intacte dans l'inbox ; tasks/lessons-archive.md n'est pas créé",
+      "Aucun CLAUDE.md (projet ou global) n'est modifié"
+    ]
+  },
+  {
+    "id": "insights-fiche-relocated-not-archived",
+    "class": "inbox_population",
+    "command": "/immunize",
+    "query": "/immunize",
+    "files": [
+      "tasks/lessons-inbox.md",
+      "CLAUDE.md"
+    ],
+    "expected_behavior": [
+      "Distingue les deux populations de l'inbox : fiche [INSIGHTS] (cycle de vie à date de revue, propriété du cycle /insights) vs leçon brute",
+      "La fiche [INSIGHTS 2026-07-05] n'est JAMAIS envoyée vers tasks/lessons-archive.md malgré son unicité et son ancienneté : les règles d'âge de l'inbox ne s'appliquent pas à cette population",
+      "La fiche est relocalisée vers tasks/insights-actions.md (créé si absent), intégralement (problème, action, critère, date de revue)",
+      "La leçon brute du 2026-07-08 (unique, > 7 j) suit le circuit normal : archivage vers tasks/lessons-archive.md"
+    ]
+  },
+  {
+    "id": "project-rule-format-100-accurate",
+    "class": "rule_format",
+    "command": "/immunize",
+    "query": "/immunize",
+    "files": [
+      "tasks/lessons-inbox.md",
+      "CLAUDE.md"
+    ],
+    "expected_behavior": [
+      "Promeut le groupe récurrent (2 occurrences, portée projet : workflow dbt propre au repo) vers ## Do NOT du CLAUDE.md projet SANS exiger de campagne d'eval — la porte de promotion ne s'applique qu'au global",
+      "Applique le test rédactionnel « quels cas rendraient cette règle fausse ? » — ici : le run complet est légitime en release ou après un --full-refresh",
+      "La règle écrite est conditionnelle et contextualisée (quand, pourquoi, alternative), pas une prohibition sèche « Ne jamais lancer dbt run » calquée sur un template unique"
+    ]
+  }
+]
