@@ -162,6 +162,7 @@ de son scope. Un drift se traite par l'ordre canonique ci-dessus, pas par re-gri
 - `/grill` stress-teste un PRD **ou** un PLAN avant gel (un artefact par invocation, type déduit du fichier). Ne modifie jamais l'artefact source, n'écrit aucun fichier ; délègue la formalisation des décisions candidates à `/adr` par instruction, jamais par invocation (cf. [`adr/0003`](../../adr/0003-grill-delegue-adr-sans-invoquer.md)). Route les branches indélibérables en spike : item `SPIKE` autoportant, exécution manuelle sur branche jetable, capture via `/adr --from-context`, la branche meurt sans merge (cf. [`adr/0014`](../../adr/0014-grill-routage-spike-branches-indeliberables.md)).
 - `/adr` produit un ADR atomique par invocation.
 - `/progress` et `/catchup` restent les outils de session, sans changement structurel.
+- `/immunize` applique le cycle immunitaire (section dédiée ci-dessous) : triage tri-destination, porte d'eval pour toute règle globale, éviction event-driven ; mode ajout via argument (cf. [`adr/0015`](../../adr/0015-cycle-immunitaire-refonte-post-p1.md)).
 
 ---
 
@@ -197,6 +198,44 @@ Cinq outils, chacun un moment distinct, **zéro overlap** :
 
 Précédent posé : tout futur outil d'apprentissage occupe une niche distincte des
 cinq, ou est absorbé — pas de sixième outil redondant.
+
+---
+
+## Cycle immunitaire — leçons, règles, éviction
+
+Refondu par [`adr/0015`](../../adr/0015-cycle-immunitaire-refonte-post-p1.md)
+(Extends [`adr/0009`](../../adr/0009-rituel-evals-maison-vs-skill-creator.md)).
+La command `/immunize` dérive ses règles de cette section — en cas de
+divergence, la matrice fait foi.
+
+| Emplacement | Détient | Ne contient JAMAIS |
+|---|---|---|
+| `tasks/lessons-inbox.md` (projet) | Leçons brutes datées en attente de triage ; candidates globales taguées `[CANDIDATE-GLOBAL — eval pending]` | Fiches `[INSIGHTS]`, règles rédigées, leçons archivées |
+| `tasks/insights-actions.md` (projet) | Fiches d'action du cycle /insights, au cycle de vie à date de revue | Leçons brutes, règles |
+| CLAUDE.md projet, `## Do NOT` | Règles de portée projet, promues sur récurrence (2+ occurrences), format 100 %-accurate | Patterns génériques, règles contournant un artefact fautif |
+| `~/.claude/CLAUDE.md`, `## Global Do NOT` | Règles génériques prouvées par eval avec/sans (cap 20) | Règles sans preuve d'eval, règles contournant un artefact fautif |
+| `tasks/lessons-archive.md` (projet) | Leçons sorties du cycle : uniques expirées, couvertes par une règle existante, routées artefact (trace du routage), candidates recalées (avec preuve) | Contenu encore actif |
+| `claude/evals/claude-md/` | Fixtures avec/sans des règles globales — preuve à l'entrée, garde de non-régression, instrument d'éviction (une même fixture sert les trois) | — |
+
+**Triage tri-destination** (critère binaire d'ancrage) : leçon incriminant un
+**artefact versionné** (command, skill, hook, script) → fix test-first +
+test/eval de non-régression au corpus de l'artefact, jamais de règle prose ;
+**comportement de session** pur → circuit règle ci-dessous.
+
+**Flux 1 — porte de promotion globale** : leçon générique récurrente →
+formulation candidate (test « quels cas rendraient cette règle fausse ? » —
+prohibition sèche seulement si vraie sans exception) → fixture avec/sans au
+corpus → campagne (méthodo batch A, driver partagé) → verdict à 3 issues :
+échec sur le tier par défaut → `## Global Do NOT` ; échec limité aux tiers
+pinnés → relocalisation dans les commands concernées ; aucun échec → pas de
+règle, archivage avec preuve. La promotion **projet** n'a pas de porte
+(récurrence seule — portée locale, réversible).
+
+**Flux 2 — éviction (event-driven, pipeline bidirectionnel)** : changement de
+tier/modèle par défaut → rejeu du corpus avec/sans, toute règle que le
+nouveau modèle respecte sans elle est candidate au retrait ; cap atteint →
+campagne d'éviction avant toute nouvelle entrée ; suspicion documentée en
+usage réel → rejeu ciblé de la fixture. Pas d'audit périodique à vide.
 
 ---
 
