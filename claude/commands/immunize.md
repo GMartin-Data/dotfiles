@@ -1,7 +1,7 @@
 ---
 description: Cycle immunitaire de lessons-inbox.md — triage tri-destination (fix d'artefact, règle projet, porte d'eval globale), éviction event-driven ; mode ajout via argument
 argument-hint: [lesson-description]
-allowed-tools: Read, Write, Bash(grep:*), Bash(wc:*), Bash(cat:*), Bash(date:*)
+allowed-tools: Read, Write, Edit, Bash(grep:*), Bash(wc:*), Bash(cat:*), Bash(date:*)
 model: sonnet
 ---
 
