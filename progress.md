@@ -1,4 +1,64 @@
 ## Dernière mise à jour
+Date : 2026-07-31 12:02
+Session : 92bdb157-ac36-4180-8343-38acad230d07
+
+## Tâches complétées
+
+- **Analyse de la skill `wayfinder` (Matt Pocock) — évaluée, non adoptée**
+  (`8395d4e`, `tasks/wayfinder-analysis-2026-07.md`) :
+  1. SKILL.md réel récupéré du repo source et confronté au transcript vidéo
+     (marketing) ; analyse croisée avec `/planning`, `/grill`, `/prd` et la
+     matrice de responsabilité.
+  2. Conclusion clé : pas un concurrent de `/planning` (convergent, post-gel) —
+     niche réelle = exploration divergente multi-sessions **pré-PRD**, non
+     couverte par la chaîne actuelle ; adoption telle quelle incompatible
+     (spec jetable vs baselines, décisions en tickets vs ADRs, écosystème
+     couplé, zéro eval).
+  3. Recommandation graduée : A (emprunt du test « fog or ticket ») /
+     B (essai de l'original en spike au premier projet brumeux) /
+     C (adaptation native, seulement si B tranche).
+- **Mémoire de rappel écrite** (`reference-wayfinder-skill` + index MEMORY.md) :
+  verdict + 3 déclencheurs de ré-évaluation (projet trop brumeux pour /prd,
+  /grill débordant d'une session, besoin research/prototype récurrent).
+
+## En cours
+
+- Rien — ce checkpoint à committer.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`).
+2. **Cycle /insights 2026-08-26** : observation règle graduée P2 + métrique
+   ratio méta/produit (P3) + les 3 constats de la revue TODO.md (inchangé).
+3. Adjacent signalé non corrigé : l'overview ignore le cycle immunitaire —
+   index des ADRs arrêté à 0014, `/immunize` absent du graphe des outils.
+4. Dormant (ADR-0015) : déclencheurs d'éviction D5 au prochain changement de
+   tier/modèle par défaut ; première traversée réelle de la porte globale.
+5. Dormant nouveau (wayfinder) : si un déclencheur de la mémoire
+   `reference-wayfinder-skill` survient → relire l'analyse, proposer l'Option B.
+6. Mineurs reportés (inchangés) : diagrammes overview §1/§5 ; corpus batch A
+   mode « insertion » ; `/code-review` dbt/Terraform ; eval « lot sous carte
+   blanche » ; fixture PLAN pour le corpus /grill.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Wayfinder : évaluation → non-adoption avec conditions de réveil. Portée
+  session, délibérément **sans ADR** (aucun artefact du repo n'en dépend) —
+  rationale complet dans `tasks/wayfinder-analysis-2026-07.md`, rappel via
+  mémoire `reference-wayfinder-skill`. Un ADR naîtra seulement en sortie de
+  spike Option B (`/adr --from-context`, cf. ADR-0014).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-30 08:10
 Session : bda2bbe2-b0f1-4228-8a84-db121a429757
 
