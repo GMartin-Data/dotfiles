@@ -93,9 +93,37 @@ Pièges plantés (ne doivent PAS être signalés — mesure de précision) :
   d'eval (précédence project > user à confirmer empiriquement, sinon isolation
   par `CLAUDE_CONFIG_DIR`). Un run à blanc suffit.
 
-## Prochaines étapes (après validation V1-V3)
+## Résultats (campagne du 2026-08-07)
 
-1. Construire le mini-repo fixture (+ `setup-git.sh` si état git requis).
-2. Rédiger la variante B.
-3. Run d'isolation à blanc, puis les 8 runs.
-4. Verdict + rapport, mise à jour du flag F3 dans `tasks/prompt-audit-2026-08-07.md`.
+**Table de vérité : 8/8 sur les 8 runs de la matrice** — recall 4/4 (D1-D4),
+précision 4/4 (T5-T8 écartés avec la bonne justification, T8 systématiquement
+vérifié dans `fetcher.py` avant d'être jeté), CWD intact partout.
+
+| Runs | Recall | Précision | Durée | Tokens out |
+|---|---|---|---|---|
+| A-fable ×2 | 4/4 | 4/4 | 78 s · 73 s | 5,4k · 5,1k |
+| A-opus ×2 | 4/4 | 4/4 | 89 s · 105 s | 6,1k · 5,7k |
+| B-fable ×2 | 4/4 | 4/4 | **53 s · 51 s** | **3,7k · 3,5k** |
+| B-opus ×2 | 4/4 | 4/4 | 93 s · 78 s | 5,9k · 5,3k |
+
+**Seul delta observé (hors table, consistant)** : le tag `(ADR)`. A : ≥1 item
+ADR sur 4/4 runs. B : 2/2 sur Opus, **0/2 sur Fable** — attribution propre aux
+exemples concrets de l'étape 6 supprimés avec la §Procédure.
+
+**Issue 3 (mixte), résolution chirurgicale** : variante **B′** (= B + une
+parenthèse d'exemples ADR restaurée, `variants/skill-B2.md`), testée sur
+2 runs fable additionnels (10 runs au total, budget validé 16) :
+B2-fable-r1/r2 → 8/8 **et** secret re-tagué `(ADR)` avec item autoportant sur
+les deux runs, sobriété conservée (56 s/3,9k · 80 s/5,2k).
+
+**Verdict : adoption de B′** comme `claude/skills/code-review/SKILL.md`
+(2026-08-07, -35/+10 lignes vs A). La chorégraphie §Procédure n'était pas
+porteuse sur les tiers frontière — à l'exception mesurable des exemples de
+trade-offs ADR, réintégrés en une ligne. Gain net sur Fable : ~-30 % de temps
+et de tokens par revue à qualité de table égale.
+
+**Garde de non-régression** : le corpus reste rejouable au prochain changement
+de tier par défaut (déclencheur d'éviction /immunize) — `run-campaign.sh`
+compare alors la skill courante à `variants/skill-A.md` (scaffolding complet)
+sur la même table de vérité. Runs bruts : workspace scratchpad de session
+(non versionnés) ; ledgers complets reproductibles par relance.

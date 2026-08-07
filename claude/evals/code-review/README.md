@@ -61,3 +61,16 @@ mixte → retrait section par section, runs ciblés additionnels.
   code du repo. L'assemblage renomme.
 - Grading : par inspection du dernier event `result` du transcript (le ledger)
   contre la table de vérité ci-dessus, + `cwd-check`.
+
+## Résultats — campagne du 2026-08-07
+
+10 runs (matrice 8 + 2 runs B2 ciblés). Table de vérité : **8/8 partout**.
+Seul delta : tag `(ADR)` absent des runs B-fable (0/2 vs 4/4 en A) — attribué
+aux exemples de trade-offs supprimés avec la §Procédure. **Verdict issue 3 →
+adoption de B′** (`variants/skill-B2.md` = B + exemples ADR en une parenthèse),
+confirmée 2/2 sur fable (8/8 + ADR re-tagué, -30 % temps/tokens vs A).
+Détail complet : `tasks/code-review-fable-eval-2026-08.md` § Résultats.
+
+Le corpus reste en **garde de non-régression** : au prochain changement de tier
+par défaut (déclencheur /immunize), rejouer la matrice — `skill-A.md` est la
+référence scaffoldée historique, la skill de production dérive de `skill-B2.md`.

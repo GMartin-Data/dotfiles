@@ -76,6 +76,9 @@ rien changer ; c'est largement le cas ici.
   le test de complexité délibérée. **Pas d'édition à l'aveugle** : router vers une
   campagne d'eval avec/sans (le framework immunize sait faire), pas vers un diff.
 - **Confiance** : basse · **Action** : `flag`
+- **Résolution (2026-08-07)** : campagne menée (10 runs, verdict issue 3 →
+  adoption de la variante B′ dé-prescrite) — cf.
+  `tasks/code-review-fable-eval-2026-08.md` § Résultats. Flag fermé.
 
 ### F4 — Sous-ensemble dbt dans code-review vs rules/dbt-sql.md (flag)
 

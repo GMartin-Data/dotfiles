@@ -16,7 +16,7 @@ CORPUS_DIR="$(cd "$(dirname "$0")" && pwd)"
 PAYLOAD="$CORPUS_DIR/../../CLAUDE.md"
 VARIANT="${1:?variant required (A|B)}"
 TARGET="${2:?target dir required}"
-case "$VARIANT" in A|B) ;; *) echo "variant must be A|B" >&2; exit 1 ;; esac
+case "$VARIANT" in A|B|B2) ;; *) echo "variant must be A|B" >&2; exit 1 ;; esac
 [ -f "$CORPUS_DIR/variants/skill-$VARIANT.md" ] || { echo "missing variant file" >&2; exit 1; }
 
 mkdir -p "$TARGET/cwd" "$TARGET/config/skills/code-review"
