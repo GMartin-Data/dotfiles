@@ -65,8 +65,6 @@ La synthèse se déclenche quand :
 **Proactivité** : si tu sens que le scope est couvert ou que l'énergie baisse, propose :
 "On a bien avancé. Tu veux qu'on fasse la synthèse maintenant ?"
 
-**Important** : ne laisse JAMAIS une session se terminer sans proposer la synthèse et l'export des flashcards accumulées.
-
 ### Phase 3 : Synthèse
 
 En fin de session :
