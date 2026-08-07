@@ -123,41 +123,16 @@ le faux positif structurel, lui, érode la confiance dans l'outil.
 
 ## Procédure
 
-1. **Résoudre la cible.** `$ARGUMENTS` contient un chemin / une ref / une PR →
-   revue de cette cible. Sinon → `git diff` du working tree (changements non
-   commités). Si le diff est vide, vérifier `git diff --staged` ; si vide aussi,
-   s'arrêter et le dire — ne rien inventer.
-
-2. **Lire le diff en entier** avant de juger quoi que ce soit. Lire aussi le
-   `CLAUDE.md` projet (conventions et invariants métier propres au projet) et, au
-   besoin, le code environnant pour comprendre le contexte d'un changement.
-
-3. **Identifier le langage** de chaque fichier touché pour appliquer les conventions
-   pertinentes (`rules/python.md`, `rules/dbt-sql.md`, `rules/terraform.md`).
-
-4. **Parcourir les quatre catégories** (bugs, sécurité, invariants, conventions) sur
-   chaque hunk. À chaque complexité apparente, passer le test de complexité
-   délibérée **avant** de la retenir comme finding.
-
-   **Résoudre tout doute vérifiable AVANT d'émettre — jamais de finding spéculatif.**
-   Si un finding dépend d'une hypothèse vérifiable dans le repo (« et si cette valeur
-   était None ? », « cette fonction est-elle appelée ailleurs ? », « l'invariant est-il
-   garanti en amont ? »), **lire le fichier concerné et trancher** avant d'émettre. Un
-   diff ne montre qu'un hunk ; l'invariant qui annule un faux positif vit souvent dans
-   le code non touché (ex : un `_parse` en amont qui droppe déjà les coords None rend
-   sans objet un finding « crash si None »). Un finding « à confirmer / à vérifier »
-   n'est légitime QUE si la confirmation dépend d'un élément **hors du repo** (valeur
-   runtime, réponse d'API externe, intention humaine). Sinon : vérifier, puis émettre
-   ou jeter. Cohérent avec « run the verifying command first » (CLAUDE.md).
-
-5. **Construire le ledger** (format ci-dessous). Pour chaque finding : sévérité,
-   `fichier:ligne`, catégorie, description du problème, et impact concret (pourquoi
-   ça compte). Ne pas proposer le patch — décrire le problème, l'humain tranche.
-
-6. **Repérer les findings dignes d'un ADR** : un finding qui révèle un **trade-off
-   non-trivial** (un secret en clair qui pourrait être un choix de mode dev assumé ;
-   un fail-open qui mériterait d'être acté comme tel ; un invariant relâché
-   volontairement) est tagué `(ADR)` et rendu autoportant (voir ci-dessous).
+Résous la cible ($ARGUMENTS : chemin / ref / PR ; sinon le diff non commité du
+working tree — s'il est vide, vérifier le staged ; si vide aussi, s'arrêter et
+le dire, ne rien inventer). Lis le diff en entier, le CLAUDE.md projet et le
+code environnant nécessaire, puis passe les quatre catégories sur chaque hunk.
+Lève tout doute vérifiable dans le repo par lecture avant d'émettre un finding —
+« à confirmer » est réservé à ce qui dépend d'un élément hors du repo. Construis
+le ledger (sévérité, fichier:ligne, catégorie, problème, impact — sans appliquer
+de patch) et tague `(ADR)` les trade-offs non-triviaux (ex. : un secret en clair qui
+pourrait être un choix de mode dev assumé ; un fail-open qui mériterait d'être
+acté comme tel ; un invariant relâché volontairement).
 
 ---
 
