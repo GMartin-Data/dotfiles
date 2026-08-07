@@ -1,4 +1,83 @@
 ## Dernière mise à jour
+Date : 2026-08-07 09:54
+Session : cd902a4a-c690-4364-a80e-ddf6fa29989f
+
+## Tâches complétées
+
+- **Revue critique du transcript vidéo « Opus 5 prompting guide »** : fact-check
+  contre la doc Anthropic (skill claude-api) — vulgarisation fidèle du guide de
+  migration, faible valeur ajoutée (écosystème déjà conforme aux règles 1-3 et 5) ;
+  résidu actionnable = règle 4 (scaffolding d'auto-vérification) → audit lancé.
+- **Audit prompt de la surface `claude/`** (`5f2c759`,
+  `tasks/prompt-audit-2026-08-07.md`) : surface propre (zéro pattern daté majeur),
+  4 findings — F1 appliqué, F2 résolu, F3 tranché par eval, F4 différé.
+  - **F1** (`890a1cc`) : triple énoncé de la règle de fin de session supprimé
+    de code-mentor (1 occurrence retirée, 2 conservées).
+  - **F2** : déclencheur d'éviction D5 (changement de modèle par défaut) vérifié
+    couvert — tiers batch A verrouillés le 27/07, *après* le switch Fable du 22/07,
+    avec colonne « Sans règle — Fable ». Stratégie de tiers clarifiée avec Greg :
+    **Fable défaut (crédits), Opus repli à épuisement** — mémoire mise à jour,
+    settings.json inchangé (il était juste) ; Fable ET Opus = tiers frontière.
+  - **F3** (`db769a7`, `0b8be84`, `e52643d`, brief
+    `tasks/code-review-fable-eval-2026-08.md`) : campagne A/B de dé-prescription
+    de la skill code-review — corpus `claude/evals/code-review/` (4 défauts +
+    4 pièges plantés), 10 runs (8 matrice + 2 confirmation), **8/8 partout** ;
+    seul delta = tag (ADR) perdu en B-fable, attribué aux exemples de l'étape 6 ;
+    verdict issue 3 → **adoption de B′** (= B + parenthèse d'exemples ADR),
+    −30 % temps/tokens par revue sur Fable. SKILL.md de production remplacé.
+  - **F4** : différé délibérément (délibération style SQL en cours) — mémoire de
+    rappel `f4-sql-style-pending` (issues retenues : acter l'omission, ou hook
+    sqlfluff ; option skill écartée).
+- 5 commits atomiques poussés : `890a1cc`, `db769a7`, `5f2c759`, `0b8be84`,
+  `e52643d`.
+
+## En cours
+
+- Rien — ce checkpoint à committer. (Hors session : `tasks/lessons-inbox.md`
+  modifié non commité, antérieur — à trier au prochain /immunize.)
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`).
+2. **F4** : décision style SQL voulu → acter l'omission ou hook sqlfluff
+   (mémoire de rappel en place, ne pas relancer avant que le sujet revienne).
+3. **Cycle /insights 2026-08-26** (inchangé) : observation règle graduée P2 +
+   métrique ratio méta/produit (P3) + les 3 constats de la revue TODO.md.
+4. Adjacent signalé non corrigé (inchangé) : l'overview ignore le cycle
+   immunitaire — index des ADRs arrêté à 0014, /immunize absent du graphe.
+5. Dormant (ADR-0015, mis à jour) : la porte D5 du switch Fable est soldée
+   (cette session) ; le déclencheur reste armé pour le *prochain* changement
+   de tier — désormais avec **deux** corpus à rejouer : `claude/evals/claude-md/`
+   (règles) et `claude/evals/code-review/` (matrice vs `skill-A.md`).
+6. Dormant (wayfinder, inchangé) : déclencheurs en mémoire
+   `reference-wayfinder-skill` → Option B au premier projet brumeux.
+7. Mineurs reportés (inchangés) : diagrammes overview §1/§5 ; corpus batch A
+   mode « insertion » ; /code-review dbt/Terraform ; eval « lot sous carte
+   blanche » ; fixture PLAN pour le corpus /grill.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- **Adoption de B′ comme skill code-review** : portée artefact, tranchée par la
+  porte d'eval (10 runs) — rationale complet dans le brief
+  `tasks/code-review-fable-eval-2026-08.md`, sans ADR (le rôle/frontières de la
+  skill, actés par adr/0010, sont inchangés ; seul le niveau de prescription
+  bouge, preuve versionnée). Candidat ADR seulement si la « dé-prescription
+  eval-gated » devient un pattern transverse.
+- **Stratégie de tiers** : Fable défaut lié aux crédits, Opus repli — portée
+  session, notée en mémoire persistante, pas d'artefact repo impacté.
+- **F4 différé** : aucune écriture tant que le style SQL voulu n'est pas tranché.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-07-31 12:02
 Session : 92bdb157-ac36-4180-8343-38acad230d07
 
