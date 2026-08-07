@@ -1,0 +1,49 @@
+"""Build usage reports from parsed records."""
+from __future__ import annotations
+
+import json
+import urllib.request
+
+import structlog
+
+from config import API_KEY, API_URL
+from fetcher import Record, parse_records
+
+logger = structlog.get_logger()
+
+PAGE_SIZE = 10
+
+
+def total_duration(records: list[Record]) -> int:
+    """Sum of durations across records."""
+    total = 0
+    for record in records:
+        total += record.duration
+    return total
+
+
+def paginate(records: list[Record], page: int) -> list[Record]:
+    """Return the records of the given zero-based page."""
+    start = page * PAGE_SIZE
+    return records[start:start + PAGE_SIZE]
+
+
+def build_report(raw: list[dict]) -> dict:
+    """Build the aggregate report from raw entries."""
+    records = parse_records(raw)
+    return {
+        "count": len(records),
+        "total_duration": total_duration(records),
+    }
+
+
+def upload_report(report: dict) -> bool:
+    """POST the report; returns True on success."""
+    request = urllib.request.Request(
+        API_URL,
+        data=json.dumps(report).encode(),
+        headers={"Authorization": f"Bearer {API_KEY}"},
+    )
+    urllib.request.urlopen(request)
+    logger.info("report_uploaded", count=report["count"])
+    return True

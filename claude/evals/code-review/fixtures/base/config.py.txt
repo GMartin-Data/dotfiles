@@ -1,0 +1,7 @@
+"""Runtime configuration."""
+from __future__ import annotations
+
+import os
+
+API_URL = "https://api.example.com/v1/reports"
+API_KEY = os.environ.get("USAGE_API_KEY", "")

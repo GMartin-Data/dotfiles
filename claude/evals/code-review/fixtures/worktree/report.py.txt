@@ -1,0 +1,96 @@
+"""Build usage reports from parsed records."""
+from __future__ import annotations
+
+import json
+import os
+import urllib.request
+
+import structlog
+
+from config import API_KEY, API_URL
+from fetcher import Record, parse_records
+
+logger = structlog.get_logger()
+
+PAGE_SIZE = 10
+ALLOWED_FORMATS = {"csv", "json"}
+
+
+def total_duration(records: list[Record]) -> int:
+    """Sum of durations across records."""
+    total = 0
+    for record in records:
+        total += record.duration
+    return total
+
+
+def average_duration(records: list[Record]) -> float:
+    """Mean duration across records."""
+    if not records:
+        return 0.0
+    return sum(record.duration for record in records) / len(records)
+
+
+def paginate(records: list[Record], page: int) -> list[Record]:
+    """Return the records of the given zero-based page."""
+    start = page * PAGE_SIZE
+    end = start + PAGE_SIZE - 1
+    return records[start:end]
+
+
+def validate_record(record: Record) -> None:
+    """Single decision function for record validity, shared by all ingest paths."""
+    if record.duration < 0:
+        raise ValueError(f"negative duration for {record.name}")
+
+
+def ingest_from_file(path: str) -> list[Record]:
+    """Ingest records from a JSON file on disk."""
+    with open(path) as f:
+        records = parse_records(json.load(f))
+    for record in records:
+        validate_record(record)
+    return records
+
+
+def ingest_from_api(payload: list[dict]) -> list[Record]:
+    """Ingest records from an already-fetched API payload."""
+    records = parse_records(payload)
+    for record in records:
+        validate_record(record)
+    return records
+
+
+def export_report(report: dict, fmt: str) -> str:
+    """Serialize the report in one of the supported formats."""
+    if fmt not in ALLOWED_FORMATS:
+        raise ValueError(f"unsupported format: {fmt}")
+    if fmt == "csv":
+        return "\n".join(f"{key},{value}" for key, value in report.items())
+    return json.dumps(report)
+
+
+def build_report(raw: list[dict]) -> dict:
+    """Build the aggregate report from raw entries."""
+    records = parse_records(raw)
+    return {
+        "count": len(records),
+        "total_duration": total_duration(records),
+        "average_duration": average_duration(records),
+    }
+
+
+def upload_report(report: dict) -> bool:
+    """POST the report; returns True on success."""
+    print(f"DEBUG: uploading report with {len(report)} keys")
+    request = urllib.request.Request(
+        API_URL,
+        data=json.dumps(report).encode(),
+        headers={"Authorization": f"Bearer {API_KEY}"},
+    )
+    try:
+        urllib.request.urlopen(request)
+    except Exception:
+        pass
+    logger.info("report_uploaded", count=report["count"])
+    return True

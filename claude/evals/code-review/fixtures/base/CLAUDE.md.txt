@@ -1,0 +1,21 @@
+# usage-report
+
+Petit module de reporting d'usage : parse des enregistrements bruts, calcule
+des agrégats, exporte et téléverse le rapport.
+
+## Stack
+
+- Python 3.12, stdlib + structlog
+
+## Conventions
+
+- Logging : structlog uniquement — jamais print()
+- Type hints sur toute signature publique
+- Docstrings Google
+
+## Invariants métier
+
+- Un rapport n'est construit qu'à partir d'enregistrements passés par
+  `parse_records()` — jamais de dicts bruts en aval du parsing.
+- L'export ne produit que des formats explicitement supportés — tout format
+  inconnu est rejeté (fail-closed).

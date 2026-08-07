@@ -1,0 +1,5 @@
+"""Runtime configuration."""
+from __future__ import annotations
+
+API_URL = "https://api.example.com/v1/reports"
+API_KEY = "sk-live-4f3c9a7be1d20c88"  # TODO: revert before prod

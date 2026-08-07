@@ -1,0 +1,27 @@
+"""Fetch and parse raw usage records."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+@dataclass
+class Record:
+    """One usage record. duration is None only in raw form, never after parsing."""
+
+    name: str
+    duration: int | None
+
+
+def parse_records(raw: list[dict]) -> list[Record]:
+    """Parse raw dicts into Records, dropping malformed entries.
+
+    Invariant: every Record returned has a non-None duration — raw entries
+    without one are dropped here, so downstream aggregation never sees None.
+    """
+    records: list[Record] = []
+    for item in raw:
+        duration = item.get("duration")
+        if duration is None:
+            continue
+        records.append(Record(name=item.get("name", "unknown"), duration=duration))
+    return records
