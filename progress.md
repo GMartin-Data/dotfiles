@@ -1,4 +1,92 @@
 ## Dernière mise à jour
+Date : 2026-09-02 13:52
+Session : 6ac2d833-cefc-487f-ad55-71937b02f5e7
+
+## Tâches complétées
+
+- **Cycle /insights 2026-08-26 exécuté (en retard, le 02/09) — protocole v3
+  de bout en bout, issue #3 fermée** (`1269d1c`, `Closes #3` vérifié CLOSED) :
+  1. Vérification : la routine avait bien ouvert l'issue le 26/08, jamais
+     traitée (cycles juin/juillet CLOSED, août OPEN).
+  2. **Verdict fiche précédente** : `scope-discipline` → ✅ VALIDÉ (rapport du
+     02/09, fenêtre 31/07→02/09 : zéro interruption en reconnaissance ; les
+     interruptions relevées sont du « explain before code » en session
+     pédagogique, hors périmètre du critère).
+  3. Revue critique du rapport livrée avant scoring : diagnostic convergent
+     (enforcement par interruption humaine au lieu du système), mais remèdes
+     à re-scoper (parc de skills existant ignoré, placement global dangereux
+     pour le mode livraison, prose « cite or check » à rendement décroissant,
+     workflows ambitieux = ratio méta/produit).
+  4. Scoring 3 axes sur 8 suggestions + top 3 → **action unique choisie :
+     `explain-before-artifact`** — section médium-agnostique dans
+     `teach/SKILL.md`, anti-pattern code-spécifique dans `dp-coach/SKILL.md` ;
+     **coach-pedagogique constaté déjà couvert** (Step 2 + règle absolue),
+     non modifié. Fiche écrite (critère vérifiable, revue 2026-09-26).
+     Vérifié : `~/.claude/skills/teach` symlinke le repo — règle active
+     immédiatement.
+- **Sync overview ↔ cycle immunitaire** (`5a27ead`) — l'adjacent porté depuis
+  4 checkpoints sort du backlog : ligne ADR-0015 à l'index (quinze ADRs),
+  sous-section §3 « Le rituel immunitaire (périodique) » (table Lit/Produit,
+  diagramme Mermaid, renvoi normatif matrice), note §2 « couche immunitaire
+  hors de cette carte », renvoi §6. Ancre dérivée du précédent maison
+  (`#cycle-immunitaire-leçons-règles-éviction`).
+- 2 commits poussés (`1269d1c`, `5a27ead`).
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Chantier routé par le triage /immunize** (session dédiée, inchangé) :
+   matrice §Cycle immunitaire Flux 2 + `immunize.md` §Éviction — tri
+   préférence-humaine vs correction-modèle + règles sans fixture. Spec dans
+   `tasks/lessons-archive.md`. Question ouverte : amendement ADR-0015
+   (Extends) ou précision matrice.
+3. **Cycle /insights 2026-09-26** : revue de la fiche `explain-before-artifact`
+   (critère : zéro interruption explication-avant-écriture sur la fenêtre) +
+   reports du cycle d'août non traités le 02/09 : observation règle graduée
+   P2, métrique ratio méta/produit P3, les 3 constats TODO.md, réévaluation
+   SD1.
+4. **F4** (dormant, effleuré ce cycle) : le hook sqlfluff était l'option 🥈
+   du top 3, non choisie (règle d'une seule action) — la délibération style
+   SQL reste ouverte, ne pas relancer avant que le sujet revienne.
+5. Dormants (inchangés) : porte D5 au prochain changement de tier (2 corpus) ;
+   wayfinder Option B au premier projet brumeux.
+6. Mineurs reportés (inchangés : diagrammes §1/§5 au parseur ; corpus batch A
+   « insertion » ; /code-review dbt/Terraform ; eval « lot sous carte
+   blanche » ; fixture PLAN /grill) + nouveau : aperçu VS Code du diagramme
+   §3 « rituel immunitaire » au prochain passage dans l'overview.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Choix de portée session (aucun ADR) :
+  - **Action unique du cycle = explain-before-artifact, sans eval de session** :
+    corpus A→B→A jugé disproportionné ; la vérification est portée par le
+    critère de la fiche (revue 2026-09-26) — une fixture ne sera méritée que
+    si le drift revient malgré la règle.
+  - **Placement scopé aux skills, jamais au CLAUDE.md global** — préservation
+    du mode livraison (formation à venir) ; coach-pedagogique non modifié
+    pour éviter le triple énoncé (précédent audit F1).
+  - **Revue tardive assumée** : cycle 2026-08-26 exécuté le 02/09 ; P2/P3 et
+    constats TODO.md reportés explicitement au cycle du 26/09.
+  - **Overview** : la sous-section /immunize porte elle-même son exception à
+    « un producteur, un fichier » ; inbox/archive non ajoutés à la carte des
+    cinq documents (la table normative vit dans la matrice — anti-drift) ;
+    pas de re-validation mmdc (précédent reconduit).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-09-02 10:48
 Session : 493182bd-8b66-428f-9898-07ce351b9438
 
