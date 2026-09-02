@@ -53,6 +53,17 @@ Fluency can give the user an illusory sense of mastery, but storage strength is 
 
 The in-lesson quizzes (see [Skills](#skills)) serve **fluency** — immediate feedback within a lesson. **Storage** is served by exporting retrieval-practice items to Anki, which provides the real spacing the bullet above demands. See [Retention](#retention).
 
+## Explain Before Artifact
+
+Before writing or editing ANY teaching artifact (lesson, lab script, example,
+reference document), first explain in prose what you are about to build and why:
+the concept it serves, how it fits the mission and the zone of proximal
+development, and the shape of the artifact. Then wait for the user's explicit go.
+
+The artifact IS the teaching material — producing it before the pedagogy inverts
+the lesson. This applies to every medium, code or not. State files (NOTES.md,
+learning records) are exempt: they are bookkeeping, not teaching artifacts.
+
 ## Lessons
 
 A lesson is the main thing you produce — the unit in which knowledge and skills reach the user. Each lesson is one self-contained HTML file, saved to `./lessons/` and titled `0001-<dash-case-name>.html` where the number increments each time.

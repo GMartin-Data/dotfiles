@@ -19,9 +19,19 @@ mono-population).
 
 ---
 
-## [INSIGHTS 2026-07-26] scope-discipline
+## [INSIGHTS 2026-07-26] [VALIDÉ] scope-discipline
 
 - **Problème observé** : friction n°1 du rapport 2026-07-26 — au moins 6 interruptions utilisateur pendant la reconnaissance initiale (sweeps Bash parallèles, sur-exploration), dont 1 session `not_achieved`.
 - **Action engagée** : ajout d'une section `## Scope Discipline` au CLAUDE.md global — sur session de reprise, lire les fichiers de contexte au lieu d'explorer ; toute recon multi-fichiers passe par un plan d'une ligne validé.
 - **Critère de succès vérifiable** : au prochain /insights (≈2026-08-26), zéro interruption utilisateur pendant une phase de reconnaissance sur la fenêtre analysée.
 - **Date de revue** : 2026-08-26
+- **Verdict (2026-09-02, revue tardive — cycle exécuté le 02/09)** : ✅ atteint — rapport du 2026-09-02 (fenêtre 2026-07-31 → 2026-09-02, 26 sessions) : zéro interruption en phase de reconnaissance. Les interruptions relevées par le rapport sont du « explain before code » en session pédagogique — autre phase, hors périmètre du critère.
+
+---
+
+## [INSIGHTS 2026-08-26] explain-before-artifact
+
+- **Problème observé** : friction n°1 du rapport du 2026-09-02 (cycle 2026-08-26 exécuté en retard) — au moins 3 interruptions mid-tool-call pour exiger l'explication pédagogique avant que Claude n'écrive un lab/une leçon.
+- **Action engagée** : encoder le contrat « expliquer concept et conception avant d'écrire tout artefact pédagogique, attendre le go » dans les skills existantes (dotfiles) — section « Explain Before Artifact » médium-agnostique dans teach, anti-pattern code-spécifique dans dp-coach ; coach-pedagogique constaté déjà couvert (Step 2 + règle absolue), non modifié ; jamais en CLAUDE.md global (mode livraison préservé).
+- **Critère de succès vérifiable** : au prochain /insights (≈2026-09-26), zéro interruption utilisateur pour exiger l'explication avant une écriture de fichier en session pédagogique sur la fenêtre analysée.
+- **Date de revue** : 2026-09-26

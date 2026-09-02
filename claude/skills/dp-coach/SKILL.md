@@ -148,3 +148,4 @@ réel — pas pour une simple réussite isolée.
 - Donner la solution après le premier échec
 - Exercices non-testables
 - Félicitations génériques ("Bien joué !")
+- Écrire un fichier (squelette, harnais, banque de drills) avant d'avoir présenté l'énoncé et l'intention pédagogique en chat
