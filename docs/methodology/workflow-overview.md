@@ -190,9 +190,13 @@ flowchart LR
 > Les règles de non-overlap, les tests décisifs et les frontières floues sont
 > énoncés dans la matrice — ce tableau n'en est qu'une vue.
 
+> La couche immunitaire (leçons, fiches /insights, règles Do NOT) est hors de
+> cette carte : ses six emplacements et ses deux flux ont leur propre table dans
+> la [matrice, § Cycle immunitaire](responsibility-matrix.md#cycle-immunitaire-leçons-règles-éviction).
+
 ## 3 — Le graphe des outils
 
-Sept commands. §2 répondait à « qui touche ce document ? » ; ici c'est l'inverse —
+Huit commands. §2 répondait à « qui touche ce document ? » ; ici c'est l'inverse —
 « que touche cette command ? ».
 
 ### Outils projet (Phases 0-1)
@@ -282,6 +286,36 @@ n'en invoque une autre ; toutes les transitions passent par l'humain.
   mûre) et *capture* (`--from-context`, la décision a déjà été délibérée dans le
   fil). Le mode pilote l'interaction seulement : il ne laisse aucune trace dans
   l'ADR produit.
+
+### Le rituel immunitaire (périodique)
+
+Hors des deux familles ci-dessus : `/immunize` ne s'invoque ni par phase ni par
+cycle de session, mais périodiquement (triage de l'inbox) ou au fil de l'eau
+(mode ajout d'une leçon). C'est aussi l'exception assumée à la règle « un
+producteur, un fichier » — trier, c'est router vers plusieurs destinations.
+
+| Command | Lit | Produit |
+|---|---|---|
+| `/immunize` | tasks/lessons-inbox.md, le fil de conversation (mode ajout) | **lessons-inbox.md** (trié), **lessons-archive.md**, routages : fix d'artefact test-first, règle Do NOT projet, candidate globale |
+
+```mermaid
+%%{init: {'themeVariables': {'lineColor': '#c9d1d9'}}}%%
+flowchart LR
+    WORK["session de travail"] -.->|"leçon apprise<br/>(mode ajout)"| IMM["/immunize"]
+    INB[("lessons-inbox.md")] --> IMM
+    IMM -->|triage| INB
+    IMM --> ARC[("lessons-archive.md")]
+    IMM -. "tri-destination" .-> DEST{{"fix d'artefact test-first ·<br/>règle Do NOT projet ·<br/>porte d'eval globale"}}
+
+    classDef writer fill:#2d4a5a,stroke:#7ab,color:#fff
+    classDef doc fill:#3a3a3a,stroke:#999,color:#fff
+    class IMM writer
+    class INB,ARC doc
+```
+
+Emplacements, flux de promotion et d'éviction :
+[matrice, § Cycle immunitaire](responsibility-matrix.md#cycle-immunitaire-leçons-règles-éviction)
+([`adr/0015`](../../adr/0015-cycle-immunitaire-refonte-post-p1.md)).
 
 > La couche learning (`teach`, `code-mentor`, `coach-pedagogique`, `dp-coach`,
 > `feynman-mentor`) est hors de ce graphe : cinq outils d'apprentissage, sans
@@ -457,7 +491,7 @@ complet — et cette bascule est elle-même une décision non-triviale, donc un 
 
 ### Index des ADRs
 
-Les quatorze ADRs du repo, tous en statut `Accepted` à ce jour.
+Les quinze ADRs du repo, tous en statut `Accepted` à ce jour.
 
 | # | Titre | Relations |
 |---|---|---|
@@ -475,11 +509,13 @@ Les quatorze ADRs du repo, tous en statut `Accepted` à ce jour.
 | [0012](../../adr/0012-feynman-mentor-niche-verification-par-explication.md) | `feynman-mentor` — 5ᵉ niche de la couche learning | Extends 0007 |
 | [0013](../../adr/0013-format-prd-canonique.md) | Format PRD canonique — canvas fermé de 11 sections | — |
 | [0014](../../adr/0014-grill-routage-spike-branches-indeliberables.md) | Routage SPIKE — `/grill` route les branches indélibérables vers une observation | Extends 0003 |
+| [0015](../../adr/0015-cycle-immunitaire-refonte-post-p1.md) | Refonte du cycle immunitaire — porte d'evals, triage tri-destination, éviction event-driven | Extends 0009 |
 
 Structurants pour ce document : **0001** (nature du PRD), **0002** (MVP dans le
 PLAN), **0003** (délégation `/grill` → `/adr`, étendue par **0014** au routage
 spike), **0011** (track léger), **0013** (canvas PRD). Les ADRs **0004-0008** et
-**0012** concernent la couche learning, **0009** et **0010** l'outillage.
+**0012** concernent la couche learning, **0009** (étendu par **0015**, cycle
+immunitaire) et **0010** l'outillage.
 
 Pour obtenir la vue courante des décisions actives, sans index à maintenir :
 
@@ -493,6 +529,12 @@ Hors périmètre de ce document. Cinq outils — `teach`, `code-mentor`,
 `coach-pedagogique`, `dp-coach`, `feynman-mentor` — sans recouvrement entre eux
 ni avec les commands documentaires :
 [section dédiée de la matrice](responsibility-matrix.md#couche-learning-non-overlap-des-outils-dapprentissage).
+
+### Cycle immunitaire
+
+Leçons, règles et éviction — six emplacements, deux flux, triage tri-destination :
+[section dédiée de la matrice](responsibility-matrix.md#cycle-immunitaire-leçons-règles-éviction)
+et [`adr/0015`](../../adr/0015-cycle-immunitaire-refonte-post-p1.md).
 
 ## 7 — Incohérences relevées
 
