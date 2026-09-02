@@ -65,6 +65,7 @@
   },
   "alwaysThinkingEnabled": false,
   "effortLevel": "xhigh",
+  "autoUpdatesChannel": "stable",
   "tui": "fullscreen",
   "theme": "dark-daltonized"
 }
