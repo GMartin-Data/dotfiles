@@ -57,3 +57,11 @@ Mitigation côté spec : Phase 5 pourrait expliciter "raconter un scénario d'us
 - **Date de revue** : 2026-06-26
 
 *Note d'archivage : la règle est déjà promue dans la section `## State Verification` de `~/.claude/CLAUDE.md` ; l'entrée inbox ne traçait que l'action engagée. Critère de succès à vérifier au `/insights` du 2026-06-26. Archivée.*
+
+---
+
+### [2026-07-31] Éviction au changement de génération : trier préférence-humaine vs correction-modèle
+
+Au changement de génération du modèle par défaut, trier les règles du CLAUDE.md global en préférence-humaine vs correction-modèle, et faire re-mériter chaque correction-modèle via la porte d'eval (sinon éviction). Précédent : appliqué avec succès au passage gen 4→5 (2026-07). Source : talk Boris Cherny (ablation par génération de modèle).
+
+*Note d'archivage (2026-09-02) : routée **artefact** au triage `/immunize` — test d'ancrage positif : la leçon précise le déclencheur d'éviction (matrice §Cycle immunitaire, Flux 2 → `claude/commands/immunize.md` §Éviction), qui ne distingue pas aujourd'hui les règles encodant un goût humain (hors éviction) de celles corrigeant un défaut du modèle (re-mérite par la porte d'eval), et ne couvre pas les règles antérieures à la porte (sans fixture). Chantier consigné : amender la matrice (source) puis `immunize.md` (dérivé) ; non-régression par inspection + README `claude/evals/immunize/` §D5 (déclencheur inter-sessions, non couvert par eval) ; question ouverte : amendement ADR-0015 (Extends) ou précision de la matrice. Jamais de règle prose. Archivée.*

@@ -10,4 +10,4 @@ Ajout : `/immunize "<leçon>"`. Triage : `/immunize` sans argument :
 
 ---
 
-*Inbox vide. Dernière consolidation : 2026-06-25 (4 entrées archivées, 2 règles promues en `## Global Do NOT`). Voir `lessons-archive.md`.*
+*Inbox vide. Dernière consolidation : 2026-09-02 (1 entrée archivée, routée artefact — chantier matrice Flux 2 / `immunize.md` §Éviction consigné dans la note d'archivage). Voir `lessons-archive.md`.*
