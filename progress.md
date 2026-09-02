@@ -1,4 +1,79 @@
 ## Dernière mise à jour
+Date : 2026-09-02 10:48
+Session : 493182bd-8b66-428f-9898-07ce351b9438
+
+## Tâches complétées
+
+- **Working tree du checkpoint précédent soldé** (les 2 fichiers modifiés) :
+  - **`claude/settings.json` trié ligne par ligne** : `autoUpdatesChannel`
+    passé `latest` → `stable` et **commité** (`be0a93f`) — défaut vérifié
+    `latest` au schéma JSON officiel, le pin explicite est donc requis ;
+    `agentPushNotifEnabled: true` **supprimé** (retour au défaut `false` —
+    notifications push mobiles en Remote Control, non utilisé) ; switch
+    `model: "claude-fable-5-1"` conservé en working tree pendant la session
+    (test délibéré, jamais commité) puis résorbé en fin de session par
+    `/model Fable` (défaut restauré, régime « revert naturel » reconduit).
+  - **Triage `/immunize` exécuté** (`3980523`) : 1 leçon en inbox
+    (2026-07-31, éviction au changement de génération — tri
+    préférence-humaine vs correction-modèle, source talk Boris Cherny) →
+    **routée artefact** (test d'ancrage positif : elle précise le Flux 2 de
+    la matrice §Cycle immunitaire, qui ne distingue pas goût humain /
+    correction-modèle et ne couvre pas les règles sans fixture antérieures à
+    la porte). Archivée avec trace de routage complète ; **inbox vide**.
+- 2 commits poussés (`e52642d..3980523` → `be0a93f`, `3980523`).
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Chantier routé par le triage /immunize** (session dédiée) : amender la
+   matrice §Cycle immunitaire Flux 2 (source) puis `claude/commands/immunize.md`
+   §Éviction (dérivé) — tri préférence-humaine (hors éviction) vs
+   correction-modèle (re-mérite par la porte d'eval) + couverture des règles
+   sans fixture. Non-régression : inspection + README `claude/evals/immunize/`
+   §D5. Question ouverte : amendement ADR-0015 (Extends) ou précision matrice.
+   Spec complète dans la note d'archivage (`tasks/lessons-archive.md`).
+3. **Cycle /insights 2026-08-26 dépassé** (constaté en début de session,
+   non traité) : vérifier si l'issue de la routine
+   `trig_01CMHnwqgZYkdspEHeY3KsFj` a été ouverte/traitée — observation règle
+   graduée P2 + métrique ratio méta/produit (P3) + les 3 constats TODO.md.
+   **SD1** : cycle 2026-09.
+4. **F4** (inchangé, dormant) : décision style SQL → acter l'omission ou hook
+   sqlfluff — ne pas relancer avant que le sujet revienne.
+5. Adjacent signalé non corrigé (inchangé) : l'overview ignore le cycle
+   immunitaire — index ADRs arrêté à 0014, /immunize absent du graphe.
+6. Dormants (inchangés) : porte D5 au prochain changement de tier — deux
+   corpus à rejouer (`claude/evals/claude-md/`, `claude/evals/code-review/`) ;
+   wayfinder Option B au premier projet brumeux.
+7. Mineurs reportés (inchangés) : diagrammes overview §1/§5 ; corpus batch A
+   mode « insertion » ; /code-review dbt/Terraform ; eval « lot sous carte
+   blanche » ; fixture PLAN pour le corpus /grill.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- **Triage artefact de la leçon éviction-génération** : portée cycle
+  immunitaire, tranchée par le test d'ancrage d'ADR-0015 (aucun nouvel ADR —
+  la question Extends-0015 vs précision matrice est routée au chantier, pas
+  tranchée). Jamais de règle prose pour cette leçon.
+- Choix de portée session : pin `stable` vérifié contre le schéma JSON avant
+  écriture (défaut = `latest`, la ligne est nécessaire) ; commit isolé du
+  hunk channel en remettant temporairement `model` à l'état commité
+  (préservation du test Fable 5.1 en working tree).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Dernière mise à jour
 Date : 2026-08-07 09:54
 Session : cd902a4a-c690-4364-a80e-ddf6fa29989f
 
