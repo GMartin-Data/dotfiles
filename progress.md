@@ -1,5 +1,75 @@
 ## Dernière mise à jour
-Date : 2026-09-02 13:52
+Date : 2026-09-11 14:45
+Session : 41bef3b4-b821-4bac-89cd-d0406ac3318d
+
+## Tâches complétées
+
+- **Revue complète du repo mattpocock/skills** (`150ab9d`) — lecture
+  intégrale (25 skills promues, 8 beta, 4 misc, couche méta `.agents/`,
+  CHANGELOG), recoupée avec l'analyse wayfinder de 2026-07. Verdict :
+  carrière d'idées, pas d'adoption en bloc — plugin refusé, chaîne
+  engineering ignorée ; extraction ciblée (1 skill, 3 docs de référence,
+  4 pièces de doctrine). Analyse : `tasks/mattpocock-skills-review-2026-09.md`
+  (cartographie skill-par-skill §5, recommandations §6).
+- **Plan d'essai `diagnosing-bugs` rédigé et commité** (`797ef74`) —
+  protocole style spike : critères de décision figés AVANT le premier essai,
+  N=3 bugs réels, grille binaire, décision par `/adr --from-context`, evals
+  ADR-0009 seulement si promotion. Plan + log : `tasks/diagnosing-bugs-trial.md`.
+  **Phase 0 (installation) volontairement non exécutée** (manque de temps).
+- **Déclencheurs ancrés en mémoire persistante**
+  (`project_diagnosing_bugs_trial.md` + ligne MEMORY.md) : essai au prochain
+  bug dur, revisite repo Pocock ~2026-11, items §6 sans véhicule.
+
+## En cours
+
+- Rien — ce checkpoint à committer.
+- Nota : `claude/settings.json` et `tasks/lessons-inbox.md` modifiés
+  **antérieurs à cette session** (flux settings/immunize), toujours non
+  commités — à router dans leur session dédiée.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) ; push des 3 commits de
+   session (`150ab9d`, `797ef74`, checkpoint).
+2. **Phase 0 essai diagnosing-bugs** (~15 min) : prochaine session avec ce
+   temps — copie upstream `3cca18b` → `claude/skills/`, `disable-model-invocation`,
+   symlink, commit (détail dans le plan).
+3. **Cycle /insights 2026-09-26** (inchangé : fiche `explain-before-artifact`
+   + reports d'août) — **option à trancher ce cycle-là** : y inscrire les deux
+   items sans véhicule de la revue Pocock (lecture active writing-for-agents /
+   PHASE-BOUNDARIES ; emprunts de doctrine dont les 3 conditions d'ADR à
+   confronter à /adr).
+4. **Chantier routé par le triage /immunize** (session dédiée, inchangé) :
+   matrice §Cycle immunitaire Flux 2 + `immunize.md` §Éviction — spec dans
+   `tasks/lessons-archive.md`.
+5. Event-driven (mémoire armée) : essai diagnosing-bugs au prochain bug dur ;
+   wayfinder Option B au premier projet brumeux ; porte D5 au prochain
+   changement de tier.
+6. **Revisite repo Pocock ~2026-11/12** : CHANGELOG seul suffit ; surveiller
+   graduation de `retro` (chevauche /insights + /immunize), `implement-spec`,
+   trilogie `writing-*`.
+7. F4 dormant + mineurs reportés : inchangés (cf. checkpoint 2026-09-02).
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — les deux artefacts commités sont la source :
+  - Plugin Pocock refusé, extraction ciblée uniquement → revue §6-7.
+  - Essai diagnosing-bugs : user-invoked pendant l'essai, critères figés le
+    2026-09-11, evals différées à la promotion → plan Phase 0/2.
+  - Wayfinder : statu quo de juillet reconfirmé (aucune évolution matérielle
+    upstream).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-02 13:52
 Session : 6ac2d833-cefc-487f-ad55-71937b02f5e7
 
 ## Tâches complétées
