@@ -1,5 +1,74 @@
 ## Dernière mise à jour
-Date : 2026-09-11 14:45
+Date : 2026-09-11 15:28
+Session : 05dc6330-c166-4a47-8687-5ed79cdec142
+
+## Tâches complétées
+
+- **Revue complète du repo ai-driven-dev/framework** (`9bc8f8c`) — clone
+  shallow, lecture intégrale (architecture, SDLC orchestrateur + agents
+  executor/checker, 7 skills homologues, harnais skill-eval, dogfooding
+  `aidd_docs/`, santé projet via API GitHub). Verdict : **non-adoption (R0)**,
+  carrière d'idées — framework architecturalement très supérieur à Pocock
+  (doctrine de placement, décisions chiffrées, honnêteté épistémique) mais
+  paradoxe central : test-first prêché pour le code, jamais appliqué aux
+  prompts (4 skills évaluées sur 50, hors CI = anti-pattern ADR-0009 à
+  l'échelle). Analyse : `tasks/aidd-framework-review-2026-09.md`
+  (forces §2, critiques §3, confrontation workflow §4, recommandations §5).
+- **Mémoire de rappel armée** (`project_aidd_framework_review.md` + ligne
+  MEMORY.md) : R1 executor/checker au 1er besoin d'orchestration déléguée ;
+  R2 blocs `## Test` à la prochaine command créée/refondue ; R3 réconciliation
+  updates/supersedes/retracts à verser au chantier /immunize ; R4
+  shadow-areas si audit de PRD hors session interactive ; R5 ARCHITECTURE.md
+  comme modèle de document.
+
+## En cours
+
+- Rien — ce checkpoint à committer.
+- Nota (inchangé) : `claude/settings.json` et `tasks/lessons-inbox.md`
+  modifiés antérieurs, non commités — `agentPushNotifEnabled: true`
+  réintroduit alors que supprimé délibérément le 02/09 (à trancher :
+  réactivation voulue ou résidu) ; 1 leçon en inbox (2026-09-08, cache ruff
+  menteur) → prochain /immunize.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Phase 0 essai diagnosing-bugs** (~15 min, inchangé) : copie upstream
+   `3cca18b` → `claude/skills/`, `disable-model-invocation`, symlink, commit.
+3. **Solder le working tree** : triage /immunize (leçon ruff) + décision
+   `agentPushNotifEnabled`.
+4. **Chantier /immunize Flux 2** (session dédiée) : matrice + `immunize.md`
+   §Éviction — **enrichi ce jour** : y verser R3 (retraction comme opération
+   de première classe, vocabulaire updates/supersedes/retracts). Spec :
+   `tasks/lessons-archive.md`.
+5. **Cycle /insights 2026-09-26** (inchangé) : fiche `explain-before-artifact`
+   + reports d'août + option items Pocock sans véhicule.
+6. Event-driven (mémoires armées) : diagnosing-bugs au prochain bug dur ;
+   wayfinder Option B au premier projet brumeux ; porte D5 au changement de
+   tier ; **nouveaux** : R1 executor/checker, R2 blocs `## Test`, R4
+   shadow-areas (revue AIDD).
+7. Revisite repo Pocock ~2026-11/12 ; F4 dormant + mineurs reportés
+   (inchangés).
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — la revue commitée est la source :
+  - **Non-adoption du framework AIDD (R0)** : recouvrement massif,
+    régression sur la vérification, autonomie incompatible → revue §5.
+  - **4 emprunts armés par déclencheurs** (R1-R4), aucun exécuté en session —
+    R3 routé vers le chantier /immunize existant plutôt qu'un chantier neuf.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-11 14:45
 Session : 41bef3b4-b821-4bac-89cd-d0406ac3318d
 
 ## Tâches complétées
