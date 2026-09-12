@@ -1,5 +1,80 @@
 ## Dernière mise à jour
-Date : 2026-09-11 15:28
+Date : 2026-09-12 15:36
+Session : b1dfa1ce-f627-4683-a8f0-13f4e5ad0473
+
+## Tâches complétées
+
+- **Revue complète du repo cursor/plugins → pstack** (`298cd0c`) — clone
+  shallow, lecture intégrale (README, guide 10 pages, poteto-mode + 23
+  playbooks, ~25 skills workflow, 23 principes, agents, benny, scripts TS),
+  santé via API GitHub. Verdict : **non-adoption (P0)**, carrière d'idées —
+  le plus abouti des trois repos revus sur l'ingénierie de vérification
+  (outils TS testés), mais couplage Cursor dur, never-block vs autonomie
+  graduée, anti-planning, et le même angle mort que Pocock/AIDD : zéro
+  corpus d'eval versionné pour les prompts. 6 emprunts P1-P6. Analyse :
+  `tasks/pstack-review-2026-09.md` (forces §3, critiques §4,
+  confrontation §5, recommandations §6).
+- **Roadmap d'adoption inter-repos créée, HORS repo** :
+  `~/claude-audit-notes/adoption-roadmap.md` (document vivant) — doctrine
+  d'emprunt en 5 règles, backlog fusionné par horizons (A actionnable /
+  B armé / C périodique), **2 fusions inter-sources** (P6+R1 : pstack
+  orchestrate devient la première carrière au déclencheur orchestration ;
+  R2+P3 : blocs `## Test` + `skip:<raison>` sur le même véhicule),
+  évolutions candidates T1-T4, vaccins anti-patterns, table de suivi §6.
+- **Mémoire** : `reference_adoption_roadmap` créée + ligne MEMORY.md ;
+  mémoire AIDD amendée (fusion P6+R1).
+
+## En cours
+
+- Rien — ce checkpoint à committer, puis push des 2 commits (`298cd0c` +
+  checkpoint).
+- Nota (inchangé) : `claude/settings.json` et `tasks/lessons-inbox.md`
+  modifiés antérieurs, non commités — `agentPushNotifEnabled` à trancher ;
+  1 leçon en inbox (cache ruff) → prochain /immunize.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Décision humaine sur la roadmap** (explicitement suspendue ce jour) :
+   valider/amender doctrine, fusions et ordre Horizon A (A1 → A3 → A2).
+3. **Horizon A après validation** : A1 Phase 0 diagnosing-bugs (~15 min,
+   inchangé) ; A3 hygiène blinding des README de corpus ; A2 epistemics.md
+   en doc de référence (placement via matrice).
+4. **Solder le working tree** : triage /immunize (leçon ruff) + décision
+   `agentPushNotifEnabled`.
+5. **Chantier /immunize Flux 2** (session dédiée, inchangé, enrichi R3).
+6. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact` +
+   reports d'août + options roadmap (items Pocock sans véhicule ; statuer
+   sur A2/A3 s'ils restent à faire).
+7. Event-driven : **la roadmap §3.B est désormais la vue canonique des
+   déclencheurs armés** (P6+R1, R2+P3, P4 porte /immunize, R4, P5, T2
+   overnight, diagnosing-bugs, wayfinder, D5).
+8. Revisites : Pocock ~2026-11/12 ; pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — la revue commitée et la roadmap sont les sources :
+  - **Non-adoption pstack (P0)** : couplage Cursor, autonomie inverse,
+    anti-planning, prompts non testés → revue §6.
+  - **Roadmap placée hors repo** (`~/claude-audit-notes/`) : elle gouverne
+    l'évolution du workflow et ne doit concurrencer ni progress.md ni la
+    matrice ; retrouvable via mémoire `reference_adoption_roadmap`.
+  - **Fusion P6+R1 actée en mémoire** (pstack orchestrate = première
+    carrière, R1 garde les guardrails de jugement).
+  - **Aucune décision d'adoption exécutée** — toutes suspendues à la
+    validation humaine de la roadmap (demande explicite du 2026-09-12).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-11 15:28
 Session : 05dc6330-c166-4a47-8687-5ed79cdec142
 
 ## Tâches complétées
