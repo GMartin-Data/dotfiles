@@ -1676,7 +1676,7 @@ Session : 0d7a14d7-fe41-40c5-91e1-b8ae985dddc4 (feynman-mentor — procédure co
 
 ## Tâches complétées
 
-- **Procédure d'ajout de skill documentée** : `~/explain/procedure-ajout-skill-dotfiles.md`
+- **Procédure d'ajout de skill documentée** : `~/explain/procedures/ajout-skill-dotfiles.md`
   (6 phases : cadrage → evals test-first → implémentation → tests → /code-review →
   livraison). Non commitée (repo ~/explain à la main de l'humain).
 
@@ -1795,7 +1795,7 @@ Session : 74a20185-8bbc-4a4d-971b-c289b9f06f6f (grill-matrice + rituel code-revi
   le diff + triage des findings. Human-triggered, daté (adopted 2026-07-22).
   Commit `d26c0c0`.
 
-- **Digest du template Cookiecutter écrit** : `~/explain/digest-python-project-template-cruft.md`
+- **Digest du template Cookiecutter écrit** : `~/explain/procedures/digest-python-project-template-cruft.md`
   (réappropriation post-dette de compréhension). Redécouvertes clés : 16 notes
   pédagogiques dans `~/notes-templating/`, 25 décisions v1 figées dans `_sources/`,
   v2 = reconstruction pédagogique du 2026-04-18 (20 commits). Non commité (repo
