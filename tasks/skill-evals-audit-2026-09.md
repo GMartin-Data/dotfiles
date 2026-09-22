@@ -609,6 +609,15 @@ tout est purgé à la fin du run.
 9. **Nouveau** — la sync claude.ai (≥ 2.1.273) n'est pas mentionnée dans les
    prérequis du runner ; sans effet sur lui (isolation), avec effet sur toute
    sonde en conditions réelles.
+10. **Phase 1 (2026-09-22)** — le loader `commands/` d'un plugin est
+    **récursif**, chaque `.md` devenant une command nommée par son chemin
+    (`dotfiles:grill:evals:fixtures:…`) ; `plugins.md` ne parle que de « flat
+    Markdown files ». Le champ `commands` du manifest remplace ce scan (doc
+    conforme, vérifié) — c'est la parade retenue (`claude/.claude-plugin/plugin.json`).
+11. **Phase 1 (2026-09-22)** — `claude plugin details` ne prend ni chemin ni
+    option `--plugin-dir` propre ; le flag est global :
+    `claude --plugin-dir <dir> plugin details <nom>`. Le message d'erreur le
+    suggère sans préciser la position. L'inventaire ne compte pas les commands.
 
 ### 7.3 Artefacts du pilote (scratchpad de session, éphémères)
 
