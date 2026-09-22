@@ -7,3 +7,6 @@ AUDIT_PROGRESS.md
 
 # Handoff documents — design source notes, disposable once implemented
 docs/handoff/
+
+# claude plugin eval — per-run reports, regenerated on every campaign
+claude/evals/results/
