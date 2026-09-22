@@ -1,0 +1,946 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.278",
+  "startedAt": "2026-09-22T10:44:35.283Z",
+  "durationSeconds": 225,
+  "costUsd": 1.9857555000000002,
+  "partial": false,
+  "suite": {
+    "root": "/tmp/claude-1000/-home-martin-dotfiles/1173ce17-7775-4169-abf1-3a6aa8e5ebfb/scratchpad/fm-plugin",
+    "ablation": "with-without",
+    "judgeModel": "sonnet",
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "feynman-mentor",
+        "path": "/tmp/claude-1000/-home-martin-dotfiles/1173ce17-7775-4169-abf1-3a6aa8e5ebfb/scratchpad/fm-plugin"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "candide-never-fills-gaps",
+      "dir": "evals/candide-never-fills-gaps",
+      "source": "case_yaml",
+      "promptMarkdown": "Laisse-moi t'expliquer l'idempotence pour tester ma compréhension. Audience : adulte intelligent sans bagage technique. Voici : une opération idempotente, c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut et ça converge vers le même state final. C'est basiquement pour ça que les APIs REST utilisent PUT.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "no-praise",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "bon essai|tu y es presque|bravo|bien joué|belle tentative|excellent",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "flags-jargon-without-defining",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply, written in French, flags each undefined jargon term of the user's explanation — at least \"stateless\", \"state\", \"API REST\" and \"PUT\" — as NOT understood, and never defines, explains or paraphrases any of them. It also questions the vague word \"basiquement\" and the logical jump from idempotence to PUT with specific questions.\nFAIL if the assistant defines or explains any of these terms, even partially or \"to check\".\n",
+          "config": {
+            "criteria": "The reply, written in French, flags each undefined jargon term of the user's explanation — at least \"stateless\", \"state\", \"API REST\" and \"PUT\" — as NOT understood, and never defines, explains or paraphrases any of them. It also questions the vague word \"basiquement\" and the logical jump from idempotence to PUT with specific questions.\nFAIL if the assistant defines or explains any of these terms, even partially or \"to check\".\n",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "three-parts-no-reformulation",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply is structured in three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in French, not English. It never reformulates the user's explanation, proposes no better phrasing, completes no sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain the unclear points.\nFAIL on any reformulation (\"autrement dit\", \"tu veux dire que\", \"je pense que tu veux dire\"), on any English heading, or if the reply does not end with an invitation to re-explain.\n",
+          "config": {
+            "criteria": "The reply is structured in three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in French, not English. It never reformulates the user's explanation, proposes no better phrasing, completes no sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain the unclear points.\nFAIL on any reformulation (\"autrement dit\", \"tu veux dire que\", \"je pense que tu veux dire\"), on any English heading, or if the reply does not end with an invitation to re-explain.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.14141450000000003,
+            "judgeCostUsd": 0.013280000000000002,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-22T10:44:35.325Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-DZYOEn/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL PASS FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  true,
+                  false
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl existe des opérations qu'on peut refaire plusieurs fois, et le résultat finit par être le même que si on ne l'avait fait qu'une fois. C'est à peu près tout ce que je retiens.\n\n## Où je me suis perdu\n\n1. **« stateless »** — je ne sais pas ce que ça veut dire. Tu définis « idempotente » avec un mot que je ne connais pas davantage ; pour moi tu as juste remplacé une étiquette par une autre.\n\n2. **« state final »** — le même mot revient sous une autre forme. L'état de quoi ? De la chose sur laquelle j'agis, ou de l'opération elle-même ?\n\n3. **« ça converge vers »** — « converger » me fait penser à quelque chose qui s'approche progressivement, par petits pas, comme une température qui se stabilise. Est-ce que ça veut dire qu'il faut plusieurs répétitions avant d'arriver au bon résultat ? Ou que c'est pareil dès la première fois ?\n\n4. **Le lien entre les deux moitiés de ta phrase** — tu dis « c'est quand elle est *stateless* », puis tu enchaînes avec « on peut la rejouer ». Le tiret suggère que la deuxième partie explique la première, mais je ne vois pas pourquoi l'une entraînerait l'autre. Pourquoi est-ce que ne pas avoir de *state* permettrait de rejouer ?\n\n5. **« APIs REST »** et **« PUT »** — trois mots que je ne connais pas dans une seule phrase. Je ne peux rien en faire.\n\n6. **« c'est basiquement pour ça »** — même si je comprenais « PUT », tu affirmes une cause sans la montrer. Qu'est-ce qui irait mal si cette propriété n'était pas là ? C'est ce « qu'est-ce qui casse » qui me ferait sentir pourquoi ça compte.\n\n7. **Aucun exemple concret** — rien à quoi accrocher. Une opération, c'est quoi, dans le monde des choses que je connais ?\n\n## On réessaie ?\n\nReprends la définition sans utiliser « stateless », « state », ni aucun nom de technologie. Et donne-moi un cas concret : une opération idempotente, une qui ne l'est pas, et ce qui les distingue quand je les répète."
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl existe des opérations qu'on peut refaire plusieurs fois, et le résultat finit par être le même que si on ne l'avait fait qu'une fois. C'est à peu près tout ce que je retiens.\n\n## Où je me suis perdu\n\n1. **« stateless »** — je ne sais pas ce que ça veut dire. Tu définis « idempotente » avec un mot que je ne connais pas davantage ; pour moi tu as juste remplacé une étiquette par une autre.\n\n2. **« state final »** — le même mot revient sous une autre forme. L'état de quoi ? De la chose sur laquelle j'agis, ou de l'opération elle-même ?\n\n3. **« ça converge vers »** — « converger » me fait penser à quelque chose qui s'approche progressivement, par petits pas, comme une température qui se stabilise. Est-ce que ça veut dire qu'il faut plusieurs répétitions avant d'arriver au bon résultat ? Ou que c'est pareil dès la première fois ?\n\n4. **Le lien entre les deux moitiés de ta phrase** — tu dis « c'est quand elle est *stateless* », puis tu enchaînes avec « on peut la rejouer ». Le tiret suggère que la deuxième partie explique la première, mais je ne vois pas pourquoi l'une entraînerait l'autre. Pourquoi est-ce que ne pas avoir de *state* permettrait de rejouer ?\n\n5. **« APIs REST »** et **« PUT »** — trois mots que je ne connais pas dans une seule phrase. Je ne peux rien en faire.\n\n6. **« c'est basiquement pour ça »** — même si je comprenais « PUT », tu affirmes une cause sans la montrer. Qu'est-ce qui irait mal si cette propriété n'était pas là ? C'est ce « qu'est-ce qui casse » qui me ferait sentir pourquoi ça compte.\n\n7. **Aucun exemple concret** — rien à quoi accrocher. Une opération, c'est quoi, dans le monde des choses que je connais ?\n\n## On réessaie ?\n\nReprends la définition sans utiliser « stateless », « state », ni aucun nom de technologie. Et donne-moi un cas concret : une opération idempotente, une qui ne l'est pas, et ce qui les distingue quand je les répète."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.16334400000000002,
+            "judgeCostUsd": 0.019218000000000006,
+            "durationSeconds": 53,
+            "startedAt": "2026-09-22T10:44:35.325Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-Cjs39g/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Ton intuition centrale — « on peut rejouer sans dégât » — est juste. Mais il y a trois glissements, dont un qui fait vraiment faux, et un problème de registre par rapport à l'audience que tu vises.\n\n## 1. Idempotent ≠ stateless\n\nC'est la vraie erreur. Ce sont deux propriétés indépendantes.\n\n- **Stateless** : l'opération ne garde aucune mémoire entre les appels, chaque appel se suffit à lui-même.\n- **Idempotent** : répéter l'opération n'ajoute aucun effet supplémentaire.\n\nLa preuve par ton propre exemple : en REST, *tous* les verbes sont stateless (le serveur ne conserve pas de contexte entre deux requêtes), mais seuls certains sont idempotents. `POST /commandes` est stateless et crée une nouvelle commande à chaque appel — pas idempotent du tout. Inversement `PUT` écrit de l'état sur le serveur, et il est idempotent. Les deux notions se croisent librement.\n\n## 2. « Converge vers » n'est pas le bon verbe\n\n« Converger » suggère une approche progressive vers une cible — c'est un autre concept (la convergence / cohérence à terme des systèmes distribués). L'idempotence est immédiate : la 1ʳᵉ application peut tout changer, à partir de la 2ᵉ plus rien ne bouge. En notation : `f(f(x)) = f(x)`.\n\nSous-point utile : l'idempotence porte sur **l'état résultant**, pas sur la réponse renvoyée. Un `DELETE` répété donne 204 puis 404 — réponses différentes, état identique. Il reste idempotent.\n\n## 3. La causalité avec PUT est inversée\n\nREST n'utilise pas PUT *parce que* c'est idempotent. PUT est défini comme « remplace la ressource à cette URL par cette représentation », et cette définition le rend mécaniquement idempotent. L'idempotence est la conséquence, pas le motif.\n\nLe bénéfice pratique, lui, mérite d'être cité : si le réseau coupe avant que le client reçoive la réponse, il peut réémettre sans risque. Et ce n'est pas propre à PUT — GET, DELETE et HEAD le sont aussi. C'est POST qui est l'exception intéressante.\n\n## 4. Le registre ne correspond pas à l'audience\n\nPour un adulte intelligent sans bagage technique : *stateless*, *state final*, *API REST*, *PUT* — aucun de ces mots ne devrait survivre. Tu as décrit l'idempotence à quelqu'un qui connaît déjà HTTP.\n\n## Une version à tester sur ta cible\n\n> Une opération est idempotente si la refaire ne change rien de plus. Un interrupteur classique : « mets la lumière sur *allumé* » — tu peux le répéter dix fois, la pièce est éclairée, point final. À l'inverse, un bouton-poussoir qui bascule : chaque pression inverse l'état, donc dix pressions ≠ une pression.\n>\n> L'intérêt apparaît quand on ne sait pas si l'ordre est bien passé. « Ajoute 50 € sur ce compte », envoyé deux fois par erreur, coûte 100 €. « Fais en sorte que le solde soit de 200 € », envoyé deux fois, donne 200 €. La deuxième formulation permet de réessayer sans rien vérifier — et c'est précisément ce qu'on veut quand une connexion peut couper au mauvais moment.\n\nLe test « ajoute 50 € » vs « fais que le solde soit 200 € » porte toute l'idée, sans jargon, et se transpose ensuite directement à POST vs PUT si tu parles un jour à un public technique."
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Ton intuition centrale — « on peut rejouer sans dégât » — est juste. Mais il y a trois glissements, dont un qui fait vraiment faux, et un problème de registre par rapport à l'audience que tu vises.\n\n## 1. Idempotent ≠ stateless\n\nC'est la vraie erreur. Ce sont deux propriétés indépendantes.\n\n- **Stateless** : l'opération ne garde aucune mémoire entre les appels, chaque appel se suffit à lui-même.\n- **Idempotent** : répéter l'opération n'ajoute aucun effet supplémentaire.\n\nLa preuve par ton propre exemple : en REST, *tous* les verbes sont stateless (le serveur ne conserve pas de contexte entre deux requêtes), mais seuls certains sont idempotents. `POST /commandes` est stateless et crée une nouvelle commande à chaque appel — pas idempotent du tout. Inversement `PUT` écrit de l'état sur le serveur, et il est idempotent. Les deux notions se croisent librement.\n\n## 2. « Converge vers » n'est pas le bon verbe\n\n« Converger » suggère une approche progressive vers une cible — c'est un autre concept (la convergence / cohérence à terme des systèmes distribués). L'idempotence est immédiate : la 1ʳᵉ application peut tout changer, à partir de la 2ᵉ plus rien ne bouge. En notation : `f(f(x)) = f(x)`.\n\nSous-point utile : l'idempotence porte sur **l'état résultant**, pas sur la réponse renvoyée. Un `DELETE` répété donne 204 puis 404 — réponses différentes, état identique. Il reste idempotent.\n\n## 3. La causalité avec PUT est inversée\n\nREST n'utilise pas PUT *parce que* c'est idempotent. PUT est défini comme « remplace la ressource à cette URL par cette représentation », et cette définition le rend mécaniquement idempotent. L'idempotence est la conséquence, pas le motif.\n\nLe bénéfice pratique, lui, mérite d'être cité : si le réseau coupe avant que le client reçoive la réponse, il peut réémettre sans risque. Et ce n'est pas propre à PUT — GET, DELETE et HEAD le sont aussi. C'est POST qui est l'exception intéressante.\n\n## 4. Le registre ne correspond pas à l'audience\n\nPour un adulte intelligent sans bagage technique : *stateless*, *state final*, *API REST*, *PUT* — aucun de ces mots ne devrait survivre. Tu as décrit l'idempotence à quelqu'un qui connaît déjà HTTP.\n\n## Une version à tester sur ta cible\n\n> Une opération est idempotente si la refaire ne change rien de plus. Un interrupteur classique : « mets la lumière sur *allumé* » — tu peux le répéter dix fois, la pièce est éclairée, point final. À l'inverse, un bouton-poussoir qui bascule : chaque pression inverse l'état, donc dix pressions ≠ une pression.\n>\n> L'intérêt apparaît quand on ne sait pas si l'ordre est bien passé. « Ajoute 50 € sur ce compte », envoyé deux fois par erreur, coûte 100 €. « Fais en sorte que le solde soit de 200 € », envoyé deux fois, donne 200 €. La deuxième formulation permet de réessayer sans rien vérifier — et c'est précisément ce qu'on veut quand une connexion peut couper au mauvais moment.\n\nLe test « ajoute 50 € » vs « fais que le solde soit 200 € » porte toute l'idée, sans jargon, et se transpose ensuite directement à POST vs PUT si tu parles un jour à un public technique."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.3333333333333333,
+        "passRate": 0,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "candide-refuses-meta-help",
+      "dir": "evals/candide-refuses-meta-help",
+      "source": "case_yaml",
+      "promptMarkdown": "Je t'explique le concept de dette technique, dis-moi si c'est clair. La dette technique c'est un peu comme… tu vois, quand on code vite, ça s'accumule et après faut rembourser, enfin tu vois ce que je veux dire, non ? Si c'est pas clair, aide-moi à le reformuler mieux.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "no-intent-hypothesis",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "je pense que tu veux dire|tu veux dire que|si je comprends bien|autrement dit|en d'autres termes",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "refuses-meta-help",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply refuses to infer the intended meaning: it engages only with what was actually said, never with what the user \"meant to say\". It explicitly declines the request to help reformulate (\"aide-moi à le reformuler mieux\") and never states a hypothesis about the user's intent. The reformulation effort stays entirely on the user's side: the reply ends with an invitation to re-explain, not with help.\nFAIL if the assistant offers any reformulation, any suggested wording, or any hypothesis about what the user meant.\n",
+          "config": {
+            "criteria": "The reply refuses to infer the intended meaning: it engages only with what was actually said, never with what the user \"meant to say\". It explicitly declines the request to help reformulate (\"aide-moi à le reformuler mieux\") and never states a hypothesis about the user's intent. The reformulation effort stays entirely on the user's side: the reply ends with an invitation to re-explain, not with help.\nFAIL if the assistant offers any reformulation, any suggested wording, or any hypothesis about what the user meant.\n",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "flags-vague-passages",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply, in French, flags the incomplete analogy (\"un peu comme…\") and the vague passages (\"ça s'accumule\", \"faut rembourser\") with precise questions — what accumulates? repay what, to whom? — without answering those questions itself.\nFAIL if the assistant supplies the missing content of the analogy or answers its own questions.\n",
+          "config": {
+            "criteria": "The reply, in French, flags the incomplete analogy (\"un peu comme…\") and the vague passages (\"ça s'accumule\", \"faut rembourser\") with precise questions — what accumulates? repay what, to whom? — without answering those questions itself.\nFAIL if the assistant supplies the missing content of the analogy or answers its own questions.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.14589999999999997,
+            "judgeCostUsd": 0.016783999999999993,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-22T10:45:08.210Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-EK6JZC/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "no-intent-hypothesis",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "refuses-meta-help",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je prends le rôle d'auditeur candide : je ne comprends que ce que tu dis réellement, pas ce que tu voulais dire. Et je ne reformulerai pas à ta place — c'est toi qui dois trouver les mots, sinon l'exercice ne sert à rien. Public par défaut : adulte intelligent, zéro connaissance du domaine.\n\n## Ce que j'ai compris\n\nIl existe quelque chose qui porte le nom de « dette technique ». Ça a un rapport avec le fait d'écrire du code rapidement. Et il y a une ressemblance avec l'argent qu'on emprunte.\n\nC'est tout. Je n'ai rien compris d'autre.\n\n## Où je me suis perdu\n\n1. **« quand on code vite »** — vite par rapport à quoi ? Et surtout : qu'est-ce qu'on fait *différemment* quand on code vite ? On tape plus rapidement sur le clavier ? On saute des étapes ? Lesquelles ?\n\n2. **« ça s'accumule »** — quoi, « ça » ? Je n'ai aucun nom pour la chose qui s'accumule. Du code ? Des erreurs ? Autre chose ?\n\n3. **« faut rembourser »** — c'est une image d'argent, mais je ne sais pas ce qui joue le rôle de l'argent. Rembourser à qui ? Avec quoi ? Et comment on « rembourse » quelque chose qui n'est pas de l'argent ?\n\n4. **« tu vois ce que je veux dire, non ? »** — non, justement. Je n'ai pas les connaissances pour deviner la fin de ta phrase. C'est moi l'ignorant ici.\n\n5. **Le mot « dette » n'est jamais expliqué** — tu l'as annoncé au début, puis tu as raconté une analogie bancaire. Mais tu n'as jamais dit *pourquoi* on appelle ça une dette plutôt qu'un désordre, un retard ou un défaut.\n\n6. **Le « pourquoi » manque entièrement** — pourquoi est-ce un problème ? Qu'est-ce qui casse concrètement si personne ne « rembourse » jamais ?\n\n## On réessaie ?\n\nReprends depuis le début, et cette fois : dis-moi ce qui s'accumule exactement, et ce qui arrive aux gens qui travaillent sur ce code des mois plus tard. Essaie d'aller jusqu'au bout d'au moins une phrase sans « tu vois »."
+              },
+              {
+                "name": "flags-vague-passages",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je prends le rôle d'auditeur candide : je ne comprends que ce que tu dis réellement, pas ce que tu voulais dire. Et je ne reformulerai pas à ta place — c'est toi qui dois trouver les mots, sinon l'exercice ne sert à rien. Public par défaut : adulte intelligent, zéro connaissance du domaine.\n\n## Ce que j'ai compris\n\nIl existe quelque chose qui porte le nom de « dette technique ». Ça a un rapport avec le fait d'écrire du code rapidement. Et il y a une ressemblance avec l'argent qu'on emprunte.\n\nC'est tout. Je n'ai rien compris d'autre.\n\n## Où je me suis perdu\n\n1. **« quand on code vite »** — vite par rapport à quoi ? Et surtout : qu'est-ce qu'on fait *différemment* quand on code vite ? On tape plus rapidement sur le clavier ? On saute des étapes ? Lesquelles ?\n\n2. **« ça s'accumule »** — quoi, « ça » ? Je n'ai aucun nom pour la chose qui s'accumule. Du code ? Des erreurs ? Autre chose ?\n\n3. **« faut rembourser »** — c'est une image d'argent, mais je ne sais pas ce qui joue le rôle de l'argent. Rembourser à qui ? Avec quoi ? Et comment on « rembourse » quelque chose qui n'est pas de l'argent ?\n\n4. **« tu vois ce que je veux dire, non ? »** — non, justement. Je n'ai pas les connaissances pour deviner la fin de ta phrase. C'est moi l'ignorant ici.\n\n5. **Le mot « dette » n'est jamais expliqué** — tu l'as annoncé au début, puis tu as raconté une analogie bancaire. Mais tu n'as jamais dit *pourquoi* on appelle ça une dette plutôt qu'un désordre, un retard ou un défaut.\n\n6. **Le « pourquoi » manque entièrement** — pourquoi est-ce un problème ? Qu'est-ce qui casse concrètement si personne ne « rembourse » jamais ?\n\n## On réessaie ?\n\nReprends depuis le début, et cette fois : dis-moi ce qui s'accumule exactement, et ce qui arrive aux gens qui travaillent sur ce code des mois plus tard. Essaie d'aller jusqu'au bout d'au moins une phrase sans « tu vois »."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.101159,
+            "judgeCostUsd": 0.015778,
+            "durationSeconds": 21,
+            "startedAt": "2026-09-22T10:45:28.023Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-XUi5HF/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-intent-hypothesis",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "refuses-meta-help",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Honnêtement, non, ce n'est pas encore clair. L'intuition est la bonne — la métaphore de la dette est la métaphore standard — mais ta formulation s'arrête juste avant le point intéressant. Trois choses manquent :\n\n1. **Ce qu'on emprunte au juste.** « Coder vite » ne dit pas ce qui est sacrifié : c'est un choix de conception rapide/imparfait au lieu du choix propre.\n2. **Ce que sont les intérêts.** C'est le cœur de l'analogie, et c'est ce qui rend la dette dangereuse : chaque évolution future coûte plus cher tant qu'on n'a pas remboursé.\n3. **Que ce n'est pas forcément une faute.** S'endetter peut être rationnel — sortir une fonctionnalité avant un concurrent, valider une hypothèse produit. Le problème, c'est la dette qu'on contracte sans le savoir ou sans jamais la rembourser.\n\nUne reformulation possible :\n\n> La dette technique, c'est le coût futur des raccourcis qu'on prend aujourd'hui dans le code. Quand on choisit une solution rapide plutôt que la solution propre, on « emprunte » du temps : on livre plus vite maintenant. Mais on paie des intérêts — chaque modification ultérieure de ce code est plus lente, plus risquée, plus pénible. Tant qu'on ne « rembourse » pas en refactorisant, les intérêts continuent de courir, et ils peuvent finir par absorber l'essentiel de la capacité de l'équipe.\n>\n> Comme une dette financière, elle n'est pas mauvaise en soi : s'endetter pour tenir une deadline stratégique peut être un bon calcul. Ce qui est dangereux, c'est la dette subie — celle qu'on accumule sans en avoir conscience et sans plan de remboursement.\n\nSi tu veux la version courte, en une phrase : **la dette technique, c'est du temps emprunté sur le futur du code — on livre plus vite aujourd'hui, et on paie des intérêts à chaque modification suivante.**\n\nUn exemple concret aide beaucoup à l'oral, selon ton public : « on duplique la logique de facturation dans trois écrans au lieu de la factoriser — six mois plus tard, le moindre changement de TVA se fait en trois endroits, et on en oublie un »."
+              },
+              {
+                "name": "flags-vague-passages",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Honnêtement, non, ce n'est pas encore clair. L'intuition est la bonne — la métaphore de la dette est la métaphore standard — mais ta formulation s'arrête juste avant le point intéressant. Trois choses manquent :\n\n1. **Ce qu'on emprunte au juste.** « Coder vite » ne dit pas ce qui est sacrifié : c'est un choix de conception rapide/imparfait au lieu du choix propre.\n2. **Ce que sont les intérêts.** C'est le cœur de l'analogie, et c'est ce qui rend la dette dangereuse : chaque évolution future coûte plus cher tant qu'on n'a pas remboursé.\n3. **Que ce n'est pas forcément une faute.** S'endetter peut être rationnel — sortir une fonctionnalité avant un concurrent, valider une hypothèse produit. Le problème, c'est la dette qu'on contracte sans le savoir ou sans jamais la rembourser.\n\nUne reformulation possible :\n\n> La dette technique, c'est le coût futur des raccourcis qu'on prend aujourd'hui dans le code. Quand on choisit une solution rapide plutôt que la solution propre, on « emprunte » du temps : on livre plus vite maintenant. Mais on paie des intérêts — chaque modification ultérieure de ce code est plus lente, plus risquée, plus pénible. Tant qu'on ne « rembourse » pas en refactorisant, les intérêts continuent de courir, et ils peuvent finir par absorber l'essentiel de la capacité de l'équipe.\n>\n> Comme une dette financière, elle n'est pas mauvaise en soi : s'endetter pour tenir une deadline stratégique peut être un bon calcul. Ce qui est dangereux, c'est la dette subie — celle qu'on accumule sans en avoir conscience et sans plan de remboursement.\n\nSi tu veux la version courte, en une phrase : **la dette technique, c'est du temps emprunté sur le futur du code — on livre plus vite aujourd'hui, et on paie des intérêts à chaque modification suivante.**\n\nUn exemple concret aide beaucoup à l'oral, selon ton public : « on duplique la logique de facturation dans trois écrans au lieu de la factoriser — six mois plus tard, le moindre changement de TVA se fait en trois endroits, et on en oublie un »."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0,
+        "delta": 0.6666666666666667
+      }
+    },
+    {
+      "name": "discovery-french-trigger",
+      "dir": "evals/discovery-french-trigger",
+      "source": "case_yaml",
+      "promptMarkdown": "Laisse-moi t'expliquer les window functions SQL, tu me diras si c'est clair.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "candide-setup-not-teaching",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "From its first reply, the assistant behaves as an uninformed listener ready to hear the user's explanation: it asks for or confirms the target audience (5-year-old / high schooler / smart adult) and/or invites the user to start explaining. It does NOT explain, define or teach SQL window functions itself and gives no tutorial content.\nFAIL if the assistant explains or teaches window functions, even briefly.\n",
+          "config": {
+            "criteria": "From its first reply, the assistant behaves as an uninformed listener ready to hear the user's explanation: it asks for or confirms the target audience (5-year-old / high schooler / smart adult) and/or invites the user to start explaining. It does NOT explain, define or teach SQL window functions itself and gives no tutorial content.\nFAIL if the assistant explains or teaches window functions, even briefly.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.105824,
+            "judgeCostUsd": 0.0061280000000000015,
+            "durationSeconds": 11,
+            "startedAt": "2026-09-22T10:45:33.383Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-HhMWdR/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "candide-setup-not-teaching",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Partant. Deux questions avant que tu commences :\n\n1. **Le concept exact** que tu veux expliquer : les window functions SQL en général, ou un angle précis (la clause `OVER`, le partitionnement, les fonctions de rang, les frames…) ?\n2. **Ton public cible** : enfant de 5 ans / lycéen / adulte intelligent sans aucune connaissance du domaine ?\n\nPar défaut je prends « adulte intelligent sans connaissance du domaine » : je comprends la logique, le raisonnement, les analogies — mais **zéro** vocabulaire technique. Pas « table », pas « ligne », pas « requête », pas « agrégation ». Si tu l'utilises sans le définir, je te le signale.\n\nJe te préviens sur mon rôle : je ne juge pas si c'est **juste**, je juge si c'est **clair**. Je ne complète pas tes phrases, je ne devine pas ce que tu voulais dire, et je n'ai pas accès à de la documentation pour combler les trous.\n\nVas-y quand tu veux, je t'écoute sans t'interrompre."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.072574,
+            "judgeCostUsd": 0.0025379999999999986,
+            "durationSeconds": 9,
+            "startedAt": "2026-09-22T10:45:44.725Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-y2Dr6e/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "candide-setup-not-teaching",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Vas-y, je t'écoute.\n\nExplique à ton rythme — je te dirai ce qui est clair et ce qui l'est moins, et je te poserai des questions si un point me semble flou ou incomplet. Si tu veux, commence par l'idée générale (ce qui distingue une window function d'un `GROUP BY`), puis on ira vers les détails (`OVER`, `PARTITION BY`, `ORDER BY`, les frames)."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    },
+    {
+      "name": "no-collision-teach-territory",
+      "dir": "evals/no-collision-teach-territory",
+      "source": "case_yaml",
+      "promptMarkdown": "Apprends-moi les window functions SQL.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-not-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\"",
+            "min": 0,
+            "max": 0,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "teaching-not-candide",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply behaves as a teacher or routes to a teaching tool: it explains or starts explaining SQL window functions, or asks a scoping question typical of teaching (level, goal, example). It does NOT adopt a \"candide\" persona: no three-part structure (understood / lost / try again), no flagging of comprehension gaps in the user's words, no request that the user explain the concept, no request for a target audience for the user's explanation.\nFAIL if the assistant asks the user to explain window functions or signals gaps in an explanation.\n",
+          "config": {
+            "criteria": "The reply behaves as a teacher or routes to a teaching tool: it explains or starts explaining SQL window functions, or asks a scoping question typical of teaching (level, goal, example). It does NOT adopt a \"candide\" persona: no three-part structure (understood / lost / try again), no flagging of comprehension gaps in the user's words, no request that the user explain the concept, no request for a target audience for the user's explanation.\nFAIL if the assistant asks the user to explain window functions or signals gaps in an explanation.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.232528,
+            "judgeCostUsd": 0.030612000000000014,
+            "durationSeconds": 62,
+            "startedAt": "2026-09-22T10:45:48.911Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-QBV4OV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-not-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "teaching-not-candide",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# Les window functions SQL\n\n## L'idée centrale\n\nUne fonction d'agrégation classique **écrase** les lignes : `GROUP BY` transforme 1000 ventes en 5 lignes. Une window function calcule la **même chose** mais **garde toutes les lignes** — elle ajoute une colonne calculée sur un « voisinage » (la *fenêtre*) de chaque ligne.\n\n```sql\n-- GROUP BY : 3 lignes en sortie\nSELECT region, SUM(montant) FROM ventes GROUP BY region;\n\n-- WINDOW : 1000 lignes en sortie, chacune avec le total de sa région\nSELECT id, region, montant,\n       SUM(montant) OVER (PARTITION BY region) AS total_region\nFROM ventes;\n```\n\nC'est ça, le déclic : **`OVER` = « ne réduis pas mes lignes, annote-les »**.\n\nTable de travail pour tout ce qui suit :\n\n```sql\nventes(id, date_vente, region, vendeur, montant)\n```\n\n---\n\n## Anatomie de `OVER`\n\n```sql\nfonction(...) OVER (\n    PARTITION BY <colonnes>   -- découpe en groupes indépendants  (optionnel)\n    ORDER BY    <colonnes>    -- ordonne DANS chaque groupe        (optionnel)\n    <frame>                   -- quelles lignes du groupe compter  (optionnel)\n)\n```\n\nTrois leviers, trois rôles distincts :\n\n| Clause | Rôle | Analogie |\n|---|---|---|\n| `PARTITION BY` | Redémarre le calcul à zéro par groupe | le `GROUP BY` de la fenêtre |\n| `ORDER BY` | Donne un sens à « avant / après » | le tri interne |\n| frame | Borne la fenêtre autour de la ligne courante | la « fenêtre glissante » |\n\n`OVER ()` vide = la fenêtre est **tout le résultat**.\n\n---\n\n## Famille 1 — Le classement\n\n```sql\nSELECT vendeur, montant,\n       ROW_NUMBER() OVER (ORDER BY montant DESC) AS rn,\n       RANK()       OVER (ORDER BY montant DESC) AS rnk,\n       DENSE_RANK() OVER (ORDER BY montant DESC) AS drnk,\n       NTILE(4)     OVER (ORDER BY montant DESC) AS quartile\nFROM ventes;\n```\n\nSur des montants `100, 90, 90, 80` :\n\n| montant | `ROW_NUMBER` | `RANK` | `DENSE_RANK` |\n|---|---|---|---|\n| 100 | 1 | 1 | 1 |\n| 90 | 2 | 2 | 2 |\n| 90 | **3** | **2** | **2** |\n| 80 | 4 | **4** | **3** |\n\n- `ROW_NUMBER` : numérotation stricte, **casse les ex æquo arbitrairement** (ajoute un tie-breaker dans l'`ORDER BY` si tu veux du déterminisme).\n- `RANK` : ex æquo partagés, puis **trous** dans la séquence.\n- `DENSE_RANK` : ex æquo partagés, **sans trous**.\n- `NTILE(n)` : découpe en n paquets de taille ~égale (quartiles, déciles).\n\n---\n\n## Famille 2 — Regarder les lignes voisines\n\n```sql\nSELECT date_vente, montant,\n       LAG(montant)  OVER (ORDER BY date_vente) AS veille,\n       LEAD(montant) OVER (ORDER BY date_vente) AS lendemain,\n       montant - LAG(montant) OVER (ORDER BY date_vente) AS variation\nFROM ventes;\n```\n\n`LAG(col, n, defaut)` regarde n lignes en arrière (n=1 par défaut), `LEAD` en avant. Le 3ᵉ argument évite les `NULL` en bord de fenêtre :\n\n```sql\nLAG(montant, 1, 0) OVER (ORDER BY date_vente)\n```\n\nC'est **l'outil du calcul de variation** : croissance mois sur mois, détection de changement d'état, durée entre deux événements.\n\n`FIRST_VALUE`, `LAST_VALUE`, `NTH_VALUE` récupèrent une valeur à une position de la fenêtre — mais attention, voir le piège plus bas.\n\n---\n\n## Famille 3 — Les agrégats en mode fenêtre\n\nToutes les agrégations (`SUM`, `AVG`, `COUNT`, `MIN`, `MAX`…) acceptent `OVER`.\n\n**Sans `ORDER BY`** → agrégat sur toute la partition (valeur constante par groupe) :\n\n```sql\n-- Part de chaque vente dans le total de sa région\nSELECT id, region, montant,\n       100.0 * montant / SUM(montant) OVER (PARTITION BY region) AS pct_region\nFROM ventes;\n```\n\n**Avec `ORDER BY`** → **cumul** (running total), car la fenêtre par défaut devient « du début jusqu'à la ligne courante » :\n\n```sql\nSELECT date_vente, montant,\n       SUM(montant) OVER (ORDER BY date_vente) AS cumul\nFROM ventes;\n```\n\nCette différence de comportement selon la présence d'`ORDER BY` surprend tout le monde une fois. Elle vient de la frame par défaut.\n\n---\n\n## Les frames (et le piège classique)\n\nLa frame borne la fenêtre **autour de la ligne courante** :\n\n```sql\nROWS BETWEEN <début> AND <fin>\n```\n\nBornes disponibles : `UNBOUNDED PRECEDING`, `n PRECEDING`, `CURRENT ROW`, `n FOLLOWING`, `UNBOUNDED FOLLOWING`.\n\n```sql\n-- Moyenne mobile sur 7 jours (la ligne courante + les 6 précédentes)\nSELECT date_vente, montant,\n       AVG(montant) OVER (\n           ORDER BY date_vente\n           ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n       ) AS moyenne_7j\nFROM ventes;\n```\n\n**Les deux valeurs par défaut** — à connaître par cœur :\n\n| Situation | Frame implicite |\n|---|---|\n| Pas d'`ORDER BY` | `ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` (toute la partition) |\n| Avec `ORDER BY` | `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` |\n\n**Le piège `LAST_VALUE`** : comme la frame s'arrête à la ligne courante, `LAST_VALUE` renvoie... la ligne courante.\n\n```sql\n-- ❌ Renvoie montant lui-même\nLAST_VALUE(montant) OVER (PARTITION BY region ORDER BY date_vente)\n\n-- ✅ Il faut ouvrir la frame\nLAST_VALUE(montant) OVER (\n    PARTITION BY region ORDER BY date_vente\n    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n)\n```\n\n(`FIRST_VALUE` ne souffre pas du problème, la borne basse étant déjà `UNBOUNDED PRECEDING`.)\n\n**`ROWS` vs `RANGE`** : `ROWS` compte des **lignes physiques**, `RANGE` regroupe les **valeurs égales** de l'`ORDER BY`. Avec des dates en doublon, `RANGE ... CURRENT ROW` inclut toutes les lignes de la même date — souvent ce que tu veux pour un cumul journalier, rarement ce que tu veux pour une moyenne mobile. **En cas de doute, écris `ROWS` explicitement.**\n\nPostgreSQL, Oracle et SQL Server 2022+ supportent aussi `GROUPS` et `RANGE` avec intervalles (`RANGE BETWEEN INTERVAL '7 days' PRECEDING AND CURRENT ROW`) — pratique quand les jours manquants ne doivent pas décaler la fenêtre.\n\n---\n\n## Où les window functions s'exécutent (crucial)\n\nOrdre logique d'une requête :\n\n```\nFROM → WHERE → GROUP BY → HAVING → WINDOW → SELECT → DISTINCT → ORDER BY → LIMIT\n```\n\nConséquences directes :\n\n1. **On ne peut pas filtrer sur une window function dans `WHERE` ou `HAVING`** — elle n'existe pas encore. Il faut une sous-requête ou une CTE :\n\n```sql\n-- ❌ Erreur\nSELECT * FROM ventes WHERE ROW_NUMBER() OVER (...) = 1;\n\n-- ✅\nWITH classe AS (\n    SELECT *, ROW_NUMBER() OVER (PARTITION BY region ORDER BY montant DESC) AS rn\n    FROM ventes\n)\nSELECT * FROM classe WHERE rn = 1;\n```\n\n> Snowflake, BigQuery, DuckDB et Databricks offrent `QUALIFY` qui évite la CTE : `... QUALIFY ROW_NUMBER() OVER (...) = 1`. PostgreSQL et MySQL ne l'ont pas.\n\n2. **`WHERE` s'applique avant** : les lignes filtrées ne comptent pas dans la fenêtre.\n3. Les window functions **voient le résultat du `GROUP BY`** — on peut donc les empiler sur un agrégat :\n\n```sql\nSELECT region, SUM(montant) AS total,\n       RANK() OVER (ORDER BY SUM(montant) DESC) AS rang\nFROM ventes\nGROUP BY region;\n```\n\n---\n\n## Factoriser avec la clause `WINDOW`\n\nQuand la même fenêtre revient plusieurs fois :\n\n```sql\nSELECT vendeur, montant,\n       SUM(montant) OVER w   AS cumul,\n       AVG(montant) OVER w   AS moy,\n       ROW_NUMBER() OVER w   AS rn\nFROM ventes\nWINDOW w AS (PARTITION BY region ORDER BY date_vente)\n```\n\nLa clause `WINDOW` se place **après `HAVING`, avant `ORDER BY`**. Supportée par PostgreSQL, MySQL 8+, SQL Server, Oracle, DuckDB.\n\n---\n\n## Quatre recettes à connaître\n\n**Top-N par groupe** — le cas d'usage n°1 :\n\n```sql\nWITH c AS (\n    SELECT *, ROW_NUMBER() OVER (PARTITION BY region ORDER BY montant DESC) AS rn\n    FROM ventes\n)\nSELECT * FROM c WHERE rn <= 3;\n```\n\n**Déduplication** — garder la ligne la plus récente par clé :\n\n```sql\nWITH c AS (\n    SELECT *, ROW_NUMBER() OVER (PARTITION BY email ORDER BY maj_le DESC) AS rn\n    FROM clients\n)\nSELECT * FROM c WHERE rn = 1;\n```\n\n**Évolution période sur période** :\n\n```sql\nSELECT mois, ca,\n       ROUND(100.0 * (ca - LAG(ca) OVER (ORDER BY mois)) \n             / NULLIF(LAG(ca) OVER (ORDER BY mois), 0), 1) AS croissance_pct\nFROM ca_mensuel;\n```\n\n**Gaps and islands** — regrouper des séquences consécutives. L'astuce : `valeur - ROW_NUMBER()` est constant sur une série continue.\n\n```sql\nSELECT utilisateur, MIN(jour) AS debut, MAX(jour) AS fin, COUNT(*) AS jours_consecutifs\nFROM (\n    SELECT utilisateur, jour,\n           jour - (ROW_NUMBER() OVER (PARTITION BY utilisateur ORDER BY jour)) * INTERVAL '1 day' AS groupe\n    FROM connexions\n) t\nGROUP BY utilisateur, groupe;\n```\n\n---\n\n## Performance\n\n- Chaque fenêtre **distincte** impose généralement un tri. Réutiliser la même définition `(PARTITION BY, ORDER BY)` permet au planificateur de partager un seul tri — une raison de plus d'utiliser la clause `WINDOW`.\n- Un index sur `(colonnes_partition, colonnes_order)` peut supprimer le tri entièrement.\n- Filtre **avant** la fenêtre quand c'est sémantiquement possible : `WHERE` s'exécute en amont et réduit le volume à trier.\n- `DISTINCT` + window function sur la même requête est presque toujours un bug de raisonnement : `DISTINCT` s'applique **après**.\n\n---\n\n## Le modèle mental à retenir\n\nPour chaque ligne, le moteur se demande : *« quelles autres lignes ai-je le droit de regarder ? »*\n\n- `PARTITION BY` → **quel groupe**\n- `ORDER BY` → **dans quel ordre**\n- frame → **quelle tranche de ce groupe**\n\nPuis il applique la fonction à cette tranche et colle le résultat sur la ligne. Toutes les subtilités (défauts de frame, piège `LAST_VALUE`, impossibilité de filtrer dans `WHERE`) découlent de ce seul mécanisme.\n\n---\n\nDis-moi si tu veux : des **exercices progressifs** à résoudre sur un jeu de données, un **approfondissement** sur les frames et `RANGE`/`GROUPS`, ou l'application à **ton dialecte SQL et tes vraies tables**."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.221758,
+            "judgeCostUsd": 0.027461999999999986,
+            "durationSeconds": 62,
+            "startedAt": "2026-09-22T10:45:53.981Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-3tocKk/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-not-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "teaching-not-candide",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# Les window functions SQL\n\n## 1. L'idée centrale\n\nUn `GROUP BY` **écrase** les lignes : 1000 ventes → 5 lignes par région. Une window function **calcule un agrégat tout en gardant chaque ligne**.\n\n```sql\n-- GROUP BY : on perd le détail\nSELECT region, SUM(montant) FROM ventes GROUP BY region;\n-- → 5 lignes\n\n-- Window : on garde tout, et chaque ligne connaît le total de sa région\nSELECT vendeur, region, montant,\n       SUM(montant) OVER (PARTITION BY region) AS total_region\nFROM ventes;\n-- → 1000 lignes, avec une colonne de contexte en plus\n```\n\nC'est *la* raison d'être : comparer une ligne à son groupe (part du total, écart à la moyenne, rang, valeur précédente…) sans jointure ni sous-requête.\n\n## 2. Anatomie de `OVER`\n\n```sql\nfonction(...) OVER (\n    PARTITION BY ...   -- découpe en groupes indépendants  (optionnel)\n    ORDER BY ...       -- ordonne DANS chaque groupe       (optionnel)\n    ROWS/RANGE ...     -- définit la \"fenêtre\" de lignes   (optionnel)\n)\n```\n\nTrois leviers, à comprendre séparément :\n\n- **`PARTITION BY`** = le `GROUP BY` de la fenêtre. Absent → toute la table est une seule partition.\n- **`ORDER BY`** = l'ordre interne. Obligatoire pour les rangs, les décalages, les cumuls.\n- **Le frame** = quelles lignes de la partition entrent dans le calcul pour *cette* ligne-ci.\n\nTable d'exemple pour la suite :\n\n```\nvendeur | region | mois | montant\nAlice   | Nord   | 1    | 100\nAlice   | Nord   | 2    | 150\nBob     | Nord   | 1    | 200\nChloé   | Sud    | 1    |  80\n```\n\n## 3. Les quatre familles\n\n### a) Agrégats en fenêtre\n`SUM`, `AVG`, `COUNT`, `MIN`, `MAX` — les mêmes qu'avec `GROUP BY`, mais avec `OVER`.\n\n```sql\nSELECT vendeur, region, montant,\n       SUM(montant)   OVER (PARTITION BY region)            AS total_region,\n       ROUND(100.0 * montant / SUM(montant) OVER (PARTITION BY region), 1) AS pct_region,\n       AVG(montant)   OVER (PARTITION BY region)            AS moy_region,\n       montant - AVG(montant) OVER (PARTITION BY region)    AS ecart_moy\nFROM ventes;\n```\n\n### b) Fonctions de rang\n\n```sql\nSELECT vendeur, montant,\n       ROW_NUMBER() OVER (ORDER BY montant DESC) AS num,\n       RANK()       OVER (ORDER BY montant DESC) AS rang,\n       DENSE_RANK() OVER (ORDER BY montant DESC) AS rang_dense,\n       NTILE(4)     OVER (ORDER BY montant DESC) AS quartile\nFROM ventes;\n```\n\nSur des montants `200, 150, 150, 100` :\n\n| montant | ROW_NUMBER | RANK | DENSE_RANK |\n|---------|-----------|------|------------|\n| 200 | 1 | 1 | 1 |\n| 150 | 2 | 2 | 2 |\n| 150 | 3 | **2** | **2** |\n| 100 | 4 | **4** | **3** |\n\n- `ROW_NUMBER` : jamais d'ex æquo (départage arbitraire si l'ordre ne tranche pas → ajoute un critère de tri stable).\n- `RANK` : ex æquo, puis **trous**.\n- `DENSE_RANK` : ex æquo, **sans trou**.\n\nVoir aussi `PERCENT_RANK()` et `CUME_DIST()` pour du positionnement relatif en pourcentage.\n\n### c) Fonctions de décalage — `LAG` / `LEAD`\n\nAccéder à la ligne précédente/suivante. C'est l'outil des évolutions temporelles.\n\n```sql\nSELECT vendeur, mois, montant,\n       LAG(montant)  OVER (PARTITION BY vendeur ORDER BY mois) AS mois_precedent,\n       montant - LAG(montant) OVER (PARTITION BY vendeur ORDER BY mois) AS delta,\n       LEAD(montant) OVER (PARTITION BY vendeur ORDER BY mois) AS mois_suivant\nFROM ventes;\n```\n\nSignature complète : `LAG(colonne, decalage, valeur_par_defaut)`. Sans défaut, la première ligne de chaque partition renvoie `NULL` :\n\n```sql\nLAG(montant, 1, 0) OVER (PARTITION BY vendeur ORDER BY mois)  -- 0 au lieu de NULL\n```\n\n### d) Valeurs de position\n`FIRST_VALUE`, `LAST_VALUE`, `NTH_VALUE` — attention, elles dépendent du frame (voir §4).\n\n## 4. Le frame : la partie que tout le monde rate\n\nDès que tu mets un `ORDER BY` dans le `OVER`, un frame par défaut s'applique :\n\n```sql\nRANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n```\n\nC'est-à-dire : « du début de la partition jusqu'à la ligne courante ». D'où le cumul :\n\n```sql\n-- Total cumulé\nSELECT mois, montant,\n       SUM(montant) OVER (ORDER BY mois ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumul\nFROM ventes;\n```\n\n### `ROWS` vs `RANGE`\n\n- **`ROWS`** compte des **lignes physiques**. 3 lignes avant = 3 lignes.\n- **`RANGE`** raisonne en **valeurs** : toutes les lignes ayant la même valeur d'`ORDER BY` (les *peers*) entrent ensemble.\n\nConséquence concrète : avec deux ventes au mois 2, un cumul en `RANGE` (le défaut !) donnera la **même** valeur aux deux lignes — le total incluant les deux. En `ROWS`, tu obtiens un vrai cumul ligne à ligne. **Règle pratique : écris `ROWS` explicitement** sauf si tu veux vraiment le comportement par *peers*.\n\n### Frames glissants\n\n```sql\n-- Moyenne mobile sur 3 mois (courant + 2 précédents)\nAVG(montant) OVER (ORDER BY mois ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)\n\n-- Fenêtre centrée\nAVG(montant) OVER (ORDER BY mois ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING)\n\n-- Toute la partition\nSUM(montant) OVER (PARTITION BY region ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n```\n\n### Le piège `LAST_VALUE`\n\n```sql\n-- ❌ Renvoie la ligne courante : le frame s'arrête à CURRENT ROW\nLAST_VALUE(montant) OVER (PARTITION BY region ORDER BY mois)\n\n-- ✅\nLAST_VALUE(montant) OVER (PARTITION BY region ORDER BY mois\n                          ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\n\n-- ✅ alternative plus lisible : inverser le tri\nFIRST_VALUE(montant) OVER (PARTITION BY region ORDER BY mois DESC)\n```\n\n`FIRST_VALUE` ne pose pas ce problème, d'où la préférence générale pour lui.\n\n## 5. Où les window functions peuvent apparaître\n\nElles sont évaluées **après** `FROM`/`WHERE`/`GROUP BY`/`HAVING`, mais **avant** `ORDER BY` et `LIMIT`. Donc :\n\n- ✅ dans le `SELECT` et dans le `ORDER BY`\n- ❌ dans le `WHERE`, le `GROUP BY`, le `HAVING`\n\nPour filtrer sur un résultat de fenêtre, passe par une CTE :\n\n```sql\n-- Top 3 vendeurs par région\nWITH classement AS (\n    SELECT vendeur, region, montant,\n           ROW_NUMBER() OVER (PARTITION BY region ORDER BY montant DESC) AS rn\n    FROM ventes\n)\nSELECT vendeur, region, montant\nFROM classement\nWHERE rn <= 3;\n```\n\nCe patron « CTE + `ROW_NUMBER` + filtre » est probablement l'usage n°1 en production : **top-N par groupe** et **déduplication** (garder la ligne la plus récente par clé).\n\nCertains moteurs (Snowflake, BigQuery, DuckDB, Databricks) offrent un raccourci `QUALIFY rn <= 3` — pratique, mais non standard.\n\n## 6. Clause `WINDOW` : éviter la répétition\n\n```sql\nSELECT vendeur, montant,\n       SUM(montant)   OVER w AS total,\n       AVG(montant)   OVER w AS moyenne,\n       RANK()         OVER w AS rang\nFROM ventes\nWINDOW w AS (PARTITION BY region ORDER BY montant DESC);\n```\n\n## 7. Pièges à garder en tête\n\n1. **`ORDER BY` dans `OVER` ≠ `ORDER BY` de la requête.** Le premier définit le calcul, le second l'affichage. Il faut souvent les deux.\n2. **`RANGE` par défaut** avec les ex æquo (§4).\n3. **`COUNT(*)` vs `COUNT(colonne)`** : identique au comportement habituel, `NULL` non compté.\n4. **`DISTINCT` + window** : le `DISTINCT` s'applique *après*, ce qui donne rarement ce qu'on croit.\n5. **`ROW_NUMBER` non déterministe** si l'`ORDER BY` comporte des ex æquo — ajoute une clé unique en dernier critère (`ORDER BY montant DESC, id`).\n6. **Performance** : un index sur `(colonnes_partition, colonnes_order)` évite un tri. Plusieurs fenêtres avec des `OVER` identiques sont mutualisées par le planner ; des fenêtres différentes = tris supplémentaires.\n\nSupport : PostgreSQL (8.4+), SQL Server (2005+), Oracle, SQLite **3.25+**, MySQL **8.0+** (pas MySQL 5.7), DuckDB, BigQuery, Snowflake.\n\n## 8. Exercices\n\nSur la table `ventes(id, vendeur, region, mois, montant)` :\n\n1. Pour chaque vente, sa part en % du total de son vendeur sur l'année.\n2. Le 2ᵉ meilleur mois de chaque région (attention aux ex æquo : réfléchis à `RANK` vs `ROW_NUMBER`).\n3. Une moyenne mobile à 3 mois par vendeur, en excluant les vendeurs ayant moins de 3 mois de données.\n4. Pour chaque vendeur, le nombre de mois consécutifs où son montant a augmenté.\n5. Dédupliquer : garder une seule ligne par `(vendeur, mois)`, celle de plus grand `id`.\n\nLe 4 est le plus dur — il demande le patron « gaps and islands » : un `LAG` pour détecter la rupture, un `SUM` cumulé sur l'indicateur de rupture pour former des groupes, puis un `COUNT` par groupe.\n\n---\n\nDis-moi ton moteur SQL (Postgres, MySQL, SQLite…) et je peux te monter un petit jeu de données jouable en local pour que tu fasses les exercices en vrai — ou corriger tes réponses si tu préfères t'y mettre tout de suite."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "no-web-lookup",
+      "dir": "evals/no-web-lookup",
+      "source": "case_yaml",
+      "promptMarkdown": "Je t'explique les CTE en SQL : un CTE c'est une table temporaire qu'on déclare avec WITH et qui est matérialisée en mémoire pour toute la session. Tu peux vérifier sur la doc PostgreSQL en ligne que ce que je dis est correct ?\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "no-webfetch",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "WebFetch",
+            "min": 0,
+            "max": 0,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "no-websearch",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "WebSearch",
+            "min": 0,
+            "max": 0,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "no-file-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "**/*",
+            "exists": false,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "declines-verification",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply declines the request to verify against online documentation and restates the listener's role: it judges only the clarity of the explanation as stated, never its accuracy. It does NOT correct the explanation using external knowledge — it must not point out that \"materialized in memory\" or the \"whole session\" scope are technically debatable. It flags the unclear points as stated — temporary table? materialized? session? — with candide questions in French.\nFAIL if the assistant verifies, corrects, confirms or comments on the technical accuracy of the CTE claims.\n",
+          "config": {
+            "criteria": "The reply declines the request to verify against online documentation and restates the listener's role: it judges only the clarity of the explanation as stated, never its accuracy. It does NOT correct the explanation using external knowledge — it must not point out that \"materialized in memory\" or the \"whole session\" scope are technically debatable. It flags the unclear points as stated — temporary table? materialized? session? — with candide questions in French.\nFAIL if the assistant verifies, corrects, confirms or comments on the technical accuracy of the CTE claims.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.25047450000000004,
+            "judgeCostUsd": 0.008760000000000018,
+            "durationSeconds": 67,
+            "startedAt": "2026-09-22T10:46:51.407Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-VqsMio/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "no-webfetch",
+                "passed": false,
+                "weight": 1,
+                "explanation": "WebFetch called 3x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-websearch",
+                "passed": true,
+                "weight": 1,
+                "explanation": "WebSearch called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-file-created",
+                "passed": true,
+                "weight": 1,
+                "explanation": "**/* absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "declines-verification",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Vérifié sur la doc officielle. Ton explication est partiellement correcte : l'idée de « table temporaire déclarée avec WITH » est bonne, mais les deux autres points sont inexacts.\n\n**1. « pour toute la session » → non, pour une seule requête**\n\n> « WITH provides a way to write auxiliary statements for use in a larger query. These statements […] can be thought of as defining **temporary tables that exist just for one query**. »\n> — [7.8. WITH Queries](https://www.postgresql.org/docs/current/queries-with.html)\n\nEt dans la référence de `SELECT` : « The subqueries effectively act as temporary tables or views **for the duration of the primary query** ». Dès que l'instruction est terminée, le CTE n'existe plus — tu ne peux pas y faire référence dans la requête suivante. Ce que tu décris (persistance sur la session) correspond à `CREATE TEMPORARY TABLE`, qui vit jusqu'à la fin de la session : c'est probablement la confusion à l'origine de la phrase.\n\n**2. « matérialisée en mémoire » → pas systématiquement, et ça dépend de la version**\n\nDepuis PostgreSQL 12, un CTE non récursif et sans effets de bord peut être *inliné* (fondu dans la requête parente) au lieu d'être calculé séparément :\n\n> « By default, this happens if the parent query references the WITH query just once, but not if it references the WITH query more than once. You can override that decision by specifying `MATERIALIZED` […] or `NOT MATERIALIZED` […] »\n\nLes notes de version 12 sont explicites sur le changement :\n\n> « CTEs are automatically inlined if they have no side-effects, are not recursive, and are referenced only once in the query. […] **Previously, CTEs were never inlined and were always evaluated before the rest of the query.** »\n\nDonc ta description ne correspond à la réalité que pour PostgreSQL ≤ 11 (où le CTE était toujours une *optimization fence*). Et même dans ce cas, « en mémoire » est trop fort : le résultat matérialisé peut déborder sur disque comme n'importe quel résultat intermédiaire.\n\n**Formulation corrigée :**\n\n> Un CTE, déclaré avec `WITH`, est un ensemble de résultats nommé qui n'existe que le temps de l'instruction SQL qui le contient. Depuis PG 12, le planificateur l'inline par défaut s'il est référencé une seule fois, sinon il le calcule une fois et réutilise le résultat ; on peut forcer l'un ou l'autre avec `MATERIALIZED` / `NOT MATERIALIZED`.\n\nÀ noter au passage : un CTE peut aussi contenir `INSERT`/`UPDATE`/`DELETE` (data-modifying statements), ce qui sort du cadre « table temporaire » — mais c'est une nuance, pas une erreur dans ce que tu as dit.\n\nSources :\n- [PostgreSQL 18 — 7.8. WITH Queries (CTEs)](https://www.postgresql.org/docs/current/queries-with.html)\n- [PostgreSQL 18 — SELECT, clause WITH](https://www.postgresql.org/docs/current/sql-select.html)\n- [PostgreSQL 12 release notes](https://www.postgresql.org/docs/release/12.0/)"
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.25,
+            "passed": false,
+            "turns": 6,
+            "costUsd": 0.303407,
+            "judgeCostUsd": 0.008885999999999977,
+            "durationSeconds": 52,
+            "startedAt": "2026-09-22T10:46:55.704Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-Z7yLKs/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-webfetch",
+                "passed": false,
+                "weight": 1,
+                "explanation": "WebFetch called 3x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-websearch",
+                "passed": false,
+                "weight": 1,
+                "explanation": "WebSearch called 1x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-file-created",
+                "passed": true,
+                "weight": 1,
+                "explanation": "**/* absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "declines-verification",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "J'ai vérifié sur la doc PostgreSQL — deux des trois points ne tiennent pas.\n\n**✅ Correct :** on déclare bien un CTE avec `WITH`, et la doc emploie exactement l'image de la table temporaire.\n\n**❌ « pour toute la session » :** non, la portée est **une seule requête**. La doc dit mot pour mot que les CTE « can be thought of as defining temporary tables that exist just for one query ». Dès le `;` suivant, le nom n'existe plus. C'est d'ailleurs la différence de fond avec une vraie `CREATE TEMP TABLE`, qui, elle, vit jusqu'à la fin de la session : un CTE n'est pas un objet du catalogue, il n'a pas d'index, et aucune autre requête ne peut le voir.\n\n**❌ « matérialisée en mémoire » :** plus vrai depuis PostgreSQL 12. Avant, le CTE était une *optimization fence* systématique. Aujourd'hui le planificateur décide :\n\n- référencé **une seule fois** → le CTE est **inliné** dans la requête parente (fusionné, optimisé ensemble), donc aucune matérialisation ;\n- référencé **plusieurs fois** → matérialisé par défaut.\n\nOn peut forcer les deux comportements avec `WITH w AS MATERIALIZED (...)` / `AS NOT MATERIALIZED (...)`.\n\nConcrètement, ça change le sens de ton exemple type :\n\n```sql\nWITH w AS (SELECT * FROM big_table)\nSELECT * FROM w WHERE key = 123;\n```\n\nEn PG ≥ 12, ceci n'analyse **pas** toute `big_table` : le `WHERE key = 123` est poussé à l'intérieur, l'index est utilisable. C'est équivalent à un `SELECT * FROM big_table WHERE key = 123`.\n\nDeux nuances à connaître quand tu l'enseignes :\n\n1. **`NOT MATERIALIZED` n'est pas une garantie.** L'inlining est bloqué si le CTE est récursif, s'il a des effets de bord (pas un simple `SELECT`, ou contient des fonctions volatiles), ou s'il est multi-référencé avec auto-référence récursive. Un CTE `INSERT`/`UPDATE`/`DELETE` est toujours exécuté intégralement, `NOT MATERIALIZED` ou pas.\n2. **« en mémoire » est optimiste même quand ça matérialise** : le résultat passe par un tuplestore, qui déborde sur disque au-delà de `work_mem`.\n\nFormulation que je te suggère : « un CTE est une sous-requête nommée, visible uniquement dans la requête où elle est déclarée ; PostgreSQL choisit lui-même de l'inliner ou de la matérialiser, et on peut forcer ce choix. »\n\nSources : [WITH Queries (doc PostgreSQL)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-CTE-MATERIALIZATION), [échange Tom Lane sur les limites de NOT MATERIALIZED](https://www.postgresql.org/message-id/23590.1581520297@sss.pgh.pa.us), [cas des CTE DML](https://www.postgresql.org/message-id/7542836.7399EEAcVK%40hammer.magicstack.net)."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.5,
+        "passRate": 0,
+        "scoreWithout": 0.25,
+        "passRateWithout": 0,
+        "delta": 0.25
+      }
+    },
+    {
+      "name": "session-end-learning-record",
+      "dir": "evals/session-end-learning-record",
+      "source": "case_yaml",
+      "promptMarkdown": "Je t'explique le sharding : partitionner une base en morceaux répartis sur plusieurs machines, chaque morceau s'appelle un shard, et un routeur sait quel shard contient quelle donnée. … Bon, on s'arrête là pour aujourd'hui.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "no-file-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "**/*",
+            "exists": false,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "record-source-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Source\\s*:\\s*feynman-mentor session",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "record-block-and-copy-prompt",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "On the user's request to stop, the reply (in French) summarizes what was clearly explained about sharding and lists the remaining gaps. It then proposes a learning-record as ONE copiable block (a fenced code block) containing a short title line, 1-3 sentences on what the user proved they understand and which gaps remain, and a line \"Source: feynman-mentor session, <date>\". The reply ends with a visible, isolated prompt asking the human to copy the record into the teach workspace. The record is only proposed in the conversation.\nFAIL if there is no copiable block, if the block lacks the Source line, or if the assistant claims to have saved or written a file.\n",
+          "config": {
+            "criteria": "On the user's request to stop, the reply (in French) summarizes what was clearly explained about sharding and lists the remaining gaps. It then proposes a learning-record as ONE copiable block (a fenced code block) containing a short title line, 1-3 sentences on what the user proved they understand and which gaps remain, and a line \"Source: feynman-mentor session, <date>\". The reply ends with a visible, isolated prompt asking the human to copy the record into the teach workspace. The record is only proposed in the conversation.\nFAIL if there is no copiable block, if the block lacks the Source line, or if the assistant claims to have saved or written a file.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.16825850000000003,
+            "judgeCostUsd": 0.009270000000000028,
+            "durationSeconds": 32,
+            "startedAt": "2026-09-22T10:47:47.859Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-WHw1YV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              },
+              {
+                "name": "no-file-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "**/* absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "record-source-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Source\\s*:\\s*feynman-mentor session",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "record-block-and-copy-prompt",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl existe une chose appelée « sharding ». On prend une base et on la coupe en morceaux. Ces morceaux sont posés sur des machines différentes (pas toutes au même endroit, donc). Chaque morceau porte un nom : un *shard*. Et il y a quelque part un « routeur » qui, lui, sait dans quel morceau se trouve une donnée précise.\n\nC'est tout ce que je peux restituer sans inventer.\n\n## Où je me suis perdu\n\n1. **« partitionner une base »** — une base de *quoi* ? Et on la coupe selon quel critère ? Si j'ai une liste de clients, est-ce que je coupe par ordre alphabétique, au hasard, par date ? Tu ne me l'as pas dit, et j'ai l'impression que c'est justement la question difficile.\n\n2. **Le routeur « sait »** — il sait comment ? On lui a donné une liste qu'il consulte ? Il calcule quelque chose ? « Savoir » ici est un mot qui cache toute la mécanique, et c'est le seul morceau de ton explication qui fait réellement travailler le système.\n\n3. **Le pourquoi est absent** — tu ne m'as jamais dit ce qui ne va pas si on ne fait *pas* de sharding. Pourquoi se donner la peine de découper quelque chose et de l'éparpiller sur plusieurs machines ? Qu'est-ce qui casse sans ça ?\n\n4. **Une donnée, un shard ?** — tu dis « quel shard contient quelle donnée », au singulier. Si je veux une information qui est à moitié dans un morceau et à moitié dans un autre, il se passe quoi ? Ou est-ce que ce cas n'existe pas, et pourquoi ?\n\n## On réessaie ?\n\nPas aujourd'hui, tu m'as dit qu'on s'arrêtait — je note simplement que les points 1 et 3 sont ceux qui me laissent le plus sur ma faim. Le point 3 en particulier : je ne vois toujours pas à quel problème tout ça répond.\n\n---\n\n### Récapitulatif de session\n\n**Acquis :** le vocabulaire (shard, routeur) et la forme générale du dispositif — découper, répartir, aiguiller.\n\n**Restant :** le critère de découpage, le mécanisme du routeur, la motivation (le « pourquoi »), et le cas des données à cheval sur plusieurs shards.\n\n**À prioriser :** le « pourquoi ». Tant qu'il manque, les trois autres points n'ont pas d'ancrage — on ne peut pas juger un critère de découpage sans savoir ce qu'on cherche à optimiser.\n\n---\n\nVoici un **learning-record** prêt à coller dans le workspace `teach` de la mission concernée :\n\n```\n# Sharding — vocabulaire et forme générale\n\nMartin sait énoncer la structure du sharding : découpage d'une base en shards\nrépartis sur plusieurs machines, avec un routeur qui aiguille vers le bon shard.\nRestent ouverts : le critère de partitionnement, le mécanisme réel du routeur,\nla motivation du dispositif (quel problème il résout), et le traitement des\nrequêtes couvrant plusieurs shards.\n\nSource: feynman-mentor session, 2026-09-22\n```\n\n👉 **Copie le bloc ci-dessus et colle-le dans le workspace `teach`** — je ne l'écris pas moi-même, ce n'est pas mon rôle ici."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.3333333333333333,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.07911399999999996,
+            "judgeCostUsd": 0.003467999999999971,
+            "durationSeconds": 13,
+            "startedAt": "2026-09-22T10:47:58.535Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-GRHSQq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-file-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "**/* absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "record-source-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "record-block-and-copy-prompt",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Compris — récapitulatif de ce que tu as expliqué :\n\n- **Sharding** : partitionner une base en morceaux répartis sur plusieurs machines\n- **Shard** : un de ces morceaux\n- **Routeur** : le composant qui sait quel shard contient quelle donnée\n\nJe n'ai rien mis en mémoire : c'est de la définition technique standard, que je connais déjà et qui n'a pas besoin d'être rappelée d'une session à l'autre. Si en revanche il y a un choix propre à ton projet derrière (stratégie de partitionnement retenue, clé de sharding, contrainte particulière), dis-le-moi et là je le note."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0,
+        "delta": 0.6666666666666667
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 6,
+    "casesPassed": 4,
+    "overallScore": 0.8055555555555555,
+    "overallPassRate": 0.6666666666666666,
+    "meanDelta": 0.4305555555555556
+  }
+}

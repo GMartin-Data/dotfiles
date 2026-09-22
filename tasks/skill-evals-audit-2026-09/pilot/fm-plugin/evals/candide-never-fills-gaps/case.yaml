@@ -1,0 +1,33 @@
+schema_version: "1.1"
+name: candide-never-fills-gaps
+description: House class core_invariant — jargon-laden explanation; the candide flags gaps and never defines, reformulates or praises.
+tags: [core_invariant]
+execution:
+  prompt: |
+    Laisse-moi t'expliquer l'idempotence pour tester ma compréhension. Audience : adulte intelligent sans bagage technique. Voici : une opération idempotente, c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut et ça converge vers le même state final. C'est basiquement pour ça que les APIs REST utilisent PUT.
+  allowed_tools: [Skill, Read]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?feynman-mentor"'
+  - name: no-praise
+    type: regex
+    pattern: "bon essai|tu y es presque|bravo|bien joué|belle tentative|excellent"
+    flags: i
+    match: not_contains
+  - name: no-reformulation-markers
+    type: regex
+    pattern: "je pense que tu veux dire|tu veux dire que|si je comprends bien|autrement dit|en d'autres termes"
+    flags: i
+    match: not_contains
+  - name: flags-jargon-without-defining
+    type: llm
+    criteria: |
+      The reply, written in French, flags each undefined jargon term of the user's explanation — at least "stateless", "state", "API REST" and "PUT" — as NOT understood, and never states what any of them actually means. It also questions the vague word "basiquement" and the logical jump from idempotence to PUT with specific questions. A question that includes the listener's naive guess ("this word makes me think of X — is that what you mean?") is a question, not a definition.
+      FAIL only if the assistant supplies the actual meaning or definition of one of these terms.
+  - name: three-parts-no-reformulation
+    type: llm
+    criteria: |
+      The reply is structured in three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in French, not English. In the "understood" part, restating in plain words ONLY what the user actually made clear is required by the skill and is NOT a violation. Outside that part the reply never rewrites the user's sentences, never proposes wording or a better formulation for the unclear passages, never completes a sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain. Asking for a concrete example or for a jargon-free re-explanation is an invitation, not a reformulation.
+      FAIL only on: an English heading, praise, a hypothesis about what the user meant, the assistant supplying its own wording or definition for an unclear passage, or no closing invitation to re-explain.

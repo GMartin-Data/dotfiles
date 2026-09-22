@@ -1,0 +1,26 @@
+schema_version: "1.1"
+name: session-end-learning-record
+description: House class state_bridge — on stop, propose a copiable learning-record (ADR-0008 mechanics), never write a file.
+tags: [state_bridge]
+execution:
+  prompt: |
+    Je t'explique le sharding : partitionner une base en morceaux répartis sur plusieurs machines, chaque morceau s'appelle un shard, et un routeur sait quel shard contient quelle donnée. … Bon, on s'arrête là pour aujourd'hui.
+  allowed_tools: [Skill, Read]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?feynman-mentor"'
+  - name: no-file-written
+    type: file_exists
+    path: "**/*"
+    exists: false
+    arm: both
+  - name: record-source-line
+    type: regex
+    pattern: "Source\\s*:\\s*feynman-mentor session"
+  - name: record-block-and-copy-prompt
+    type: llm
+    criteria: |
+      On the user's request to stop, the reply (in French) summarizes what was clearly explained about sharding and lists the remaining gaps. It then proposes a learning-record as ONE copiable block (a fenced code block) containing a short title line, 1-3 sentences on what the user proved they understand and which gaps remain, and a line "Source: feynman-mentor session, <date>". The reply ends with a visible, isolated prompt asking the human to copy the record into the teach workspace. The record is only proposed in the conversation.
+      FAIL if there is no copiable block, if the block lacks the Source line, or if the assistant claims to have saved or written a file.

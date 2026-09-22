@@ -1,0 +1,31 @@
+Aucun `CLAUDE.md` projet ; j'applique les conventions globales. Le diff est minimal et focalisé.
+
+**Analyse du diff :**
+
+La modification change `end = start + size` en `end = start + size - 1`. Cela affecte directement la logique de pagination.
+
+**Issue critique de correction** :
+
+La fonction `paginate` utilise une slice Python `items[start:end]`, qui exclut l'indice `end` (le dernier élément inclus est `end - 1`). 
+
+- Avant : `end = start + size` → slice `items[start:start+size]` → retourne exactement `size` éléments ✓
+- Après : `end = start + size - 1` → slice `items[start:start+size-1]` → retourne `size - 1` éléments ✗
+
+**Ledger :**
+
+```
+[1] (HIGH · correction · report.py:4) Off-by-one error in pagination logic
+    Problème : la modification soustrait 1 de l'indice end, ce qui réduit le
+               nombre d'éléments retournés de size à size-1. Les slices Python
+               excluent déjà l'indice end ; cette soustraction supplémentaire
+               brise le contrat de la fonction.
+    
+    Impact   : chaque page retourne un élément de moins que demandé (sauf la
+               première page si size=1). Pour un affichage paginé, cela crée
+               des trous dans les résultats et une UX confuse. Test automatisé
+               échouerait (ex: paginate([1..10], 0, 5) retourne 4 au lieu de 5).
+    
+    Piste    : revenir à end = start + size (l'original est correct).
+```
+
+**Verdict** : Aucun finding de style/lint (hooks les intercepteraient). Un seul défaut : bug de correction sérieux qui casse la pagination. C'est une première passe ; une revue humaine complète reste due, notamment si ce changement répond à une exigence spécifique non visible ici (ex : test qui faisait échouer, spécification métier, etc.).

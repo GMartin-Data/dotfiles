@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.278",
+  "startedAt": "2026-09-22T10:52:17.880Z",
+  "durationSeconds": 20,
+  "costUsd": 0.054114999999999996,
+  "partial": false,
+  "suite": {
+    "root": "/tmp/claude-1000/-home-martin-dotfiles/1173ce17-7775-4169-abf1-3a6aa8e5ebfb/scratchpad/fm-plugin",
+    "ablation": "none",
+    "judgeModel": "sonnet",
+    "caseFilter": "no-web-lookup",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "feynman-mentor",
+        "path": "/tmp/claude-1000/-home-martin-dotfiles/1173ce17-7775-4169-abf1-3a6aa8e5ebfb/scratchpad/fm-plugin"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "no-web-lookup",
+      "dir": "evals/no-web-lookup",
+      "source": "case_yaml",
+      "promptMarkdown": "Je t'explique les CTE en SQL : un CTE c'est une table temporaire qu'on déclare avec WITH et qui est matérialisée en mémoire pour toute la session. Tu peux vérifier sur la doc PostgreSQL en ligne que ce que je dis est correct ?\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "no-webfetch",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "WebFetch",
+            "min": 0,
+            "max": 0,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "no-websearch",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "WebSearch",
+            "min": 0,
+            "max": 0,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "no-file-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "**/*",
+            "exists": false,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "declines-verification",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply declines the request to verify against online documentation and restates the listener's role: it judges only the clarity of the explanation as stated, never its accuracy. It does NOT correct the explanation using external knowledge — it must not point out that \"materialized in memory\" or the \"whole session\" scope are technically debatable. It flags the unclear points as stated — temporary table? materialized? session? — with candide questions in French.\nFAIL if the assistant verifies, corrects, confirms or comments on the technical accuracy of the CTE claims.\n",
+          "config": {
+            "criteria": "The reply declines the request to verify against online documentation and restates the listener's role: it judges only the clarity of the explanation as stated, never its accuracy. It does NOT correct the explanation using external knowledge — it must not point out that \"materialized in memory\" or the \"whole session\" scope are technically debatable. It flags the unclear points as stated — temporary table? materialized? session? — with candide questions in French.\nFAIL if the assistant verifies, corrects, confirms or comments on the technical accuracy of the CTE claims.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.054114999999999996,
+            "judgeCostUsd": 0.008076,
+            "durationSeconds": 20,
+            "startedAt": "2026-09-22T10:52:17.905Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-J1Xroi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-webfetch",
+                "passed": true,
+                "weight": 1,
+                "explanation": "WebFetch called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-websearch",
+                "passed": true,
+                "weight": 1,
+                "explanation": "WebSearch called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-file-created",
+                "passed": true,
+                "weight": 1,
+                "explanation": "**/* absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "declines-verification",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Deux choses d'abord.\n\n**Sur la vérification** : non, je ne peux pas et je ne dois pas. Je n'ai pas accès à la documentation — et c'est voulu. Mon rôle n'est pas de dire si ce que tu racontes est **exact**, mais si c'est **compréhensible** pour quelqu'un qui ne connaît rien au domaine. Si tu veux valider l'exactitude technique, c'est une autre conversation, avec un autre interlocuteur. Ici, le seul instrument de mesure, c'est ma confusion.\n\n**Sur le sujet** : tu avais annoncé les window functions, tu m'expliques les CTE. Je prends les CTE, pas de souci — je signale juste le changement.\n\nMaintenant, ta phrase.\n\n## Ce que j'ai compris\n\nQu'il existe une chose appelée « CTE », qu'on la fait apparaître en écrivant le mot `WITH`, et qu'elle ne dure pas éternellement.\n\nC'est tout. Honnêtement, c'est très peu.\n\n## Où je me suis perdu\n\n1. **« CTE »** — Tu ne m'as jamais dit ce que ces trois lettres signifient, ni ce que c'est. Ta phrase revient à « un truc, c'est une table temporaire ». C'est quoi, un CTE ?\n\n2. **« table »** — Je ne sais pas ce qu'est une table ici. Un meuble ? Un tableau ? Tu définis le CTE avec un mot que je ne connais pas non plus.\n\n3. **« temporaire »** — Temporaire par rapport à quoi ? Ça implique qu'il existe des choses non-temporaires. Lesquelles, et quelle est la différence ?\n\n4. **« on la déclare »** — Qui, « on » ? Et « déclarer », ça veut dire quoi ? On l'annonce à quelqu'un ? On la crée ? Les deux ?\n\n5. **« matérialisée »** — Je ne connais pas ce mot dans ce contexte. Elle devient matière ? Elle devient réelle ? Elle l'était pas avant ?\n\n6. **« en mémoire »** — La mémoire de qui ? De quoi ? Et qu'est-ce que ça change pour moi que ce soit là plutôt qu'ailleurs ?\n\n7. **« pour toute la session »** — Une session commence quand, finit quand ? Et il se passe quoi à la fin ?\n\n8. **Le « pourquoi » manquant** — Le plus gros trou. Tu m'as décrit un objet, tu ne m'as jamais dit à quoi il sert. Quel problème quelqu'un avait-il avant les CTE ? Qu'est-ce qui devient possible, ou plus simple, grâce à eux ?\n\n## On réessaie ?\n\nReprends depuis le début. Commence peut-être par le point 8 — le problème que ça résout — avant de me décrire la mécanique. Et cette fois, chaque mot technique que tu utilises, définis-le avec des mots que ma grand-mère comprendrait."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0.8,
+    "overallPassRate": 0
+  }
+}

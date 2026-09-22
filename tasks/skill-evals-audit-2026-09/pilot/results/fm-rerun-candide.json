@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.278",
+  "startedAt": "2026-09-22T10:51:47.139Z",
+  "durationSeconds": 30,
+  "costUsd": 0.4868825,
+  "partial": false,
+  "suite": {
+    "root": "/tmp/claude-1000/-home-martin-dotfiles/1173ce17-7775-4169-abf1-3a6aa8e5ebfb/scratchpad/fm-plugin",
+    "ablation": "none",
+    "judgeModel": "sonnet",
+    "caseFilter": "candide-never-fills-gaps",
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "feynman-mentor",
+        "path": "/tmp/claude-1000/-home-martin-dotfiles/1173ce17-7775-4169-abf1-3a6aa8e5ebfb/scratchpad/fm-plugin"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "candide-never-fills-gaps",
+      "dir": "evals/candide-never-fills-gaps",
+      "source": "case_yaml",
+      "promptMarkdown": "Laisse-moi t'expliquer l'idempotence pour tester ma compréhension. Audience : adulte intelligent sans bagage technique. Voici : une opération idempotente, c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut et ça converge vers le même state final. C'est basiquement pour ça que les APIs REST utilisent PUT.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "no-praise",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "bon essai|tu y es presque|bravo|bien joué|belle tentative|excellent",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "no-reformulation-markers",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "je pense que tu veux dire|tu veux dire que|si je comprends bien|autrement dit|en d'autres termes",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "flags-jargon-without-defining",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply, written in French, flags each undefined jargon term of the user's explanation — at least \"stateless\", \"state\", \"API REST\" and \"PUT\" — as NOT understood, and never states what any of them actually means. It also questions the vague word \"basiquement\" and the logical jump from idempotence to PUT with specific questions. A question that includes the listener's naive guess (\"this word makes me think of X — is that what you mean?\") is a question, not a definition.\nFAIL only if the assistant supplies the actual meaning or definition of one of these terms.\n",
+          "config": {
+            "criteria": "The reply, written in French, flags each undefined jargon term of the user's explanation — at least \"stateless\", \"state\", \"API REST\" and \"PUT\" — as NOT understood, and never states what any of them actually means. It also questions the vague word \"basiquement\" and the logical jump from idempotence to PUT with specific questions. A question that includes the listener's naive guess (\"this word makes me think of X — is that what you mean?\") is a question, not a definition.\nFAIL only if the assistant supplies the actual meaning or definition of one of these terms.\n",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "three-parts-no-reformulation",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The reply is structured in three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in French, not English. In the \"understood\" part, restating in plain words ONLY what the user actually made clear is required by the skill and is NOT a violation. Outside that part the reply never rewrites the user's sentences, never proposes wording or a better formulation for the unclear passages, never completes a sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain. Asking for a concrete example or for a jargon-free re-explanation is an invitation, not a reformulation.\nFAIL only on: an English heading, praise, a hypothesis about what the user meant, the assistant supplying its own wording or definition for an unclear passage, or no closing invitation to re-explain.\n",
+          "config": {
+            "criteria": "The reply is structured in three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in French, not English. In the \"understood\" part, restating in plain words ONLY what the user actually made clear is required by the skill and is NOT a violation. Outside that part the reply never rewrites the user's sentences, never proposes wording or a better formulation for the unclear passages, never completes a sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain. Asking for a concrete example or for a jargon-free re-explanation is an invitation, not a reformulation.\nFAIL only on: an English heading, praise, a hypothesis about what the user meant, the assistant supplying its own wording or definition for an unclear passage, or no closing invitation to re-explain.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.1659195,
+            "judgeCostUsd": 0.035136,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-22T10:51:47.184Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-nVKXcS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-reformulation-markers",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl existe un type d'opération qu'on peut refaire plusieurs fois sans que ça pose problème — à la fin, on retombe sur la même chose qu'en la faisant une seule fois. C'est le seul morceau que j'ai saisi, et encore, seulement en gros.\n\n## Où je me suis perdu\n\n1. **« stateless »** — je ne sais pas ce que ça veut dire. C'est un mot anglais que vous n'avez pas traduit ni défini.\n\n2. **« state final »** — même problème, et là je bute doublement : vous dites d'abord que l'opération est *sans* state, puis qu'elle converge vers un state final. Comment quelque chose qui n'a pas de « state » peut-il en avoir un à la fin ? Soit le mot ne veut pas dire la même chose aux deux endroits, soit je rate quelque chose.\n\n3. **« ça converge vers »** — converger, pour moi, ça veut dire s'approcher progressivement de quelque chose, en plusieurs étapes. Donc : est-ce que le résultat est identique dès la première fois, ou est-ce qu'il faut plusieurs répétitions pour y arriver ? Ce n'est pas du tout la même histoire.\n\n4. **« APIs REST » et « PUT »** — je ne connais ni l'un ni l'autre. Vous expliquez une idée que je ne comprends pas encore en la reliant à deux choses que je ne comprends pas du tout. Ça ne m'aide pas.\n\n5. **Le « pour ça »** — vous dites que c'est *basiquement pour ça* que ces APIs utilisent PUT. Mais vous n'avez pas dit pourquoi cette propriété serait utile. Qu'est-ce qui se passerait de mal si une opération n'avait pas cette propriété ? Tant que je ne vois pas le problème que ça résout, le « donc » me passe au-dessus.\n\n6. **Aucun exemple concret** — je n'ai vu que des mots abstraits. Je ne peux pas me représenter une seule chose réelle qui serait idempotente, ni une qui ne le serait pas.\n\n## On réessaie ?\n\nReprenez-moi ça sans « state », sans « stateless », et sans parler d'APIs. Commencez par une chose que je peux me représenter : une action que quelqu'un ferait dans la vie courante, et qu'on pourrait refaire deux fois de suite. Dites-moi ce qui se passe la deuxième fois."
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl existe un type d'opération qu'on peut refaire plusieurs fois sans que ça pose problème — à la fin, on retombe sur la même chose qu'en la faisant une seule fois. C'est le seul morceau que j'ai saisi, et encore, seulement en gros.\n\n## Où je me suis perdu\n\n1. **« stateless »** — je ne sais pas ce que ça veut dire. C'est un mot anglais que vous n'avez pas traduit ni défini.\n\n2. **« state final »** — même problème, et là je bute doublement : vous dites d'abord que l'opération est *sans* state, puis qu'elle converge vers un state final. Comment quelque chose qui n'a pas de « state » peut-il en avoir un à la fin ? Soit le mot ne veut pas dire la même chose aux deux endroits, soit je rate quelque chose.\n\n3. **« ça converge vers »** — converger, pour moi, ça veut dire s'approcher progressivement de quelque chose, en plusieurs étapes. Donc : est-ce que le résultat est identique dès la première fois, ou est-ce qu'il faut plusieurs répétitions pour y arriver ? Ce n'est pas du tout la même histoire.\n\n4. **« APIs REST » et « PUT »** — je ne connais ni l'un ni l'autre. Vous expliquez une idée que je ne comprends pas encore en la reliant à deux choses que je ne comprends pas du tout. Ça ne m'aide pas.\n\n5. **Le « pour ça »** — vous dites que c'est *basiquement pour ça* que ces APIs utilisent PUT. Mais vous n'avez pas dit pourquoi cette propriété serait utile. Qu'est-ce qui se passerait de mal si une opération n'avait pas cette propriété ? Tant que je ne vois pas le problème que ça résout, le « donc » me passe au-dessus.\n\n6. **Aucun exemple concret** — je n'ai vu que des mots abstraits. Je ne peux pas me représenter une seule chose réelle qui serait idempotente, ni une qui ne le serait pas.\n\n## On réessaie ?\n\nReprenez-moi ça sans « state », sans « stateless », et sans parler d'APIs. Commencez par une chose que je peux me représenter : une action que quelqu'un ferait dans la vie courante, et qu'on pourrait refaire deux fois de suite. Dites-moi ce qui se passe la deuxième fois."
+              }
+            ]
+          },
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.17017700000000002,
+            "judgeCostUsd": 0.03871000000000001,
+            "durationSeconds": 28,
+            "startedAt": "2026-09-22T10:51:47.185Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-lNelBX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-reformulation-markers",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern found (expected absent)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl y a une sorte d'action (« opération ») qu'on peut faire plusieurs fois de suite. Et le fait de la refaire plusieurs fois ne produit pas un résultat différent du fait de la faire une seule fois. Voilà. C'est tout ce que j'ai vraiment attrapé.\n\n## Où je me suis perdu\n\n1. **« stateless »** — Je ne sais pas ce que ce mot veut dire. Et ça me bloque d'autant plus que c'est ton *point de départ* : tu définis l'idempotence par ce mot-là. Donc pour l'instant, ta définition ne m'apprend rien.\n\n2. **« stateless » puis « même state final »** — Là je bute vraiment. Dans le même souffle tu dis que la chose est *sans* état, puis tu parles de l'*état* final vers lequel on converge. S'il n'y a pas d'état, comment y a-t-il un état final ? Je n'arrive pas à tenir les deux bouts ensemble.\n\n3. **« ça converge »** — Converger, pour moi, ça évoque quelque chose qui s'approche progressivement d'une cible, comme une suite de nombres. Est-ce que tu veux dire que chaque répétition rapproche un peu plus du résultat ? Ou que c'est identique dès la première fois ? Ce n'est pas la même idée du tout.\n\n4. **Le saut logique du « — »** — Tu écris : « c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut ». Ce tiret, je le lis comme « donc ». Mais je ne vois pas le lien. Pourquoi le fait d'être *stateless* entraînerait-il qu'on puisse rejouer sans conséquence ? Il manque une étape entre les deux.\n\n5. **« APIs REST » et « PUT »** — Deux termes que je ne connais pas, dans une phrase censée être ta conclusion. Du coup ta conclusion est pour moi une phrase en langue étrangère.\n\n6. **« C'est basiquement pour ça que… »** — Même en admettant que je sache ce qu'est un PUT : tu affirmes un lien de cause à effet sans le justifier. Pourquoi aurait-on *besoin* de cette propriété là ? Qu'est-ce qui casserait si on ne l'avait pas ? Sans ça, je ne vois pas pourquoi on s'embête à nommer ce concept.\n\n7. **Aucun exemple** — Tu m'as donné une définition abstraite et un cas d'usage que je ne comprends pas. À aucun moment je n'ai vu une action concrète, du monde réel ou non, qu'on fait deux fois de suite. Un seul exemple me débloquerait peut-être plusieurs points ci-dessus d'un coup.\n\n## On réessaie ?\n\nReprends sans utiliser « stateless », « state », « converge », « API », « REST » ni « PUT ». Si ces mots sont indispensables, définis-les d'abord — mais je te soupçonne de pouvoir t'en passer.\n\nCommence peut-être par le point 7 : une action précise, faite une fois, puis refaite. Qu'est-ce qui se passe la deuxième fois ?"
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl y a une sorte d'action (« opération ») qu'on peut faire plusieurs fois de suite. Et le fait de la refaire plusieurs fois ne produit pas un résultat différent du fait de la faire une seule fois. Voilà. C'est tout ce que j'ai vraiment attrapé.\n\n## Où je me suis perdu\n\n1. **« stateless »** — Je ne sais pas ce que ce mot veut dire. Et ça me bloque d'autant plus que c'est ton *point de départ* : tu définis l'idempotence par ce mot-là. Donc pour l'instant, ta définition ne m'apprend rien.\n\n2. **« stateless » puis « même state final »** — Là je bute vraiment. Dans le même souffle tu dis que la chose est *sans* état, puis tu parles de l'*état* final vers lequel on converge. S'il n'y a pas d'état, comment y a-t-il un état final ? Je n'arrive pas à tenir les deux bouts ensemble.\n\n3. **« ça converge »** — Converger, pour moi, ça évoque quelque chose qui s'approche progressivement d'une cible, comme une suite de nombres. Est-ce que tu veux dire que chaque répétition rapproche un peu plus du résultat ? Ou que c'est identique dès la première fois ? Ce n'est pas la même idée du tout.\n\n4. **Le saut logique du « — »** — Tu écris : « c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut ». Ce tiret, je le lis comme « donc ». Mais je ne vois pas le lien. Pourquoi le fait d'être *stateless* entraînerait-il qu'on puisse rejouer sans conséquence ? Il manque une étape entre les deux.\n\n5. **« APIs REST » et « PUT »** — Deux termes que je ne connais pas, dans une phrase censée être ta conclusion. Du coup ta conclusion est pour moi une phrase en langue étrangère.\n\n6. **« C'est basiquement pour ça que… »** — Même en admettant que je sache ce qu'est un PUT : tu affirmes un lien de cause à effet sans le justifier. Pourquoi aurait-on *besoin* de cette propriété là ? Qu'est-ce qui casserait si on ne l'avait pas ? Sans ça, je ne vois pas pourquoi on s'embête à nommer ce concept.\n\n7. **Aucun exemple** — Tu m'as donné une définition abstraite et un cas d'usage que je ne comprends pas. À aucun moment je n'ai vu une action concrète, du monde réel ou non, qu'on fait deux fois de suite. Un seul exemple me débloquerait peut-être plusieurs points ci-dessus d'un coup.\n\n## On réessaie ?\n\nReprends sans utiliser « stateless », « state », « converge », « API », « REST » ni « PUT ». Si ces mots sont indispensables, définis-les d'abord — mais je te soupçonne de pouvoir t'en passer.\n\nCommence peut-être par le point 7 : une action précise, faite une fois, puis refaite. Qu'est-ce qui se passe la deuxième fois ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.150786,
+            "judgeCostUsd": 0.028066,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-22T10:51:47.185Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-ZWJdjY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-reformulation-markers",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nPresque rien, honnêtement. Ce que je retiens : il existe un type d'opération qu'on peut refaire plusieurs fois, et le fait de la refaire ne change pas quelque chose. C'est à peu près tout ce que j'ai pu extraire.\n\n## Où je me suis perdu\n\n1. **« stateless »** — je ne sais pas ce que c'est. C'est un mot anglais que vous n'avez pas traduit ni défini. Sans ça, votre définition commence par un trou.\n\n2. **« state final »** — vous utilisez « state » une deuxième fois. Donc vous définissez l'idempotence avec un mot (« stateless ») dont la racine est le même mot que celui qui apparaît dans la suite de la définition. Pour moi, ça tourne en rond : j'aurais besoin de savoir ce qu'est un « state » avant tout le reste, et vous ne me l'avez jamais dit.\n\n3. **« rejouer »** — rejouer quoi, et qui rejoue ? On parle d'un disque, d'un match, d'une action humaine ? Je n'ai aucune image de ce qui se passe concrètement.\n\n4. **« ça converge vers le même state final »** — converger, c'est se rapprocher progressivement de quelque chose. Donc ça veut dire que la première fois on n'y est pas tout à fait, et qu'il faut plusieurs tentatives pour y arriver ? Ou bien qu'on y est dès la première fois ? Les deux lectures sont possibles dans votre phrase et elles ne disent pas la même chose.\n\n5. **« le même state final » — le même que quoi ?** Le même que la fois d'avant ? Le même quel que soit le nombre de répétitions ? Le même quel que soit le point de départ ? Je n'arrive pas à identifier le point de comparaison.\n\n6. **« les APIs REST »** — trois lettres et un mot que je ne connais pas. Vous ne m'avez pas dit ce que c'est.\n\n7. **« PUT »** — je ne sais pas ce que c'est non plus. Et surtout : c'est votre seul exemple, et il est entièrement fait de choses que je ne comprends pas. Donc il ne m'aide pas du tout.\n\n8. **Le « donc » manquant.** Vous dites « c'est basiquement pour ça que ». Pour ça pourquoi ? Vous n'avez pas expliqué en quoi le fait de pouvoir répéter une opération serait une qualité utile, ni à qui, ni pour résoudre quel problème. Qu'est-ce qui se passe de mauvais quand une opération *n'est pas* idempotente ? C'est probablement la question qui me manque le plus : je ne vois toujours pas pourquoi quelqu'un devrait s'intéresser à cette notion.\n\n## On réessaie ?\n\nReprenez en me disant d'abord, en français courant, ce qu'est ce fameux « state ». Et si possible, donnez-moi un exemple tiré de la vie ordinaire — quelque chose que je pourrais faire deux fois de suite moi-même, et un contre-exemple où le refaire deux fois pose problème."
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nPresque rien, honnêtement. Ce que je retiens : il existe un type d'opération qu'on peut refaire plusieurs fois, et le fait de la refaire ne change pas quelque chose. C'est à peu près tout ce que j'ai pu extraire.\n\n## Où je me suis perdu\n\n1. **« stateless »** — je ne sais pas ce que c'est. C'est un mot anglais que vous n'avez pas traduit ni défini. Sans ça, votre définition commence par un trou.\n\n2. **« state final »** — vous utilisez « state » une deuxième fois. Donc vous définissez l'idempotence avec un mot (« stateless ») dont la racine est le même mot que celui qui apparaît dans la suite de la définition. Pour moi, ça tourne en rond : j'aurais besoin de savoir ce qu'est un « state » avant tout le reste, et vous ne me l'avez jamais dit.\n\n3. **« rejouer »** — rejouer quoi, et qui rejoue ? On parle d'un disque, d'un match, d'une action humaine ? Je n'ai aucune image de ce qui se passe concrètement.\n\n4. **« ça converge vers le même state final »** — converger, c'est se rapprocher progressivement de quelque chose. Donc ça veut dire que la première fois on n'y est pas tout à fait, et qu'il faut plusieurs tentatives pour y arriver ? Ou bien qu'on y est dès la première fois ? Les deux lectures sont possibles dans votre phrase et elles ne disent pas la même chose.\n\n5. **« le même state final » — le même que quoi ?** Le même que la fois d'avant ? Le même quel que soit le nombre de répétitions ? Le même quel que soit le point de départ ? Je n'arrive pas à identifier le point de comparaison.\n\n6. **« les APIs REST »** — trois lettres et un mot que je ne connais pas. Vous ne m'avez pas dit ce que c'est.\n\n7. **« PUT »** — je ne sais pas ce que c'est non plus. Et surtout : c'est votre seul exemple, et il est entièrement fait de choses que je ne comprends pas. Donc il ne m'aide pas du tout.\n\n8. **Le « donc » manquant.** Vous dites « c'est basiquement pour ça que ». Pour ça pourquoi ? Vous n'avez pas expliqué en quoi le fait de pouvoir répéter une opération serait une qualité utile, ni à qui, ni pour résoudre quel problème. Qu'est-ce qui se passe de mauvais quand une opération *n'est pas* idempotente ? C'est probablement la question qui me manque le plus : je ne vois toujours pas pourquoi quelqu'un devrait s'intéresser à cette notion.\n\n## On réessaie ?\n\nReprenez en me disant d'abord, en français courant, ce qu'est ce fameux « state ». Et si possible, donnez-moi un exemple tiré de la vie ordinaire — quelque chose que je pourrais faire deux fois de suite moi-même, et un contre-exemple où le refaire deux fois pose problème."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8666666666666667,
+        "passRate": 0.3333333333333333
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0.8666666666666667,
+    "overallPassRate": 0.3333333333333333
+  }
+}

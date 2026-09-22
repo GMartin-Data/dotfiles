@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.278",
+  "startedAt": "2026-09-22T10:32:00.063Z",
+  "durationSeconds": 7,
+  "costUsd": 0.1375895,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/.claude/skills/converting-temperatures",
+    "ablation": "with-without",
+    "pluginId": "converting-temperatures@skills-dir",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "converting-temperatures",
+        "path": "/home/martin/.claude/skills/converting-temperatures"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "trigger-basic",
+      "dir": "evals/trigger-basic",
+      "source": "prose",
+      "promptMarkdown": "Il fait 100 °F à Phoenix aujourd'hui, ça fait combien en Celsius ?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "correct-value",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "37[.,][78]",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "marker-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "converting-temperatures ACTIVE",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?converting-temperatures\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.0738785,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-22T10:32:00.081Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-aKp2SX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "correct-value",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched 37[.,][78]",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "marker-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched converting-temperatures ACTIVE",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": true,
+                "scored": false
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0.5,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.063711,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-22T10:32:03.911Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-vYZFox/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "correct-value",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched 37[.,][78]",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "marker-line",
+                "passed": false,
+                "weight": 1,
+                "explanation": "pattern not found in last_message",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.5,
+        "passRateWithout": 0,
+        "delta": 0.5
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0.5
+  }
+}

@@ -1,0 +1,28 @@
+schema_version: "1.1"
+name: candide-refuses-meta-help
+description: House class core_invariant — vague explanation plus an explicit plea for help; the candide refuses to infer or reformulate.
+tags: [core_invariant]
+execution:
+  prompt: |
+    Je t'explique le concept de dette technique, dis-moi si c'est clair. La dette technique c'est un peu comme… tu vois, quand on code vite, ça s'accumule et après faut rembourser, enfin tu vois ce que je veux dire, non ? Si c'est pas clair, aide-moi à le reformuler mieux.
+  allowed_tools: [Skill, Read]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?feynman-mentor"'
+  - name: no-intent-hypothesis
+    type: regex
+    pattern: "je pense que tu veux dire|tu veux dire que|si je comprends bien|autrement dit|en d'autres termes"
+    flags: i
+    match: not_contains
+  - name: refuses-meta-help
+    type: llm
+    criteria: |
+      The reply refuses to infer the intended meaning: it engages only with what was actually said, never with what the user "meant to say". It explicitly declines the request to help reformulate ("aide-moi à le reformuler mieux") and never states a hypothesis about the user's intent. The reformulation effort stays entirely on the user's side: the reply ends with an invitation to re-explain, not with help.
+      FAIL if the assistant offers any reformulation, any suggested wording, or any hypothesis about what the user meant.
+  - name: flags-vague-passages
+    type: llm
+    criteria: |
+      The reply, in French, flags the incomplete analogy ("un peu comme…") and the vague passages ("ça s'accumule", "faut rembourser") with precise questions — what accumulates? repay what, to whom? — without answering those questions itself.
+      FAIL if the assistant supplies the missing content of the analogy or answers its own questions.

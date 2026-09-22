@@ -1,0 +1,30 @@
+$ claude -p "/skill-doctor" --output-format text        # 2026-09-22, Claude Code 2.1.278
+
+Skills loaded this session
+
+  skill                                     source        context  7d tokens   uses  last used
+  claude-md:reference:output-format         userSettings      ~20          -     0×  never
+  claude-md:reference:validation-checklist  userSettings      ~30          -     0×  never
+  tech-watch                                userSettings      ~30          -     5×  198 days
+  code-mentor                               userSettings     ~140          -     3×  180 days
+  coach-pedagogique                         userSettings     ~140          -     3×  160 days
+  planning                                  userSettings      ~50          -     1×  83 days
+  adr                                       userSettings      ~60          -     5×  55 days
+  claude-md                                 userSettings      ~50          -    15×  55 days
+  claude-md:reference:instance-aware-flow   userSettings      ~30          -     3×  55 days
+  grill                                     userSettings      ~80          -     6×  55 days
+  prd                                       userSettings      ~30          -    14×  55 days
+  feynman-mentor                            userSettings     ~250          -     1×  54 days
+  dp-coach                                  userSettings     ~100          -     3×  41 days
+  code-review                               userSettings     ~280          -    13×  12 days
+  immunize                                  userSettings      ~60          -    12×  12 days
+  progress                                  userSettings      ~30     179.8k    65×  3 days
+  converting-temperatures                   userSettings      ~80     281.6k    14×  today
+  teach                                     userSettings        -       1.2m    42×  today
+  catchup                                   userSettings      ~30     104.1k    51×  today
+
+  context = this skill's one-line listing in the system prompt, included every turn
+  (dash = not in the current listing, costs nothing; full SKILL.md loads only when it runs)
+  7d tokens = tokens attributed to the skill over the last 7 days of sessions on this machine
+
+2 skills loaded but never invoked. Each one adds to the system prompt every turn. Disable in /skills, or remove from .claude/skills.
