@@ -1,5 +1,104 @@
 ## Dernière mise à jour
-Date : 2026-09-12 15:36
+Date : 2026-09-22 14:51
+Session : 1173ce17-7775-4169-abf1-3a6aa8e5ebfb
+
+## Tâches complétées
+
+- **Audit du process d'évaluation des skills et du frontmatter, sur brief
+  externe** (`ca3dce9`, `e53fd5d`) — brief + rapport de doc officielle reçus
+  d'une session d'apprentissage (`~/learning-to-build-skills`, skill `teach`),
+  instruits ici faute d'accès repo depuis ce workspace. Reconnaissance complète
+  (matrice, roadmap, ADR-0009/0010, 3 générations d'evals maison, 15 artefacts
+  frontmatter) puis deux pilotes réels sur `claude plugin eval` (2.1.278,
+  2,80 $) : cobaye `converting-temperatures` (ciblage `@skills-dir`, isolation,
+  coût) et portage intégral du corpus `feynman-mentor` (6/6 invariants
+  traduits, 2 diagnostics de calibrage de rubrique, `history_file` pour le cas
+  « skill déjà active »). Verdict écrit dans
+  `tasks/skill-evals-audit-2026-09.md` : **hybride v2** (runner officiel pour
+  skills et cas mono-tour, driver maison pour interviews multi-tours et
+  variation du payload global, skill-creator retiré) ; **pas de chantier
+  frontmatter autonome** (seul `disallowed-tools` retenu, absorbé par le
+  chantier evals) ; routage par la matrice. Pièces du pilote figées
+  (`tasks/skill-evals-audit-2026-09/pilot/`, 15 fichiers).
+- **Préalable d'environnement traité** (`2d75189`) : sync claude.ai → terminal
+  (active depuis le passage au canal `latest`) contaminait le déclenchement des
+  skills maison avec des copies périmées — `syncClaudeAiSkills: false`, validé
+  par Greg.
+- **ADR-0016 rédigé** (`c5391ba`, `Proposed`, Extends ADR-0009) — capture le
+  verdict du chantier evals : partage runner/driver maison par nombre de tours,
+  règles de design de cas, passage en `Accepted` conditionné à la migration
+  réelle du premier corpus.
+- 5 commits de session poussés (`2d75189` → `c5391ba`) ; ce checkpoint suit.
+
+## En cours
+
+- Rien en session — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Chantier evals, Phase 0 restante** : arbitrage sur l'option `dmi: true`
+   sur les commands rituelles (§4.3 de l'audit) — reporté au cycle /insights du
+   26/09 (décision de portée prise en session, cf. Décisions prises).
+3. **Chantier evals, Phase 1** (session fraîche, ~30-45 min, ~0,5 $) : vérifier
+   sur pièce le packaging `claude/` comme plugin racine (manifest, effets de
+   bord `settings.json`/`hooks/`, `agents/tech-watch-scorer`, `CLAUDE.md`
+   ignoré) — cf. `tasks/skill-evals-audit-2026-09.md` §6 Phase 1.
+4. **Chantier evals, Phase 2** (~2-3 h, 2-4 $) : migration réelle du corpus
+   feynman-mentor sur le packaging validé, `disallowed-tools`, tranche la zone
+   grise du contrat révélée par le pilote (le candide peut-il formuler une
+   lecture naïve en question ?) → passage d'ADR-0016 en `Accepted`.
+5. **Triage /immunize dû** : 1 leçon ruff (2026-09-08) + 3 leçons de l'audit à
+   verser (calibrage de rubrique sur le SKILL.md, discovery ≠ skill active, run
+   unique masque la variance) — cf. `tasks/lessons-inbox.md`.
+6. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact` + reports
+   d'août + option A2/A3 (roadmap) + **nouveau** : option `dmi: true` (point 2
+   ci-dessus) + validation humaine de la roadmap (suspendue depuis le 12/09,
+   désormais en retard d'un cycle).
+7. **Chantier evals, Phase 3** (`claude-md` en skill, déclenche R2+P3) et
+   **Phase 4** (event-driven : code-review au prochain changement de tier D5,
+   sous-ensembles mono-tour des autres corpus) — cf. audit §6.
+8. Roadmap `~/claude-audit-notes/adoption-roadmap.md` : A3 (blinding) allégé
+   par le runner natif, reste à durcir pour G3 seul — à noter à la prochaine
+   mise à jour du document (26/09).
+9. Hors repo, à la main de Greg : purge du cobaye
+   (`~/.claude/skills/converting-temperatures/{.claude-plugin,evals}`, hook
+   `block-rm-rf`) ; learning record `0004-*.md` dans
+   `~/learning-to-build-skills` à partir du §0 de l'audit ; retour au canal
+   `stable` quand stable ≥ 2.1.273.
+10. Revisites inchangées : Pocock ~2026-11/12, pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- **Moteur d'evals** : hybride v2 → `adr/0016` (Proposed).
+- **Pas de chantier frontmatter autonome** — portée session, sans ADR (aucune
+  décision d'architecture, juste un seuil de non-déclenchement) ; rationale
+  complet dans `tasks/skill-evals-audit-2026-09.md` §4.5.
+- **Séquencement du chantier evals avant la validation de la roadmap** : choix
+  de portée session — cohérence (le chantier restructure des lignes que la
+  roadmap présuppose : A3, R2+P3, D5) l'emporte sur l'ancienneté de la demande
+  de validation (12/09) ; la dette est explicitement reportée au 26/09, pas
+  perdue.
+- **`syncClaudeAiSkills: false`** : choix de portée session, validé par Greg ;
+  aucun ADR (réglage d'environnement, pas une décision d'architecture).
+- **Pièces du pilote figées dans le repo** (`tasks/skill-evals-audit-2026-09/pilot/`)
+  plutôt que laissées au scratchpad éphémère — arbitrage R2(a) de l'audit,
+  tranché par Greg.
+- Nota (inchangé) : `claude/settings.json` (`agentPushNotifEnabled`) et
+  `tasks/lessons-inbox.md` restent modifiés non commités — à solder au triage
+  /immunize et à la décision push-notif.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-12 15:36
 Session : b1dfa1ce-f627-4683-a8f0-13f4e5ad0473
 
 ## Tâches complétées
