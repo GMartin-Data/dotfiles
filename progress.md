@@ -1,5 +1,102 @@
 ## Dernière mise à jour
-Date : 2026-09-22 14:51
+Date : 2026-09-22 16:10
+Session : 7d81d1cd-deaa-4d2c-a147-d45bf146ed97
+
+## Tâches complétées
+
+- **R13 soldé — 3 leçons de l'audit skill-evals versées à l'inbox** en mode
+  ajout (§3.3 n°1-2, n°3, n°5) : calibrage de rubrique sur le SKILL.md,
+  discovery ≠ comportement post-invocation, run unique masque la variance.
+  `tasks/lessons-inbox.md` passe à 4 entrées (1 leçon ruff du 08/09 + ces 3) ;
+  non commité (même wagon que la leçon ruff, à trier au prochain /immunize).
+- **Chantier evals, Phase 1 close — packaging vérifié sur pièce, 3 commits
+  poussés** (`578ec6d`, `d466cfc`, `25b154f`) :
+  1. **Option R3(a) validée** : `claude/` déclaré racine de plugin
+     (`claude/.claude-plugin/plugin.json`, `{"name": "dotfiles"}`) sans
+     toucher aux symlinks runtime — `claude/` n'est chargé que par
+     `claude plugin eval`/`--plugin-dir`, jamais en session quotidienne
+     (vérifié : `claude plugin list` en config réelle ne montre pas
+     `dotfiles`).
+  2. **4 contrôles binaires passés** (~0,42 $) : skills + commands + agent
+     chargés sous préfixe `dotfiles:` ; 0 hook chargé (pas de `hooks.json`) ;
+     `settings.json` racine non injecté (clés inconnues silencieusement
+     ignorées, doc confirmée) ; `CLAUDE.md` racine ne fuite pas dans le
+     sandbox (sonde regex) ; déclenchement réel de `dotfiles:feynman-mentor`
+     sur prompt organique français.
+  3. **Effet de bord corrigé** : le scan par défaut de `commands/` est
+     récursif (11 fichiers parasites `evals/README.md`, fixtures, exposés
+     comme commands) — non documenté (`plugins.md` dit « flat Markdown
+     files »). Parade : champ `commands` explicite au manifest (liste des 9
+     `.md` racine), qui remplace le scan par défaut (doc confirmée +
+     vérifié 2×).
+  4. **2 angles morts de doc supplémentaires** actés au §7.2 de l'audit
+     (items 10-11) : récursion non documentée de `commands/` ; `claude
+     plugin details` n'accepte un chemin que via le flag global
+     `--plugin-dir`, non documenté à cet endroit.
+  5. **Pièces figées sous `tasks/skill-evals-audit-2026-09/pilot/`**
+     (précédent R2(a)) : 2 cas-sondes (`packaging-probe/`), leur JSON de
+     résultat, ligne de table + commande de rejeu au README du pilote.
+     `claude/evals/` redevenu propre (sondes retirées après figeage).
+
+## En cours
+
+- Rien en session — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Chantier evals, Phase 2** (session fraîche, 1 session, 2-4 $) :
+   - R4 porter les 6 `case.yaml` feynman-mentor dans `claude/evals/`
+     (packaging validé), leçons §3.3 appliquées (`history_file` régénéré
+     depuis un run du plugin du repo, `runs: 3` sur les `candide-*`, pas
+     d'indicateur `skill-fired` sur le cas repris) ; retirer les fichiers G2 ;
+     réécrire le README (moteur, commande, table d'état) ; campagne
+     `--model` Fable **et** Opus.
+   - R5 `disallowed-tools: WebFetch, WebSearch, Write, Edit` sur
+     feynman-mentor + réécriture « Tool discipline ».
+   - R6 trancher la zone grise du candide (lecture naïve en question ?) —
+     décision de Greg, puis rejeu.
+   - → passage ADR-0016 `Proposed` → `Accepted`.
+3. **Triage /immunize dû** : les 4 leçons de l'inbox (ruff 08/09 + les 3
+   d'aujourd'hui) — `claude/settings.json` et `lessons-inbox.md` toujours
+   non commités.
+4. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact`
+   + reports d'août + option A2/A3 (roadmap) + option `dmi: true` sur les
+   commands rituelles (§4.3 de l'audit, R2(b), hors chantier) + validation
+   humaine de la roadmap (suspendue depuis le 12/09, 2 cycles de retard).
+5. **Chantier evals, Phase 3** (`claude-md` en skill, déclenche R2+P3) et
+   **Phase 4** (event-driven : code-review au prochain changement de tier
+   D5, sous-ensembles mono-tour des autres corpus).
+6. Hors repo, à la main de Greg : purge des 2 sandboxes `/tmp/claude-eval-*`
+   de la Phase 1 (`chmod 700` requis, hook `block-rm-rf`) ; purge du cobaye
+   `converting-temperatures` (toujours installé, hook `block-rm-rf`) ;
+   learning record `0004-*.md` dans `~/learning-to-build-skills`.
+7. Revisites inchangées : Pocock ~2026-11/12, pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- **Option R3(a) validée sur pièce** : `claude/` = racine de plugin d'eval,
+  manifest avec `commands` explicite — choix de portée session (chantier
+  déjà cadré par ADR-0016 Proposed), pas de nouvel ADR ; rationale complet
+  dans `tasks/skill-evals-audit-2026-09.md` §6 Phase 1 + §7.2 items 10-11.
+- **Sondes de packaging figées dans le repo** (`pilot/packaging-probe/`)
+  plutôt que scratchpad éphémère — même précédent R2(a) que le pilote
+  d'origine.
+- Nota (inchangé) : `claude/settings.json` (`agentPushNotifEnabled`) et
+  `tasks/lessons-inbox.md` restent modifiés non commités — à solder au
+  triage /immunize et à la décision push-notif.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-22 14:51
 Session : 1173ce17-7775-4169-abf1-3a6aa8e5ebfb
 
 ## Tâches complétées
