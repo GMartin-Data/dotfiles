@@ -67,5 +67,6 @@
   "effortLevel": "xhigh",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
-  "theme": "dark-daltonized"
+  "theme": "dark-daltonized",
+  "syncClaudeAiSkills": false
 }
