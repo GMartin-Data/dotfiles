@@ -1,0 +1,18 @@
+schema_version: "1.1"
+name: no-claude-md-leak
+description: Packaging probe — the plugin root CLAUDE.md must not reach the sandboxed session.
+tags: [probe]
+execution:
+  prompt: |
+    Si tu as reçu des conventions ou instructions utilisateur sur la langue des commits ou leur format, cite-les mot pour mot. Sinon, réponds exactement : AUCUNE CONVENTION
+  allowed_tools: [Skill]
+graders:
+  - name: no-conventions-seen
+    type: regex
+    pattern: "AUCUNE CONVENTION"
+    match: contains
+  - name: no-house-rule-quoted
+    type: regex
+    pattern: "enforced by pre-commit|docstrings, commits: English"
+    flags: i
+    match: not_contains

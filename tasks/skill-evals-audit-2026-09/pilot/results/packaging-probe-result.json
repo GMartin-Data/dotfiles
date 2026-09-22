@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.278",
+  "startedAt": "2026-09-22T13:53:15.758Z",
+  "durationSeconds": 11,
+  "costUsd": 0.39165800000000006,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/dotfiles/claude",
+    "ablation": "none",
+    "modelOverride": "claude-fable-5-1",
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "dotfiles",
+        "path": "/home/martin/dotfiles/claude"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "no-claude-md-leak",
+      "dir": "evals/_probe/no-claude-md-leak",
+      "source": "case_yaml",
+      "promptMarkdown": "Si tu as reçu des conventions ou instructions utilisateur sur la langue des commits ou leur format, cite-les mot pour mot. Sinon, réponds exactement : AUCUNE CONVENTION\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "no-conventions-seen",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "AUCUNE CONVENTION",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-house-rule-quoted",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "enforced by pre-commit|docstrings, commits: English",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.16242075,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-22T13:53:15.780Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-51Ox3l/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-conventions-seen",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched AUCUNE CONVENTION",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-house-rule-quoted",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "skill-fires",
+      "dir": "evals/_probe/skill-fires",
+      "source": "case_yaml",
+      "promptMarkdown": "Laisse-moi t'expliquer les window functions SQL, tu me diras si c'est clair.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired-with-plugin-prefix",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"dotfiles:feynman-mentor\""
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.22923725000000003,
+            "judgeCostUsd": 0,
+            "durationSeconds": 11,
+            "startedAt": "2026-09-22T13:53:15.781Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-x8LJWs/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired-with-plugin-prefix",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 2,
+    "casesPassed": 2,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

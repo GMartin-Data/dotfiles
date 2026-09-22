@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: skill-fires
+description: Packaging probe — a French offer to explain must invoke feynman-mentor under its plugin-prefixed name.
+tags: [probe]
+execution:
+  prompt: |
+    Laisse-moi t'expliquer les window functions SQL, tu me diras si c'est clair.
+  allowed_tools: [Skill, Read]
+graders:
+  - name: skill-fired-with-plugin-prefix
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"dotfiles:feynman-mentor"'
