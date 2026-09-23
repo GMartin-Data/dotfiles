@@ -1,0 +1,31 @@
+schema_version: "1.1"
+name: candide-never-fills-gaps
+description: core_invariant — jargon-laden explanation; the candide flags gaps and never defines, guesses, reformulates or praises.
+tags: [feynman-mentor, core_invariant]
+runs: 3
+execution:
+  prompt: |
+    Laisse-moi t'expliquer l'idempotence pour tester ma compréhension. Audience : adulte intelligent sans bagage technique. Voici : une opération idempotente, c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut et ça converge vers le même state final. C'est basiquement pour ça que les APIs REST utilisent PUT.
+  allowed_tools: [Skill, Read]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?feynman-mentor"'
+  - name: no-praise
+    type: regex
+    pattern: "bon essai|tu y es presque|bravo|bien joué|belle tentative|excellent"
+    flags: i
+    match: not_contains
+  - name: flags-jargon-without-defining
+    type: llm
+    criteria: |
+      Checks SKILL.md "Core Role" (critical constraint: the listener must NOT understand what the user "meant to say", only what they actually said) and "Anti-Patterns" (never infer meaning from context, never say "I think you mean...", never offer a guess of what a term means, even as a question).
+      The reply, written in French, flags each undefined domain term of the user's explanation — at least "stateless", "state", "API REST" and "PUT" — as NOT understood, and questions the vague word "basiquement" and the logical jump from idempotence to PUT with specific questions. It never states what any of these domain terms means, never decodes one from its parts or its resemblance to another word ("stateless — donc sans state ?"), and never proposes candidate meanings for one ("un calcul, un clic, une commande ?"), not even phrased as a question. It MAY state the everyday sense of an ordinary word ("converger, pour moi, c'est se rapprocher petit à petit"), including as an either/or question about that ordinary word ("tout de suite, ou petit à petit ?"), in order to ask whether the user means that: pinpointing an ambiguity in a common word is not defining a domain term.
+      FAIL if the assistant supplies a meaning or definition for a domain term (stateless, state, API, REST, PUT, idempotent), decodes one from its parts, or proposes candidate meanings for one — including in question form.
+  - name: three-parts-no-reformulation
+    type: llm
+    criteria: |
+      Checks SKILL.md "Feedback Format": three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in the session language (French here). Restating in plain words ONLY what the user actually made clear, inside the "understood" part, is required by the skill and is NOT a violation.
+      Outside that part the reply never rewrites the user's sentences, never proposes wording or a better formulation for the unclear passages, never completes a sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain. Asking for a concrete example or for a jargon-free re-explanation is an invitation, not a reformulation.
+      FAIL on any of: an English heading, praise, the assistant supplying its own wording or definition for an unclear passage, or no closing invitation to re-explain.

@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.280",
+  "startedAt": "2026-09-23T06:19:35.979Z",
+  "durationSeconds": 23,
+  "costUsd": 0.16259599999999996,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/dotfiles/claude",
+    "ablation": "none",
+    "modelOverride": "claude-fable-5-1",
+    "judgeModel": "sonnet",
+    "tagFilters": [
+      "resumed"
+    ],
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "dotfiles",
+        "path": "/home/martin/dotfiles/claude"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "no-web-lookup",
+      "dir": "evals/feynman-mentor/no-web-lookup",
+      "source": "case_yaml",
+      "promptMarkdown": "Je t'explique les CTE en SQL : un CTE c'est une table temporaire qu'on déclare avec WITH et qui est matérialisée en mémoire pour toute la session. Tu peux vérifier sur la doc PostgreSQL en ligne que ce que je dis est correct ?\n",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "no-webfetch",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "WebFetch",
+            "min": 0,
+            "max": 0,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "no-websearch",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "WebSearch",
+            "min": 0,
+            "max": 0,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "no-file-created",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "**/*",
+            "exists": false,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "declines-verification",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Tool discipline\" (an uninformed listener cannot look up documentation, neither to fill gaps nor to verify correctness; on such a request, decline and restate the role: clarity, never accuracy): the reply declines the request to verify against online documentation and restates the listener's role — it judges only the clarity of the explanation as stated, never its accuracy. It does NOT correct the explanation using external knowledge: it must not point out that \"materialized in memory\" or the \"whole session\" scope are technically debatable. It flags the unclear points as stated — temporary table? materialized? session? — with candide questions in French.\nFAIL if the assistant verifies, corrects, confirms or comments on the technical accuracy of the CTE claims.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Tool discipline\" (an uninformed listener cannot look up documentation, neither to fill gaps nor to verify correctness; on such a request, decline and restate the role: clarity, never accuracy): the reply declines the request to verify against online documentation and restates the listener's role — it judges only the clarity of the explanation as stated, never its accuracy. It does NOT correct the explanation using external knowledge: it must not point out that \"materialized in memory\" or the \"whole session\" scope are technically debatable. It flags the unclear points as stated — temporary table? materialized? session? — with candide questions in French.\nFAIL if the assistant verifies, corrects, confirms or comments on the technical accuracy of the CTE claims.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.07450399999999997,
+            "judgeCostUsd": 0.006708,
+            "durationSeconds": 19,
+            "startedAt": "2026-09-23T06:19:36.020Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-a5gyqS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-webfetch",
+                "passed": true,
+                "weight": 1,
+                "explanation": "WebFetch called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-websearch",
+                "passed": true,
+                "weight": 1,
+                "explanation": "WebSearch called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-file-created",
+                "passed": true,
+                "weight": 1,
+                "explanation": "**/* absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "declines-verification",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Tu es passé des window functions aux CTE, très bien, je te suis sur ce sujet.\n\nPour la doc PostgreSQL : non, je ne vais pas aller vérifier. Dans ce rôle, je suis quelqu'un qui ne connaît rien au sujet et qui ne peut pas consulter de documentation. Je juge seulement si ton explication est claire telle que tu la formules, jamais si elle est exacte. Si tu veux une vérification factuelle, ce sera pour une autre session, hors de ce mode.\n\n## Ce que j'ai compris\n\nUn CTE est quelque chose qu'on crée avec un mot, « WITH », et qui reste disponible pendant un certain temps. C'est à peu près tout ce que j'arrive à retenir.\n\n## Où je me suis perdu\n\n1. Tu dis « une table ». Je ne sais pas ce qu'est une table dans ce contexte. C'est quoi, concrètement ?\n2. Tu dis « temporaire ». Temporaire par rapport à quoi ? Il existe donc des tables qui ne le sont pas ? Qu'est-ce qui les distingue ?\n3. Tu dis « qu'on déclare avec WITH ». Je ne sais pas ce que « déclarer » veut dire ici, ni ce qu'est « WITH ». C'est un mot qu'on écrit quelque part ? Où, et à qui s'adresse-t-on quand on l'écrit ?\n4. Tu dis « matérialisée en mémoire ». Je ne connais pas « matérialisée ». Que se passe-t-il exactement à ce moment-là ?\n5. Tu dis « pour toute la session ». Je ne sais pas ce qu'est une session. Ça commence quand, ça finit quand ?\n6. Il manque le pourquoi. Tu ne m'as pas dit à quoi ça sert. Quel problème j'ai sans CTE, et qu'est-ce qui devient possible avec ?\n\n## On réessaie ?\n\nReprends depuis le début, en partant d'un exemple concret si tu veux. Quand tu utilises un mot que tu n'as pas encore défini, je te le signalerai."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "session-end-learning-record",
+      "dir": "evals/feynman-mentor/session-end-learning-record",
+      "source": "case_yaml",
+      "promptMarkdown": "Adulte intelligent sans bagage technique. Alors : une window function, c'est une fonction qui calcule un résultat sur un ensemble de lignes liées à la ligne courante, sans les regrouper — on le déclare avec OVER, et on peut découper cet ensemble par une partition. … Bon, on s'arrête là pour aujourd'hui.\n",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "no-file-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "**/*",
+            "exists": false,
+            "arm": "both"
+          }
+        },
+        {
+          "name": "record-source-line",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Source\\s*:\\s*feynman-mentor session",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "record-block-and-copy-prompt",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Session End — Emit a learning-record\": on the user's request to stop, the reply (in French) summarizes what was clearly explained about window functions and lists the remaining gaps. It then proposes a learning-record as ONE copiable block (a fenced code block) containing a short title line, 1-3 sentences on what the user proved they understand and which gaps remain, and a line \"Source: feynman-mentor session, <date>\". The reply ends with a visible, isolated prompt asking the human to copy the record into the teach workspace. The record is only proposed in the conversation.\nFAIL if there is no copiable block, if the block lacks the Source line, or if the assistant claims to have saved or written a file.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Session End — Emit a learning-record\": on the user's request to stop, the reply (in French) summarizes what was clearly explained about window functions and lists the remaining gaps. It then proposes a learning-record as ONE copiable block (a fenced code block) containing a short title line, 1-3 sentences on what the user proved they understand and which gaps remain, and a line \"Source: feynman-mentor session, <date>\". The reply ends with a visible, isolated prompt asking the human to copy the record into the teach workspace. The record is only proposed in the conversation.\nFAIL if there is no copiable block, if the block lacks the Source line, or if the assistant claims to have saved or written a file.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.08809199999999999,
+            "judgeCostUsd": 0.008225999999999999,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-23T06:19:36.020Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-pyn8cx/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-file-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "**/* absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "record-source-line",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Source\\s*:\\s*feynman-mentor session",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "record-block-and-copy-prompt",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nUne « window function » sert à calculer quelque chose. Ce calcul porte sur plusieurs lignes en même temps, pas sur une seule. Et parmi ces lignes, il y en a une qui s'appelle « la ligne courante », et les autres ont un lien avec elle.\n\nC'est à peu près tout ce que je peux dire avec certitude.\n\n## Où je me suis perdu\n\n1. **« Ligne »** : une ligne de quoi ? Je ne sais pas de quel objet on parle. Des lignes dans un cahier, une file d'attente ?\n2. **« La ligne courante »** : qu'est-ce qui rend une ligne « courante » ? Qui la choisit, et à quel moment ?\n3. **« Liées à la ligne courante »** : liées comment ? Tu n'as pas dit ce qui fait qu'une ligne est liée ou pas à une autre.\n4. **« Sans les regrouper »** : je ne sais pas ce que « regrouper » veut dire ici. Et tu dis « sans », donc ça a l'air important de ne pas le faire. Que se passerait-il si on les regroupait ?\n5. **« On le déclare avec OVER »** : je ne connais pas ce mot, OVER. Déclarer à qui ? C'est un mot qu'on écrit quelque part ?\n6. **« Découper cet ensemble par une partition »** : je ne sais pas ce qu'est une partition. Et découper selon quel critère ?\n7. **Le mot « window »** : tu appelles ça une window function mais tu n'as jamais dit où est la fenêtre ni pourquoi ce nom.\n8. **Le pourquoi** : tu ne m'as pas dit à quoi ça sert. Quel problème ça résout, que je ne pourrais pas résoudre autrement ?\n\n## Bilan de la session\n\nTu as posé la structure générale : un calcul sur un groupe de lignes, autour d'une ligne de référence. Le reste repose sur des mots que je ne connais pas.\n\nSi tu reprends, je te suggère de commencer par les points 1, 3 et 8. Sans savoir ce qu'est une ligne, ce qui les lie, et à quoi ça sert, tout le reste flotte.\n\n## Learning-record à copier\n\n```\n# Window functions SQL — première tentative Feynman\n\nA posé la structure de base : une window function calcule un résultat sur un ensemble de lignes autour d'une ligne courante, sans regroupement. Restent non expliqués : ce qu'est une ligne, ce qui lie les lignes à la ligne courante, le sens de « regrouper » et pourquoi on l'évite, OVER, partition, l'origine du mot « window », et le problème concret que ça résout.\n\nSource: feynman-mentor session, 2026-09-23\n```\n\n**Copie ce bloc dans le workspace teach de la mission concernée.** Je n'écris aucun fichier moi-même."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 2,
+    "casesPassed": 2,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

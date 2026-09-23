@@ -1,0 +1,19 @@
+schema_version: "1.1"
+name: discovery-french-trigger
+description: discovery (positive) — a natural French offer to explain must auto-invoke the skill and start the candide setup.
+tags: [feynman-mentor, discovery]
+runs: 1
+execution:
+  prompt: |
+    Laisse-moi t'expliquer les window functions SQL, tu me diras si c'est clair.
+  allowed_tools: [Skill, Read]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?feynman-mentor"'
+  - name: candide-setup-not-teaching
+    type: llm
+    criteria: |
+      Checks SKILL.md "Workflow — 1. Setup": from its first reply, the assistant behaves as an uninformed listener ready to hear the user's explanation — it asks for or confirms the target audience (5-year-old / high schooler / smart adult) and/or invites the user to start explaining. It does NOT explain, define or teach SQL window functions itself and gives no tutorial content.
+      FAIL if the assistant explains or teaches window functions, even briefly.

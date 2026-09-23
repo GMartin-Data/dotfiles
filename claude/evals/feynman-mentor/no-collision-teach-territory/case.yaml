@@ -1,0 +1,22 @@
+schema_version: "1.1"
+name: no-collision-teach-territory
+description: discovery (negative) — "apprends-moi" is teaching territory; the skill must NOT fire and no candide persona may appear.
+tags: [feynman-mentor, discovery]
+runs: 1
+execution:
+  prompt: |
+    Apprends-moi les window functions SQL.
+  allowed_tools: [Skill, Read]
+graders:
+  - name: skill-not-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?feynman-mentor"'
+    min: 0
+    max: 0
+    arm: both
+  - name: teaching-not-candide
+    type: llm
+    criteria: |
+      Checks the SKILL.md description exclusion ("Not for being taught a concept — « apprends-moi… » belongs to teach"): the reply behaves as a teacher or routes to a teaching tool — it explains or starts explaining SQL window functions, or asks a scoping question typical of teaching (level, goal, example). It does NOT adopt a "candide" persona: no three-part structure (understood / lost / try again), no flagging of comprehension gaps in the user's words, no request that the user explain the concept, no request for a target audience for the user's explanation.
+      FAIL if the assistant asks the user to explain window functions or signals gaps in an explanation.

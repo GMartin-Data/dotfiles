@@ -32,6 +32,8 @@ Trois modes différents coexistent. Savoir lequel s'applique évite deux anti-pa
 
 **Événementiel** : `hooks/` déclenchés par l'harness (pas par Claude) selon les événements déclarés dans `settings.json` (`SessionStart`, `PreToolUse`, `PostToolUse`).
 
+**Jamais en session — runner d'evals seulement** : `claude/` est aussi déclaré plugin (`.claude-plugin/plugin.json`, nom `dotfiles`) pour la seule cible de `claude plugin eval` (≥ 2.1.269, cf. [ADR-0016](../adr/0016-moteur-evals-runner-officiel-mono-tour-driver-maison-interviews.md)). Ce manifest n'est lu que par le runner ou `--plugin-dir` ; les symlinks `~/.claude/` ne le voient pas. Les corpus au format du runner vivent sous `claude/evals/<artefact>/` (cas `case.yaml`), à côté des corpus maison pilotés par `claude/evals/drive-session.py` (interviews multi-tours, variation du CLAUDE.md global).
+
 ---
 
 ## Rules vs Templates — distinction clé
@@ -95,7 +97,7 @@ diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
 
 Une skill est un **dossier** (`skills/<name>/SKILL.md`), pas un fichier — sinon les quatre lieux sont les mêmes qu'une command. En oublier un laisse la même dérive silencieuse :
 
-1. **Source** — écrire `claude/skills/<name>/SKILL.md` (frontmatter `name`/`description` + corps). Le dossier entier est l'unité ; les assets compagnons y vivent.
+1. **Source** — écrire `claude/skills/<name>/SKILL.md` (frontmatter `name`/`description` + corps). Le dossier entier est l'unité ; les assets compagnons y vivent — sauf le corpus d'evals, qui vit sous `claude/evals/<name>/` (eval dir du plugin, cf. Principes de chargement).
 2. **Symlink** — déclarer la ligne `link` du **dossier** dans `install.sh` (bloc Skills), puis créer le symlink effectif (`ln -sfn`).
 3. **README racine** — ajouter `<name>` à la ligne `**Skills**` de `README.md` (listing nominal court).
 4. **README claude** — ajouter une puce `<name> — <glose>` sous la famille pertinente de la liste `**Skills** (N)` de ce fichier, et **incrémenter le compteur `(N)`**.

@@ -10,3 +10,6 @@ docs/handoff/
 
 # claude plugin eval — per-run reports, regenerated on every campaign
 claude/evals/results/
+# runner side-effect: resumed-session transcripts written next to history.jsonl
+claude/evals/**/*.jsonl
+!claude/evals/**/history.jsonl
