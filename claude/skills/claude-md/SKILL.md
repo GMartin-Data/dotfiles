@@ -1,4 +1,5 @@
 ---
+name: claude-md
 description: Interview structurée pour produire un CLAUDE.md projet (avec détection d'instance Cruft / PRD / arborescence pour alléger les phases pré-déterminées)
 argument-hint: [component-path]
 allowed-tools: Read, Write, Glob, Bash

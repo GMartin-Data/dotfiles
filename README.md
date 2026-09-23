@@ -42,8 +42,9 @@ réénoncé ici :
 - **`adr/`** — décisions d'architecture du workflow (ADR atomiques, index dans
   l'overview §6).
 - **Evals** — corpus par command dans `claude/commands/<cmd>/evals/` (README
-  dédié par corpus), corpus CLAUDE.md global dans `claude/evals/claude-md/`,
-  driver partagé `claude/evals/drive-session.py`.
+  dédié par corpus), corpus des skills dans `claude/evals/<skill>/`
+  (`feynman-mentor`, `claude-md-skill`), corpus CLAUDE.md global dans
+  `claude/evals/claude-md/`, driver partagé `claude/evals/drive-session.py`.
 - **`tasks/`** — documents de travail datés (audits, lessons-inbox) ; voir
   chaque fichier.
 
@@ -119,11 +120,11 @@ Configuration versionnée et portable entre machines. Architecture détaillée e
 | Hooks | `claude/hooks/*` | Événementiel | Automatismes déclenchés par l'harness |
 | Agent memory | `claude/agent-memory/<agent>/` | Lu/écrit par subagents | Mémoire custom portable |
 
-**Commands** : adr, catchup, claude-md, grill, immunize, planning, prd, progress, tech-watch
+**Commands** : adr, catchup, grill, immunize, planning, prd, progress, tech-watch
 
 **Hooks** : block-force-push, block-rm-rf, protect_env (PreToolUse), ruff-check (PostToolUse)
 
-**Skills** : teach, coach-pedagogique, code-mentor, dp-coach, code-review, feynman-mentor
+**Skills** : teach, coach-pedagogique, code-mentor, dp-coach, code-review, feynman-mentor, claude-md
 
 **Subagents** : tech-watch-scorer (stateless)
 

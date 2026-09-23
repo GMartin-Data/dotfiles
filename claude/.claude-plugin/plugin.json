@@ -3,7 +3,6 @@
   "commands": [
     "./commands/adr.md",
     "./commands/catchup.md",
-    "./commands/claude-md.md",
     "./commands/grill.md",
     "./commands/immunize.md",
     "./commands/planning.md",

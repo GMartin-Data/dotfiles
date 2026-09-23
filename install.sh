@@ -38,15 +38,10 @@ link "$DOTFILES_DIR/claude/commands/immunize.md"    "$HOME/.claude/commands/immu
 link "$DOTFILES_DIR/claude/commands/catchup.md"    "$HOME/.claude/commands/catchup.md"
 link "$DOTFILES_DIR/claude/commands/progress.md"    "$HOME/.claude/commands/progress.md"
 link "$DOTFILES_DIR/claude/commands/tech-watch.md"  "$HOME/.claude/commands/tech-watch.md"
-link "$DOTFILES_DIR/claude/commands/claude-md.md"   "$HOME/.claude/commands/claude-md.md"
 link "$DOTFILES_DIR/claude/commands/prd.md"         "$HOME/.claude/commands/prd.md"
 link "$DOTFILES_DIR/claude/commands/planning.md"    "$HOME/.claude/commands/planning.md"
 link "$DOTFILES_DIR/claude/commands/adr.md"         "$HOME/.claude/commands/adr.md"
 link "$DOTFILES_DIR/claude/commands/grill.md"       "$HOME/.claude/commands/grill.md"
-
-# Commands — runtime reference assets (progressive disclosure).
-# Only `reference/` is symlinked; `evals/` stays in the repo as internal QA material.
-link "$DOTFILES_DIR/claude/commands/claude-md/reference" "$HOME/.claude/commands/claude-md/reference"
 
 # Hooks (fichiers individuels — même raison)
 link "$DOTFILES_DIR/claude/hooks/block-force-push.sh"        "$HOME/.claude/hooks/block-force-push.sh"
@@ -61,6 +56,7 @@ link "$DOTFILES_DIR/claude/skills/dp-coach"     "$HOME/.claude/skills/dp-coach"
 link "$DOTFILES_DIR/claude/skills/coach-pedagogique" "$HOME/.claude/skills/coach-pedagogique"
 link "$DOTFILES_DIR/claude/skills/code-review"  "$HOME/.claude/skills/code-review"
 link "$DOTFILES_DIR/claude/skills/feynman-mentor" "$HOME/.claude/skills/feynman-mentor"
+link "$DOTFILES_DIR/claude/skills/claude-md"      "$HOME/.claude/skills/claude-md"
 
 # Rules (fichiers individuels — glob-scoped, chargés à la demande par Claude Code)
 link "$DOTFILES_DIR/claude/rules/python.md"     "$HOME/.claude/rules/python.md"

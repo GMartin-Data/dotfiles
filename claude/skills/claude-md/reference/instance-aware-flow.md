@@ -10,7 +10,7 @@
 ## Quand lire ce fichier
 À lire **uniquement si le pré-flight a détecté au moins un des éléments suivants** : un `.cruft.json`, un `PRD.md`, ou une arborescence de composants explicite (par ex. `src/` + `dbt/` + `terraform/`).
 
-Ces quatre phases **remplacent** les phases de même numéro de `claude-md.md`. Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies dans `claude-md.md` — elles couvrent des conventions AI-driven non déductibles depuis le template ou le PRD.
+Ces quatre phases **remplacent** les phases de même numéro de `SKILL.md`. Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies dans `SKILL.md` — elles couvrent des conventions AI-driven non déductibles depuis le template ou le PRD.
 
 Principe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.
 
@@ -41,7 +41,7 @@ Sur « rien à ajouter », marquer la phase validée.
 ### Si PRD.md présent sans Cruft
 
 Le PRD canonique ne porte aucune stack (ADR-0013) : rien à extraire. Mener la
-Phase 2 standard de `claude-md.md` (interview complète), en s'appuyant sur :
+Phase 2 standard de `SKILL.md` (interview complète), en s'appuyant sur :
 
 - la section **Contraintes** du PRD — exigences exogènes à traduire en choix
   techniques (ex. « les données restent en UE » → région d'hébergement) ;

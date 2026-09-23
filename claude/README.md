@@ -64,10 +64,9 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
 ## Composants actuels
 
-**Commands** (9) :
+**Commands** (8) :
 - `adr` — crée un ADR atomique (mode interview ou capture), avec supersession bidirectionnelle
 - `catchup` — reconstruit le contexte de travail après `/clear` ou reprise de session
-- `claude-md` — interview structurée produisant un CLAUDE.md projet (détection d'instance Cruft/PRD)
 - `grill` — revue adverse d'un PRD/PLAN avant gel ; lève implicites et tensions, ne modifie aucun artefact
 - `immunize` — consolide `lessons-inbox.md` : promeut les patterns récurrents, archive le bruit
 - `planning` — génère PLAN.md (architecture cible + phases) à partir de PRD + CLAUDE.md
@@ -75,7 +74,7 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 - `progress` — sauvegarde un checkpoint d'avancement dans `progress.md` (human-in-the-loop)
 - `tech-watch` — pipeline de veille techno : fetch, score et classe des sources
 
-> Cinq commands ont un sous-dossier compagnon (`commands/<name>/`) qui matérialise la **progressive disclosure**. Deux types d'assets y vivent : `evals/` (corpus de tests A→B→A — interne au repo, non symlinké) pour `adr`, `claude-md`, `grill`, `planning`, `prd` ; et `reference/` (assets runtime — chargés par la command à l'exécution, symlinké) pour `claude-md` uniquement. Pattern symétrique à celui des skills, mais conservé en command pour préserver l'invocation explicite.
+> Quatre commands ont un sous-dossier compagnon `commands/<name>/evals/` (corpus de tests A→B→A — interne au repo, non symlinké) : `adr`, `grill`, `planning`, `prd`. Une command qui a besoin d'assets runtime (`reference/`, progressive disclosure) devient une skill : le dossier est l'unité de symlink et l'invocation explicite `/<name>` est conservée (précédent : `claude-md`, 2026-09).
 
 ### Ajouter une command — checklist multi-fichiers
 
@@ -97,7 +96,7 @@ diff <(ls claude/commands/*.md | xargs -n1 basename | sed 's/\.md$//' | sort) \
 
 Une skill est un **dossier** (`skills/<name>/SKILL.md`), pas un fichier — sinon les quatre lieux sont les mêmes qu'une command. En oublier un laisse la même dérive silencieuse :
 
-1. **Source** — écrire `claude/skills/<name>/SKILL.md` (frontmatter `name`/`description` + corps). Le dossier entier est l'unité ; les assets compagnons y vivent — sauf le corpus d'evals, qui vit sous `claude/evals/<name>/` (eval dir du plugin, cf. Principes de chargement).
+1. **Source** — écrire `claude/skills/<name>/SKILL.md` (frontmatter `name`/`description` + corps). Le dossier entier est l'unité ; les assets compagnons y vivent — sauf le corpus d'evals, qui vit sous `claude/evals/<name>/` (eval dir du plugin, cf. Principes de chargement ; en cas de collision de nom, suffixer — `claude-md-skill/`, le dossier `claude-md/` étant le corpus du CLAUDE.md global).
 2. **Symlink** — déclarer la ligne `link` du **dossier** dans `install.sh` (bloc Skills), puis créer le symlink effectif (`ln -sfn`).
 3. **README racine** — ajouter `<name>` à la ligne `**Skills**` de `README.md` (listing nominal court).
 4. **README claude** — ajouter une puce `<name> — <glose>` sous la famille pertinente de la liste `**Skills** (N)` de ce fichier, et **incrémenter le compteur `(N)`**.
@@ -109,7 +108,10 @@ diff <(ls -d claude/skills/*/ | xargs -n1 basename | sort) \
      <(grep -oP 'skills/\K[a-z-]+' install.sh | sort -u)
 ```
 
-**Skills** (6) :
+**Skills** (7) :
+
+Cadrage :
+- `claude-md` — interview structurée produisant un CLAUDE.md projet (détection d'instance Cruft/PRD) ; invocation explicite `/claude-md`, parcours alternatifs dans `reference/` (progressive disclosure)
 
 Couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/responsibility-matrix.md), section Couche learning) :
 - `teach` — enseigne un concept/compétence ; colonne vertébrale stateful (workspace dédié, human-triggered)
