@@ -1,5 +1,109 @@
 ## Dernière mise à jour
-Date : 2026-09-23 10:29
+Date : 2026-09-23 12:45
+Session : 82adbc99-a1ae-4a56-9452-2b9350bfd202
+
+## Tâches complétées
+
+- **Chantier evals, Phase 3 close — 3 commits, 2,30 $ au runner (+ ~0,5 $
+  de rejeux de juge hors runner)** :
+  1. **Migration `claude-md` command → skill** (`8c8dd37`) :
+     `claude/skills/claude-md/{SKILL.md, reference/}`, `name:` ajouté,
+     symlink de dossier dans `install.sh` (ligne fichier + workaround
+     `reference/` supprimés), `~/.claude/commands/claude-md*` purgés à la
+     main, manifest `commands` 9 → 8, renvois README racine +
+     `claude/README.md` (compteurs, note sous-dossiers compagnons, collision
+     de nom des corpus), 2 mentions `claude-md.md` → `SKILL.md` dans
+     `reference/instance-aware-flow.md`. Pivot inverse de `b3d7088` (avril) :
+     le motif d'alors (auto-invocation non désirée) relève désormais de
+     `disable-model-invocation`, pas du primitif. Vérifié : `claude plugin
+     details` → 7 skills, `claude-md` ~60 tok always-on ; les 3 commands
+     fantômes `claude-md:reference:*` ont disparu du listing de session ;
+     parité commands/skills OK.
+  2. **Blocs `#### Test` + règle 7 « sauts visibles »** (`602e47a`,
+     déclencheur R2+P3 honoré sur ce seul artefact) : 6 blocs (Step 0, gate
+     Cruft+PRD, Bloc 2, règles d'interaction, validation finale, après
+     génération), ligne de cadrage (jamais affichés à l'utilisateur),
+     `skip: <phase> — <raison>` sur les vrais sauts seulement ; +37 lignes,
+     on-invoke 4,6k → 5,7k tok. Diff validé par Greg.
+  3. **Corpus porté au runner** (`101544a`, décision Greg : runner plutôt
+     que G3 — règle R9, les 3 cas sont mono-tour) :
+     `claude/evals/claude-md-skill/` (suffixe : collision avec le batch A
+     `claude-md/`), 3 `case.yaml` + `scaffold.sh` (`cruft create` par run),
+     fichiers G1 retirés, README complet, 4 JSON figés. **3/3 verts sur
+     Sonnet** (tier pinné au frontmatter) : sans-PRD 3/3 passe 1 ; Step 0
+     3/3 au rejeu (passe 1 : 1 run à réponse vide, non reproduit sur 3) ;
+     avec-PRD 3/3 après scission de la rubrique (passe 1 : 0,8 × 3, 9 votes
+     FAIL sur un comportement conforme).
+- **Trois constats runner consignés au README du corpus** (à reporter au
+  §7.2 de l'audit) : (a) le scaffold tourne sous un `HOME` de sandbox, doc
+  contraire → `getent passwd` + `cruft` hors PATH ; (b) `/claude-md` en
+  prompt est développé inline, aucun appel `Skill` → pas d'indicateur
+  `skill-fired` pour les invocations explicites ; (c) le juge `llm` est un
+  votant d'un mot sans raisonnement (gabarit extrait du binaire 2.1.280) →
+  rubriques courtes « PASS si / FAIL seulement si », non-violations
+  explicites (règle 7 du corpus).
+
+## En cours
+
+- Rien en session — ce checkpoint à committer puis push (4 commits :
+  `8c8dd37`, `602e47a`, `101544a` + checkpoint).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Cycle /insights 2026-09-26** : inchangé (fiche `explain-before-artifact`,
+   reports d'août, A2/A3, validation roadmap) ; option `dmi: true` sur les
+   commands rituelles **étendue à la skill `claude-md`** (motif d'avril :
+   rituel user-driven) ; **nouveau** : généraliser « PASS si / FAIL seulement
+   si » aux corpus existants ? (feynman-mentor : les 2 `core_invariant`
+   flaky ont des rubriques longues — lien probable, non vérifié).
+3. **Audit §7.2** : ajouter les 3 constats runner de ce jour (items 14-16).
+4. **Chantier evals, Phase 4** (event-driven, inchangé) : R8 code-review →
+   runner au D5 ; R9 sous-ensembles mono-tour (7-8 cas sur 22) à la retouche
+   de grill/prd/planning/adr ; R10 `disallowed-tools`. Acquis : un cas de
+   command invoquée par slash n'a pas d'indicateur `skill-fired`.
+5. **Triage /immunize dû** (1 leçon en inbox) + candidate à verser :
+   « rubrique = PASS si / FAIL seulement si + non-violations explicites, le
+   juge ne raisonne pas » (n = 1 corpus, preuve 9/9 FAIL → 18/18 PASS à
+   comportement constant).
+6. Event-driven : réponse vide Step 0 (1 run sur 6) — rejouer `--keep-temp`
+   si ça se reproduit en usage ; paire `candide-*` inchangée.
+7. Hors repo, à la main de Greg : purge des **8** sandboxes
+   `/tmp/claude-eval-*` (`rYSnT9`, `bg2EZZ`, `zc9I2V` + ce jour `NaDwwY`,
+   `aKngrg`, `BGYMOp`, `TXH8BM`, `IUPW5R` — `chmod 700` requis) ; purge du
+   cobaye `converting-temperatures` ; pin `known-first-party` ; learning
+   record `0004`.
+8. Revisites inchangées : Pocock ~2026-11/12, pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Choix de portée session (aucun ADR — ADR-0016 inchangé, le runner pour
+  les cas mono-tour est sa lettre), décisions Greg :
+  - **Phase 3 exécutée avant le cycle du 26/09** ; `dmi` non touché (une
+    ligne à ajouter si retenu le 26/09).
+  - **Runner plutôt que G3 pour les 3 cas claude-md** (R9 : mono-tour +
+    retouche de l'artefact) ; corpus nommé `claude-md-skill/`.
+  - **Blocs `#### Test` en h4, inline, sur 6 sections seulement** ; `skip:`
+    réservé aux vrais sauts, pas aux phases allégées.
+  - **Rubrique requalifiée, pas la skill** sur `with-prd` : lecture des
+    runs + gabarit du juge extrait du binaire → scission en 2 graders,
+    verdict vert à comportement constant.
+  - **Dépassement de coût acté** : estimé ~0,5 $, réalisé ~2,8 $ (0,13 sonde
+    + 1,34 campagne + 0,83 rejeux + ~0,5 diagnostics de juge). Cause :
+    diagnostic d'un juge qui ne restitue pas son raisonnement, puis deux
+    rejeux — même pattern que la Phase 2, sur un mécanisme différent.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-23 10:29
 Session : 6501275b-b787-498f-9e58-e14002295156
 
 ## Tâches complétées
