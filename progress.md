@@ -61,9 +61,11 @@ Session : 7cccff52-a76d-4cb6-96dd-cc205ca994af
    blast-radius + échelle de preuve (à transcrire du playbook pstack, pas de
    mémoire), ligne de renvoi sous State Verification, placement confirmé par
    la matrice. Dormant si non fait à la revisite pstack.
-4. **Prochain triage /immunize** : verser **P4** (citation-avec-décision
-   Karpathy), non versé aux 2 triages du 23/09 ; les 2 leçons conservées
-   expirent le 2026-09-30 sans seconde occurrence (attendue pour la rubrique :
+4. **Prochain triage /immunize** : **P4** (citation-avec-décision Karpathy)
+   versé à l'inbox en fin de session (n = 0, candidate d'emprunt, routage
+   artefact probable vers `karpathy-discipline.md`) — inbox à 3 entrées ; les
+   2 leçons conservées expirent le 2026-09-30 sans seconde occurrence
+   (attendue pour la rubrique :
    réécriture des `candide-*` feynman-mentor, ~1,7 $, option du 26/09).
    Candidate à verser en mode ajout : « une validation humaine en attente a
    gelé les déclencheurs event-driven 11 jours (P4) — dater la validation dans
