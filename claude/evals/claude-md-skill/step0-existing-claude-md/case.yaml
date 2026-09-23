@@ -1,0 +1,37 @@
+schema_version: "1.1"
+name: step0-existing-claude-md
+description: step0_gate — an empty CLAUDE.md placeholder exists; the skill reads it, reports it empty, asks replace / extend / abandon, and neither pre-flights, interviews nor writes before the answer.
+tags: [claude-md, step0_gate]
+runs: 3
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: "/claude-md"
+  allowed_tools: [Skill, Read, Glob, Write, Edit]
+graders:
+  - name: no-write-tool
+    type: tool_used
+    tool: Write
+    min: 0
+    max: 0
+  - name: no-edit-tool
+    type: tool_used
+    tool: Edit
+    min: 0
+    max: 0
+  - name: fixture-still-empty
+    type: regex
+    pattern: '^\s*$'
+    target:
+      source: file
+      path: CLAUDE.md
+  - name: no-lightening-block
+    type: regex
+    pattern: 'allégées ou pré-remplies'
+    match: not_contains
+  - name: gate-question-then-wait
+    type: llm
+    criteria: |
+      Checks SKILL.md "Step 0" and its `#### Test` block (CLAUDE.md present and empty → reported as empty, replace / extend / abandon question asked; neither pre-flight nor Phase 1 before the answer).
+      The reply, in French, states that a CLAUDE.md exists at the root and that it is empty (a placeholder), and asks the user to choose between replacing, extending or abandoning — all three options offered. Then it stops: no instance summary, no lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.
+      FAIL if the reply treats the empty file as absent, omits the question or one of its three options, starts the pre-flight or the interview, or proposes CLAUDE.md content.

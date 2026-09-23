@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.280",
+  "startedAt": "2026-09-23T10:14:24.323Z",
+  "durationSeconds": 22,
+  "costUsd": 0.1255926,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/dotfiles/claude",
+    "ablation": "none",
+    "modelOverride": "claude-sonnet-5",
+    "judgeModel": "sonnet",
+    "caseFilter": "preflight-cruft-without-prd",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "dotfiles",
+        "path": "/home/martin/dotfiles/claude"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "preflight-cruft-without-prd",
+      "dir": "evals/claude-md-skill/preflight-cruft-without-prd",
+      "source": "case_yaml",
+      "promptMarkdown": "/claude-md",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?claude-md\""
+          }
+        },
+        {
+          "name": "stop-message-reproduced",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Instance Cruft détectée, mais aucun PRD\\.md",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "track-leger-offered",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "track léger",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-lightening-block",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "allégées ou pré-remplies",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "no-claude-md-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "CLAUDE.md",
+            "exists": false
+          }
+        },
+        {
+          "name": "gate-blocks-and-waits",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Step 0\" (CLAUDE.md absent → no replace / extend / abandon question, straight to the pre-flight) and \"Gate conditionnelle — Cruft + PRD.md\" with its `#### Test` block (`.cruft.json` present and `PRD.md` absent → the stop message is reproduced, then the skill stops and waits; the two exits are: the user runs /prd first, or explicitly confirms \"track léger\").\nThe reply, in French, does not ask whether to replace, extend or abandon an existing CLAUDE.md. It states that a Cruft instance was detected without a PRD.md, explains the Cruft → /prd → /claude-md workflow (product framing frozen before technical conventions) and offers the \"track léger\" override, subject to explicit human confirmation (ADR-0011). Then it stops: no Bloc 1 instance summary, no Bloc 2 lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply asks the replace / extend / abandon question, shows an instance summary or the lightening announcement, asks any interview question, activates the track léger path on its own, or drafts or writes a CLAUDE.md.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Step 0\" (CLAUDE.md absent → no replace / extend / abandon question, straight to the pre-flight) and \"Gate conditionnelle — Cruft + PRD.md\" with its `#### Test` block (`.cruft.json` present and `PRD.md` absent → the stop message is reproduced, then the skill stops and waits; the two exits are: the user runs /prd first, or explicitly confirms \"track léger\").\nThe reply, in French, does not ask whether to replace, extend or abandon an existing CLAUDE.md. It states that a Cruft instance was detected without a PRD.md, explains the Cruft → /prd → /claude-md workflow (product framing frozen before technical conventions) and offers the \"track léger\" override, subject to explicit human confirmation (ADR-0011). Then it stops: no Bloc 1 instance summary, no Bloc 2 lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply asks the replace / extend / abandon question, shows an instance summary or the lightening announcement, asks any interview question, activates the track léger path on its own, or drafts or writes a CLAUDE.md.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8333333333333334,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.1255926,
+            "judgeCostUsd": 0.005046,
+            "durationSeconds": 22,
+            "startedAt": "2026-09-23T10:14:24.352Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-aKngrg/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": false,
+                "weight": 1,
+                "explanation": "Skill called 0x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "stop-message-reproduced",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Instance Cruft détectée, mais aucun PRD\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "track-leger-offered",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched track léger",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-blocks-and-waits",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "J'ai lu `.cruft.json` (instance Cruft confirmée, template `python-project-template-v2`, Python 3.13, ni dbt ni terraform) et vérifié qu'aucun `PRD.md` n'existe à la racine.\n\nInstance Cruft détectée, mais aucun PRD.md à la racine.\n\nLe workflow projet est : Cruft → /prd → /claude-md.\nLe cadrage produit (problème, utilisateurs, périmètre cible) doit être figé\navant les conventions techniques. Lance /prd d'abord, puis reviens ici.\n\nException — track léger (ADR-0011 : PRD optionnel). Si ce projet est\nmono-utilisateur, sans collaborateurs, sans distribution publique et à\ndurée de vie non-critique, réponds « track léger » et l'interview se\npoursuit sans PRD."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8333333333333334,
+        "passRate": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0.8333333333333334,
+    "overallPassRate": 0
+  }
+}

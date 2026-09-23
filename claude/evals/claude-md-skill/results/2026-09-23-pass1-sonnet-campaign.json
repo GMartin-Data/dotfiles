@@ -1,0 +1,783 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.280",
+  "startedAt": "2026-09-23T10:19:07.274Z",
+  "durationSeconds": 144,
+  "costUsd": 1.3347048,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/dotfiles/claude",
+    "ablation": "none",
+    "modelOverride": "claude-sonnet-5",
+    "judgeModel": "sonnet",
+    "tagFilters": [
+      "claude-md"
+    ],
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "dotfiles",
+        "path": "/home/martin/dotfiles/claude"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "preflight-cruft-with-prd",
+      "dir": "evals/claude-md-skill/preflight-cruft-with-prd",
+      "source": "case_yaml",
+      "promptMarkdown": "/claude-md",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "no-stop-message",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Instance Cruft détectée, mais aucun PRD\\.md",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "lightening-block-marker",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "allégées ou pré-remplies",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "reference-file-named",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "instance-aware-flow\\.md",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-claude-md-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "CLAUDE.md",
+            "exists": false
+          }
+        },
+        {
+          "name": "two-blocks-then-phase-1-on-claude-md-territory",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Step 0\" (CLAUDE.md absent → no replace / extend / abandon question), \"Pré-flight\" Bloc 1 and Bloc 2, and the `#### Test` block of \"Bloc 2 — Annonce d'allègement\" (instance detected → block reproduced word for word, Phases 1, 2, 8 and 11 and no other announced as lightened; Phase 1 on an instance → a single confirmation of name + components pre-filled from Cruft, no PRD-territory question).\nThe reply, in French: (a) does not ask the replace / extend / abandon question; (b) shows Bloc 1, a free-form instance summary covering at least Cruft presence with the Python version and the dbt / terraform flags, PRD.md presence with a brief summary, and the components detected at the root (extra enrichment from pyproject.toml or pre-commit config is allowed); (c) shows Bloc 2, the lightening announcement, listing exactly Phases 1, 2, 8 and 11 as lightened or pre-filled and naming reference/instance-aware-flow.md — Phases 3, 4, 5, 6, 7 and 10 may appear only in the \"remaining to frame\" list; (d) opens Phase 1 as a single confirmation of the project name and its components pre-filled from Cruft, asking one question only, with no question about the problem solved, the target users, the value or user stories (PRD territory).\nFAIL if the stop message appears, if a phase other than 1, 2, 8 and 11 is announced as lightened, if Phase 1 is skipped or strays into PRD territory, if more than one question is asked, or if a CLAUDE.md is drafted or written.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Step 0\" (CLAUDE.md absent → no replace / extend / abandon question), \"Pré-flight\" Bloc 1 and Bloc 2, and the `#### Test` block of \"Bloc 2 — Annonce d'allègement\" (instance detected → block reproduced word for word, Phases 1, 2, 8 and 11 and no other announced as lightened; Phase 1 on an instance → a single confirmation of name + components pre-filled from Cruft, no PRD-territory question).\nThe reply, in French: (a) does not ask the replace / extend / abandon question; (b) shows Bloc 1, a free-form instance summary covering at least Cruft presence with the Python version and the dbt / terraform flags, PRD.md presence with a brief summary, and the components detected at the root (extra enrichment from pyproject.toml or pre-commit config is allowed); (c) shows Bloc 2, the lightening announcement, listing exactly Phases 1, 2, 8 and 11 as lightened or pre-filled and naming reference/instance-aware-flow.md — Phases 3, 4, 5, 6, 7 and 10 may appear only in the \"remaining to frame\" list; (d) opens Phase 1 as a single confirmation of the project name and its components pre-filled from Cruft, asking one question only, with no question about the problem solved, the target users, the value or user stories (PRD territory).\nFAIL if the stop message appears, if a phase other than 1, 2, 8 and 11 is announced as lightened, if Phase 1 is skipped or strays into PRD territory, if more than one question is asked, or if a CLAUDE.md is drafted or written.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 12,
+            "costUsd": 0.2176432,
+            "judgeCostUsd": 0.029999999999999995,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-23T10:19:07.314Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-nLAs9o/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-stop-message",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "lightening-block-marker",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched allégées ou pré-remplies",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reference-file-named",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched instance-aware-flow\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "two-blocks-then-phase-1-on-claude-md-territory",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Pré-flight — instance détectée\n\n**Bloc 1 — Résumé d'instance**\n\n- **Cruft** : présent, template `python-project-template-v2`. Python 3.13, package manager uv, `use_dbt=no`, `use_terraform=no`, licence Proprietary, `branch_protection_profile=team`.\n- **PRD.md** : présent — outil interne CLI de consolidation de rapports CSV mensuels en un fichier annuel, usage personnel (utilisateur unique), contrainte forte : **traitement local uniquement, aucune donnée cliente envoyée à un service cloud** (pas de GUI en non-goal).\n- **Composants détectés** (arbo) : un seul composant Python — `src/my_project/`, `tests/` (pytest), `scripts/` (dont `apply-ruleset.sh`), `.github/workflows/` (CI + release), `.github/rulesets/` (branch protection as code).\n- **Enrichissement** (pyproject.toml, README, pre-commit) : ruff (lint+format, règles `E,W,F,I,B,UP,SIM`), mypy strict-ish (`warn_return_any`), pytest + pytest-cov, `python-semantic-release` avec Conventional Commits (release auto sur `main`, bump de version + changelog + tag + GitHub Release), hook `conventional-pre-commit` sur `commit-msg` qui impose déjà Conventional Commits, hooks pre-commit standards (`trailing-whitespace`, `end-of-file-fixer`, `check-yaml`, `check-toml`, `check-added-large-files`).\n\n**Bloc 2 — Allègement**\n\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.\n\n---\n\n**Phase 1 — Vue d'ensemble (pré-remplie)**\n\nProjet détecté : **My Project** (`my-project` / package `my_project`) — composant unique : `src/my_project/` (pas de dbt, pas de terraform). Correct ?"
+              }
+            ]
+          },
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 14,
+            "costUsd": 0.2257662,
+            "judgeCostUsd": 0.023008,
+            "durationSeconds": 56,
+            "startedAt": "2026-09-23T10:19:07.314Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-OptKHw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-stop-message",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "lightening-block-marker",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched allégées ou pré-remplies",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reference-file-named",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched instance-aware-flow\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "two-blocks-then-phase-1-on-claude-md-territory",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "J'ai lu le contexte disponible (`.cruft.json`, `PRD.md`, arborescence, et en complément `pyproject.toml`, `README.md`, `.pre-commit-config.yaml`, les workflows CI/release). Aucun `CLAUDE.md` existant — je peux enchaîner directement sur le pré-flight sans question de gate.\n\n**Ce que j'ai détecté :**\n\n- **Cruft** : présent (`python-project-template-v2`). Python 3.13, package manager `uv`, license Proprietary, `branch_protection_profile: team`. `use_dbt` et `use_terraform` à `no` — pas de composants dbt/terraform.\n- **PRD.md** : présent. Outil interne CLI de consolidation de rapports CSV mensuels, usage personnel (profil A), contrainte forte : traitement local uniquement, aucune donnée cliente ne doit transiter par un service cloud.\n- **Composants** : un seul — package Python `src/my_project/`, avec `tests/` (pytest) et `scripts/` (utilitaires shell, ex. `apply-ruleset.sh`). Pas de monorepo multi-stack.\n- **En complément** (`pyproject.toml`, `.pre-commit-config.yaml`, workflows) : ruff (lint+format), mypy strict-ish (`warn_return_any`), pytest avec couverture (`--cov=src`), pre-commit (ruff, conventional-pre-commit sur commit-msg), et un pipeline de release automatisé via `python-semantic-release` déclenché par Conventional Commits sur `main` (CI avec path-filtering, release gated par les tests).\n\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.\n\n---\n\n**Phase 1 — Vue d'ensemble (pré-remplie)**\n\nProjet détecté : **my-project** — composant unique (package Python `src/my_project/`, pas de monorepo). Correct ?"
+              }
+            ]
+          },
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 11,
+            "costUsd": 0.19971999999999998,
+            "judgeCostUsd": 0.015676000000000002,
+            "durationSeconds": 48,
+            "startedAt": "2026-09-23T10:20:03.145Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-FwTrZ7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-stop-message",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "lightening-block-marker",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched allégées ou pré-remplies",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reference-file-named",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched instance-aware-flow\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "two-blocks-then-phase-1-on-claude-md-territory",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Détection d'instance\n\n**Cruft** : template `python-project-template-v2`, Python 3.13, licence Proprietary, `branch_protection_profile: team`. Pas de dbt, pas de terraform.\n\n**PRD.md** : présent — outil interne CLI de consolidation de rapports CSV mensuels, usage personnel, traitement local uniquement (contrainte : pas de cloud, données clients).\n\n**Composants détectés** : projet mono-composant Python — `src/my_project/`, `tests/`, `scripts/`. Pas de sous-arborescence multi-stack.\n\n**Enrichissement (pyproject.toml / README / pre-commit)** : `uv` comme gestionnaire, `ruff` (lint+format, règles E/W/F/I/B/UP/SIM), `mypy` strict-ish (`warn_return_any`), `pytest` + `pytest-cov`, `pre-commit` avec hooks génériques + ruff + `conventional-pre-commit` (commit-msg), release automatisée via `python-semantic-release` sur Conventional Commits poussés sur `main` (bump + changelog + tag + GitHub Release), CI/release workflows dans `.github/workflows/`.\n\nLes deux artefacts (`.cruft.json` et `PRD.md`) sont présents → pas de gate à appliquer.\n\n---\n\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.\n\nskip: Phase 9 (Infrastructure) — à évaluer après Phase 2 (pas de BDD/logging/MCP visibles à ce stade, mais je vérifierai)\n\n---\n\n**Phase 1** — Projet détecté : **My Project** (`my-project`, package `my_project`), mono-composant Python, structure `src/` + `tests/` + `scripts/`. Correct ?"
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8000000000000002,
+        "passRate": 0
+      }
+    },
+    {
+      "name": "preflight-cruft-without-prd",
+      "dir": "evals/claude-md-skill/preflight-cruft-without-prd",
+      "source": "case_yaml",
+      "promptMarkdown": "/claude-md",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "stop-message-reproduced",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Instance Cruft détectée, mais aucun PRD\\.md",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "track-leger-offered",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "track léger",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-lightening-block",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "allégées ou pré-remplies",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "no-claude-md-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "CLAUDE.md",
+            "exists": false
+          }
+        },
+        {
+          "name": "gate-blocks-and-waits",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Step 0\" (CLAUDE.md absent → no replace / extend / abandon question, straight to the pre-flight) and \"Gate conditionnelle — Cruft + PRD.md\" with its `#### Test` block (`.cruft.json` present and `PRD.md` absent → the stop message is reproduced, then the skill stops and waits; the two exits are: the user runs /prd first, or explicitly confirms \"track léger\").\nThe reply, in French, does not ask whether to replace, extend or abandon an existing CLAUDE.md. It states that a Cruft instance was detected without a PRD.md, explains the Cruft → /prd → /claude-md workflow (product framing frozen before technical conventions) and offers the \"track léger\" override, subject to explicit human confirmation (ADR-0011). Then it stops: no Bloc 1 instance summary, no Bloc 2 lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply asks the replace / extend / abandon question, shows an instance summary or the lightening announcement, asks any interview question, activates the track léger path on its own, or drafts or writes a CLAUDE.md.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Step 0\" (CLAUDE.md absent → no replace / extend / abandon question, straight to the pre-flight) and \"Gate conditionnelle — Cruft + PRD.md\" with its `#### Test` block (`.cruft.json` present and `PRD.md` absent → the stop message is reproduced, then the skill stops and waits; the two exits are: the user runs /prd first, or explicitly confirms \"track léger\").\nThe reply, in French, does not ask whether to replace, extend or abandon an existing CLAUDE.md. It states that a Cruft instance was detected without a PRD.md, explains the Cruft → /prd → /claude-md workflow (product framing frozen before technical conventions) and offers the \"track léger\" override, subject to explicit human confirmation (ADR-0011). Then it stops: no Bloc 1 instance summary, no Bloc 2 lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply asks the replace / extend / abandon question, shows an instance summary or the lightening announcement, asks any interview question, activates the track léger path on its own, or drafts or writes a CLAUDE.md.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.1209944,
+            "judgeCostUsd": 0.004776000000000009,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-23T10:20:06.947Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-dqCsZm/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "stop-message-reproduced",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Instance Cruft détectée, mais aucun PRD\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "track-leger-offered",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched track léger",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-blocks-and-waits",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "`.cruft.json` est présent et `PRD.md` est absent. Le workflow impose de bloquer ici.\n\nInstance Cruft détectée, mais aucun PRD.md à la racine.\n\nLe workflow projet est : Cruft → /prd → /claude-md.\nLe cadrage produit (problème, utilisateurs, périmètre cible) doit être figé\navant les conventions techniques. Lance /prd d'abord, puis reviens ici.\n\nException — track léger (ADR-0011 : PRD optionnel). Si ce projet est\nmono-utilisateur, sans collaborateurs, sans distribution publique et à\ndurée de vie non-critique, réponds « track léger » et l'interview se\npoursuit sans PRD."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.1291348,
+            "judgeCostUsd": 0.004907999999999996,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-23T10:20:33.644Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-d3Oat4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "stop-message-reproduced",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Instance Cruft détectée, mais aucun PRD\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "track-leger-offered",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched track léger",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-blocks-and-waits",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "`.cruft.json` détecté, mais aucun `PRD.md` à la racine du projet. Selon la doctrine du skill, je dois marquer une pause ici :\n\n```\nInstance Cruft détectée, mais aucun PRD.md à la racine.\n\nLe workflow projet est : Cruft → /prd → /claude-md.\nLe cadrage produit (problème, utilisateurs, périmètre cible) doit être figé\navant les conventions techniques. Lance /prd d'abord, puis reviens ici.\n\nException — track léger (ADR-0011 : PRD optionnel). Si ce projet est\nmono-utilisateur, sans collaborateurs, sans distribution publique et à\ndurée de vie non-critique, réponds « track léger » et l'interview se\npoursuit sans PRD.\n```"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 8,
+            "costUsd": 0.14032879999999998,
+            "judgeCostUsd": 0.007897999999999988,
+            "durationSeconds": 31,
+            "startedAt": "2026-09-23T10:20:51.559Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-hpz9qK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "stop-message-reproduced",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched Instance Cruft détectée, mais aucun PRD\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "track-leger-offered",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched track léger",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-blocks-and-waits",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**CLAUDE.md absent** — j'enchaîne directement sur le pré-flight, sans question.\n\nEn lisant `.cruft.json`, `pyproject.toml`, `README.md` et l'arborescence, j'ai détecté une instance Cruft (template `python-project-template-v2`, Python 3.13, ni dbt ni terraform) mais **aucun `PRD.md`** à la racine.\n\nLe workflow projet prévu est Cruft → `/prd` → `/claude-md`, donc je dois m'arrêter ici :\n\n---\n\nInstance Cruft détectée, mais aucun PRD.md à la racine.\n\nLe workflow projet est : Cruft → /prd → /claude-md.\nLe cadrage produit (problème, utilisateurs, périmètre cible) doit être figé\navant les conventions techniques. Lance /prd d'abord, puis reviens ici.\n\nException — track léger (ADR-0011 : PRD optionnel). Si ce projet est\nmono-utilisateur, sans collaborateurs, sans distribution publique et à\ndurée de vie non-critique, réponds « track léger » et l'interview se\npoursuit sans PRD.\n\n---\n\nComment veux-tu procéder : lancer `/prd` d'abord, ou confirmer le **track léger** ?"
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    },
+    {
+      "name": "step0-existing-claude-md",
+      "dir": "evals/claude-md-skill/step0-existing-claude-md",
+      "source": "case_yaml",
+      "promptMarkdown": "/claude-md",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "no-write-tool",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Write",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "no-edit-tool",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "fixture-still-empty",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "CLAUDE.md"
+            },
+            "pattern": "^\\s*$",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-lightening-block",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "allégées ou pré-remplies",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "gate-question-then-wait",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Step 0\" and its `#### Test` block (CLAUDE.md present and empty → reported as empty, replace / extend / abandon question asked; neither pre-flight nor Phase 1 before the answer).\nThe reply, in French, states that a CLAUDE.md exists at the root and that it is empty (a placeholder), and asks the user to choose between replacing, extending or abandoning — all three options offered. Then it stops: no instance summary, no lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply treats the empty file as absent, omits the question or one of its three options, starts the pre-flight or the interview, or proposes CLAUDE.md content.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Step 0\" and its `#### Test` block (CLAUDE.md present and empty → reported as empty, replace / extend / abandon question asked; neither pre-flight nor Phase 1 before the answer).\nThe reply, in French, states that a CLAUDE.md exists at the root and that it is empty (a placeholder), and asks the user to choose between replacing, extending or abandoning — all three options offered. Then it stops: no instance summary, no lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply treats the empty file as absent, omits the question or one of its three options, starts the pre-flight or the interview, or proposes CLAUDE.md content.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0.8,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.0988752,
+            "judgeCostUsd": 0.003492000000000002,
+            "durationSeconds": 13,
+            "startedAt": "2026-09-23T10:20:57.113Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-qxWaST/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-write-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Write called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "fixture-still-empty",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-question-then-wait",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: API Error: Sonnet 5's safeguards flagged this message. Our intentionally broad safeguards allow us to deliver more capabilities faster, but can sometimes flag legitimate cybersecurity work. Apply to the Cyber Verification Program to reduce these interruptions. Learn more: https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude\n\nDetails: `[cyber]`\n\nRequest ID: req_011CfLCn6iWx4RVXfijoMX4p",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.1028296,
+            "judgeCostUsd": 0.006931999999999987,
+            "durationSeconds": 11,
+            "startedAt": "2026-09-23T10:21:10.558Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-LdVPPd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-write-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Write called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "fixture-still-empty",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-question-then-wait",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "J'ai trouvé un fichier `CLAUDE.md` à la racine du projet, mais il est **vide** (0 octet).\n\nVeux-tu que je le **remplace** (nouvelle interview complète), que je l'**étende** (interview qui viendra compléter ce fichier vide), ou préfères-tu **abandonner** ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.09941259999999999,
+            "judgeCostUsd": 0.0029459999999999903,
+            "durationSeconds": 10,
+            "startedAt": "2026-09-23T10:21:21.525Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-lPyzjJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-write-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Write called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "fixture-still-empty",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-question-then-wait",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Le fichier `CLAUDE.md` existe déjà à la racine, mais il est vide.\n\nVeux-tu que je le **remplace** (nouvelle interview complète), que je l'**étende** (interview en gardant ce qui existe — même si vide ici, ça revient au même), ou **abandonner** ?"
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.9333333333333332,
+        "passRate": 0.6666666666666666
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 3,
+    "casesPassed": 1,
+    "overallScore": 0.9111111111111111,
+    "overallPassRate": 0.5555555555555555
+  }
+}

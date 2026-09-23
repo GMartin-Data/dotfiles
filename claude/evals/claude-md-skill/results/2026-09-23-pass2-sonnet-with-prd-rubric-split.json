@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.280",
+  "startedAt": "2026-09-23T10:37:13.213Z",
+  "durationSeconds": 95,
+  "costUsd": 0.5937056000000001,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/dotfiles/claude",
+    "ablation": "none",
+    "modelOverride": "claude-sonnet-5",
+    "judgeModel": "sonnet",
+    "caseFilter": "preflight-cruft-with-prd",
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "dotfiles",
+        "path": "/home/martin/dotfiles/claude"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "preflight-cruft-with-prd",
+      "dir": "evals/claude-md-skill/preflight-cruft-with-prd",
+      "source": "case_yaml",
+      "promptMarkdown": "/claude-md",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "no-stop-message",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "Instance Cruft détectée, mais aucun PRD\\.md",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "lightening-block-marker",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "allégées ou pré-remplies",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "reference-file-named",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "instance-aware-flow\\.md",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-claude-md-written",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "CLAUDE.md",
+            "exists": false
+          }
+        },
+        {
+          "name": "instance-summary-then-lightening",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Pré-flight\" (Bloc 1 then Bloc 2) on a Cruft instance that has a PRD.md.\nPASS if the output contains, before any interview question: (1) an instance summary that mentions Cruft (with the Python version and the dbt / terraform flags), the PRD.md (with a short summary of it) and the components found at the root; (2) the lightening announcement, in which the phases marked as lightened or pre-filled are Phases 1, 2, 8 and 11 and no other (the list of \"phases remaining to frame\" is expected and is not a violation).\nSummarising the PRD (problem, users, constraints) inside the instance summary is REQUIRED by the skill and is not a violation. Extra details read from pyproject.toml, README or pre-commit config are allowed. No replace / extend / abandon question is expected, since no CLAUDE.md exists.\nFAIL only if the instance summary or the lightening announcement is missing, if a phase other than 1, 2, 8 and 11 is announced as lightened, or if the output asks whether to replace, extend or abandon a CLAUDE.md.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Pré-flight\" (Bloc 1 then Bloc 2) on a Cruft instance that has a PRD.md.\nPASS if the output contains, before any interview question: (1) an instance summary that mentions Cruft (with the Python version and the dbt / terraform flags), the PRD.md (with a short summary of it) and the components found at the root; (2) the lightening announcement, in which the phases marked as lightened or pre-filled are Phases 1, 2, 8 and 11 and no other (the list of \"phases remaining to frame\" is expected and is not a violation).\nSummarising the PRD (problem, users, constraints) inside the instance summary is REQUIRED by the skill and is not a violation. Extra details read from pyproject.toml, README or pre-commit config are allowed. No replace / extend / abandon question is expected, since no CLAUDE.md exists.\nFAIL only if the instance summary or the lightening announcement is missing, if a phase other than 1, 2, 8 and 11 is announced as lightened, or if the output asks whether to replace, extend or abandon a CLAUDE.md.\n",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "phase-1-single-confirmation",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks the `#### Test` block of SKILL.md \"Bloc 2 — Annonce d'allègement\" (Phase 1 on an instance → one confirmation of name + components pre-filled from Cruft, no PRD-territory question) and \"Règles d'interaction\" rule 1 (one question at a time).\nPASS if the output ENDS by opening Phase 1 as a single confirmation question about the project name and its components, with values pre-filled from Cruft (for example « Projet détecté : X — composants : Y. Correct ? »), and that question is the only question asked in the whole output.\nThat closing question must not ask about the problem solved, the target users, the value or user stories. Mentions of those topics earlier in the output, inside the instance summary, are expected and are not a violation.\nFAIL only if no Phase 1 confirmation is asked, if more than one question is asked, or if the closing question bears on the problem, users, value or user stories instead of the name and components.\n",
+          "config": {
+            "criteria": "Checks the `#### Test` block of SKILL.md \"Bloc 2 — Annonce d'allègement\" (Phase 1 on an instance → one confirmation of name + components pre-filled from Cruft, no PRD-territory question) and \"Règles d'interaction\" rule 1 (one question at a time).\nPASS if the output ENDS by opening Phase 1 as a single confirmation question about the project name and its components, with values pre-filled from Cruft (for example « Projet détecté : X — composants : Y. Correct ? »), and that question is the only question asked in the whole output.\nThat closing question must not ask about the problem solved, the target users, the value or user stories. Mentions of those topics earlier in the output, inside the instance summary, are expected and are not a violation.\nFAIL only if no Phase 1 confirmation is asked, if more than one question is asked, or if the closing question bears on the problem, users, value or user stories instead of the name and components.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 10,
+            "costUsd": 0.2063974,
+            "judgeCostUsd": 0.023527999999999993,
+            "durationSeconds": 49,
+            "startedAt": "2026-09-23T10:37:13.240Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-mOm4UL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-stop-message",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "lightening-block-marker",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched allégées ou pré-remplies",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reference-file-named",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched instance-aware-flow\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "instance-summary-then-lightening",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Pré-flight — instance détectée\n\n**Bloc 1 — résumé**\n\n- **Cruft** : présent, template `python-project-template-v2`. Python 3.13, gestionnaire `uv`, `use_dbt=no`, `use_terraform=no`, licence Proprietary, profil de protection de branche `team`.\n- **PRD.md** : présent — outil interne CLI de consolidation de rapports CSV mensuels, usage personnel (mono-utilisateur), contrainte forte : traitement local uniquement (données clients, aucun service cloud). Pas de GUI (non-goal explicite).\n- **Composants détectés** (arbo) : composant unique `src/my_project/`, `tests/`, `scripts/`, `.github/` (workflows CI + release, rulesets de protection de branche).\n- **Enrichissement** (`pyproject.toml`, `README.md`) : ruff (`E,W,F,I,B,UP,SIM`), mypy (`warn_return_any`), pytest avec couverture (`--cov=src`), pre-commit installé, release automatisée via `python-semantic-release` sur Conventional Commits poussés sur `main` (bypass CI documenté dans le ruleset).\n\n**Bloc 2 — allègement**\n\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.\n\n---\n\n**Phase 1 — Vue d'ensemble (confirmation)**\n\nProjet détecté : **my-project** (`my_project`) — composant unique : `src/my_project/`, avec `tests/`, `scripts/`, `.github/` en support. Pas de monorepo, pas de dbt/terraform.\n\nCorrect ?"
+              },
+              {
+                "name": "phase-1-single-confirmation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Pré-flight — instance détectée\n\n**Bloc 1 — résumé**\n\n- **Cruft** : présent, template `python-project-template-v2`. Python 3.13, gestionnaire `uv`, `use_dbt=no`, `use_terraform=no`, licence Proprietary, profil de protection de branche `team`.\n- **PRD.md** : présent — outil interne CLI de consolidation de rapports CSV mensuels, usage personnel (mono-utilisateur), contrainte forte : traitement local uniquement (données clients, aucun service cloud). Pas de GUI (non-goal explicite).\n- **Composants détectés** (arbo) : composant unique `src/my_project/`, `tests/`, `scripts/`, `.github/` (workflows CI + release, rulesets de protection de branche).\n- **Enrichissement** (`pyproject.toml`, `README.md`) : ruff (`E,W,F,I,B,UP,SIM`), mypy (`warn_return_any`), pytest avec couverture (`--cov=src`), pre-commit installé, release automatisée via `python-semantic-release` sur Conventional Commits poussés sur `main` (bypass CI documenté dans le ruleset).\n\n**Bloc 2 — allègement**\n\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.\n\n---\n\n**Phase 1 — Vue d'ensemble (confirmation)**\n\nProjet détecté : **my-project** (`my_project`) — composant unique : `src/my_project/`, avec `tests/`, `scripts/`, `.github/` en support. Pas de monorepo, pas de dbt/terraform.\n\nCorrect ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 8,
+            "costUsd": 0.18345840000000005,
+            "judgeCostUsd": 0.021018,
+            "durationSeconds": 44,
+            "startedAt": "2026-09-23T10:37:13.240Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-vqQz2A/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-stop-message",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "lightening-block-marker",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched allégées ou pré-remplies",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reference-file-named",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched instance-aware-flow\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "instance-summary-then-lightening",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je vais présenter le pré-flight en deux blocs, comme prévu par la skill.\n\n## Bloc 1 — Résumé d'instance\n\n- **Cruft** : présent, template `python-project-template-v2`. Python **3.13**, package manager **uv**, `use_dbt: no`, `use_terraform: no`, licence Proprietary, `branch_protection_profile: team`.\n- **PRD.md** : présent — *demo-instance*, outil interne de consolidation de rapports CSV mensuels en un fichier annuel, usage CLI personnel, contrainte de traitement local uniquement (données clients, pas de cloud).\n- **Composants détectés à la racine** : mono-composant Python — `src/my_project/` (package unique), `tests/` (pytest + coverage via `pyproject.toml`), `scripts/` (`apply-ruleset.sh`), `.github/` (workflows `ci.yml` et `release.yml`, ruleset de protection de branche).\n- **Outillage additionnel repéré** : Ruff (lint+format, règles `E,W,F,I,B,UP,SIM`), mypy strict-ish (`warn_return_any`), pre-commit (`ruff`, `ruff-format`, `conventional-pre-commit` en commit-msg), `python-semantic-release` configuré pour du conventional commits avec releases en `0.x`.\n\n## Bloc 2 — Annonce d'allègement\n\n```\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0.\nL'interview ne porte que sur ce qui mérite délibération humaine.\n```\n\n---\n\n**Phase 1 — Vue d'ensemble (pré-remplie)**\n\nProjet détecté : **my-project** (`my_project`) — mono-composant Python, pas de sous-projets dbt/terraform. Correct ?"
+              },
+              {
+                "name": "phase-1-single-confirmation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je vais présenter le pré-flight en deux blocs, comme prévu par la skill.\n\n## Bloc 1 — Résumé d'instance\n\n- **Cruft** : présent, template `python-project-template-v2`. Python **3.13**, package manager **uv**, `use_dbt: no`, `use_terraform: no`, licence Proprietary, `branch_protection_profile: team`.\n- **PRD.md** : présent — *demo-instance*, outil interne de consolidation de rapports CSV mensuels en un fichier annuel, usage CLI personnel, contrainte de traitement local uniquement (données clients, pas de cloud).\n- **Composants détectés à la racine** : mono-composant Python — `src/my_project/` (package unique), `tests/` (pytest + coverage via `pyproject.toml`), `scripts/` (`apply-ruleset.sh`), `.github/` (workflows `ci.yml` et `release.yml`, ruleset de protection de branche).\n- **Outillage additionnel repéré** : Ruff (lint+format, règles `E,W,F,I,B,UP,SIM`), mypy strict-ish (`warn_return_any`), pre-commit (`ruff`, `ruff-format`, `conventional-pre-commit` en commit-msg), `python-semantic-release` configuré pour du conventional commits avec releases en `0.x`.\n\n## Bloc 2 — Annonce d'allègement\n\n```\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0.\nL'interview ne porte que sur ce qui mérite délibération humaine.\n```\n\n---\n\n**Phase 1 — Vue d'ensemble (pré-remplie)**\n\nProjet détecté : **my-project** (`my_project`) — mono-composant Python, pas de sous-projets dbt/terraform. Correct ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 11,
+            "costUsd": 0.2038498,
+            "judgeCostUsd": 0.018732,
+            "durationSeconds": 51,
+            "startedAt": "2026-09-23T10:37:57.165Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-YprIOd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-stop-message",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "lightening-block-marker",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched allégées ou pré-remplies",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "reference-file-named",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched instance-aware-flow\\.md",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-claude-md-written",
+                "passed": true,
+                "weight": 1,
+                "explanation": "CLAUDE.md absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "instance-summary-then-lightening",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Pré-flight — instance détectée\n\n**Bloc 1 — Résumé**\n\n- **Cruft** : template `python-project-template-v2` appliqué, Python 3.13, package manager `uv`, ni dbt ni terraform (`use_dbt: no`, `use_terraform: no`), licence Proprietary, profil de protection de branche `team`.\n- **PRD.md** : présent — outil CLI interne de consolidation de rapports CSV mensuels, usage personnel, traitement local uniquement (données clients, pas de cloud), pas d'UI. Note : le PRD signale lui-même être une fixture d'eval au format abrégé (ADR-0013).\n- **Composants détectés** : mono-composant — `src/my_project/` (package unique), `tests/` (pytest), `scripts/` (`apply-ruleset.sh`), `.github/workflows/` (CI + release), `.github/rulesets/` (branch protection as code).\n- **Enrichissement** (`pyproject.toml`, `README.md`, `.pre-commit-config.yaml`) : Ruff (lint+format, règles `E,W,F,I,B,UP,SIM`), mypy strict-ish (`warn_return_any`, `warn_unused_configs`), pytest + pytest-cov (`--cov=src`), pre-commit avec hooks standards + `conventional-pre-commit` sur `commit-msg`, release automatisée via `python-semantic-release` (déclenchée par push sur `main`, Conventional Commits, bump de version poussé directement sur `main` via bypass GitHub Actions).\n\n**Bloc 2 — Allègement**\n\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.\n\n---\n\n### Phase 1 — Vue d'ensemble (confirmation)\n\nProjet détecté : **my-project** (`my_project`) — mono-composant, package Python unique (`src/my_project/`). Correct ?"
+              },
+              {
+                "name": "phase-1-single-confirmation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Pré-flight — instance détectée\n\n**Bloc 1 — Résumé**\n\n- **Cruft** : template `python-project-template-v2` appliqué, Python 3.13, package manager `uv`, ni dbt ni terraform (`use_dbt: no`, `use_terraform: no`), licence Proprietary, profil de protection de branche `team`.\n- **PRD.md** : présent — outil CLI interne de consolidation de rapports CSV mensuels, usage personnel, traitement local uniquement (données clients, pas de cloud), pas d'UI. Note : le PRD signale lui-même être une fixture d'eval au format abrégé (ADR-0013).\n- **Composants détectés** : mono-composant — `src/my_project/` (package unique), `tests/` (pytest), `scripts/` (`apply-ruleset.sh`), `.github/workflows/` (CI + release), `.github/rulesets/` (branch protection as code).\n- **Enrichissement** (`pyproject.toml`, `README.md`, `.pre-commit-config.yaml`) : Ruff (lint+format, règles `E,W,F,I,B,UP,SIM`), mypy strict-ish (`warn_return_any`, `warn_unused_configs`), pytest + pytest-cov (`--cov=src`), pre-commit avec hooks standards + `conventional-pre-commit` sur `commit-msg`, release automatisée via `python-semantic-release` (déclenchée par push sur `main`, Conventional Commits, bump de version poussé directement sur `main` via bypass GitHub Actions).\n\n**Bloc 2 — Allègement**\n\nLes phases suivantes seront **allégées ou pré-remplies**\n(parcours détaillé dans reference/instance-aware-flow.md) :\n\n- Phase 1 (Vue d'ensemble) → confirmation rapide depuis Cruft+PRD ; Phase 2 (Stack) → confirmation depuis Cruft, éclairée par les contraintes exogènes du PRD\n- Phase 8 (Workflow IA) → pré-proposé (progress.md, PRD.md, commandes Cruft)\n- Phase 11 (Structure documentaire) → diagnostic direct depuis l'arbo\n\nPhases restant à cadrer intégralement (conventions AI-driven, non déductibles) :\n- Phase 3 (Conventions de code) — type hints, docstrings, naming, linter\n- Phase 4 (Approche de test) — TDD, couverture, pyramide\n- Phase 5 (Versioning) — Conventional Commits, scopes, qui commite\n- Phase 6 (Langues) — code vs docs vs commits\n- Phase 7 (CI/CD) — triggers, déploiement\n- Phase 10 (Points d'attention) — secrets, pièges\n\nPrincipe : Cookiecutter a déjà demandé ce qui est décidable à T0. L'interview ne porte que sur ce qui mérite délibération humaine.\n\n---\n\n### Phase 1 — Vue d'ensemble (confirmation)\n\nProjet détecté : **my-project** (`my_project`) — mono-composant, package Python unique (`src/my_project/`). Correct ?"
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

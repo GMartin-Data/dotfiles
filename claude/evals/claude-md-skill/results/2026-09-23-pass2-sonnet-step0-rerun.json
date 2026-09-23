@@ -1,0 +1,285 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.280",
+  "startedAt": "2026-09-23T10:30:52.786Z",
+  "durationSeconds": 25,
+  "costUsd": 0.23476420000000003,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/dotfiles/claude",
+    "ablation": "none",
+    "modelOverride": "claude-sonnet-5",
+    "judgeModel": "sonnet",
+    "caseFilter": "step0-existing-claude-md",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "dotfiles",
+        "path": "/home/martin/dotfiles/claude"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "step0-existing-claude-md",
+      "dir": "evals/claude-md-skill/step0-existing-claude-md",
+      "source": "case_yaml",
+      "promptMarkdown": "/claude-md",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "no-write-tool",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Write",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "no-edit-tool",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Edit",
+            "min": 0,
+            "max": 0
+          }
+        },
+        {
+          "name": "fixture-still-empty",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "CLAUDE.md"
+            },
+            "pattern": "^\\s*$",
+            "flags": "",
+            "match": "contains"
+          }
+        },
+        {
+          "name": "no-lightening-block",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "allégées ou pré-remplies",
+            "flags": "",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "gate-question-then-wait",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Step 0\" and its `#### Test` block (CLAUDE.md present and empty → reported as empty, replace / extend / abandon question asked; neither pre-flight nor Phase 1 before the answer).\nThe reply, in French, states that a CLAUDE.md exists at the root and that it is empty (a placeholder), and asks the user to choose between replacing, extending or abandoning — all three options offered. Then it stops: no instance summary, no lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply treats the empty file as absent, omits the question or one of its three options, starts the pre-flight or the interview, or proposes CLAUDE.md content.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Step 0\" and its `#### Test` block (CLAUDE.md present and empty → reported as empty, replace / extend / abandon question asked; neither pre-flight nor Phase 1 before the answer).\nThe reply, in French, states that a CLAUDE.md exists at the root and that it is empty (a placeholder), and asks the user to choose between replacing, extending or abandoning — all three options offered. Then it stops: no instance summary, no lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.\nFAIL if the reply treats the empty file as absent, omits the question or one of its three options, starts the pre-flight or the interview, or proposes CLAUDE.md content.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.0779794,
+            "judgeCostUsd": 0.00297,
+            "durationSeconds": 8,
+            "startedAt": "2026-09-23T10:30:52.864Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-BGYMOp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-write-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Write called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "fixture-still-empty",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-question-then-wait",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Un `CLAUDE.md` existe déjà à la racine, mais il est vide.\n\nVeux-tu que je le **remplace** (via l'interview complète), que je **l'étende** en partant de zéro (puisqu'il n'y a rien à conserver), ou **abandonner** et laisser le fichier tel quel ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.07862740000000001,
+            "judgeCostUsd": 0.003191999999999999,
+            "durationSeconds": 10,
+            "startedAt": "2026-09-23T10:31:00.543Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-TXH8BM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-write-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Write called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "fixture-still-empty",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-question-then-wait",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Le fichier `CLAUDE.md` existe déjà à la racine, mais il est **vide**.\n\nVeux-tu que je :\n- **remplace** (je pars de zéro via l'interview),\n- **étende** (je pars de ce fichier vide — dans ce cas ça revient au même que remplacer, à moins que tu aies du contenu en tête à intégrer), ou\n- **abandonne** (je ne touche à rien) ?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.0781574,
+            "judgeCostUsd": 0.0030419999999999996,
+            "durationSeconds": 7,
+            "startedAt": "2026-09-23T10:31:10.663Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-IUPW5R/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "no-write-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Write called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-edit-tool",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Edit called 0x (expected 0..0)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "fixture-still-empty",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ^\\s*$",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-lightening-block",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "gate-question-then-wait",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Le fichier `CLAUDE.md` existe déjà à la racine, mais il est vide.\n\nVeux-tu que je le **remplace** (interview complète, écriture depuis zéro), que je **l'étende** (interview, puis fusion avec le contenu existant — ici équivalent à remplacer puisqu'il est vide), ou **abandonner** ?"
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

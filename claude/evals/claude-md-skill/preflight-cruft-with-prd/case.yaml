@@ -1,0 +1,39 @@
+schema_version: "1.1"
+name: preflight-cruft-with-prd
+description: preflight — Cruft instance with a canonical PRD.md; the gate passes, the two pre-flight blocks are shown (verbatim lightening announcement), Phase 1 opens as one pre-filled confirmation, nothing written.
+tags: [claude-md, preflight]
+runs: 3
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: "/claude-md"
+  allowed_tools: [Skill, Read, Glob, Bash, Write]
+graders:
+  - name: no-stop-message
+    type: regex
+    pattern: 'Instance Cruft détectée, mais aucun PRD\.md'
+    match: not_contains
+  - name: lightening-block-marker
+    type: regex
+    pattern: 'allégées ou pré-remplies'
+  - name: reference-file-named
+    type: regex
+    pattern: 'instance-aware-flow\.md'
+  - name: no-claude-md-written
+    type: file_exists
+    path: CLAUDE.md
+    exists: false
+  - name: instance-summary-then-lightening
+    type: llm
+    criteria: |
+      Checks SKILL.md "Pré-flight" (Bloc 1 then Bloc 2) on a Cruft instance that has a PRD.md.
+      PASS if the output contains, before any interview question: (1) an instance summary that mentions Cruft (with the Python version and the dbt / terraform flags), the PRD.md (with a short summary of it) and the components found at the root; (2) the lightening announcement, in which the phases marked as lightened or pre-filled are Phases 1, 2, 8 and 11 and no other (the list of "phases remaining to frame" is expected and is not a violation).
+      Summarising the PRD (problem, users, constraints) inside the instance summary is REQUIRED by the skill and is not a violation. Extra details read from pyproject.toml, README or pre-commit config are allowed. No replace / extend / abandon question is expected, since no CLAUDE.md exists.
+      FAIL only if the instance summary or the lightening announcement is missing, if a phase other than 1, 2, 8 and 11 is announced as lightened, or if the output asks whether to replace, extend or abandon a CLAUDE.md.
+  - name: phase-1-single-confirmation
+    type: llm
+    criteria: |
+      Checks the `#### Test` block of SKILL.md "Bloc 2 — Annonce d'allègement" (Phase 1 on an instance → one confirmation of name + components pre-filled from Cruft, no PRD-territory question) and "Règles d'interaction" rule 1 (one question at a time).
+      PASS if the output ENDS by opening Phase 1 as a single confirmation question about the project name and its components, with values pre-filled from Cruft (for example « Projet détecté : X — composants : Y. Correct ? »), and that question is the only question asked in the whole output.
+      That closing question must not ask about the problem solved, the target users, the value or user stories. Mentions of those topics earlier in the output, inside the instance summary, are expected and are not a violation.
+      FAIL only if no Phase 1 confirmation is asked, if more than one question is asked, or if the closing question bears on the problem, users, value or user stories instead of the name and components.

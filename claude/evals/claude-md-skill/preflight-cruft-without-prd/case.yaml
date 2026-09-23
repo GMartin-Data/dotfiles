@@ -1,0 +1,31 @@
+schema_version: "1.1"
+name: preflight-cruft-without-prd
+description: gate_conditional — Cruft instance without PRD.md; the skill reproduces the stop message and waits, no pre-flight block, no interview question, nothing written.
+tags: [claude-md, gate_conditional]
+runs: 3
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: "/claude-md"
+  allowed_tools: [Skill, Read, Glob, Bash, Write]
+graders:
+  - name: stop-message-reproduced
+    type: regex
+    pattern: 'Instance Cruft détectée, mais aucun PRD\.md'
+  - name: track-leger-offered
+    type: regex
+    pattern: 'track léger'
+  - name: no-lightening-block
+    type: regex
+    pattern: 'allégées ou pré-remplies'
+    match: not_contains
+  - name: no-claude-md-written
+    type: file_exists
+    path: CLAUDE.md
+    exists: false
+  - name: gate-blocks-and-waits
+    type: llm
+    criteria: |
+      Checks SKILL.md "Step 0" (CLAUDE.md absent → no replace / extend / abandon question, straight to the pre-flight) and "Gate conditionnelle — Cruft + PRD.md" with its `#### Test` block (`.cruft.json` present and `PRD.md` absent → the stop message is reproduced, then the skill stops and waits; the two exits are: the user runs /prd first, or explicitly confirms "track léger").
+      The reply, in French, does not ask whether to replace, extend or abandon an existing CLAUDE.md. It states that a Cruft instance was detected without a PRD.md, explains the Cruft → /prd → /claude-md workflow (product framing frozen before technical conventions) and offers the "track léger" override, subject to explicit human confirmation (ADR-0011). Then it stops: no Bloc 1 instance summary, no Bloc 2 lightening announcement, no interview question (nothing about project name, components or stack), no CLAUDE.md content proposed.
+      FAIL if the reply asks the replace / extend / abandon question, shows an instance summary or the lightening announcement, asks any interview question, activates the track léger path on its own, or drafts or writes a CLAUDE.md.
