@@ -1,5 +1,80 @@
 ## Dernière mise à jour
-Date : 2026-09-23 08:31
+Date : 2026-09-23 10:11
+Session : 6501275b-b787-498f-9e58-e14002295156
+
+## Tâches complétées
+
+- **Zone grise `candide-*` tranchée — passe 4 du corpus feynman-mentor,
+  2 commits poussés, 3,16 $** (`767c8a4`, `550ac20`) :
+  1. **Levier changé** (`767c8a4`) : ni durcissement de prohibitions ni
+     assouplissement de R6 — contrainte de forme : phrase gabarit pour le
+     jargon (Signal Gaps § Undefined jargon) + étape « 5. Check Before
+     Sending » (3 tests : orthographe de l'utilisateur, expliquer ≠ confirmer,
+     aucun contenu pour les trous ; exception R6 « mot ordinaire »
+     reconduite). Rubriques inchangées (elles jugent le quoi, pas le comment).
+  2. **Rejeu ciblé `--tag core_invariant`, Fable + Opus** (2,53 $) : la
+     classe de fuite de la passe 3 a disparu des 12 runs (chaque terme au
+     gabarit). Fable 2/6 → 5/6 runs parfaits, `refuses-meta-help` vert ;
+     Opus 4/6 → 3/6. Gris résiduels d'une autre nature (citation réécrite
+     « même résultat » pour « state final », appariement stateless/state
+     final, consigne « Évite “tu vois” », 1 run sans discriminant).
+  3. **Règle d'arrêt appliquée** (décision Greg) : prose conservée, contrat
+     R6 inchangé, les deux `core_invariant` actés « paire flaky connue » au
+     README § État, plus aucune itération de prose.
+  4. **`history.jsonl` régénéré** (SKILL.md changé) pour les 2 cas `resumed`,
+     rejoués verts sur les deux tiers (0,63 $) ; 4 JSON figés
+     `results/2026-09-23-pass4-*` ; README (règle de design « levier de
+     forme », table, lecture passe 4, verdict). Corpus à 13,79 $ cumulés.
+
+## En cours
+
+- Rien en session — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact` + reports
+   d'août + A2/A3 (roadmap) + option `dmi: true` sur les commands rituelles +
+   validation humaine de la roadmap (suspendue depuis le 12/09).
+3. **Chantier evals, Phase 3** (`claude-md` en skill, déclenche R2+P3) et
+   **Phase 4** (event-driven : code-review au prochain changement de tier D5,
+   sous-ensembles mono-tour des autres corpus).
+4. Event-driven (nouveau) : rouvrir la paire `candide-*` seulement si une
+   régression en usage réel ramène une fuite de la classe passe 3 (décodage,
+   sens candidats, traduction) — lire les runs, pas le score.
+5. Hors repo, à la main de Greg : purge des **3** sandboxes
+   `/tmp/claude-eval-*` (`rYSnT9`, `bg2EZZ`, **`zc9I2V`** — `chmod 700`
+   requis) ; purge du cobaye `converting-temperatures` ; pin
+   `known-first-party` au template Cookiecutter ; learning record
+   `0004-*.md` dans `~/learning-to-build-skills`.
+6. Revisites inchangées : Pocock ~2026-11/12, pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Choix de portée session (aucun ADR — ADR-0012 et ADR-0016 inchangés),
+  décisions Greg :
+  - **Troisième voie sur les `candide-*` gris** : ni option « durcir la prose »
+    ni « assouplir R6 » du checkpoint précédent — levier de forme (gabarit +
+    auto-vérification, règle 4 du guide Opus 5 notée en août). Rationale et
+    preuve au README du corpus (Règles de design + État).
+  - **Règle d'arrêt** fixée avant le rejeu et appliquée : critère 1,0 × 3 runs
+    × 2 cas × 2 tiers non atteint → variance actée, prose conservée (classe
+    de fuite éliminée, tier par défaut en progrès, régression Opus sur un
+    marqueur unique + un run inexpliqué à n = 3).
+  - **Rejeu par `--tag core_invariant`** plutôt que glob `--case` (non
+    vérifié sur le runner) — même périmètre, sans ambiguïté.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-23 08:31
 Session : 9bcbc507-9bc7-453f-992e-98dcb9229432
 
 ## Tâches complétées
