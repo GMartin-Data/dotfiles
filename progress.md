@@ -1,5 +1,106 @@
 ## Dernière mise à jour
-Date : 2026-09-23 12:45
+Date : 2026-09-23 14:59
+Session : 7cccff52-a76d-4cb6-96dd-cc205ca994af
+
+## Tâches complétées
+
+- **Paquet A soldé — dettes avant le cycle du 26/09** :
+  1. **Audit §7.2, items 14-16** (`3a52471`) : `HOME` substitué pendant le
+     `scaffold_script` ; slash-command dans le prompt développée inline, aucun
+     appel `Skill` ; juge `llm` en un mot sans raisonnement (gabarit extrait
+     du binaire), parades telles qu'appliquées au corpus `claude-md-skill`.
+  2. **/immunize** (`6e2a38d`) : mode ajout de la leçon « rubrique PASS si /
+     FAIL seulement si » ; triage des 2 leçons du jour → **2 groupes distincts
+     à n = 1**, conservés (variance probabiliste vs échec systématique du
+     juge — refus de les fusionner pour atteindre le seuil 2+), fixes déjà
+     commités sur leurs artefacts, expiration 2026-09-30.
+  3. **8 sandboxes `/tmp/claude-eval-*` purgées** par Claude, fichier par
+     fichier sous le hook `block-rm-rf` : le runner scelle `sealed/` en
+     `d-w-------`, `chmod -R` échoue en silence ; recette `find -type d -exec
+     chmod u+rwx` en pré-ordre puis `rm` + `rmdir`. Aucun worktree orphelin
+     (vérifié `dotfiles` et template).
+  4. **Cobaye `converting-temperatures` conservé** — décision Greg (utilisé
+     par un autre repo). Item retiré définitivement, mémoire créée.
+- **Paquet C — roadmap d'adoption validée par Greg, point par point**
+  (`~/claude-audit-notes/adoption-roadmap.md`, suspendue depuis le 12/09) :
+  - **Doctrine** : règles 1-3 amendées (outillage → vendorer / réécrire /
+    rien, discipline de provenance au 1er vendoring ; plafond + règle d'arrêt
+    écrits avant toute campagne de porte, Greg seul juge du bypass ;
+    déclencheurs observables, statut **dormant** distinct d'armé, élagage aux
+    revisites) ; 4-5 inchangées ; cadence §6 → cycle /insights et revisites.
+  - **Fusions confirmées** : P6+R1 (déclencheur « ≥ 3 sous-agents avec
+    relais », revue d'adéquation règle 1 avant greffe) ; R2+P3 **fait ×1**
+    (moitié P3 non prouvée ; défaut rituel → co-localisé, conversationnel →
+    `reference/tests.md` ; surcoût +1,1k tok à comparer par véhicule).
+  - **Horizon A réduit à A2** (epistemics + échelle de preuve = T1 palier 1,
+    doc seule sans règle, dormant à défaut à la revisite pstack). A1 replié
+    dans son déclencheur (commit figé `3cca18b`) ; A3 rétrogradé en B
+    (« prochain rejeu G3 », peut se résorber via R9).
+  - **Dormants** : R3, R4, P5, T2, réouvertures notées en §3.B.
+  - **Compagnons créés** (même dossier) : `adoption-roadmap-glossary.md`
+    (sigles, collision des « R » roadmap/audit evals) ; `adoption-themes.md`
+    (pédagogie T1-T4, porteurs, « fait », où lire).
+  - **Mémoires** : 3 créées (cobaye à garder ; un point par tour en
+    validation ; garde-fous dispersion), 3 mises à jour (roadmap, AIDD,
+    diagnosing-bugs).
+
+## En cours
+
+- Rien en session — ce checkpoint à committer, puis push des 3 commits
+  (`3a52471`, `6e2a38d` + checkpoint).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact`, reports
+   d'août, `dmi: true` sur les commands rituelles + skill `claude-md`, options
+   Pocock (writing-for-agents, 3 conditions d'ADR). **Déchargé de A2/A3**
+   (roadmap validée). §6 de la roadmap s'y remet à jour désormais.
+3. **A2** (seul item Horizon A, ~1 h, session courte dédiée) :
+   `docs/methodology/epistemics.md` — tiers de confiance + posture
+   blast-radius + échelle de preuve (à transcrire du playbook pstack, pas de
+   mémoire), ligne de renvoi sous State Verification, placement confirmé par
+   la matrice. Dormant si non fait à la revisite pstack.
+4. **Prochain triage /immunize** : verser **P4** (citation-avec-décision
+   Karpathy), non versé aux 2 triages du 23/09 ; les 2 leçons conservées
+   expirent le 2026-09-30 sans seconde occurrence (attendue pour la rubrique :
+   réécriture des `candide-*` feynman-mentor, ~1,7 $, option du 26/09).
+   Candidate à verser en mode ajout : « une validation humaine en attente a
+   gelé les déclencheurs event-driven 11 jours (P4) — dater la validation dans
+   la semaine ».
+5. **Chantier evals, Phase 4** (event-driven, inchangé) : R8 code-review →
+   runner au D5 ; R9 sous-ensembles mono-tour à la retouche de
+   grill/prd/planning/adr (blinde ex-A3 au passage) ; R10 `disallowed-tools`.
+6. Event-driven : réponse vide Step 0 (rejouer `--keep-temp` si récidive) ;
+   paire `candide-*` inchangée ; diagnosing-bugs au premier bug dont le
+   diagnostic échoue (Phase 0 incluse, commit `3cca18b`).
+7. Hors repo, à la main de Greg : pin `known-first-party` ; learning record
+   `0004`. (Sandboxes : purgées. Cobaye : conservé, ne plus lister.)
+8. Revisites : Pocock ~2026-11/12 (élagage des dormants) ; pstack
+   ~2026-12/2027-01 (A2 → dormant si non fait).
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — la roadmap hors repo est la source, validée point
+  par point ; décisions Greg :
+  - Doctrine amendée (règles 1-3, cadence §6) ; fusions confirmées ; Horizon
+    A = A2 seul ; A1 replié, A3 → B ; 4 dormants (R3, R4, P5, T2).
+  - Triage /immunize : 2 groupes, pas 1 — ne jamais fusionner des leçons
+    pour atteindre le seuil 2+ (Global Do NOT, collapse de catégories).
+  - Cobaye `converting-temperatures` conservé (autre repo).
+  - Purge des sandboxes déléguée à Claude, fichier par fichier, hook respecté.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-23 12:45
 Session : 82adbc99-a1ae-4a56-9452-2b9350bfd202
 
 ## Tâches complétées
