@@ -61,15 +61,15 @@ Session : 7cccff52-a76d-4cb6-96dd-cc205ca994af
    blast-radius + échelle de preuve (à transcrire du playbook pstack, pas de
    mémoire), ligne de renvoi sous State Verification, placement confirmé par
    la matrice. Dormant si non fait à la revisite pstack.
-4. **Prochain triage /immunize** : **P4** (citation-avec-décision Karpathy)
-   versé à l'inbox en fin de session (n = 0, candidate d'emprunt, routage
-   artefact probable vers `karpathy-discipline.md`) — inbox à 3 entrées ; les
-   2 leçons conservées expirent le 2026-09-30 sans seconde occurrence
-   (attendue pour la rubrique :
-   réécriture des `candide-*` feynman-mentor, ~1,7 $, option du 26/09).
-   Candidate à verser en mode ajout : « une validation humaine en attente a
-   gelé les déclencheurs event-driven 11 jours (P4) — dater la validation dans
-   la semaine ».
+4. **Prochain triage /immunize** : inbox à **4 entrées** du 23/09 — les 2
+   leçons conservées (expirent le 2026-09-30 sans seconde occurrence,
+   attendue pour la rubrique : réécriture des `candide-*` feynman-mentor,
+   ~1,7 $, option du 26/09) ; **P4** versé en fin de session (n = 0,
+   candidate d'emprunt, routage artefact probable vers
+   `karpathy-discipline.md`) ; leçon « une validation humaine en attente a
+   gelé les déclencheurs event-driven 11 jours » versée aussi (n = 1, règle
+   candidate : dater toute validation bloquante dans la semaine ou noter les
+   déclencheurs suspendus).
 5. **Chantier evals, Phase 4** (event-driven, inchangé) : R8 code-review →
    runner au D5 ; R9 sous-ensembles mono-tour à la retouche de
    grill/prd/planning/adr (blinde ex-A3 au passage) ; R10 `disallowed-tools`.
