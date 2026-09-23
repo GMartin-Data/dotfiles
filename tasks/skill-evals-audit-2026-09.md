@@ -627,6 +627,32 @@ tout est purgé à la fin du run.
     transcript de la session reprise (`<session-id>.jsonl`, ~130 Ko) **dans le
     dossier du cas**, à côté de la fixture. Effet de bord non annoncé ;
     `.gitignore` requis (`claude/evals/**/*.jsonl` sauf `history.jsonl`).
+14. **Phase 3 (2026-09-23)** — le runner substitue `HOME`
+    (`/tmp/claude-eval-*/home`) pendant l'exécution du `scaffold_script`,
+    alors que la doc présente le scaffold comme exécuté hors sandbox, « comme
+    l'utilisateur » : `~` ne résout plus vers le home réel et les outils
+    installés par `uv tool` (`~/.local/bin`) sortent du PATH. Parade :
+    `getent passwd` pour le home réel, recherche explicite dans
+    `$REAL_HOME/.local/bin` (`claude/evals/claude-md-skill/*/scaffold.sh`).
+    Observé sur 2.1.280.
+15. **Phase 3 (2026-09-23)** — une slash-command placée dans le `prompt` d'un
+    cas (`/claude-md`) est **développée inline** dans le tour utilisateur :
+    aucun appel `Skill`, donc `tool_used: Skill` compte 0 même quand la skill
+    s'exécute (sonde : `Skill called 0x`, comportement conforme). L'indicateur
+    `skill-fired` ne vaut que pour les déclenchements par description ; une
+    invocation explicite se prouve par les graders de comportement. Non
+    documenté.
+16. **Phase 3 (2026-09-23)** — complément de l'item 6 : le juge `llm` ne
+    raisonne pas, il n'y a donc rien à restituer. Gabarit extrait du binaire
+    2.1.280 : système « You are a strict, terse evaluation judge for
+    coding-agent traces. », puis « Criterion: … / Agent output
+    (last_message): … / Respond with exactly one word: PASS or FAIL. » Effet
+    mesuré : une rubrique à quatre clauses conjonctives rougit un comportement
+    conforme (9 votes FAIL sur 9 ; même rubrique rejouée hors runner avec
+    justification demandée : PASS 7/7). Parade : rubriques courtes « PASS si /
+    FAIL seulement si », une question par grader `llm`, non-violations
+    explicites (règle 7 du corpus `claude-md-skill/`). Le gabarit n'est pas
+    documenté.
 
 ### 7.3 Artefacts du pilote (scratchpad de session, éphémères)
 
