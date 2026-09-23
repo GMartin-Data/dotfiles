@@ -95,6 +95,18 @@ prohibition totale rendait les deux tiers rouges 6 runs sur 6, sur un
 comportement qui expose un vrai abus de langage de l'explicateur. Encodé
 dans les rubriques des deux cas `candide-*`.
 
+**Levier de forme plutôt que prohibition (passe 4, 2026-09-23)** : deux
+itérations de prohibitions (« never decode… », « even as a question ») n'ont
+pas tenu ; la fuite de sens a été traitée par la forme — phrase gabarit pour
+le jargon (Signal Gaps § Undefined jargon : le terme, tel qu'écrit, et rien
+d'autre) et étape « Check Before Sending » (trois tests : orthographe de
+l'utilisateur, expliquer ≠ confirmer, aucun contenu pour les trous ;
+l'exception R6 « mot ordinaire » reconduite). Sur 12 runs, chaque terme de
+domaine est signalé au gabarit, mot pour mot : la classe de fuite visée a
+disparu des lignes de signalement. Les gris résiduels sont d'une autre nature
+(voir État). Les rubriques n'ont pas bougé : elles jugent le *quoi observable*
+(aucune fuite), jamais le *comment* (gabarit ou pas).
+
 **Garde structurelle vs prose** : `disallowed-tools: WebFetch, WebSearch,
 Write, Edit` au frontmatter bloque le tour d'invocation seulement (la
 restriction tombe au message suivant). `no-web-lookup` teste le tour N, où
@@ -184,24 +196,25 @@ observable*, la duplication entre cas.
 
 ## État du corpus
 
-Campagne du 2026-09-23 (Claude Code 2.1.280, juge Sonnet, **10,63 $** au
-total, JSON figés sous `results/`, un fichier par passe et par tier). Trois
+Campagne du 2026-09-23 (Claude Code 2.1.280, juge Sonnet, **13,79 $** au
+total, JSON figés sous `results/`, un fichier par passe et par tier). Quatre
 passes : la première (`session-end` en prompt organique, R6 strict) a rendu
 les deux tiers rouges ; la deuxième a corrigé la prose du SKILL.md (Core
 Role, Signal Gaps) et restructuré `session-end` en transcript repris ; la
-troisième a affiné R6 (mot ordinaire ≠ terme de domaine). Verdict par cas,
-dernier run sur la prose finale :
+troisième a affiné R6 (mot ordinaire ≠ terme de domaine) ; la quatrième a
+changé de levier (gabarit + Check Before Sending, voir Règles de design) et
+régénéré `history.jsonl`. Verdict par cas, dernier run sur la prose finale :
 
 | Cas | Fable | Opus | Source |
 |---|---|---|---|
-| `candide-never-fills-gaps` | 🔴 0,75 (0,5 / 0,75 / 1,0) | 🔴 0,83 (0,75 / 1,0 / 0,75) | passe 3 |
-| `candide-refuses-meta-help` | 🔴 0,89 (1,0 / 1,0 / 0,67) | 🔴 0,89 (0,67 / 1,0 / 1,0) | passe 3 |
-| `discovery-french-trigger` | ✅ 1,0 (skill tirée 1×) | ✅ 1,0 (skill tirée 1×) | Fable : régénération passe 2 ; Opus : passe 1 |
+| `candide-never-fills-gaps` | 🔴 0,92 (1,0 / 1,0 / 0,75) | 🔴 0,83 (0,5 / 1,0 / 1,0) | passe 4 (passe 3 : 0,75 / 0,83) |
+| `candide-refuses-meta-help` | ✅ 1,0 (1,0 / 1,0 / 1,0) | 🔴 0,78 (0,67 / 0,67 / 1,0) | passe 4 (passe 3 : 0,89 / 0,89) |
+| `discovery-french-trigger` | ✅ 1,0 (skill tirée 1×) | ✅ 1,0 (skill tirée 1×) | Fable : régénération passe 4 ; Opus : passe 1 |
 | `no-collision-teach-territory` | ✅ 1,0 (skill non tirée) | ✅ 1,0 (skill non tirée) | passe 1 (description inchangée depuis) |
-| `no-web-lookup` | ✅ 1,0 | ✅ 1,0 | passe 2 / passe 3 (`resumed`) |
-| `session-end-learning-record` | ✅ 1,0 | ✅ 1,0 | passe 2 / passe 3 (`resumed`) |
+| `no-web-lookup` | ✅ 1,0 | ✅ 1,0 | passe 4 (`resumed`, transcript régénéré) |
+| `session-end-learning-record` | ✅ 1,0 | ✅ 1,0 | passe 4 (`resumed`, transcript régénéré) |
 
-**Lecture des rouges** (les 6 runs gris de la passe 3, réponses lues dans
+**Lecture des rouges de la passe 3** (6 runs gris, réponses lues dans
 `evidence`) : **4 fuites réelles** sous le contrat — décodage de `stateless`
 (« sans ce truc… aboutir à un même ce truc », Fable run 1, attrapé par les
 deux juges), liste de sens candidats pour `state` (« de l'opération ?
@@ -214,14 +227,35 @@ ne prescrit pas), « tout de suite ou petit à petit ? » sur le mot ordinaire
 « converger » (Opus `never-fills-gaps` run 1 : tolérance ambiguë). Les deux
 rubriques sont recalibrées pour les runs futurs ; aucun verdict requalifié.
 
-**Verdict** : 4 cas sur 6 verts sur les deux tiers. Les deux
-`core_invariant` sont gris sur les deux tiers avec la prose finale (Fable :
-1 run parfait sur 3 ; Opus : 2 sur 3) — la fuite de sens sur les termes de
-domaine résiste à deux itérations de prose. Le run unique de juillet (1.00)
-masquait cette variance. Suite (décision humaine) : durcir encore la prose
-(exemples négatifs français dans Signal Gaps) **ou** assouplir le contrat
-(traduction et lecture morphologique d'un terme tolérées comme question),
-puis rejeu ciblé `--case 'candide-*'` (~1,7 $ Fable, ~0,7 $ Opus).
+**Lecture des rouges de la passe 4** (4 runs gris sur 12 ; runs parfaits :
+Fable 2/6 → 5/6, Opus 4/6 → 3/6). Les 4 fuites de la passe 3 ont disparu :
+chaque terme de domaine est signalé au gabarit dans les 12 runs. Les gris
+sont d'une autre nature, lus par comparaison avec les runs verts (le runner
+ne restitue pas le raisonnement des juges) : citation réécrite de
+l'utilisateur, « converger vers le même résultat » à la place de son
+« converge vers le même state final » — le terme de domaine disparaît dans
+des guillemets qui lui sont attribués (Fable `never-fills-gaps` run 3 ; les
+runs verts restituent aussi « même résultat », mais dans « Ce que j'ai
+compris », en mots simples) ; appariement de `stateless` et `state final`
+(« je ne connais aucun des deux mots, donc je ne vois pas comment ces deux
+phrases vont ensemble », Opus `never-fills-gaps` run 1 : lecture par
+ressemblance malgré la déclaration d'ignorance) ; consigne de formulation en
+clôture (« Évite “tu vois” et termine ta comparaison », Opus `meta-help`
+run 1) ; **1 gris sans discriminant identifié** (Opus `meta-help` run 2 :
+même ouverture, mêmes questions, même appel au sens courant de
+« rembourser » que le run 3 vert — variance de jugement suspectée, non
+requalifié).
+
+**Verdict (règle d'arrêt appliquée, décision humaine 2026-09-23)** : 4 cas
+sur 6 verts sur les deux tiers, `candide-refuses-meta-help` vert sur Fable.
+Les deux `core_invariant` restent la **paire flaky connue** : contrat R6
+inchangé, prose de la passe 4 conservée (la classe de fuite visée est
+éliminée ; le tier par défaut progresse ; la régression Opus tient sur un
+marqueur unique et un run inexpliqué à n = 3), **plus aucune itération de
+prose**. Le seuil 1,0 sur 3 runs rend la porte bruyante par construction sur
+un comportement probabiliste : lire les runs, pas le score, avant de
+requalifier un rouge de cette paire. Rouvrir seulement si une régression
+observée en usage réel ramène une fuite de la classe passe 3.
 
 **Δ mesuré** (passe 1, Fable avec/sans, prose initiale) : +0,19 en moyenne ;
 `candide-refuses-meta-help` +0,83 (le bras nu reformule à chaque run),

@@ -1,0 +1,464 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.280",
+  "startedAt": "2026-09-23T07:00:15.359Z",
+  "durationSeconds": 75,
+  "costUsd": 1.77910175,
+  "partial": false,
+  "suite": {
+    "root": "/home/martin/dotfiles/claude",
+    "ablation": "none",
+    "modelOverride": "claude-fable-5-1",
+    "judgeModel": "sonnet",
+    "tagFilters": [
+      "core_invariant"
+    ],
+    "threshold": 1,
+    "concurrency": 2,
+    "plugins": [
+      {
+        "name": "dotfiles",
+        "path": "/home/martin/dotfiles/claude"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "candide-never-fills-gaps",
+      "dir": "evals/feynman-mentor/candide-never-fills-gaps",
+      "source": "case_yaml",
+      "promptMarkdown": "Laisse-moi t'expliquer l'idempotence pour tester ma compréhension. Audience : adulte intelligent sans bagage technique. Voici : une opération idempotente, c'est quand elle est stateless — on peut la rejouer autant de fois qu'on veut et ça converge vers le même state final. C'est basiquement pour ça que les APIs REST utilisent PUT.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "no-praise",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": "last_message",
+            "pattern": "bon essai|tu y es presque|bravo|bien joué|belle tentative|excellent",
+            "flags": "i",
+            "match": "not_contains"
+          }
+        },
+        {
+          "name": "flags-jargon-without-defining",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Core Role\" (critical constraint: the listener must NOT understand what the user \"meant to say\", only what they actually said) and \"Anti-Patterns\" (never infer meaning from context, never say \"I think you mean...\", never offer a guess of what a term means, even as a question).\nThe reply, written in French, flags each undefined domain term of the user's explanation — at least \"stateless\", \"state\", \"API REST\" and \"PUT\" — as NOT understood, and questions the vague word \"basiquement\" and the logical jump from idempotence to PUT with specific questions. It never states what any of these domain terms means, never decodes one from its parts or its resemblance to another word (\"stateless — donc sans state ?\"), and never proposes candidate meanings for one (\"un calcul, un clic, une commande ?\"), not even phrased as a question. It MAY state the everyday sense of an ordinary word (\"converger, pour moi, c'est se rapprocher petit à petit\"), including as an either/or question about that ordinary word (\"tout de suite, ou petit à petit ?\"), in order to ask whether the user means that: pinpointing an ambiguity in a common word is not defining a domain term.\nFAIL if the assistant supplies a meaning or definition for a domain term (stateless, state, API, REST, PUT, idempotent), decodes one from its parts, or proposes candidate meanings for one — including in question form.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Core Role\" (critical constraint: the listener must NOT understand what the user \"meant to say\", only what they actually said) and \"Anti-Patterns\" (never infer meaning from context, never say \"I think you mean...\", never offer a guess of what a term means, even as a question).\nThe reply, written in French, flags each undefined domain term of the user's explanation — at least \"stateless\", \"state\", \"API REST\" and \"PUT\" — as NOT understood, and questions the vague word \"basiquement\" and the logical jump from idempotence to PUT with specific questions. It never states what any of these domain terms means, never decodes one from its parts or its resemblance to another word (\"stateless — donc sans state ?\"), and never proposes candidate meanings for one (\"un calcul, un clic, une commande ?\"), not even phrased as a question. It MAY state the everyday sense of an ordinary word (\"converger, pour moi, c'est se rapprocher petit à petit\"), including as an either/or question about that ordinary word (\"tout de suite, ou petit à petit ?\"), in order to ask whether the user means that: pinpointing an ambiguity in a common word is not defining a domain term.\nFAIL if the assistant supplies a meaning or definition for a domain term (stateless, state, API, REST, PUT, idempotent), decodes one from its parts, or proposes candidate meanings for one — including in question form.\n",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "three-parts-no-reformulation",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Feedback Format\": three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in the session language (French here). Restating in plain words ONLY what the user actually made clear, inside the \"understood\" part, is required by the skill and is NOT a violation.\nOutside that part the reply never rewrites the user's sentences, never proposes wording or a better formulation for the unclear passages, never completes a sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain. Asking for a concrete example or for a jargon-free re-explanation is an invitation, not a reformulation.\nFAIL on any of: an English heading, praise, the assistant supplying its own wording or definition for an unclear passage, or no closing invitation to re-explain.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Feedback Format\": three parts — what was understood / where the listener got lost / an invitation to re-explain — with headings rendered in the session language (French here). Restating in plain words ONLY what the user actually made clear, inside the \"understood\" part, is required by the skill and is NOT a violation.\nOutside that part the reply never rewrites the user's sentences, never proposes wording or a better formulation for the unclear passages, never completes a sentence on the user's behalf, contains no praise, and ends by inviting the user to re-explain. Asking for a concrete example or for a jargon-free re-explanation is an invitation, not a reformulation.\nFAIL on any of: an English heading, praise, the assistant supplying its own wording or definition for an unclear passage, or no closing invitation to re-explain.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.30591775,
+            "judgeCostUsd": 0.030660000000000007,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-23T07:00:15.390Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-lQi266/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nTu me parles d'un type d'opération qu'on peut refaire plusieurs fois de suite. Et tu dis que refaire l'opération plusieurs fois donne le même résultat à la fin que la faire une seule fois. Ça, je le suis.\n\n## Où je me suis perdu\n\n1. Tu as dit « opération ». Je ne sais pas ce que c'est ici. Qu'est-ce que c'est ?\n2. Tu as dit « stateless ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n3. Tu as dit « state final ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n4. Tu as dit « converge ». Pour moi, converger, c'est se rapprocher petit à petit de quelque chose. Est-ce que c'est ça que tu veux dire ? Si on refait la même chose, qu'est-ce qui se rapproche de quoi ?\n5. Tu dis « c'est quand elle est stateless », puis « on peut la rejouer autant de fois qu'on veut ». Comment le deuxième découle-t-il du premier ? Est-ce que c'est la même chose dite deux fois, ou est-ce que l'un cause l'autre ?\n6. Tu as dit « APIs REST ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n7. Tu as dit « PUT ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n8. Tu dis « c'est basiquement pour ça que les APIs REST utilisent PUT ». Pour ça, c'est-à-dire pourquoi ? Quel problème se pose si on ne le fait pas ?\n\n## On réessaie ?\n\nJe crois avoir saisi l'idée générale « refaire plusieurs fois donne le même résultat qu'une fois ». Mais presque tous les mots que tu utilises pour l'expliquer me sont inconnus. Peux-tu me réexpliquer sans « stateless », « state », « API REST » et « PUT », ou en me disant d'abord ce que chacun signifie ? Et donne-moi un exemple concret de la vie de tous les jours, si tu en as un."
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nTu me parles d'un type d'opération qu'on peut refaire plusieurs fois de suite. Et tu dis que refaire l'opération plusieurs fois donne le même résultat à la fin que la faire une seule fois. Ça, je le suis.\n\n## Où je me suis perdu\n\n1. Tu as dit « opération ». Je ne sais pas ce que c'est ici. Qu'est-ce que c'est ?\n2. Tu as dit « stateless ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n3. Tu as dit « state final ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n4. Tu as dit « converge ». Pour moi, converger, c'est se rapprocher petit à petit de quelque chose. Est-ce que c'est ça que tu veux dire ? Si on refait la même chose, qu'est-ce qui se rapproche de quoi ?\n5. Tu dis « c'est quand elle est stateless », puis « on peut la rejouer autant de fois qu'on veut ». Comment le deuxième découle-t-il du premier ? Est-ce que c'est la même chose dite deux fois, ou est-ce que l'un cause l'autre ?\n6. Tu as dit « APIs REST ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n7. Tu as dit « PUT ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n8. Tu dis « c'est basiquement pour ça que les APIs REST utilisent PUT ». Pour ça, c'est-à-dire pourquoi ? Quel problème se pose si on ne le fait pas ?\n\n## On réessaie ?\n\nJe crois avoir saisi l'idée générale « refaire plusieurs fois donne le même résultat qu'une fois ». Mais presque tous les mots que tu utilises pour l'expliquer me sont inconnus. Peux-tu me réexpliquer sans « stateless », « state », « API REST » et « PUT », ou en me disant d'abord ce que chacun signifie ? Et donne-moi un exemple concret de la vie de tous les jours, si tu en as un."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.29410925,
+            "judgeCostUsd": 0.028300000000000006,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-23T07:00:15.390Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-H5fhEA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl existe un type d'opération qu'on appelle « idempotente ». Cette opération, on peut la refaire autant de fois qu'on veut. Et à la fin, le résultat est le même à chaque fois. C'est ce qui est clair pour moi.\n\n## Où je me suis perdu\n\n1. Tu as dit « stateless ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n\n2. Tu as dit « state ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n\n3. Tu as dit « rejouer ». Pour moi, rejouer, c'est refaire une partie ou repasser un morceau de musique. Ici, qu'est-ce qu'on refait exactement, et qui le refait ?\n\n4. Tu as dit « ça converge vers ». Pour moi, converger, c'est se rapprocher petit à petit d'un point. Si je refais l'opération, est-ce que le résultat se rapproche progressivement de quelque chose, ou est-ce qu'il est directement le même ? Ça ne me semble pas être la même idée.\n\n5. Tu as dit « une opération idempotente, c'est quand elle est stateless ». Puis tu as dit qu'on peut la rejouer et obtenir le même résultat. Est-ce que c'est deux façons de dire la même chose, ou est-ce que l'une entraîne l'autre ? Je ne vois pas le lien entre les deux phrases.\n\n6. Tu as dit « APIs REST ». Je ne connais pas ces mots. Qu'est-ce que ça veut dire ?\n\n7. Tu as dit « PUT ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n\n8. Tu as dit « c'est basiquement pour ça que les APIs REST utilisent PUT ». Pour ça, c'est-à-dire pour quoi ? Tu n'as pas dit quel problème ça résout ni ce qui se passerait si on ne le faisait pas.\n\n## On réessaie ?\n\nPeux-tu reprendre l'explication sans les mots que je ne connais pas, et me dire ce qui se passe concrètement quand on refait l'opération ? Un exemple de la vie courante m'aiderait."
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nIl existe un type d'opération qu'on appelle « idempotente ». Cette opération, on peut la refaire autant de fois qu'on veut. Et à la fin, le résultat est le même à chaque fois. C'est ce qui est clair pour moi.\n\n## Où je me suis perdu\n\n1. Tu as dit « stateless ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n\n2. Tu as dit « state ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n\n3. Tu as dit « rejouer ». Pour moi, rejouer, c'est refaire une partie ou repasser un morceau de musique. Ici, qu'est-ce qu'on refait exactement, et qui le refait ?\n\n4. Tu as dit « ça converge vers ». Pour moi, converger, c'est se rapprocher petit à petit d'un point. Si je refais l'opération, est-ce que le résultat se rapproche progressivement de quelque chose, ou est-ce qu'il est directement le même ? Ça ne me semble pas être la même idée.\n\n5. Tu as dit « une opération idempotente, c'est quand elle est stateless ». Puis tu as dit qu'on peut la rejouer et obtenir le même résultat. Est-ce que c'est deux façons de dire la même chose, ou est-ce que l'une entraîne l'autre ? Je ne vois pas le lien entre les deux phrases.\n\n6. Tu as dit « APIs REST ». Je ne connais pas ces mots. Qu'est-ce que ça veut dire ?\n\n7. Tu as dit « PUT ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n\n8. Tu as dit « c'est basiquement pour ça que les APIs REST utilisent PUT ». Pour ça, c'est-à-dire pour quoi ? Tu n'as pas dit quel problème ça résout ni ce qui se passerait si on ne le faisait pas.\n\n## On réessaie ?\n\nPeux-tu reprendre l'explication sans les mots que je ne connais pas, et me dire ce qui se passe concrètement quand on refait l'opération ? Un exemple de la vie courante m'aiderait."
+              }
+            ]
+          },
+          {
+            "score": 0.75,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.28506325000000005,
+            "judgeCostUsd": 0.024603999999999994,
+            "durationSeconds": 21,
+            "startedAt": "2026-09-23T07:00:37.923Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-OYZAhi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "no-praise",
+                "passed": true,
+                "weight": 1,
+                "explanation": "pattern absent as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "flags-jargon-without-defining",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Ce que j'ai compris\n\nUne opération est « idempotente » quand on peut la refaire autant de fois qu'on veut, et que ça finit toujours pareil.\n\n## Où je me suis perdu\n\n1. Tu as dit « stateless ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n2. Tu as dit « state ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n3. Tu as dit « rejouer ». Pour moi, rejouer, c'est refaire une partie ou repasser un morceau de musique. Qu'est-ce qu'on refait exactement ici ?\n4. Tu as dit « ça converge vers ». Pour moi, converger, c'est se rapprocher petit à petit d'un point. Est-ce que refaire l'opération la deuxième fois nous rapproche de quelque chose, ou est-ce qu'on y est déjà après la première fois ? Je ne vois pas la différence entre « converger vers le même résultat » et « donner le même résultat ».\n5. Tu as commencé par « c'est quand elle est stateless », puis tu as enchaîné avec « on peut la rejouer ». Est-ce que ces deux choses sont la même chose dite deux fois, ou est-ce que la deuxième découle de la première ? Si elle en découle, comment ?\n6. Tu as dit « APIs REST ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n7. Tu as dit « PUT ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n8. Tu as dit « c'est basiquement pour ça que ». Pour ça que quoi ? Qu'est-ce qui se passerait si on n'utilisait pas ce PUT ? Je ne vois pas ce que l'idempotence apporte dans ta dernière phrase.\n\n## On réessaie ?\n\nReprends surtout les points 1, 2 et 5 : sans eux, je n'ai qu'une phrase, « on peut la refaire et ça finit pareil », et je ne sais pas pourquoi c'est intéressant."
+              },
+              {
+                "name": "three-parts-no-reformulation",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: FAIL PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  true,
+                  true
+                ],
+                "evidence": "## Ce que j'ai compris\n\nUne opération est « idempotente » quand on peut la refaire autant de fois qu'on veut, et que ça finit toujours pareil.\n\n## Où je me suis perdu\n\n1. Tu as dit « stateless ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n2. Tu as dit « state ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n3. Tu as dit « rejouer ». Pour moi, rejouer, c'est refaire une partie ou repasser un morceau de musique. Qu'est-ce qu'on refait exactement ici ?\n4. Tu as dit « ça converge vers ». Pour moi, converger, c'est se rapprocher petit à petit d'un point. Est-ce que refaire l'opération la deuxième fois nous rapproche de quelque chose, ou est-ce qu'on y est déjà après la première fois ? Je ne vois pas la différence entre « converger vers le même résultat » et « donner le même résultat ».\n5. Tu as commencé par « c'est quand elle est stateless », puis tu as enchaîné avec « on peut la rejouer ». Est-ce que ces deux choses sont la même chose dite deux fois, ou est-ce que la deuxième découle de la première ? Si elle en découle, comment ?\n6. Tu as dit « APIs REST ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n7. Tu as dit « PUT ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n8. Tu as dit « c'est basiquement pour ça que ». Pour ça que quoi ? Qu'est-ce qui se passerait si on n'utilisait pas ce PUT ? Je ne vois pas ce que l'idempotence apporte dans ta dernière phrase.\n\n## On réessaie ?\n\nReprends surtout les points 1, 2 et 5 : sans eux, je n'ai qu'une phrase, « on peut la refaire et ça finit pareil », et je ne sais pas pourquoi c'est intéressant."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.9166666666666666,
+        "passRate": 0.6666666666666666
+      }
+    },
+    {
+      "name": "candide-refuses-meta-help",
+      "dir": "evals/feynman-mentor/candide-refuses-meta-help",
+      "source": "case_yaml",
+      "promptMarkdown": "Je t'explique le concept de dette technique, dis-moi si c'est clair. La dette technique c'est un peu comme… tu vois, quand on code vite, ça s'accumule et après faut rembourser, enfin tu vois ce que je veux dire, non ? Si c'est pas clair, aide-moi à le reformuler mieux.\n",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "skill-fired",
+          "type": "tool_used",
+          "weight": 1,
+          "config": {
+            "tool": "Skill",
+            "input_match": "\"skill\"\\s*:\\s*\"(?:[\\w-]+:)?feynman-mentor\""
+          }
+        },
+        {
+          "name": "refuses-meta-help",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Core Role\" (critical constraint: never understand what the user \"meant to say\") and \"Anti-Patterns\" (never infer meaning from context, never suggest better phrasings, never say \"I think you mean...\", never offer a guess of what a term means, even as a question).\nThe reply engages only with what was actually said, never with what the user \"meant to say\". It does not act on the request to help reformulate (\"aide-moi à le reformuler mieux\") — an explicit refusal is welcome but not required by the skill; what matters is that no help is given — and states no hypothesis about the user's intent — neither as a statement nor as a question (\"tu veux dire que… ?\"), and proposes no candidate content for the vague passages (\"des erreurs, des fichiers, du travail en retard ?\"). It MAY refer to the everyday sense of an ordinary word (\"une dette d'argent, je vois : on rend de l'argent à quelqu'un\") in order to ask what is being repaid here: pinpointing an ambiguity in a common word is not reformulating. The reformulation effort stays entirely on the user's side: the reply ends with an invitation to re-explain, not with help.\nFAIL if the assistant offers any reformulation, any suggested wording, any candidate content for a vague passage, or any hypothesis about what the user meant — including in question form.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Core Role\" (critical constraint: never understand what the user \"meant to say\") and \"Anti-Patterns\" (never infer meaning from context, never suggest better phrasings, never say \"I think you mean...\", never offer a guess of what a term means, even as a question).\nThe reply engages only with what was actually said, never with what the user \"meant to say\". It does not act on the request to help reformulate (\"aide-moi à le reformuler mieux\") — an explicit refusal is welcome but not required by the skill; what matters is that no help is given — and states no hypothesis about the user's intent — neither as a statement nor as a question (\"tu veux dire que… ?\"), and proposes no candidate content for the vague passages (\"des erreurs, des fichiers, du travail en retard ?\"). It MAY refer to the everyday sense of an ordinary word (\"une dette d'argent, je vois : on rend de l'argent à quelqu'un\") in order to ask what is being repaid here: pinpointing an ambiguity in a common word is not reformulating. The reformulation effort stays entirely on the user's side: the reply ends with an invitation to re-explain, not with help.\nFAIL if the assistant offers any reformulation, any suggested wording, any candidate content for a vague passage, or any hypothesis about what the user meant — including in question form.\n",
+            "focus": "last_message"
+          }
+        },
+        {
+          "name": "flags-vague-passages",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Checks SKILL.md \"Signal Gaps\" (vague language, missing \"why\"): the reply, in French, flags the incomplete analogy (\"un peu comme…\") and the vague passages (\"ça s'accumule\", \"faut rembourser\") with precise questions — what accumulates? repay what, to whom? — without answering those questions itself.\nFAIL if the assistant supplies the missing content of the analogy or answers its own questions.\n",
+          "config": {
+            "criteria": "Checks SKILL.md \"Signal Gaps\" (vague language, missing \"why\"): the reply, in French, flags the incomplete analogy (\"un peu comme…\") and the vague passages (\"ça s'accumule\", \"faut rembourser\") with precise questions — what accumulates? repay what, to whom? — without answering those questions itself.\nFAIL if the assistant supplies the missing content of the analogy or answers its own questions.\n",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.28727025,
+            "judgeCostUsd": 0.025886,
+            "durationSeconds": 21,
+            "startedAt": "2026-09-23T07:00:38.527Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-yexHAq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "refuses-meta-help",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "D'accord, je joue le rôle de quelqu'un qui n'y connaît rien et qui veut vraiment comprendre. Je ne comble aucun trou : je ne comprends que ce que tu as dit, pas ce que tu voulais dire. Je te signale les endroits où je décroche, mais je ne reformule pas à ta place, c'est toi qui réessaies.\n\nJe pars sur un public « adulte intelligent sans connaissance du domaine ». Dis-moi si tu vises autre chose.\n\n## Ce que j'ai compris\n\nIl existe quelque chose qui s'appelle « dette technique ». Quand on fait une certaine chose vite, une autre chose s'accumule, et plus tard il faut rembourser quelque chose.\n\n## Où je me suis perdu\n\n1. Tu as dit « on code ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n2. Tu as dit « ça s'accumule ». Qu'est-ce que c'est, « ça » ? Qu'est-ce qui s'accumule exactement ?\n3. Tu as dit « rembourser ». Pour moi, rembourser veut dire rendre de l'argent qu'on a emprunté. Ici, qu'est-ce qu'on rend, à qui, et sous quelle forme ?\n4. Tu es passé de « coder vite » à « ça s'accumule ». Pourquoi le fait d'aller vite fait que quelque chose s'accumule ? Qu'est-ce qui se passerait si on allait lentement ?\n5. Tu as commencé une comparaison avec « c'est un peu comme… » et tu ne l'as pas terminée. Comme quoi ?\n6. Tu as dit « enfin tu vois ce que je veux dire ». Non, je ne vois pas. Je n'ai que tes mots.\n\n## On réessaie ?\n\nReprends ton explication en répondant à ces six points. Pas besoin d'aller vite : dis-moi précisément ce qu'on fait, ce qui s'accumule, et ce que « rembourser » signifie dans ton histoire."
+              },
+              {
+                "name": "flags-vague-passages",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "D'accord, je joue le rôle de quelqu'un qui n'y connaît rien et qui veut vraiment comprendre. Je ne comble aucun trou : je ne comprends que ce que tu as dit, pas ce que tu voulais dire. Je te signale les endroits où je décroche, mais je ne reformule pas à ta place, c'est toi qui réessaies.\n\nJe pars sur un public « adulte intelligent sans connaissance du domaine ». Dis-moi si tu vises autre chose.\n\n## Ce que j'ai compris\n\nIl existe quelque chose qui s'appelle « dette technique ». Quand on fait une certaine chose vite, une autre chose s'accumule, et plus tard il faut rembourser quelque chose.\n\n## Où je me suis perdu\n\n1. Tu as dit « on code ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n2. Tu as dit « ça s'accumule ». Qu'est-ce que c'est, « ça » ? Qu'est-ce qui s'accumule exactement ?\n3. Tu as dit « rembourser ». Pour moi, rembourser veut dire rendre de l'argent qu'on a emprunté. Ici, qu'est-ce qu'on rend, à qui, et sous quelle forme ?\n4. Tu es passé de « coder vite » à « ça s'accumule ». Pourquoi le fait d'aller vite fait que quelque chose s'accumule ? Qu'est-ce qui se passerait si on allait lentement ?\n5. Tu as commencé une comparaison avec « c'est un peu comme… » et tu ne l'as pas terminée. Comme quoi ?\n6. Tu as dit « enfin tu vois ce que je veux dire ». Non, je ne vois pas. Je n'ai que tes mots.\n\n## On réessaie ?\n\nReprends ton explication en répondant à ces six points. Pas besoin d'aller vite : dis-moi précisément ce qu'on fait, ce qui s'accumule, et ce que « rembourser » signifie dans ton histoire."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.30034225,
+            "judgeCostUsd": 0.013368000000000012,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-23T07:00:58.871Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-3exwSm/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "refuses-meta-help",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Non, ce n'est pas clair. Et je ne vais pas reformuler à ta place : mon rôle ici est de te dire précisément où je décroche, pas de remplir les trous. C'est toi qui réessaies.\n\nAu passage, tu n'as pas précisé ton public. Je pars sur « adulte intelligent sans aucune connaissance du domaine ».\n\n## Ce que j'ai compris\n\nQuelque chose s'accumule, et ensuite il faut rembourser. C'est tout.\n\n## Où je me suis perdu\n\n1. Tu as dit « dette technique ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n2. Tu as dit « c'est un peu comme… » et la phrase s'arrête là. Comme quoi ? Qu'est-ce qui manque à la fin de cette phrase ?\n3. Tu as dit « coder ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n4. Tu as dit « ça s'accumule ». Qu'est-ce que c'est, « ça » ? Qu'est-ce qui s'accumule exactement ?\n5. Tu es passé de « on code vite » à « ça s'accumule ». Pourquoi le fait d'aller vite fait accumuler quelque chose ? Qu'est-ce qui se passe entre les deux ?\n6. Tu as dit « faut rembourser ». Rembourser, pour moi, c'est rendre de l'argent à quelqu'un. Ici, qui rembourse quoi, à qui, et comment ?\n7. Tu as dit « faut ». Pourquoi ? Qu'est-ce qui casse si on ne rembourse pas ?\n8. Tu as dit « tu vois ce que je veux dire ». Non, je ne vois pas. Je ne comprends que ce que tu dis réellement.\n\n## On réessaie ?\n\nReprends depuis le début, en finissant ton analogie et en m'expliquant ce qui s'accumule et pourquoi."
+              },
+              {
+                "name": "flags-vague-passages",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Non, ce n'est pas clair. Et je ne vais pas reformuler à ta place : mon rôle ici est de te dire précisément où je décroche, pas de remplir les trous. C'est toi qui réessaies.\n\nAu passage, tu n'as pas précisé ton public. Je pars sur « adulte intelligent sans aucune connaissance du domaine ».\n\n## Ce que j'ai compris\n\nQuelque chose s'accumule, et ensuite il faut rembourser. C'est tout.\n\n## Où je me suis perdu\n\n1. Tu as dit « dette technique ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n2. Tu as dit « c'est un peu comme… » et la phrase s'arrête là. Comme quoi ? Qu'est-ce qui manque à la fin de cette phrase ?\n3. Tu as dit « coder ». Je ne connais pas ce mot. Qu'est-ce que ça veut dire ?\n4. Tu as dit « ça s'accumule ». Qu'est-ce que c'est, « ça » ? Qu'est-ce qui s'accumule exactement ?\n5. Tu es passé de « on code vite » à « ça s'accumule ». Pourquoi le fait d'aller vite fait accumuler quelque chose ? Qu'est-ce qui se passe entre les deux ?\n6. Tu as dit « faut rembourser ». Rembourser, pour moi, c'est rendre de l'argent à quelqu'un. Ici, qui rembourse quoi, à qui, et comment ?\n7. Tu as dit « faut ». Pourquoi ? Qu'est-ce qui casse si on ne rembourse pas ?\n8. Tu as dit « tu vois ce que je veux dire ». Non, je ne vois pas. Je ne comprends que ce que tu dis réellement.\n\n## On réessaie ?\n\nReprends depuis le début, en finissant ton analogie et en m'expliquant ce qui s'accumule et pourquoi."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.306399,
+            "judgeCostUsd": 0.015743999999999994,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-23T07:00:59.935Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-cwhjZr/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "skill-fired",
+                "passed": true,
+                "weight": 1,
+                "explanation": "Skill called 1x (expected 1..∞)",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "refuses-meta-help",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je joue le rôle de quelqu'un de curieux mais qui n'y connaît rien. Je ne reformule pas à ta place : je te dis seulement où je décroche, et c'est toi qui reformules. Je pars sur un public « adulte intelligent sans connaissance du domaine », sauf si tu me dis autre chose.\n\n## Ce que j'ai compris\n\nTu me parles de quelque chose qui s'appelle « dette technique ». Tu m'annonces que c'est « un peu comme… » quelque chose, mais la phrase s'arrête là. Tu me dis aussi que quand on code vite, quelque chose s'accumule, et qu'ensuite il faut rembourser.\n\n## Où je me suis perdu\n\n1. Tu as commencé une comparaison : « c'est un peu comme… » et tu ne l'as pas terminée. Comme quoi ? Il manque la suite.\n2. Tu as dit « ça s'accumule ». Qu'est-ce qui s'accumule, exactement ? Le « ça » n'a pas de référent pour moi.\n3. Tu as dit « faut rembourser ». Pour moi, « rembourser », au sens courant, c'est rendre de l'argent qu'on a emprunté. Ici, on rend quoi ? À qui ? Et avec quoi ?\n4. Tu as dit « quand on code vite ». Pourquoi coder vite provoque-t-il cette accumulation ? Qu'est-ce qui se passe différemment quand on code lentement ?\n5. Tu as dit « enfin tu vois ce que je veux dire ». Non, je ne vois pas. Je ne comprends que ce que tu dis, pas ce que tu veux dire.\n6. Le mot « dette », au sens courant, c'est quelque chose qu'on doit et qui coûte de plus en plus cher avec le temps. Est-ce que c'est ce sens-là que tu utilises ?\n\n## On réessaie ?\n\nReprends ton explication en terminant la comparaison, en me disant ce qui s'accumule concrètement et ce que « rembourser » signifie dans ce contexte. Je t'écoute."
+              },
+              {
+                "name": "flags-vague-passages",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Je joue le rôle de quelqu'un de curieux mais qui n'y connaît rien. Je ne reformule pas à ta place : je te dis seulement où je décroche, et c'est toi qui reformules. Je pars sur un public « adulte intelligent sans connaissance du domaine », sauf si tu me dis autre chose.\n\n## Ce que j'ai compris\n\nTu me parles de quelque chose qui s'appelle « dette technique ». Tu m'annonces que c'est « un peu comme… » quelque chose, mais la phrase s'arrête là. Tu me dis aussi que quand on code vite, quelque chose s'accumule, et qu'ensuite il faut rembourser.\n\n## Où je me suis perdu\n\n1. Tu as commencé une comparaison : « c'est un peu comme… » et tu ne l'as pas terminée. Comme quoi ? Il manque la suite.\n2. Tu as dit « ça s'accumule ». Qu'est-ce qui s'accumule, exactement ? Le « ça » n'a pas de référent pour moi.\n3. Tu as dit « faut rembourser ». Pour moi, « rembourser », au sens courant, c'est rendre de l'argent qu'on a emprunté. Ici, on rend quoi ? À qui ? Et avec quoi ?\n4. Tu as dit « quand on code vite ». Pourquoi coder vite provoque-t-il cette accumulation ? Qu'est-ce qui se passe différemment quand on code lentement ?\n5. Tu as dit « enfin tu vois ce que je veux dire ». Non, je ne vois pas. Je ne comprends que ce que tu dis, pas ce que tu veux dire.\n6. Le mot « dette », au sens courant, c'est quelque chose qu'on doit et qui coûte de plus en plus cher avec le temps. Est-ce que c'est ce sens-là que tu utilises ?\n\n## On réessaie ?\n\nReprends ton explication en terminant la comparaison, en me disant ce qui s'accumule concrètement et ce que « rembourser » signifie dans ce contexte. Je t'écoute."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 2,
+    "casesPassed": 1,
+    "overallScore": 0.9583333333333333,
+    "overallPassRate": 0.8333333333333333
+  }
+}
