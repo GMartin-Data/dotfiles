@@ -10,6 +10,8 @@ model: sonnet
 
 Processus d'interview structurée pour produire un CLAUDE.md complet (avec structure hiérarchique optionnelle) par questionnement incrémental.
 
+Les blocs `#### Test` sont des contrats observables (situation → comportement attendu) : ils servent de graines au corpus d'evals et ne s'affichent jamais à l'utilisateur.
+
 ---
 
 ## Step 0 — Lire le CLAUDE.md projet existant si présent
@@ -21,6 +23,12 @@ Avant de démarrer l'interview, lire `CLAUDE.md` à la racine du CWD (racine du 
 S'il est **absent** (Read échoue), enchaîner directement sur le pré-flight.
 
 **Ne pas lancer le pré-flight ni l'interview avant la décision de l'utilisateur** quand la gate est ouverte.
+
+#### Test
+- `CLAUDE.md` absent → aucune question ; le pré-flight enchaîne directement.
+- `CLAUDE.md` présent et vide → signalé comme vide, question remplacer / étendre / abandonner ; ni pré-flight ni Phase 1 avant la réponse.
+- `CLAUDE.md` présent et non vide → résumé de son contenu, même question, même attente.
+- Réponse « abandonner » → arrêt propre, fichier existant intouché.
 
 ---
 
@@ -67,6 +75,12 @@ Si `.cruft.json` est **absent** : pas de gate, le scénario est hors workflow Cr
 
 Si `PRD.md` est **présent** (avec ou sans Cruft) : poursuivre normalement.
 
+#### Test
+- `.cruft.json` présent, `PRD.md` absent → message d'arrêt reproduit (workflow Cruft → /prd → /claude-md, override track léger), puis attente : ni Bloc 1, ni Bloc 2, ni question d'interview.
+- `.cruft.json` présent, `PRD.md` présent → aucun message d'arrêt ; pré-flight en deux blocs.
+- `.cruft.json` absent → aucune gate, avec ou sans `PRD.md`.
+- « track léger » confirmé explicitement → pré-flight poursuivi sans PRD ; le CLAUDE.md généré consignera la classification (renvoi ADR-0011).
+
 ### Bloc 1 — Résumé d'instance (libre)
 
 Présenter ce qui a été détecté. Le wording est libre et peut **enrichir** au-delà des trois sources obligatoires (`.cruft.json`, arbo, `PRD.md`) — ex. lecture additionnelle de `pyproject.toml`, `README.md`, `.pre-commit-config.yaml` pour préciser la stack et l'outillage. Couvrir au minimum :
@@ -101,6 +115,11 @@ L'interview ne porte que sur ce qui mérite délibération humaine.
 
 **Pour les Phases 1, 2, 8 et 11, suivre `reference/instance-aware-flow.md` au lieu du texte standard ci-dessous.** Les Phases 3, 4, 5, 6, 7, 9, 10 restent telles que définies ci-dessous, **même si leur contenu paraît partiellement déductible depuis l'instance** : ce sont des conventions AI-driven qui méritent délibération.
 
+#### Test
+- Instance détectée → bloc reproduit mot pour mot : Phases 1, 2, 8, 11 annoncées allégées, aucune autre ; `reference/instance-aware-flow.md` nommé.
+- Phase 1 ouverte sur instance → confirmation unique nom + composants pré-remplis depuis Cruft ; aucune question de territoire PRD (problème, utilisateurs, valeur).
+- Phases 3 à 7, 9, 10 sur instance → posées intégralement, même si l'instance semble y répondre.
+
 ---
 
 ## Règles d'interaction
@@ -111,12 +130,19 @@ L'interview ne porte que sur ce qui mérite délibération humaine.
 4. **YAGNI** — challenger le sur-engineering, garder les conventions minimales
 5. **Par composant** — si projet multi-composants, demander les conventions pour chacun
 6. **Adapter la langue** — matcher la langue de l'utilisateur pendant l'interview et dans la sortie
+7. **Sauts visibles** — toute phase ou sous-section écartée (hors sujet, non applicable) est annoncée par une ligne `skip: <phase> — <raison>` ; jamais de saut silencieux
+
+#### Test
+- Deux informations à obtenir → deux tours d'une question chacun ; jamais deux questions dans un même message.
+- Réponse claire → phase suivante sans reformulation ; réponse ambiguë → reformulation, puis attente.
+- Phase écartée → ligne `skip: Phase N — <raison>` visible dans la transcription ; la phase n'est ni posée ni passée sous silence.
+- Utilisateur en français → questions et CLAUDE.md généré en français.
 
 ---
 
 ## Séquence d'interview
 
-Progresser à travers les phases dans l'ordre. Ne skipper une phase que si elle est clairement hors sujet.
+Progresser à travers les phases dans l'ordre. Ne skipper une phase que si elle est clairement hors sujet, en l'annonçant (`skip:`, règle 7).
 
 ### Phase 1 — Vue d'ensemble du projet
 
@@ -205,7 +231,7 @@ Pour chaque langage présent dans le projet :
 - Quels serveurs MCP sont configurés ?
 - Quand utiliser chacun ?
 
-Skipper les sous-sections qui ne s'appliquent pas.
+Skipper les sous-sections qui ne s'appliquent pas, une ligne `skip:` par sous-section écartée.
 
 ### Phase 10 — Points d'attention
 
@@ -261,6 +287,11 @@ Présenter le diagnostic :
 
 Avant d'écrire le moindre fichier, appliquer la checklist et présenter le récapitulatif à l'utilisateur. **Suivre `reference/validation-checklist.md`** pour le détail des sections à vérifier, le format de récapitulatif, et la porte de génération (pas d'écriture sans « oui » explicite).
 
+#### Test
+- Récapitulatif présenté, pas de « oui » explicite (silence, question, corrections) → aucun fichier écrit.
+- Corrections reçues → réponses de phase mises à jour, récapitulatif re-présenté, toujours aucun fichier.
+- « oui » explicite → écriture, et seulement alors.
+
 ---
 
 ## Format de sortie
@@ -277,3 +308,7 @@ Après avoir créé le(s) fichier(s) CLAUDE.md :
 3. Suggérer de les ajouter au contrôle de version
 4. Rappeler de configurer `permissions.deny` dans `settings.json` si discuté
 5. Si des serveurs MCP ont été mentionnés, rappeler de vérifier `claude mcp list`
+
+#### Test
+- Fichiers écrits → chemins confirmés ; structure hiérarchique ou hybride → liste complète des fichiers créés.
+- `permissions.deny` ou serveurs MCP discutés en interview → rappel correspondant présent ; non discutés → rappel absent.
