@@ -1,5 +1,5 @@
 ## Dernière mise à jour
-Date : 2026-09-23 10:11
+Date : 2026-09-23 10:29
 Session : 6501275b-b787-498f-9e58-e14002295156
 
 ## Tâches complétées
@@ -25,6 +25,10 @@ Session : 6501275b-b787-498f-9e58-e14002295156
      rejoués verts sur les deux tiers (0,63 $) ; 4 JSON figés
      `results/2026-09-23-pass4-*` ; README (règle de design « levier de
      forme », table, lecture passe 4, verdict). Corpus à 13,79 $ cumulés.
+- **Leçon versée à l'inbox** (`912f14c`, `/immunize` mode ajout) : « forme
+  (gabarit + auto-vérification) > prohibitions en prose sur un comportement
+  probabiliste », avec la preuve chiffrée de la passe 4 — première pièce
+  pour la règle 4 du guide Opus 5 (audit 2026-08-07). Inbox : 1 entrée.
 
 ## En cours
 
@@ -39,15 +43,26 @@ Session : 6501275b-b787-498f-9e58-e14002295156
 3. **Chantier evals, Phase 3** (`claude-md` en skill, déclenche R2+P3) et
    **Phase 4** (event-driven : code-review au prochain changement de tier D5,
    sous-ensembles mono-tour des autres corpus).
-4. Event-driven (nouveau) : rouvrir la paire `candide-*` seulement si une
+4. **Triage /immunize dû** (1 leçon, 2026-09-23) : « forme > prohibition »
+   — candidate globale probable (porte d'eval) ou règle d'artefact pour les
+   skills à `core_invariant` ; à trancher au prochain triage, pas avant une
+   seconde observation (n = 1 corpus). Option à inscrire au cycle du 26/09 :
+   généraliser le pas « Check Before Sending » aux invariants prose-only
+   (`coach-pedagogique`, `explain-before-artifact`).
+5. Event-driven (nouveau) : rouvrir la paire `candide-*` seulement si une
    régression en usage réel ramène une fuite de la classe passe 3 (décodage,
-   sens candidats, traduction) — lire les runs, pas le score.
-5. Hors repo, à la main de Greg : purge des **3** sandboxes
+   sens candidats, traduction) — lire les runs, pas le score. **Pas de
+   session Feynman planifiée** : la skill se tire seule au premier « laisse-moi
+   t'expliquer » dans le workspace d'apprentissage ; la consigne de retour
+   terrain (« le gabarit rend-il le candide mécanique ? ») va dans le
+   learning record `0004`.
+6. Hors repo, à la main de Greg : purge des **3** sandboxes
    `/tmp/claude-eval-*` (`rYSnT9`, `bg2EZZ`, **`zc9I2V`** — `chmod 700`
    requis) ; purge du cobaye `converting-temperatures` ; pin
    `known-first-party` au template Cookiecutter ; learning record
-   `0004-*.md` dans `~/learning-to-build-skills`.
-6. Revisites inchangées : Pocock ~2026-11/12, pstack ~2026-12/2027-01.
+   `0004-*.md` dans `~/learning-to-build-skills` (+ consigne de retour
+   terrain ci-dessus).
+7. Revisites inchangées : Pocock ~2026-11/12, pstack ~2026-12/2027-01.
 
 ## Écarts vs PRD
 
@@ -67,6 +82,13 @@ Session : 6501275b-b787-498f-9e58-e14002295156
     marqueur unique + un run inexpliqué à n = 3).
   - **Rejeu par `--tag core_invariant`** plutôt que glob `--case` (non
     vérifié sur le runner) — même périmètre, sans ambiguïté.
+  - **Pas de scheduling de session Feynman** (question Greg) : une routine
+    cloud ne peut pas jouer la session à sa place ; un rappel sans créneau
+    est du bruit (cf. roadmap suspendue depuis le 12/09). Déclencheur
+    event-driven existant suffisant ; seule une consigne de retour terrain
+    est ajoutée (learning record `0004`).
+  - **Session terrain jamais dans ce contexte** : je connais les rubriques et
+    les fuites attendues ; le candide de terrain doit ignorer l'eval.
 
 ## Blocages
 
