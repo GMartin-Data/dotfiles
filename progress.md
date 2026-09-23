@@ -1,5 +1,96 @@
 ## Dernière mise à jour
-Date : 2026-09-22 16:10
+Date : 2026-09-23 08:31
+Session : 9bcbc507-9bc7-453f-992e-98dcb9229432
+
+## Tâches complétées
+
+- **Triage /immunize exécuté** (`f60640f`) : 4 leçons archivées — ruff
+  (unique > 7 j, hook `ruff-check.sh` hors de cause, pointeur template
+  Cookiecutter hors repo) ; 3 leçons de l'audit routées artefact (corpus
+  feynman-mentor → Phase 2). Inbox vide. `agentPushNotifEnabled` retiré de
+  `settings.json` (décision Greg : retour au défaut, working tree soldé).
+- **Chantier evals, Phase 2 close — 3 commits, 10,63 $** :
+  1. **Skill** (`803e48d`) : R5 `disallowed-tools: WebFetch, WebSearch,
+     Write, Edit` + « Tool discipline » réécrit (garde tour 1, prose au-delà) ;
+     R6 encodé (Core Role, Signal Gaps, anti-pattern « guess … even as a
+     question ») ; `dmi: false` explicite retiré.
+  2. **Corpus migré** (`4e93d2a`) : 6 `case.yaml` sous
+     `claude/evals/feynman-mentor/`, G2 retiré, README (packaging, règles de
+     design §3.3, frictions, état), `history.jsonl` régénéré (copie par cas
+     `resumed`), 7 JSON de résultats figés, `.gitignore` transcripts parasites,
+     `claude/README.md` (principe « jamais en session — runner seulement »,
+     prérequis ≥ 2.1.269), pointeur au README du pilote.
+  3. **ADR-0016 → `Accepted`** (`496361b`) : porte = migration + run réel,
+     franchie ; 2 contraintes runner ajoutées à l'audit §7.2 (items 12-13 :
+     `history_file` interne au dossier du cas ; transcript repris écrit à côté).
+- **Verdict campagne** (Fable avec/sans + Opus, 3 passes) : 4/6 verts sur les
+  deux tiers ; **les deux `core_invariant` gris sur les deux tiers** avec la
+  prose finale (Fable 1 run parfait/3, Opus 2/3) — 4 fuites réelles lues
+  (décodage `stateless`, sens candidats et traduction de `state`, analogie
+  complétée), 2 gris de rubrique (recalibrées, non requalifiées). Le run
+  unique de juillet (1.00) masquait cette variance.
+
+## En cours
+
+- Rien en session — ce checkpoint à committer, puis **push des 5 commits**
+  (`f60640f` → `496361b` + checkpoint).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Décision Greg sur les `candide-*` gris** (cf. README du corpus §État) :
+   durcir la prose (exemples négatifs français dans Signal Gaps) **ou**
+   assouplir le contrat R6 (traduction / lecture morphologique tolérées en
+   question) ; puis rejeu ciblé `--case 'candide-*'` (~1,7 $ Fable, ~0,7 $
+   Opus). Point à retenir : « converger » lu au sens courant a été jugé fuite
+   sous R6 strict, toléré sous R6 affiné — la frontière ordinaire/domaine est
+   la variable.
+3. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact` + reports
+   d'août + A2/A3 (roadmap) + option `dmi: true` sur les commands rituelles +
+   validation humaine de la roadmap (suspendue depuis le 12/09).
+4. **Chantier evals, Phase 3** (`claude-md` en skill, déclenche R2+P3) et
+   **Phase 4** (event-driven : code-review au prochain changement de tier D5,
+   sous-ensembles mono-tour des autres corpus).
+5. Hors repo, à la main de Greg : purge des sandboxes `/tmp/claude-eval-*`
+   (Phase 1 + 2 : `rYSnT9`, `bg2EZZ` conservés `--keep-temp`, `chmod 700`
+   requis) ; purge du cobaye `converting-temperatures` ; pin
+   `known-first-party` au template Cookiecutter (leçon ruff archivée) ;
+   learning record `0004-*.md` dans `~/learning-to-build-skills`.
+6. Revisites inchangées : Pocock ~2026-11/12, pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- **ADR-0016 `Accepted`** → `adr/0016` (porte franchie par le run réel ; les
+  rouges sont un constat sur la skill, pas sur le moteur).
+- Choix de portée session (aucun ADR), décisions Greg :
+  - **R6 en deux temps** : strict (toute hypothèse = fuite) → affiné après
+    rejeu (sens courant d'un mot ordinaire toléré, décodage de terme de
+    domaine et sens candidats interdits). Rationale et preuve au README du
+    corpus.
+  - **Campagne asymétrique** (Fable avec/sans, Opus bras « avec ») ; budget
+    ~5,5 $ dépassé à 10,63 $ sur autorisation explicite (~11 $) pour le cycle
+    fix → rejeu.
+  - **`session-end` en transcript repris** : cas de comportement, ne doit pas
+    dépendre de la discovery (Opus ne tirait pas la skill sur le prompt
+    organique d'arrêt sous le plugin complet).
+  - **Boucle de prose arrêtée** après deux itérations (variance = résultat) ;
+    décision de suite laissée à Greg.
+  - `agentPushNotifEnabled` retiré (défaut) ; `dmi: false` nettoyé dans le
+    commit R5.
+- Triage /immunize : 4 archivages, 0 règle, 0 candidate globale — traces dans
+  `tasks/lessons-archive.md`.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-22 16:10
 Session : 7d81d1cd-deaa-4d2c-a147-d45bf146ed97
 
 ## Tâches complétées
