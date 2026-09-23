@@ -65,3 +65,35 @@ Mitigation côté spec : Phase 5 pourrait expliciter "raconter un scénario d'us
 Au changement de génération du modèle par défaut, trier les règles du CLAUDE.md global en préférence-humaine vs correction-modèle, et faire re-mériter chaque correction-modèle via la porte d'eval (sinon éviction). Précédent : appliqué avec succès au passage gen 4→5 (2026-07). Source : talk Boris Cherny (ablation par génération de modèle).
 
 *Note d'archivage (2026-09-02) : routée **artefact** au triage `/immunize` — test d'ancrage positif : la leçon précise le déclencheur d'éviction (matrice §Cycle immunitaire, Flux 2 → `claude/commands/immunize.md` §Éviction), qui ne distingue pas aujourd'hui les règles encodant un goût humain (hors éviction) de celles corrigeant un défaut du modèle (re-mérite par la porte d'eval), et ne couvre pas les règles antérieures à la porte (sans fixture). Chantier consigné : amender la matrice (source) puis `immunize.md` (dérivé) ; non-régression par inspection + README `claude/evals/immunize/` §D5 (déclencheur inter-sessions, non couvert par eval) ; question ouverte : amendement ADR-0015 (Extends) ou précision de la matrice. Jamais de règle prose. Archivée.*
+
+---
+
+### [2026-09-08] Un cache de linter peut mentir (ruff --fix, classification first-party instable)
+
+Un cache de linter peut mentir : `ruff check --fix` a produit un tri d'imports que sa propre analyse à froid rejetait (classification first-party instable), puis a mis en cache « 0 diagnostic » — pre-commit et lint local (même cache) affichaient Passed en 0,01 s, seule la CI (cache froid) a vu le rouge. Réflexes : après un `--fix` au résultat surprenant, revérifier avec `--no-cache` ; ne jamais laisser le linter inférer la frontière first-party/third-party (l'épingler : `known-first-party`) ; un contrôle qui répond anormalement vite est suspect de cache. (valid_tva, 2026-09-08)
+
+*Note d'archivage (2026-09-23) : entrée unique > 7 jours (15 j), archivée. Test d'ancrage négatif : le hook `claude/hooks/ruff-check.sh` ne fait pas de `--fix` et n'a que restitué la sortie de ruff — hors de cause, laissé intact (ajouter `--no-cache` contournerait un bug de ruff au prix d'un coût sur chaque édition, sans preuve que le hook soit fautif). La racine (`known-first-party` non épinglé dans la config ruff du projet) relève du template Cookiecutter (`~/python-project-template-v2`), hors repo — pointeur à la main de Greg, non routé par ce triage.*
+
+---
+
+### [2026-09-22] Les rubriques `llm` d'un cas d'eval se calibrent sur ce que le SKILL.md prescrit
+
+Les rubriques `llm` d'un cas d'eval se calibrent sur ce que le SKILL.md prescrit, pas sur un idéal : un comportement que la skill demande explicitement (ex. feynman-mentor : restituer le compris) ne peut pas être scoré FAIL. Symptôme observé : 2 diagnostics de calibrage sur le pilote feynman-mentor (`claude plugin eval`, 2026-09-22) — la rubrique sanctionnait ce que la skill exige. Réflexe : écrire la rubrique en citant la ligne du SKILL.md qu'elle vérifie. (audit skill-evals 2026-09, §3.3 n°3)
+
+*Note d'archivage (2026-09-23) : routée **artefact** au triage `/immunize` — test d'ancrage positif : les cas figés `tasks/skill-evals-audit-2026-09/pilot/` portent les rubriques fautives. Fix = Phase 2 du chantier evals (ADR-0016 Proposed, règle déjà consignée §Conséquences « rubriques `llm` calibrées sur ce que le SKILL.md prescrit ») : portage vers `claude/evals/feynman-mentor/` avec rubriques citant la ligne du SKILL.md vérifiée ; non-régression → README du corpus porté (règles de design = contrat documenté) + campagne `--model` Fable et Opus (passage ADR-0016 → Accepted). Jamais de règle prose. Archivée.*
+
+---
+
+### [2026-09-22] Discovery et comportement post-invocation sont deux cas d'eval distincts
+
+Discovery et comportement post-invocation sont deux cas d'eval distincts : un prompt organique teste le déclenchement de la skill ; un invariant « skill active » se teste en transcript repris (`history_file`), sans indicateur `tool_used: Skill`. Symptôme observé : le corpus maison feynman-mentor annonçait « discovery testable » au README alors que ses autres classes supposaient l'invocation sans le dire — les deux étaient confondus dans un même cas (pilote `claude plugin eval`, 2026-09-22). Réflexe : un cas = une question, déclenchement OU comportement, jamais les deux. (audit skill-evals 2026-09, §3.3 n°1-2)
+
+*Note d'archivage (2026-09-23) : routée **artefact** au triage `/immunize` — test d'ancrage positif : `claude/skills/feynman-mentor/evals/README.md` (annonce « discovery testable ») et fichiers G2 (`evals.json`, `feynman-mentor.eval.json`). Fix = Phase 2 du chantier evals (ADR-0016 Proposed, règle déjà consignée §Conséquences « discovery et comportement post-invocation sont deux cas distincts ») : un cas = une question, `history_file` régénéré depuis un run du plugin du repo pour « skill active », sans indicateur `tool_used: Skill` sur le cas repris ; retrait des fichiers G2, README réécrit ; non-régression → README du corpus porté + campagne `--model` Fable et Opus. Jamais de règle prose. Archivée.*
+
+---
+
+### [2026-09-22] Un run unique masque la variance d'un cas d'eval
+
+Un run unique masque la variance d'un cas d'eval : un cas peut passer une fois et échouer la suivante sur le même prompt. Symptôme observé : sur le pilote feynman-mentor, les cas `candide-*` (classe `core_invariant`) donnaient des verdicts gris selon le run ; le seuil 1.0 par défaut du runner rend alors le cas rouge, ce qui est la bonne alerte — mais le JSON ne dit pas pourquoi, il faut lire la réponse. Réflexe : `runs: 3` minimum sur les classes `core_invariant`, et lire la sortie avant de requalifier. (audit skill-evals 2026-09, §3.3 n°5)
+
+*Note d'archivage (2026-09-23) : routée **artefact** au triage `/immunize` — test d'ancrage positif : les cas figés `tasks/skill-evals-audit-2026-09/pilot/` laissent `runs` implicite à 1. Fix = Phase 2 du chantier evals (ADR-0016 Proposed, règle déjà consignée §Conséquences « `runs: 3` minimum sur les classes `core_invariant` ») : `runs: 3` sur les cas `candide-*` au portage ; non-régression → README du corpus porté + campagne `--model` Fable et Opus. Jamais de règle prose. Archivée.*

@@ -10,4 +10,4 @@ Ajout : `/immunize "<leçon>"`. Triage : `/immunize` sans argument :
 
 ---
 
-*Inbox vide. Dernière consolidation : 2026-09-02 (1 entrée archivée, routée artefact — chantier matrice Flux 2 / `immunize.md` §Éviction consigné dans la note d'archivage). Voir `lessons-archive.md`.*
+*Inbox vide. Dernière consolidation : 2026-09-23 (4 entrées archivées : 1 unique expirée — ruff, hook hors de cause ; 3 routées artefact — corpus feynman-mentor, fix = Phase 2 du chantier evals / ADR-0016, traces dans les notes d'archivage). Voir `lessons-archive.md`.*
