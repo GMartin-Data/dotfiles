@@ -618,6 +618,15 @@ tout est purgé à la fin du run.
     option `--plugin-dir` propre ; le flag est global :
     `claude --plugin-dir <dir> plugin details <nom>`. Le message d'erreur le
     suggère sans préciser la position. L'inventaire ne compte pas les commands.
+12. **Phase 2 (2026-09-23)** — `context.history_file` doit désigner un fichier
+    **dans** le dossier du cas : tout chemin `..` ou absolu est refusé
+    (« escapes the case directory »). Pas de fixture partagée entre cas — une
+    copie par cas (`claude/evals/feynman-mentor/{no-web-lookup,session-end-learning-record}/history.jsonl`).
+    Absent de `--help` (2.1.280).
+13. **Phase 2 (2026-09-23)** — sur un cas à `history_file`, le runner écrit le
+    transcript de la session reprise (`<session-id>.jsonl`, ~130 Ko) **dans le
+    dossier du cas**, à côté de la fixture. Effet de bord non annoncé ;
+    `.gitignore` requis (`claude/evals/**/*.jsonl` sauf `history.jsonl`).
 
 ### 7.3 Artefacts du pilote (scratchpad de session, éphémères)
 

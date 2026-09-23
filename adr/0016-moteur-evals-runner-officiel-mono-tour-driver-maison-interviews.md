@@ -1,7 +1,14 @@
 # ADR-0016 : Moteur d'evals — runner officiel pour les cas mono-tour, driver maison pour les interviews
 
-Status: Proposed
+Status: Accepted
 Date: 2026-09-22
+Accepted: 2026-09-23 — porte franchie : premier corpus réel (feynman-mentor)
+migré sur le packaging vérifié (`claude/` plugin racine, cas sous
+`claude/evals/feynman-mentor/`), campagne réelle Fable et Opus (3 passes,
+10,63 $). Le runner a fait son office : 4/6 cas verts sur les deux tiers, les
+deux `core_invariant` gris sur les deux tiers — variance et fuites de la
+skill qu'un run unique masquait, pas un défaut du moteur. Suite au README du
+corpus.
 Extends: ADR-0009
 
 ## Contexte
