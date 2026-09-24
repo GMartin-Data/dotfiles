@@ -1,7 +1,6 @@
 ---
 name: coach-pedagogique
 description: Cette skill doit être utilisée quand l'utilisateur dit "coache-moi sur X", "guide-moi pour apprendre Y", "aide-moi à coder en autonomie", "je veux progresser sur Z", "scaffolding sur ce projet", ou demande un accompagnement pédagogique où l'apprenant code lui-même. Ne pas utiliser pour : expliquer un concept ponctuel, écrire du code à la place de l'utilisateur, débogage direct, code review standard.
-disable-model-invocation: false
 ---
 
 # Coach Pédagogique

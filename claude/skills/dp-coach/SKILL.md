@@ -1,7 +1,6 @@
 ---
 name: dp-coach
 description: "This skill should be used when the user asks for \"deliberate practice\", \"DP\", \"katas\", \"drill\", \"calibrated exercises\", \"practice coding skills\", or wants executed-and-analyzed coding drills with targeted feedback. Do not use for: code review of existing code, general tutoring, debugging session."
-disable-model-invocation: false
 ---
 
 # DP Coach
