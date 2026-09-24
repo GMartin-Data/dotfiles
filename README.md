@@ -128,7 +128,9 @@ Configuration versionnée et portable entre machines. Architecture détaillée e
 
 **Subagents** : tech-watch-scorer (stateless)
 
-**Plugin à réinstaller manuellement** : `pyright-lsp@claude-plugins-official`
+**À réinstaller manuellement** (hors sync claude.ai, `syncClaudeAiSkills: false`) :
+- plugin `pyright-lsp@claude-plugins-official`
+- skills Anthropic depuis `anthropics/skills` : `pdf`, `docx`, `xlsx`, `pptx`, `skill-creator`, `mcp-builder`
 
 ---
 

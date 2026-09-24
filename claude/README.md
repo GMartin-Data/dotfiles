@@ -30,6 +30,8 @@ Trois modes différents coexistent. Savoir lequel s'applique évite deux anti-pa
 
 **Explicite** : commands, skills, agents sont invoqués par l'utilisateur (slash, nom de skill) ou par Claude (délégation agent). Rien n'est chargé implicitement.
 
+**Sync claude.ai désactivée** (`syncClaudeAiSkills: false` dans `settings.json`, 2026-09-22) : la sync des skills claude.ai vers le terminal (≥ 2.1.273, activée au passage au canal `latest`) recopiait dans `~/.claude/skills/synced/` des copies périmées des skills maison, dont les descriptions concurrençaient les locales à l'auto-invocation — pollution. Les skills Anthropic utiles se réinstallent à la main depuis `anthropics/skills` (liste dans le README racine, « à réinstaller »).
+
 **Événementiel** : `hooks/` déclenchés par l'harness (pas par Claude) selon les événements déclarés dans `settings.json` (`SessionStart`, `PreToolUse`, `PostToolUse`).
 
 **Jamais en session — runner d'evals seulement** : `claude/` est aussi déclaré plugin (`.claude-plugin/plugin.json`, nom `dotfiles`) pour la seule cible de `claude plugin eval` (≥ 2.1.269, cf. [ADR-0016](../adr/0016-moteur-evals-runner-officiel-mono-tour-driver-maison-interviews.md)). Ce manifest n'est lu que par le runner ou `--plugin-dir` ; les symlinks `~/.claude/` ne le voient pas. Les corpus au format du runner vivent sous `claude/evals/<artefact>/` (cas `case.yaml`), à côté des corpus maison pilotés par `claude/evals/drive-session.py` (interviews multi-tours, variation du CLAUDE.md global).
