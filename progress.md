@@ -1,5 +1,84 @@
 ## Dernière mise à jour
-Date : 2026-09-23 14:59
+Date : 2026-09-24 19:12
+Session : afd6d707-debe-406d-9419-f599c39660a0
+
+## Tâches complétées
+
+- **Lot d'hygiène `settings.json`/skills — 3 commits atomiques, poussés**
+  (`be39945`, `fa8671f`, `0d1aba0`) :
+  1. **`agentPushNotifEnabled: true` conservé** (`be39945`) : vérifié que le
+     binaire réécrit la clé à chaque démarrage de session suivable depuis
+     claude.ai (`stat` du fichier = heure d'ouverture de session, échec
+     confirmé du retrait du 23/09) — statu quo acté plutôt que rejoué à
+     chaque `/catchup`.
+  2. **R11 soldé** (`fa8671f`) : 3 `disable-model-invocation: false`
+     redondants retirés (`coach-pedagogique`, `dp-coach`, `code-mentor`) ;
+     0 occurrence restante vérifiée.
+  3. **R12 soldé** (`0d1aba0`) : `claude/README.md` documente
+     `syncClaudeAiSkills: false` (principes de chargement, motif pollution
+     par copies périmées) ; `README.md` racine étend la catégorie
+     « à réinstaller manuellement » aux 6 skills Anthropic utiles
+     (`pdf`, `docx`, `xlsx`, `pptx`, `skill-creator`, `mcp-builder`,
+     existence vérifiée sur `anthropics/skills`).
+
+## En cours
+
+- Rien en session — lot poussé, arbre propre, `main` à jour avec `origin`.
+
+## Prochaines étapes
+
+1. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact`, reports
+   d'août, `dmi: true` sur commands rituelles + skill `claude-md`, options
+   Pocock (writing-for-agents, 3 conditions d'ADR).
+2. **A2** (seul item Horizon A, ~1 h, session courte dédiée) :
+   `docs/methodology/epistemics.md` — tiers de confiance + posture
+   blast-radius + échelle de preuve, ligne de renvoi sous State
+   Verification, placement confirmé par la matrice. Dormant si non fait à
+   la revisite pstack.
+3. **R10 identifié, à arbitrer avant exécution** (`disallowed-tools` sur
+   `grill` et `code-review`, ~10 min) : toucher `grill.md` pourrait armer
+   R9 (sous-ensemble preflight au runner) si un changement de frontmatter
+   compte comme « retouche » — décision Greg avant de faire.
+4. **Prochain triage /immunize** : inbox à **4 entrées** (inchangée depuis
+   le 23/09) — les 2 leçons conservées expirent le 2026-09-30 sans seconde
+   occurrence (attendue pour la rubrique : réécriture des `candide-*`
+   feynman-mentor, ~1,7 $, option du 26/09) ; P4 (n = 0, routage artefact
+   probable vers `karpathy-discipline.md`) ; gel des déclencheurs (n = 1).
+5. **Chantier evals, Phase 4** (event-driven, inchangé) : R8 code-review →
+   runner au D5 ; R9 sous-ensembles mono-tour à la retouche de
+   grill/prd/planning/adr (blinde ex-A3 au passage) ; R10 `disallowed-tools`
+   (cf. point 3).
+6. Event-driven : réponse vide Step 0 (rejouer `--keep-temp` si récidive) ;
+   paire `candide-*` inchangée ; diagnosing-bugs au premier bug dont le
+   diagnostic échoue.
+7. Hors repo, à la main de Greg : pin `known-first-party` ; learning record
+   `0004`.
+8. Revisites : Pocock ~2026-11/12 (élagage des dormants) ; pstack
+   ~2026-12/2027-01 (A2 → dormant si non fait).
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — choix de portée session :
+  - **`agentPushNotifEnabled` gardé à `true`** : comportement réécrit par
+    l'application à chaque session, pas un choix utilisateur à imposer par
+    le repo ; documenté en commit plutôt qu'en ADR (réglage d'environnement,
+    pas décision d'architecture).
+  - **R11/R12 exécutés tels que spécifiés dans l'audit**
+    (`tasks/skill-evals-audit-2026-09.md`), sans écart.
+  - **R10 non exécuté** — repéré comme faisable mais mis en attente d'un
+    arbitrage sur son interaction avec R9 (cf. Prochaines étapes, point 3).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-23 14:59
 Session : 7cccff52-a76d-4cb6-96dd-cc205ca994af
 
 ## Tâches complétées
