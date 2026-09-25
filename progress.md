@@ -1,5 +1,91 @@
 ## Dernière mise à jour
-Date : 2026-09-24 19:12
+Date : 2026-09-25 10:21
+Session : afd6d707-debe-406d-9419-f599c39660a0
+
+## Tâches complétées
+
+- **A2 soldé — Horizon A de la roadmap d'adoption vidé** (`c0d288b`, poussé) :
+  1. **`docs/methodology/epistemics.md` créé** (191 lignes) — adapté des
+     playbooks pstack `why/references/epistemics.md` et `blast-radius/SKILL.md`
+     (`cursor/plugins` @ `889ec4b`, MIT, Lauren Tan) : 5 tiers de confiance
+     (Direct/Supported/Inferred/Speculative/Unknown) + guide de formulation,
+     piège de sycophancie, null documenté, échelle de preuve à 5 crans
+     (blast-radius), check de calibration. Bloc de provenance en tête
+     (même patron que `karpathy-discipline.md`). Doc seule, aucune règle
+     nouvelle — conforme au périmètre validé le 23/09.
+  2. **`claude/CLAUDE.md`** : une ligne de renvoi sous State Verification
+     (« Confidence tiers and proof scale (reference, no rule): … »),
+     ~25 tokens always-on.
+  3. **Mémoire mise à jour** : `reference_adoption_roadmap.md` (Horizon A
+     vide, A2 fait 25/09, P5 à moitié débloqué — reste « projet concret à
+     surface lançable ») + ligne MEMORY.md.
+- **Lot d'hygiène `settings.json`/skills — 3 commits, poussés**
+  (`be39945`, `fa8671f`, `0d1aba0`) :
+  1. `agentPushNotifEnabled: true` conservé (réécrit par l'app à chaque
+     démarrage de session suivable depuis claude.ai, vérifié).
+  2. R11 : 3 `disable-model-invocation: false` redondants retirés
+     (`coach-pedagogique`, `dp-coach`, `code-mentor`).
+  3. R12 : `claude/README.md` documente `syncClaudeAiSkills: false` ;
+     `README.md` racine étend « à réinstaller manuellement » aux 6 skills
+     Anthropic (`anthropics/skills`).
+- **Checkpoint intermédiaire commité** (`3e66e21`).
+
+## En cours
+
+- Rien en session — tout poussé, arbre propre, `main` à jour avec `origin`.
+
+## Prochaines étapes
+
+1. **Cycle /insights 2026-09-26** : fiche `explain-before-artifact`, reports
+   d'août, `dmi: true` sur commands rituelles + skill `claude-md`, options
+   Pocock. **Nouveau** : passer la ligne A2 du §6 de la roadmap
+   (`~/claude-audit-notes/adoption-roadmap.md`) de « à faire » à « fait »
+   (décision du 23/09 : §6 ne se met à jour qu'au cycle, pas au passage du
+   déclencheur).
+2. **R10 identifié, à arbitrer avant exécution** (`disallowed-tools` sur
+   `grill` et `code-review`, ~10 min) : toucher `grill.md` pourrait armer
+   R9 (sous-ensemble preflight au runner) — décision Greg avant de faire.
+3. **Prochain triage /immunize** : inbox à 4 entrées (inchangée) — les 2
+   leçons conservées expirent le 2026-09-30 sans seconde occurrence
+   (candide-* rubrique binaire — option de réécriture au 26/09) ; P4
+   (n = 0) ; gel des déclencheurs (n = 1).
+4. **Chantier evals, Phase 4** (event-driven, inchangé) : R8 code-review →
+   runner au D5 ; R9 sous-ensembles mono-tour ; R10 (cf. point 2).
+5. **P5 verification-skills par projet** (roadmap, dormant) : réouverture
+   à un projet concret avec surface lançable (pipeline, modèle dbt) — A2
+   désormais acquis, ne reste que ce déclencheur.
+6. Event-driven : réponse vide Step 0 ; paire `candide-*` inchangée ;
+   diagnosing-bugs au premier bug dont le diagnostic échoue.
+7. Hors repo, à la main de Greg : pin `known-first-party` ; learning record
+   `0004`.
+8. Revisites : Pocock ~2026-11/12 ; pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — choix de portée session :
+  - **A2 exécuté conformément au périmètre validé le 23/09** (tiers +
+    échelle de preuve, doc seule, placement `docs/methodology/`) — sans
+    écart. Ajout de ma main non prévu par le périmètre : une section finale
+    reliant les deux échelles (« tiers = ce qui est, crans = ce qui
+    tiendra »), validée par Greg avant commit comme faisant partie de la
+    doc de référence, pas une règle.
+  - **Provenance MIT vérifiée avant adaptation** (licence du sous-dossier
+    `pstack`, pas seulement du repo racine) — pas de doctrine de vendoring
+    déclenchée (adaptation de prose, pas d'outillage).
+  - `agentPushNotifEnabled` gardé à `true` ; R11/R12 exécutés sans écart
+    (cf. checkpoint 2026-09-24).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-24 19:12
 Session : afd6d707-debe-406d-9419-f599c39660a0
 
 ## Tâches complétées
