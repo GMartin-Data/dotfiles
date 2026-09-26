@@ -29,9 +29,19 @@ mono-population).
 
 ---
 
-## [INSIGHTS 2026-08-26] explain-before-artifact
+## [INSIGHTS 2026-08-26] [VALIDÉ] explain-before-artifact
 
 - **Problème observé** : friction n°1 du rapport du 2026-09-02 (cycle 2026-08-26 exécuté en retard) — au moins 3 interruptions mid-tool-call pour exiger l'explication pédagogique avant que Claude n'écrive un lab/une leçon.
 - **Action engagée** : encoder le contrat « expliquer concept et conception avant d'écrire tout artefact pédagogique, attendre le go » dans les skills existantes (dotfiles) — section « Explain Before Artifact » médium-agnostique dans teach, anti-pattern code-spécifique dans dp-coach ; coach-pedagogique constaté déjà couvert (Step 2 + règle absolue), non modifié ; jamais en CLAUDE.md global (mode livraison préservé).
 - **Critère de succès vérifiable** : au prochain /insights (≈2026-09-26), zéro interruption utilisateur pour exiger l'explication avant une écriture de fichier en session pédagogique sur la fenêtre analysée.
 - **Date de revue** : 2026-09-26
+- **Verdict (2026-09-26)** : ✅ atteint — rapport du 2026-09-26 (fenêtre 2026-08-07 → 2026-09-25, 39 sessions) : zéro interruption « expliquer avant d'écrire » sur les 15 sessions pédagogiques postérieures au fix du 02/09 ; les 2 occurrences de la fenêtre (`fc07542c` 06/08, `2e6a0487` 07/08) sont antérieures au fix. La catégorie a disparu des frictions du rapport.
+
+---
+
+## [INSIGHTS 2026-09-26] check-before-delivery
+
+- **Problème observé** : friction n°1 du rapport du 2026-09-26 en session pédagogique — 7 des 15 sessions `/teach` postérieures au fix du 02/09 ont un défaut de leçon attrapé par l'utilisateur en cours d'exercice ; 4 relèvent du contenu livré (comptes faux, terme non défini, warm-up mensonger, étape dépendant d'une étape ultérieure : `9a79e366`, `8d920214`, `19e58bbd`, `be6e19a6`).
+- **Action engagée** : section « Check Before Delivery » dans `teach/SKILL.md` — relecture par checklist (ordre des dépendances, comptes, termes vs glossaire, promesses) après écriture et avant ouverture, sans exécution des commandes, avec une ligne de rapport visible `Checked: …` ; note de provenance amendée (sections de discipline de livraison distinguées des déviations de conception en ADR). Hors périmètre, explicitement : calibration des diagnostics (`8b7a0786`, `01c38a64`) et sorties de sous-agents non vérifiées (`6bb0255b`).
+- **Critère de succès vérifiable** : au prochain /insights (≈2026-10-26), zéro session `/teach` de la fenêtre où l'utilisateur corrige lui-même un compte, un terme ou une dépendance d'étape dans une leçon livrée ; contrôle de non-vacuité : la ligne `Checked:` est présente dans les transcripts des leçons livrées et aucun `0 corrections` n'est contredit par une correction utilisateur sur la même leçon.
+- **Date de revue** : 2026-10-26

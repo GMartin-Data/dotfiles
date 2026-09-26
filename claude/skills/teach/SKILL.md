@@ -8,11 +8,14 @@ argument-hint: "What would you like to learn about?"
 The user has asked you to teach them something. This is a stateful request - they intend to learn the topic over multiple sessions.
 
 > **Adapted from Matt Pocock's `teach` skill** (github.com/mattpocock/skills). Pocock's
-> pedagogy is kept intact — it is the core value. Three deviations are documented as ADRs
-> and are the _only_ departures from the source design:
+> pedagogy is kept intact — it is the core value. Three design deviations are documented
+> as ADRs:
 > [`adr/0004`](../../../adr/0004-reference-markdown-lessons-html.md) (reference in Markdown),
 > [`adr/0005`](../../../adr/0005-retention-unifiee-anki.md) (retention via Anki),
 > [`adr/0006`](../../../adr/0006-pont-etat-learning-records.md) (learning-records as the single state source).
+> Two delivery-discipline sections (Explain Before Artifact, Check Before Delivery) were
+> added by /insights cycles (`tasks/insights-actions.md`): they gate when and how an
+> artifact reaches the user, without changing what is taught.
 
 ## Teaching Workspace
 
@@ -72,13 +75,33 @@ A lesson should be **beautiful** — clean, readable typography and layout — s
 
 The lesson should be short, and completable very quickly. Learners' working memory is very small, and we need to stay within it. But each lesson should give the user a single tangible win that they can build on. It should be directly tied to the mission, and should be in the user's zone of proximal development.
 
-If possible, open the lesson file for the user by running a CLI command.
+If possible, open the lesson file for the user by running a CLI command — only after the [Check Before Delivery](#check-before-delivery) pass.
 
 Each lesson should link via HTML anchors to other lessons, and link out to the relevant `./reference/*.md` documents.
 
 Each lesson should recommend a primary source for the user to read or watch. This should be the most high-quality, high-trust resource you found on the topic.
 
 Each lesson should contain a reminder to ask followup questions to the agent. The agent is their teacher, and can assist with anything that's unclear.
+
+## Check Before Delivery
+
+After writing or editing a lesson and before opening or announcing it, re-read it end
+to end against this checklist. Do not execute its commands — trace them.
+
+1. **Order** — every path, file, folder, service or variable a step uses is created by
+   an earlier step or already exists in the workspace. A step that depends on a later
+   step is a defect.
+2. **Counts** — every quantifier in the prose ("two classes", "four times", "three
+   flags") matches the content it describes.
+3. **Terms** — every domain term is defined at first use or already in
+   `./reference/GLOSSARY.md`; a polysemous word ("schéma", "mapper") is pinned to the
+   meaning intended here.
+4. **Claims** — every promise about what the user will observe ("this reveals a bug",
+   "the output shows X") is backed by the content.
+
+Fix what you find. Then deliver the lesson with one line, and only one:
+`Checked: N steps, M terms — K corrections (what)` or `Checked: N steps, M terms — 0 corrections`.
+That line is the only trace of the pass; never narrate the checklist to the user.
 
 ## Assets
 
