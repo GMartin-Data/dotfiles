@@ -45,3 +45,18 @@ mono-population).
 - **Action engagée** : section « Check Before Delivery » dans `teach/SKILL.md` — relecture par checklist (ordre des dépendances, comptes, termes vs glossaire, promesses) après écriture et avant ouverture, sans exécution des commandes, avec une ligne de rapport visible `Checked: …` ; note de provenance amendée (sections de discipline de livraison distinguées des déviations de conception en ADR). Hors périmètre, explicitement : calibration des diagnostics (`8b7a0786`, `01c38a64`) et sorties de sous-agents non vérifiées (`6bb0255b`).
 - **Critère de succès vérifiable** : au prochain /insights (≈2026-10-26), zéro session `/teach` de la fenêtre où l'utilisateur corrige lui-même un compte, un terme ou une dépendance d'étape dans une leçon livrée ; contrôle de non-vacuité : la ligne `Checked:` est présente dans les transcripts des leçons livrées et aucun `0 corrections` n'est contredit par une correction utilisateur sur la même leçon.
 - **Date de revue** : 2026-10-26
+
+---
+
+## Métriques de cycle
+
+Ratio méta/produit (P3, défini au cycle 2026-09-26) : part des sessions
+analysées dont le `project_path` est un workspace d'outillage (`dotfiles`,
+`learning-to-build-skills`, `claude-audit-notes`) — source
+`~/.claude/usage-data/session-meta/`, deux lectures (sessions, tokens de
+sortie). Pas de seuil ; signal = ratio qui ne baisse pas alors qu'aucun
+chantier méta n'est ouvert (> 1/3 deux cycles de suite).
+
+| Cycle | Fenêtre | Méta (sessions) | Méta (tokens sortie) | Chantier méta ouvert |
+|---|---|:---:|:---:|---|
+| 2026-09-26 | 60 sessions depuis le 31/07 | 19/60 = 32 % | 4,55 M / 16,29 M = 28 % | oui — evals Phases 1-3, 3 revues de repos, roadmap (baseline = plafond de période active) |

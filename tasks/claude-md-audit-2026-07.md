@@ -74,7 +74,7 @@ le contexte injecté à chaque session.
 
 | ID | Règle | Origine | Cat. | Proposition |
 |---|---|---|---|---|
-| SD1 | Plan gate avant exploration hors fichiers de contexte | **2026-07-26** (action insights cycle 2026-07) | **D*** | **Trop récente pour audit** — adoptée il y a 1 jour, aucune donnée d'usage. Réévaluer au cycle /insights 2026-09 avec données. La toucher maintenant violerait la règle d'une-action-par-cycle |
+| SD1 | Plan gate avant exploration hors fichiers de contexte | **2026-07-26** (action insights cycle 2026-07) | **C** (ex-D\*) | **Réévaluée au cycle /insights 2026-09-26 avec données** : 0 interruption en reconnaissance sur les deux fenêtres post-adoption (26 puis 60 sessions), 0 sur-questionnement relevé. Conservée telle quelle — déjà graduée par son exemption « questions factuelles / édition mono-fichier », pas une laisse absolue |
 
 ### Sections conservées telles quelles (Cat. C)
 
@@ -219,7 +219,8 @@ de sync nécessaire.
 
 Chantier issu du même fireside chat (cf. contexte en tête de doc). Périmètre
 d'entrée : les règles Cat. D — RS1, RS2, « one concept at a time » (Session
-Discipline). SD1 exclue (réévaluation au cycle /insights 2026-09).
+Discipline). SD1 exclue (réévaluation au cycle /insights 2026-09 — faite le
+26/09 : reclassée C, conservée).
 
 **Méthode — pourquoi pas d'eval.** Les règles D encodent un choix humain de
 confiance (longueur de laisse), pas un garde-fou modèle : il n'existe pas de
@@ -247,5 +248,8 @@ RS3 (artefacts longs en fichiers) : Cat. C, non touchée.
       tranchés par l'humain, diff validé avant application
 - [x] Payload édité et commité (`8ef1502`) — Response Style réécrite (RS1
       compressée, RS2 graduée), ligne one-concept retirée de Session Discipline
-- [ ] Observation à l'usage : pas de critère chiffré dédié — effet observable
-      aux cycles /insights (interruptions, ratio méta/produit P3, 2026-08-26)
+- [x] Observation à l'usage (cycle /insights 2026-09-26, 60 sessions depuis
+      le 28/07) : 12 interruptions, dont 5 « laisse trop longue » toutes en
+      phase de décision sans critère (3 fermées par explain-before-artifact
+      le 02/09), **0 « laisse trop courte »** — règle maintenue telle quelle,
+      ni resserrée ni assouplie

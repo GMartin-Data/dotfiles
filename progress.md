@@ -1,5 +1,110 @@
 ## Dernière mise à jour
-Date : 2026-09-25 10:21
+Date : 2026-09-26 17:09
+Session : adbaf55c-edda-4f6c-82b4-acf910ab757f
+
+## Tâches complétées
+
+- **Cycle /insights 2026-09-26 exécuté — protocole v3 de bout en bout, issue #4
+  fermée** (`6ee17d5`, `Closes #4` vérifié CLOSED au push) :
+  1. **Verdict fiche précédente** : `explain-before-artifact` → ✅ VALIDÉ
+     (rapport du 26/09, fenêtre 07/08 → 25/09, 39 sessions : 0 interruption
+     « expliquer avant d'écrire » sur les 15 sessions pédagogiques post-fix ;
+     les 2 occurrences de la fenêtre sont antérieures au 02/09).
+  2. **Revue critique avant scoring** : diagnostic « préférences en
+     conversation, pas en config » vérifié exact sur le co-auteur (8 mémoires
+     projet, 0 règle globale, 0 setting) ; 10 suggestions confrontées à
+     l'existant — S5 réinvente `/progress`, S6 doublonne `ruff-check.sh`,
+     S4/S9 one-shots ou redondants, S7 habitude ; horizon = ratio méta/produit.
+  3. **Scoring 3 axes + top 3 → action unique `check-before-delivery`** :
+     section « Check Before Delivery » dans `teach/SKILL.md` (relecture par
+     checklist ordre / comptes / termes / promesses après écriture, avant
+     ouverture, sans exécution, ligne `Checked:` visible ; +219 mots ≈ +290 tok
+     on-invoke) ; note de provenance amendée. Re-scopé après trade-offs
+     explicités : couverture 4/7 sessions, calibration et sous-agents hors
+     périmètre. Fiche écrite, revue 2026-10-26.
+  4. Correction de preuve en cours de route : 7/15 sessions post-fix
+     défectueuses, pas 9/15 (3 sessions citées étaient pré-fix).
+- **Roadmap §6 mise à jour au cycle** (hors repo) : A2 « fait » (25/09,
+  `c0d288b`) ; P5 et T2 reformulés (garde « T1 palier 1 » levée ; P5 ne garde
+  que « projet concret à surface lançable »). Mémoire
+  `reference_adoption_roadmap` + MEMORY.md synchronisées.
+- **Trois constats d'août soldés, un par tour** (committés avec ce checkpoint) :
+  - **P2** autonomie graduée : 12 interruptions / 60 sessions depuis le 28/07,
+    5 « laisse trop longue » toutes en phase de décision sans critère (3 fermées
+    le 02/09), **0 « laisse trop courte »** → règle maintenue ; case Statut P2
+    cochée dans l'audit.
+  - **P3** ratio méta/produit : métrique définie (part des sessions en
+    workspace d'outillage, lectures sessions + tokens de sortie) ; baseline
+    32 % sessions / 28 % tokens sur 60 sessions, période délibérément méta
+    (plafond, pas norme) ; signal = > 1/3 deux cycles sans chantier ouvert ;
+    table `## Métriques de cycle` en pied de `tasks/insights-actions.md`.
+  - **SD1** plan gate : reclassée D\* → C dans l'audit (0 interruption en
+    reconnaissance sur 26 puis 60 sessions, 0 sur-questionnement, déjà graduée
+    par son exemption).
+
+## En cours
+
+- Rien — ce checkpoint + `tasks/claude-md-audit-2026-07.md` +
+  `tasks/insights-actions.md` (constats) à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) avec les constats
+   P2/P3/SD1, puis push.
+2. **Prochain triage /immunize** : inbox à 4 entrées — les 2 leçons
+   conservées expirent le **2026-09-30** sans seconde occurrence (option
+   `candide-*` en rubriques binaires, 🥈 non choisie ce cycle, ~1,7 $ : à
+   décider avant le 30/09 ou laisser archiver à n = 1) ; P4 (n = 0) ; gel des
+   déclencheurs (n = 1).
+3. **Cycle /insights 2026-10-26** : revue de la fiche `check-before-delivery`
+   (critère : 0 auto-correction compte/terme/dépendance + non-vacuité de
+   `Checked:` via transcripts) ; **candidats reconduits** : S1 setting
+   d'attribution (🥉, 2/1/1 — clé exacte à vérifier), S6 hook `ruff format`
+   (1/1/2), constats TODO.md 1-3 (hook `/clear` → acter « pas de hook » ;
+   deadlock `/pr` ↔ audit à trancher à la main ; audit à re-scoper),
+   `dmi: true` (bloqué par R9/R10), Pocock (dormants), S10 effort (ton choix) ;
+   **remesurer le ratio méta/produit** (attendu en baisse : aucun chantier
+   méta ouvert).
+4. **R10 à arbitrer avant exécution** (inchangé).
+5. **Chantier evals, Phase 4** (event-driven, inchangé) : R8 au D5 ; R9
+   sous-ensembles mono-tour ; R10.
+6. **P5 verification-skills** (dormant) : ne reste que « projet concret à
+   surface lançable ».
+7. Event-driven : réponse vide Step 0 ; paire `candide-*` ; diagnosing-bugs ;
+   T2 (garde levée, « premier run non surveillé ») ; **nouveau** : échec de
+   permissions d'un sous-agent d'exploration (`f6285148`) — à instruire si
+   récidive.
+8. Hors repo, à la main de Greg : pin `known-first-party` ; learning record
+   `0004` (+ retour terrain sur le gabarit candide et, désormais, sur la ligne
+   `Checked:` : rituel vide ou pas ?).
+9. Revisites : Pocock ~2026-11/12 (`teach` porte 2 sections de discipline
+   hors upstream — coût de merge à prévoir) ; pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg :
+  - **Action unique du cycle = S3 re-scopé** (relecture sans exécution, ligne
+    visible, calibration hors périmètre) après trade-offs explicités et
+    scoring re-vérifié (2/2/2 inchangé, écart avec S1 resserré) ; S1 et
+    `candide-*` reconduits au cycle suivant.
+  - **Note de provenance de `teach` amendée sans ADR** : les sections de
+    discipline de livraison ne sont pas des déviations pédagogiques
+    (proposition Claude, non contestée).
+  - **P2 maintenue, SD1 → C, P3 = métrique sans seuil** — constats actés un
+    par tour.
+  - **§6 roadmap** mis à jour au cycle, conformément à la cadence du 23/09.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-25 10:21
 Session : afd6d707-debe-406d-9419-f599c39660a0
 
 ## Tâches complétées
