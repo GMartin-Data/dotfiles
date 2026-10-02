@@ -2,7 +2,8 @@
 
 > **Statut : plan validé par Greg le 2026-10-02.** Les points A à F du §7 sont
 > tranchés et priment sur les formulations « à valider » restées dans les §1, §3
-> et §5. Prochaine action : étape 1 (§8), après la reprise décrite au §9.
+> et §5. **Étape 1 faite le 2026-10-02** (T0 **[Observé]**, constats au §10).
+> Prochaine action : étape 1 bis (§8).
 
 ## Contexte
 
@@ -341,12 +342,27 @@ marqués (?) : non vérifiés dans la doc, à confirmer à l'écran.
 | 3 | Générer les deux paires de clés | Ton terminal (commandes du §5) | `dbt_agent_rw.p8/.pub`, `dbt_agent_ro.p8/.pub` dans `~/.snowflake/keys/` |
 | 4 | Ouvrir une feuille SQL | Menu **Projects » Worksheets** (?), bouton **+** (?) | Feuille vide ; rôle `ACCOUNTADMIN` sélectionné (la première ligne du script le force de toute façon) |
 | 5 | Coller le script du §5 | La feuille SQL | Remplacer les deux `<contenu de …pub…>` par le contenu des fichiers `.pub` **sans** les lignes `BEGIN`/`END`, sur une seule ligne |
-| 6 | Tout exécuter | Menu déroulant du bouton d'exécution » **Run All** (?) | Chaque instruction renvoie un succès ; les deux `SHOW GRANTS` finaux s'affichent |
-| 7 | Contrôler les utilisateurs et les rôles | **Governance & security » Users & roles** | Deux utilisateurs `DBT_AGENT_RW_USER` et `DBT_AGENT_RO_USER` ; en ouvrant `DBT_AGENT_RO_USER`, **un seul** rôle accordé : `DBT_AGENT_RO` |
+| 6 | Tout exécuter | Menu **More options** à côté du bouton **Run** » **Run All** (libellé confirmé par la doc) | Chaque instruction renvoie un succès. La doc ne dit pas quels résultats restent affichés : relancer chaque `SHOW` seul (curseur dans l'instruction, **Run**) |
+| 7 | Contrôler les utilisateurs et les rôles | **Governance & security » Users & roles**, ou `SHOW GRANTS TO USER DBT_AGENT_RO_USER;` | Deux utilisateurs `DBT_AGENT_RW_USER` et `DBT_AGENT_RO_USER` ; pour `DBT_AGENT_RO_USER`, **un seul** rôle accordé : `DBT_AGENT_RO` |
+| 7 bis | Contrôler les privilèges du rôle RO | Feuille SQL, requêtes ci-dessous | Uniquement `USAGE` et `SELECT` ; dans `DBT_AGENT_DEV`, la base seule ; 4 grants futurs |
 | 8 | Contrôler l'empreinte de chaque clé | Feuille SQL + terminal | Les deux valeurs ci-dessous sont identiques, pour chaque utilisateur |
 | 9 | Contrôler le warehouse | Écran des warehouses (?) | `DBT_AGENT_WH`, taille X-Small, suspension automatique à 60 s |
 | 10 | Écrire `~/.dbt/profiles.yml` à partir du gabarit fourni | Ton éditeur | Cibles `dev`, `ro`, `broken` |
 | 11 | T0 | Terminal, dans `~/dbt-agent-testbed/` | `dbt debug --target dev` puis `--target ro` : `All checks passed!`, aucun navigateur ouvert |
+
+Contrôle des privilèges du rôle RO (étape 7 bis). `SHOW GRANTS TO ROLE` détaille
+les données d'exemple objet par objet (89 lignes, cf. §10) : le résumer plutôt
+que le lire. Les grants futurs n'y figurent pas, d'où la seconde requête.
+
+```sql
+SHOW GRANTS TO ROLE DBT_AGENT_RO
+  ->> SELECT SPLIT_PART("name", '.', 1) AS db, "granted_on", "privilege", COUNT(*) AS n
+      FROM $1
+      GROUP BY ALL
+      ORDER BY 1, 2;
+
+SHOW FUTURE GRANTS IN DATABASE DBT_AGENT_DEV;
+```
 
 Contrôle d'empreinte (étape 8), d'après la page « Key-pair authentication » :
 
@@ -377,10 +393,12 @@ sur ton compte.
 | 8 | Absence de dialogue de confiance pour un serveur inline d'un agent de scope user | Implicite (la règle de confiance ne cite que les agents de projet) | Constaté à l'étape 4 |
 | 9 | Les commandes `!` de l'utilisateur échappent au hook et à la règle `deny` | Non vérifié | Voir point F ci-dessous |
 
-Hors doc Claude Code, non vérifié non plus : `private_key_path` et `query_tag`
-dans un profil dbt-snowflake 1.12 (la page dbt en ligne est celle de la v2 :
-confirmation par T0 et T21) ; comportement exact de `uv run --no-sync` sans
-`.venv` ; API courante du SDK MCP Python (à lire via context7 à l'étape 3).
+Hors doc Claude Code : `private_key_path` et `query_tag` dans un profil
+dbt-snowflake 1.12 — **levé en partie à l'étape 1** (champs présents dans le code
+1.12.1, `private_key_path` confirmé par T0 ; l'effet de `query_tag` reste à
+constater par T21, cf. §10). Toujours non vérifié : comportement exact de
+`uv run --no-sync` sans `.venv` ; API courante du SDK MCP Python (à lire via
+context7 à l'étape 3).
 
 ## 7. Points à valider avant l'étape 1
 
@@ -452,3 +470,28 @@ Rappels pour la session neuve : ce chantier travaille sur `feat/dbt-agent`
 (exception à l'exemption « direct sur main » du repo) ; arrêt en fin de chaque
 étape ; `/code-review` avant la PR ; la doc Claude Code a été vérifiée le
 2026-10-02 (table du §0) et n'a pas à être relue, sauf pour un champ nouveau.
+
+## 10. Résultats de l'étape 1 (2026-10-02)
+
+Livré dans `~/dbt-agent-testbed/` (dépôt git distinct) : `pyproject.toml` et
+`uv.lock` (`dbt-core==1.12.5`, `dbt-snowflake==1.12.1`), `dbt_project.yml`,
+`setup/snowflake_setup.sql`, `setup/profiles.example.yml`.
+
+Versions : dbt-core 1.12.5, dbt-snowflake 1.12.1, snowflake-connector-python
+4.8.0, Claude Code 2.1.287.
+
+| Constat | Étiquette | Détail |
+|---|---|---|
+| **T0** conforme sur `dev` et `ro` | **[Observé]** (lancé par Greg) | `dbt debug` : code 0, `Connection test: [OK connection ok]`, `All checks passed!` ; aucun navigateur ouvert ; authentification par paire de clés, utilisateurs de service |
+| Rôle RO limité à la lecture | **[Observé]** | `SHOW GRANTS TO ROLE DBT_AGENT_RO` : 89 lignes, uniquement `USAGE` et `SELECT` — 1 warehouse, 2 bases, et 6 schémas + 80 tables tous dans `SNOWFLAKE_SAMPLE_DATA` ; dans `DBT_AGENT_DEV`, la base seule |
+| Les droits sur `SNOWFLAKE_SAMPLE_DATA` s'affichent objet par objet | **[Observé]** | Une ligne par schéma et par table, pas une ligne unique pour `IMPORTED PRIVILEGES` ; cause non établie (affichage propre aux bases partagées, ou nature de la base dans ce trial) |
+| Grants futurs en place | **[Observé]** | 4 lignes pour `DBT_AGENT_RO` : `USAGE` sur schéma, `SELECT` sur table, vue, table dynamique |
+| Utilisateur RO : un seul rôle | **[Observé]** | `SHOW GRANTS TO USER DBT_AGENT_RO_USER` : `DBT_AGENT_RO` ; empreintes des deux clés identiques côté Snowflake et local |
+| Champs du profil | Code lu (1.12.1) | `private_key_path`, `query_tag`, `connect_retries` sont des champs de `SnowflakeCredentials` ; `query_tag` est passé en paramètre de session `QUERY_TAG` |
+| Une clé inconnue dans le profil n'est pas rejetée | **[Observé]** | `dbt parse` renvoie 0 avec `bogus_key: 1` sur une cible ; 2 sur une cible inexistante. Une faute de frappe sur un champ du profil passe en silence |
+| `connect_timeout` n'est pas un délai de connexion | Code lu (1.12.1) | C'est l'attente entre deux tentatives. Cible `broken` : `connect_retries: 0` ; durée réelle d'un `dbt debug` sur un compte faux à constater par T14 |
+
+À garder en tête pour la suite : le schéma `PUBLIC` de `DBT_AGENT_DEV`, créé
+avant les grants futurs, n'est pas accessible au rôle RO (sans effet : le profil
+travaille dans `DEV`). La lecture par `ro` d'un modèle construit par `dev` reste
+à constater (T3, T19).
