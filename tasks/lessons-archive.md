@@ -97,3 +97,35 @@ Discovery et comportement post-invocation sont deux cas d'eval distincts : un pr
 Un run unique masque la variance d'un cas d'eval : un cas peut passer une fois et échouer la suivante sur le même prompt. Symptôme observé : sur le pilote feynman-mentor, les cas `candide-*` (classe `core_invariant`) donnaient des verdicts gris selon le run ; le seuil 1.0 par défaut du runner rend alors le cas rouge, ce qui est la bonne alerte — mais le JSON ne dit pas pourquoi, il faut lire la réponse. Réflexe : `runs: 3` minimum sur les classes `core_invariant`, et lire la sortie avant de requalifier. (audit skill-evals 2026-09, §3.3 n°5)
 
 *Note d'archivage (2026-09-23) : routée **artefact** au triage `/immunize` — test d'ancrage positif : les cas figés `tasks/skill-evals-audit-2026-09/pilot/` laissent `runs` implicite à 1. Fix = Phase 2 du chantier evals (ADR-0016 Proposed, règle déjà consignée §Conséquences « `runs: 3` minimum sur les classes `core_invariant` ») : `runs: 3` sur les cas `candide-*` au portage ; non-régression → README du corpus porté + campagne `--model` Fable et Opus. Jamais de règle prose. Archivée.*
+
+---
+
+### [2026-09-23] Forme (gabarit + auto-vérification) > prohibitions en prose sur un comportement probabiliste de skill
+
+Sur un comportement probabiliste d'une skill (candide feynman-mentor : ne jamais décoder un terme de domaine), deux itérations de prohibitions en prose (« never decode… », « a guess dressed as a question is still a guess ») n'ont rien tenu : ~1 fuite sur 3 runs sur les deux tiers. Une contrainte de forme — phrase gabarit pour le jargon + étape d'auto-vérification « Check Before Sending » à 3 tests mécaniques — a éliminé la classe de fuite visée sur 12 runs (Fable 2/6 → 5/6 runs parfaits). Les gris résiduels ont changé de nature (variance actée, règle d'arrêt). C'est la règle 4 du guide Opus 5 (scaffolding d'auto-vérification, audit 2026-08-07) avec une première preuve chiffrée. Source : claude/evals/feynman-mentor README § État passe 4, commits 767c8a4 et 550ac20, 2026-09-23.
+
+*Note d'archivage (2026-10-02) : routée **artefact** au triage `/immunize` — test d'ancrage positif : `claude/skills/feynman-mentor/SKILL.md`. Fix déjà commité (`767c8a4`, phrase gabarit + étape « Check Before Sending ») ; non-régression → corpus `claude/evals/feynman-mentor/` (passe 4, `550ac20`). Conservée à n = 1 le 2026-09-23 dans l'attente d'une seconde occurrence avant le 2026-09-30 : aucune observée. Le même levier a été appliqué à `teach` (« Check Before Delivery », `6ee17d5`) — application, pas preuve ; preuve éventuelle à la revue de la fiche `check-before-delivery` le 2026-10-26 (reverser alors par `/immunize "<leçon>"` si elle valide le levier). Jamais de règle prose. Archivée.*
+
+---
+
+### [2026-09-23] Rubrique de juge `llm` en « PASS si / FAIL seulement si » + non-violations explicites
+
+Rubrique de juge llm = « PASS si / FAIL seulement si » + non-violations explicites, car le juge du runner ne raisonne pas (réponse en un mot). Preuve : corpus claude-md-skill, 2026-09-23, rubrique v1 à 4 clauses conjonctives → 9/9 FAIL sur un comportement conforme ; scindée en 2 graders courts → 18/18 PASS à comportement constant. n = 1 corpus.
+
+*Note d'archivage (2026-10-02) : routée **artefact** au triage `/immunize` — test d'ancrage positif : rubriques des cas de `claude/evals/claude-md-skill/`. Fix déjà commité (`101544a`, rubrique scindée en 2 graders courts) ; non-régression → README du corpus, règle 7. Conservée à n = 1 le 2026-09-23 dans l'attente d'une seconde occurrence avant le 2026-09-30 : aucune observée — la réécriture des rubriques `candide-*` de feynman-mentor (~1,7 $) n'a pas été retenue au cycle /insights du 2026-09-26, reconduite au cycle du 2026-10-26. Hypothèse « rubriques longues ↔ paire `core_invariant` flaky » non vérifiée. Constat adjacent non routé : la règle 7 n'est consignée que dans le README de `claude-md-skill`, dans aucun autre README de corpus. Jamais de règle prose. Archivée.*
+
+---
+
+### [2026-09-23] Citer un principe = nommer la décision qu'il a changée (emprunt pstack P4, n = 0)
+
+Citer un principe (Karpathy ou autre) = nommer la décision qu'il a changée ; une citation sans décision derrière est du name-dropping. Emprunt pstack P4 (revue 2026-09-12, roadmap §3.B, validée 2026-09-23), versé au circuit normal des leçons comme prescrit — aucune occurrence observée en session (n = 0, candidate d'emprunt, pas leçon d'incident). Destination probable : docs/methodology/karpathy-discipline.md (artefact) ; porte d'eval seulement si la formulation devait devenir globale.
+
+*Note d'archivage (2026-10-02) : entrée unique > 7 jours (9 j), archivée. Test d'ancrage négatif : candidate d'emprunt sans incident (n = 0), aucun artefact fautif ; `docs/methodology/karpathy-discipline.md` (destination « probable ») ne porte aucune formulation équivalente et n'a pas été modifié — pas de doctrine sans preuve. Réouverture : première occurrence observée de name-dropping de principe en session, par `/immunize "<leçon>"`. Roadmap d'adoption (hors repo) : P4 quitte l'inbox ; §6 à mettre à jour au cycle /insights du 2026-10-26.*
+
+---
+
+### [2026-09-23] Une validation humaine en attente ne doit pas geler les déclencheurs event-driven
+
+Une validation humaine en attente ne doit pas geler les déclencheurs event-driven qu'elle recouvre : la roadmap d'adoption, suspendue « à la validation de Greg » du 2026-09-12 au 2026-09-23, a laissé passer deux triages /immunize (matin et après-midi du 23/09) sans verser la candidate P4 que son déclencheur « prochain triage » armait. Cause : la validation a été routée vers un cycle mensuel (/insights du 26/09) au lieu d'une session courte dans la semaine ; ni progress.md ni la mémoire n'ont signalé le déclencheur franchi pendant le gel. Règle candidate : dater toute validation humaine bloquante dans la semaine, ou noter explicitement quels déclencheurs le gel suspend. n = 1 (dotfiles, roadmap d'adoption).
+
+*Note d'archivage (2026-10-02) : entrée unique > 7 jours (9 j), archivée. Test d'ancrage négatif : comportement de session (routage d'une validation vers un cycle mensuel), roadmap hors repo. n = 1 — le dépassement de l'échéance du 2026-09-30 par ce triage n'est pas compté comme seconde occurrence (échéance datée et signalée par `progress.md`, défaut « archiver à n = 1 » appliqué ; aucun déclencheur gelé par une validation en attente). Formulation candidate à reprendre si le gel se reproduit (n = 2 → promotion projet) : « dater toute validation humaine bloquante dans la semaine, ou noter explicitement quels déclencheurs le gel suspend ».*
