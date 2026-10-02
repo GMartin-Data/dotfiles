@@ -1,5 +1,76 @@
 ## Dernière mise à jour
-Date : 2026-10-02 13:23
+Date : 2026-10-02 15:32
+Session : b1b76bdf-3271-4b38-9af8-344acbbbdcbb
+
+## Tâches complétées
+
+- **Checkpoint du triage /immunize commité et poussé sur `main`** (`2c3f55a`).
+- **Chantier « agent dbt au scope user » ouvert — plan validé, rien d'implémenté.**
+  Subagent `dbt` + serveur MCP « enveloppe » ; pièces dans
+  `tasks/dbt-agent-2026-10/` (`brief.md`, `spec.md`, `plan.md`), commitées sur
+  la branche `feat/dbt-agent` (`6b96293`, non poussée) :
+  1. **Brief et spécification lus en entier** (originaux dans
+     `~/implement_dbt_agent/`, copies vérifiées identiques).
+  2. **Doc Claude Code vérifiée** (sub-agents, mcp, hooks, permissions,
+     cli-reference) : aucune décision du brief contredite ; table au §0 du plan,
+     neuf points non vérifiés au §6 avec leur parade.
+  3. **Doc Snowflake vérifiée** pour le SQL des rôles : rôles secondaires
+     actifs par défaut, utilisateurs de service créables en SQL seulement.
+  4. **Six points tranchés un par tour** (A à F, §7 du plan).
+  5. **Plan complété** : pas-à-pas Snowsight (§5.1), emplacement des pièces
+     (§2), séquence de reprise (§9).
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent` ; push
+   de la branche à décider.
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire
+   `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §7, §8, §9) avant toute
+   action. Ne pas relire la doc Claude Code, sauf champ nouveau.
+3. **Étape 1 du plan** : livrer dans `~/dbt-agent-testbed/` (hors dotfiles)
+   `setup/snowflake_setup.sql`, `setup/profiles.example.yml` et le squelette
+   minimal du projet ; Greg suit le pas-à-pas §5.1 (trial, clés, SQL, contrôles)
+   puis lance `dbt debug` sur `dev` et `ro` (T0). **Arrêt pour validation.**
+4. **Étapes 1 bis à 6** (plan §8), un arrêt à la fin de chacune ; `/code-review`
+   sur le diff de branche avant la PR.
+5. **Cycle /insights 2026-10-26** : inchangé (cf. checkpoint de 13:23, point 2) ;
+   **à prendre en compte à la mesure du ratio méta/produit** : un chantier
+   d'outillage est désormais ouvert dans ce workspace.
+6. Points 3 à 8 du checkpoint de 13:23 inchangés (R10, evals Phase 4, P5,
+   event-driven, hors repo, revisites).
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — le plan est la source
+  (`tasks/dbt-agent-2026-10/plan.md`) ; décisions Greg :
+  - **Branche dédiée `feat/dbt-agent`** pour ce chantier : exception ad hoc à
+    l'exemption « direct sur main » du repo.
+  - **Réponses aux 4 points ouverts du brief** → plan §1 (`dbt_build` spécifié,
+    dbt du projet via `uv run --no-sync`, `show --inline` en lecture seule,
+    chemin du serveur résolu par `sh -c`).
+  - **Points A à F** → plan §7 (deux utilisateurs Snowflake ; cible `ro` ;
+    empreinte des fichiers ; `allow` limité à `dbt_parse` et `dbt_ls` ;
+    `dbt_show_inline` déclaré après T3 + T19 ; tests bruts lancés par Greg).
+  - **Pièces du chantier dans `tasks/dbt-agent-2026-10/`**, sur le précédent
+    de l'audit skill-evals.
+  - **Implémentation démarrée d'un contexte frais** (plan §9), pour limiter la
+    dégradation du contexte.
+
+## Blocages
+
+- Aucun. Dépendance : l'étape 1 attend le trial Snowflake, créé par Greg.
+
+---
+
+## Checkpoint précédent — 2026-10-02 13:23
 Session : b1b76bdf-3271-4b38-9af8-344acbbbdcbb
 
 ## Tâches complétées
