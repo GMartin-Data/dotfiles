@@ -1,5 +1,51 @@
 ## Dernière mise à jour
-Date : 2026-10-02 15:32
+Date : 2026-10-02 19:55
+Session : 5dcc8600-4077-4e55-a085-ad31aec60217
+
+## Tâches complétées
+
+- **Étape 1 du plan dbt agent exécutée — trial Snowflake opérationnel** (`feat/dbt-agent`, non poussée) :
+  1. **`~/dbt-agent-testbed/` créé** (dépôt git distinct, hors dotfiles) : `pyproject.toml`/`uv.lock` (dbt-core 1.12.5, dbt-snowflake 1.12.1 épinglés), `dbt_project.yml`, `setup/snowflake_setup.sql`, `setup/profiles.example.yml` (commit `1215c6c`).
+  2. **SQL Snowflake exécuté par Greg** : deux utilisateurs de service (`DBT_AGENT_RW_USER`, `DBT_AGENT_RO_USER`), deux rôles, grants futurs sur `DBT_AGENT_DEV`, warehouse `AUTO_SUSPEND=60`. Contrôles passés : privilèges du rôle RO (uniquement `USAGE`/`SELECT`), empreintes des deux clés, un seul rôle par utilisateur.
+  3. **T0 [Observé] conforme** sur `dev` et `ro` : `dbt debug` code 0, `All checks passed!`, aucun navigateur ouvert.
+  4. **Constats consignés au plan §10** : `private_key_path`/`query_tag` confirmés dans le code dbt-snowflake 1.12.1 ; une clé inconnue dans le profil n'est pas rejetée par `dbt parse` ; `SHOW GRANTS TO ROLE` détaille `SNOWFLAKE_SAMPLE_DATA` objet par objet (89 lignes), nécessitant une requête de résumé ajoutée au pas-à-pas §5.1.
+- **Étape 1 bis exécutée — projet dbt de test et série de tests bruts** (commits `d20996c`, `f010a84`) :
+  1. **Projet nominal** : 4 sources TPC-H, `stg_orders`/`stg_customers` (vues, tag `nightly`), `dim_customers` (table), `fct_orders` (incremental), `orders_by_status` (`run_query`), tests génériques + singulier. `dbt deps` (codegen 0.14.1, dbt_utils 1.4.1) et deux `dbt build` verts (`PASS=15 ERROR=0`).
+  2. **`t_series.sh` livré, couverture élargie à T1–T10 et T13–T19** (décision Greg, hors les 6 tests du point F du plan — presque tout le protocole teste le comportement brut que l'enveloppe refusera par construction). 15 fixtures, macros d'aide `t_exec`/`t_rows` pour préparer/nettoyer/contrôler indépendamment des commandes testées.
+  3. **Périmètre minimal lancé par Greg et lu** (T3, T7, T13, T19, tous [Observé]) : H7 confirmée (écriture refusée sous `ro`, acceptée sous `dev`) ; grants futurs + métadonnées suffisants pour `show`/`compile`/`codegen` sous `ro` ; `run-operation --sql` persiste immédiatement sur Snowflake (inverse de DuckDB) ; `debug` n'affiche aucun secret et ne réveille pas le warehouse.
+  4. **Constats pour l'étape 2 consignés au plan §11** : les erreurs sortent toujours sur stdout (stderr à 0 octet, y compris en code 2) ; la clé `show` ne distingue pas lecture et écriture ; `--limit -1` fonctionne correctement.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent` (3 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`.
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §10, §11) avant toute action.
+3. **Étape 2 du plan** : enveloppe dbt en CLI pur (`runner.py`, `conditions.py`, `session.py`, `cli.py`), tests unitaires sur les conditions de succès de §D de la spec — un cas « échec silencieux » par ligne du principe 2. Approche test-first proposée : soumettre les tests avant l'implémentation. **Arrêt pour validation** en fin d'étape.
+4. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins de l'étape 2 (durée des appels sur la cible `broken` inconnue pour T14 et T17).
+5. **Étapes 3 à 6** (plan §8), un arrêt à la fin de chacune ; `/code-review` sur le diff de branche avant la PR.
+6. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés (cf. checkpoint du 13:23 du 02/10).
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Couverture de `t_series.sh` élargie** à T1–T10 et T13–T19, au-delà des 6 tests prévus au point F du plan.
+  - **Périmètre minimal (T3, T7, T13, T19) lancé avant l'étape 6**, pour disposer de sorties réelles dès l'écriture de l'enveloppe (étape 2).
+  - **Profil `~/.dbt/profiles.yml` édité par Greg lui-même** (règle D2 : l'agent n'a pas à connaître le compte). L'identifiant est tout de même apparu en séance : gabarit du dépôt modifié par erreur (marqueur remis avant commit) et bloc `Connection` de T13, lu avec accord.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-02 15:32
 Session : b1b76bdf-3271-4b38-9af8-344acbbbdcbb
 
 ## Tâches complétées
