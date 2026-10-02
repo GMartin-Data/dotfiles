@@ -2,8 +2,8 @@
 
 > **Statut : plan validé par Greg le 2026-10-02.** Les points A à F du §7 sont
 > tranchés et priment sur les formulations « à valider » restées dans les §1, §3
-> et §5. **Étape 1 faite le 2026-10-02** (T0 **[Observé]**, constats au §10).
-> Prochaine action : étape 1 bis (§8).
+> et §5. **Étapes 1 et 1 bis faites le 2026-10-02** (constats aux §10 et §11 ;
+> T0, T3, T7, T13, T19 **[Observé]**). Prochaine action : étape 2 (§8).
 
 ## Contexte
 
@@ -418,6 +418,7 @@ context7 à l'étape 3).
 - **E.** `dbt_show_inline` enregistré seulement après T3 + T19 (§1.3). **Validé le
   2026-10-02.** Écrit et testé dès l'étape 2, déclaré par un commit dédié une fois
   T3 et T19 **[Observé]** conformes ; si l'un échoue, décision à reprendre.
+  **Condition remplie le 2026-10-02** (§11).
 - **F.** Après l'étape 5, mes appels dbt bruts sont bloqués. Or T1, T2, T3, T7,
   T14, T15 testent le comportement **brut** de dbt. Proposition : un script
   `t_series.sh <T#>` dans le projet de test, que **tu** lances dans ton terminal ;
@@ -425,6 +426,7 @@ context7 à l'étape 3).
   **Validé le 2026-10-02 : tu lances le script.** Je l'écris à l'étape 1 bis
   (fixture, commandes exactes, capture, nettoyage) pour relecture avant exécution.
   Je ne le lance pas moi-même après l'étape 5.
+  **Couverture élargie le 2026-10-02** à T1–T10 et T13–T19 (§11).
 
 Limite connue du garde-fou, à consigner au livrable (doc permissions : une règle
 Bash « isn't a security boundary around the program ») : `deny` et hook lisent le
@@ -493,5 +495,75 @@ Versions : dbt-core 1.12.5, dbt-snowflake 1.12.1, snowflake-connector-python
 
 À garder en tête pour la suite : le schéma `PUBLIC` de `DBT_AGENT_DEV`, créé
 avant les grants futurs, n'est pas accessible au rôle RO (sans effet : le profil
-travaille dans `DEV`). La lecture par `ro` d'un modèle construit par `dev` reste
-à constater (T3, T19).
+travaille dans `DEV`). La lecture par `ro` d'un modèle construit par `dev` a été
+constatée le même jour (T3, §11).
+
+## 11. Résultats de l'étape 1 bis et du périmètre minimal (2026-10-02)
+
+Livré dans `~/dbt-agent-testbed/` (commits `d20996c`, `f010a84`) : projet
+nominal du §4, `fixtures/` (15 fichiers), `t_series.sh`, macros d'aide
+`macros/t_series.sql`. Les fichiers `results/Txx.txt` sont hors git : ce
+paragraphe en est la trace durable.
+
+Versions : dbt-core 1.12.5, dbt-snowflake 1.12.1, `codegen` 0.14.1,
+`dbt_utils` 1.4.1, Claude Code 2.1.287.
+
+### Critère de l'étape 1 bis
+
+| Contrôle | Résultat **[Observé]** |
+|---|---|
+| `dbt deps` | `codegen` 0.14.1 et `dbt_utils` 1.4.1, figés dans `package-lock.yml` |
+| Parse canonique (P1) | Code 0, sortie vide, paquets et macros d'aide compris |
+| `ls` canonique (L1) | Les 5 modèles attendus ; la clé de sortie est plate : `"config.materialized"` |
+| `dbt build` sur `dev`, deux fois | `PASS=15 ERROR=0 SKIP=0` ; au second passage `fct_orders` charge 0 ligne (branche incrémentale) |
+
+### Écarts au plan
+
+- **Couverture de `t_series.sh` élargie** (décision Greg) : T1 à T10 et T13 à
+  T19, au lieu des six tests du point F. Presque tout le protocole teste le
+  comportement brut de dbt, que l'enveloppe refuse par construction. T11, T12,
+  T20 et T21 restent à part.
+- **Périmètre minimal lancé avant l'étape 6** (décision Greg) : T3, T7, T13,
+  T19, pour disposer des sorties réelles dès l'étape 2.
+- **`codegen` 0.14.1 (hub)**, alors que la spec a été éprouvée sur la branche
+  `main` au 2026-09-25. À reporter au livrable de fin.
+- **Macros d'aide `t_exec` et `t_rows`** : SQL libre par `run-operation`, pour
+  préparer, nettoyer et contrôler sans passer par les commandes testées. La
+  liste blanche de l'enveloppe (O1, G1) doit les refuser : à couvrir par un test
+  à l'étape 3.
+- **Trois fixtures ajoutées** (`t5_upstream`, `t5_downstream`,
+  `t6_incremental`) : T5 et T6 exigent des modèles non construits.
+- **Fixtures de la matrice §A non branchées** dans `t_series.sh`
+  (`macro_missing`, `sql_invalid`, `column_missing`, `cycle_a/b`) : elles
+  servent aux captures de l'étape 2.
+- **Table dynamique de T18 basée sur `dim_customers`** : compatibilité d'une
+  table dynamique avec une base partagée non vérifiée.
+
+### Périmètre minimal — tous **[Observé]**, lancés par Greg
+
+| Test | Constat | Règle |
+|---|---|---|
+| T3 | Sous `dev`, `show --inline "create table … as select"` : code 0, table créée et persistée. Sous `ro` : code 2, `003001 (42501) Insufficient privileges`, table absente | H7 confirmée |
+| T3 (métadonnées) | Sous `ro`, `show`, `compile --no-introspect` et `generate_model_yaml` réussissent sur un modèle construit par `dev` : `USAGE` + `SELECT` et les grants futurs suffisent | §F.3 fait 2 confirmé |
+| T7 | `run-operation --sql` : DDL puis DML persistés immédiatement, vérifiés depuis une autre session ; sortie `OK executed inline_query` | O2 confirmée ; attente inversée de §F.4 vérifiée |
+| T19 | Cible `ro` : `current_role()` = `DBT_AGENT_RO`, aucun rôle secondaire ; `create table` et `delete` refusés (`42501`) | H7, point A |
+| T13 | `debug` affiche compte, utilisateur, base, warehouse, rôle, schéma, `query_tag`, paramètres réseau et de reprise. Ni clé privée, ni chemin de clé, ni mot de passe. 1 717 octets | D2 confirmée ; §F.3 fait 5 confirmé |
+| T13 (warehouse) | Warehouse suspendu avant et après, date de dernière reprise inchangée : `debug` ne le réveille pas | Coût nul |
+
+### Conséquences pour l'enveloppe (étape 2)
+
+- **Les erreurs sortent sur stdout, jamais sur stderr** : stderr fait 0 octet
+  dans toutes les commandes des quatre tests, y compris en code 2 et sous
+  `--quiet`. L'enveloppe juge sur le code de sortie, puis analyse stdout.
+- **La clé `show` ne distingue pas une lecture d'une écriture** : le DDL sous
+  `dev` renvoie code 0 et `{"show": [{"status": "Table T3_DEV successfully
+  created."}]}`. Pour `dbt_show_inline`, seuls le rôle `ro` et le contrôle
+  lexical protègent.
+- **`--limit -1` supprime le `limit` ajouté** : le `delete` de T19 est arrivé
+  intact à Snowflake (erreur de privilège, pas de syntaxe).
+- **`show --output json` renvoie les colonnes en majuscules** ;
+  `generate_model_yaml` donne des types sans précision (`number`, `varchar`).
+- **Chaque appel dbt dure 4 à 9 secondes**, connexion comprise.
+
+Reste à lancer : T1, T2, T4 à T6, T8 à T10, T14 à T18 (durée des appels sur la
+cible `broken` inconnue pour T14 et T17).
