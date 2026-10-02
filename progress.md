@@ -1,5 +1,82 @@
 ## Dernière mise à jour
-Date : 2026-09-26 17:09
+Date : 2026-10-02 13:23
+Session : b1b76bdf-3271-4b38-9af8-344acbbbdcbb
+
+## Tâches complétées
+
+- **Triage /immunize soldé — inbox vide, 0 règle écrite** (`c8b838b`, poussé).
+  Dû au 2026-09-30, exécuté le 02/10 ; 4 leçons du 2026-09-23 (9 j), 4 groupes
+  distincts, verdicts rendus un par tour :
+  1. **Forme > prohibition** (feynman-mentor) → archivée, routée artefact, fix
+     déjà commité (`767c8a4`, non-régression `550ac20`). Aucune seconde
+     occurrence à l'échéance ; « Check Before Delivery » sur `teach`
+     (`6ee17d5`) est une application, pas une preuve.
+  2. **Rubrique « PASS si / FAIL seulement si »** → archivée, routée artefact,
+     fix déjà commité (`101544a`, règle 7 du README `claude-md-skill`). Aucune
+     seconde occurrence (réécriture des `candide-*` non retenue le 26/09).
+  3. **P4, citer un principe** (emprunt pstack, n = 0) → archivée comme unique
+     expirée ; rien écrit dans `karpathy-discipline.md`.
+  4. **Gel des déclencheurs** (n = 1) → archivée comme unique expirée ;
+     formulation candidate conservée dans la note d'archivage.
+- **Mémoire synchronisée** : `reference_adoption_roadmap` + ligne MEMORY.md
+  passent de « P4 en inbox » à « P4 archivé, n = 0 ».
+
+## En cours
+
+- Rien — ce checkpoint à committer puis push.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis push.
+2. **Cycle /insights 2026-10-26** :
+   - revue de la fiche `check-before-delivery` (critère inchangé) ; **si elle
+     valide le levier de forme, reverser la leçon « forme > prohibition »**
+     par `/immunize "<leçon>"` (n = 2) ;
+   - **§6 de la roadmap (hors repo) : passer P4 à « archivé, n = 0 »** ;
+   - option `candide-*` en rubriques binaires (~1,7 $), qui porte seule
+     l'hypothèse non vérifiée « rubriques longues ↔ paire flaky » ; y
+     rattacher le constat « règle 7 présente dans le seul README de
+     `claude-md-skill` » (généraliser ou acter) ;
+   - candidats reconduits inchangés : S1, S6, constats TODO.md 1-3,
+     `dmi: true` (bloqué par R9/R10), Pocock, S10 ;
+   - remesurer le ratio méta/produit.
+3. **R10 à arbitrer avant exécution** (inchangé).
+4. **Chantier evals, Phase 4** (event-driven, inchangé) : R8 au D5 ; R9
+   sous-ensembles mono-tour ; R10.
+5. **P5 verification-skills** (dormant, inchangé).
+6. Event-driven : réponse vide Step 0 ; paire `candide-*` ; diagnosing-bugs ;
+   T2 ; échec de permissions d'un sous-agent d'exploration (`f6285148`) ;
+   **nouveaux** : P4 se rouvre à la première occurrence observée de
+   name-dropping de principe ; « gel des déclencheurs » passe en promotion
+   projet à une seconde occurrence (formulation dans l'archive).
+7. Hors repo, à la main de Greg : pin `known-first-party` ; learning record
+   `0004` (inchangé).
+8. Revisites : Pocock ~2026-11/12 ; pstack ~2026-12/2027-01.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **4 archivages, 0 conservation** : la règle des 7 jours et l'échéance du
+    30/09 s'appliquent telles quelles, sans prolongation.
+  - **Dépassement du 30/09 non compté comme seconde occurrence du « gel »** :
+    échéance datée et signalée par `progress.md`, défaut « archiver à n = 1 »
+    appliqué — mécanisme différent d'une validation en attente.
+  - **P4 archivé sans écriture dans `karpathy-discipline.md`** : pas de
+    doctrine sans preuve (n = 0).
+  - **§6 de la roadmap non touché en séance**, conformément à la cadence du
+    23/09 (mise à jour au cycle).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-09-26 17:09
 Session : adbaf55c-edda-4f6c-82b4-acf910ab757f
 
 ## Tâches complétées
