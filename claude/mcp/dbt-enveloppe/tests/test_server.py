@@ -32,6 +32,7 @@ TOOLS = {
     "dbt_show",
     "dbt_build",
     "dbt_codegen",
+    "dbt_show_inline",
 }
 
 
@@ -52,7 +53,7 @@ def error_text(result: CallToolResult) -> str:
 
 
 async def test_lists_exactly_the_envelope_tools(client: Client) -> None:
-    """``dbt_show_inline`` is not declared here (point E: dedicated commit)."""
+    """``dbt_show_inline`` included: T3 and T19 observed conformant (point E)."""
     listed = await client.list_tools()
     assert {tool.name for tool in listed.tools} == TOOLS
 
@@ -196,3 +197,30 @@ async def test_missing_project_is_reported_at_call_time(fake_run: FakeRun) -> No
         result = await client.call_tool("dbt_parse", {})
         assert "CLAUDE_PROJECT_DIR" in error_text(result)
     assert fake_run.calls == []
+
+
+async def test_show_inline_runs_on_the_read_only_target(
+    client: Client, session: Session, fake_run: FakeRun
+) -> None:
+    make_ready(session, fake_run)
+    fake_run.script("show", 0, '{"show": [{"X": 1}]}')
+    result = await client.call_tool(
+        "dbt_show_inline", {"sql": "select 1 as x", "limit": 1}
+    )
+    assert not result.is_error
+    assert result.structured_content["rows"] == [{"X": 1}]
+    argv = fake_run.argv_for("show")
+    assert "--inline" in argv
+    assert argv[argv.index("--target") + 1] == "ro"
+
+
+async def test_show_inline_refuses_ddl_without_a_dbt_call(
+    client: Client, session: Session, fake_run: FakeRun
+) -> None:
+    make_ready(session, fake_run)
+    before = len(fake_run.calls)
+    result = await client.call_tool(
+        "dbt_show_inline", {"sql": "create table t as select 1"}
+    )
+    assert "(H7)" in error_text(result)
+    assert len(fake_run.calls) == before

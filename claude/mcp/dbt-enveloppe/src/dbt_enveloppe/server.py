@@ -112,6 +112,16 @@ def build_server(get_session: SessionFn) -> MCPServer:
         """
         return run(lambda s: s.codegen(macro, args, output_path))
 
+    @server.tool()
+    def dbt_show_inline(sql: str, limit: int = 5) -> dict[str, Any]:
+        """Preview up to `limit` rows of a single SELECT on the read-only target (H7).
+
+        For looking at a source before modelling it. Only one `select` or
+        `with ... select` statement is accepted; the read-only role refuses
+        any write anyway.
+        """
+        return run(lambda s: s.show_inline(sql, limit))
+
     return server
 
 
