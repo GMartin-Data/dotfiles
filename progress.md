@@ -1,5 +1,50 @@
 ## Dernière mise à jour
-Date : 2026-10-02 19:55
+Date : 2026-10-03 10:28
+Session : 7d4f80e5-20cc-40d4-9c47-ee857a966a03
+
+## Tâches complétées
+
+- **Étape 2 du plan dbt agent exécutée — enveloppe CLI pure, 123 tests verts** (`feat/dbt-agent`, 2 commits non poussés) :
+  1. **Test-first respecté** : squelettes (`runner.py`, `conditions.py`, `session.py`, `cli.py`) + 123 tests unitaires soumis et validés avant implémentation ; suite rouge constatée (123 `NotImplementedError`), puis implémentation jusqu'au vert (`cd393d6`).
+  2. **`tests/test_principle2.py`** : un test par ligne du principe 2 de la spec (10 échecs silencieux), docstring = la ligne testée — critère explicite de l'étape.
+  3. **Fixtures réelles** : sorties capturées de T3 et T13 (Snowflake, 2026-10-02) reprises dans `conftest.py`, identifiant de compte anonymisé.
+  4. **Choix d'implémentation actés avec les tests** (détail au plan §12) : orchestration dans `session.py` (runner injectable) ; toute réparse efface les sélections `ls` ; `generate_source` reçoit `generate_columns: true` d'office ; `check_show` refuse une ligne `{"status": …}` seule (défense en profondeur derrière le rôle `ro`) ; statuts `build` : succès = `success`/`pass`/`warn`, échec sinon ; garde de version dbt 1.12.x ; session CLI persistée dans `target/dbt-enveloppe-session.json`.
+  5. **Smoke test réel sur `~/dbt-agent-testbed/`** (avant l'étape 5, donc sans la règle `deny`) : `parse`, `ls` (refus L2, joker nu `fct_*` → code 2 sous `--warn-error`, succès), `debug` (7 lignes sur 46, aucun champ `Connection`), `compile`, `show`, `show-inline` (DDL refusé H7 ; `select current_role()` confirme la cible `ro`). Tous conformes.
+  6. **Constat nouveau pour la spec** : sous dbt 1.12.5 + `--warn-error`, une sélection `ls` vide ou un joker nu sort en **code 2** (avertissement promu), pas en code 0 silencieux comme décrit par la ligne 1 du principe 2 sur le banc DuckDB — l'enveloppe couvre les deux cas.
+  7. **Résultats consignés au plan §12** (critère, écarts, smoke test, suite pour l'étape 3), commit `5c8f292`.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (3 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §12) avant toute action.
+3. **Étape 3 du plan** : `server.py`, exposition MCP de la `Session`. API du SDK MCP Python à lire via context7 (plan §6, non vérifiée) ; une fonction-outil par méthode de `Session`, état en mémoire, `CLAUDE_PROJECT_DIR` lu au démarrage. Vérification : `claude --mcp-config` dans le projet de test, `/mcp` liste les outils, un appel par outil. **Arrêt pour validation** en fin d'étape.
+4. **`dbt_show_inline` à déclarer par un commit dédié** dans `server.py` (point E du plan, condition remplie le 2026-10-02 par T3 + T19).
+5. **`build` et `codegen` non exercés en réel** — à tester par le subagent à l'étape 6, pas avant (effets de bord sur l'entrepôt).
+6. **Étapes 4 à 6** (plan §8), un arrêt à la fin de chacune ; `/code-review` sur le diff de branche avant la PR.
+7. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins des étapes suivantes.
+8. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Implémentation validée après lecture de la suite rouge** (123 `NotImplementedError`), conformément au test-first.
+  - **Choix d'implémentation listés au point 4 ci-dessus** actés en bloc à la validation des tests (pas de contestation) ; détail et rationale au plan §12, pas ici (document source).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-02 19:55
 Session : 5dcc8600-4077-4e55-a085-ad31aec60217
 
 ## Tâches complétées
