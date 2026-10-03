@@ -3,7 +3,8 @@
 > **Statut : plan validé par Greg le 2026-10-02.** Les points A à F du §7 sont
 > tranchés et priment sur les formulations « à valider » restées dans les §1, §3
 > et §5. **Étapes 1 et 1 bis faites le 2026-10-02** (constats aux §10 et §11 ;
-> T0, T3, T7, T13, T19 **[Observé]**). Prochaine action : étape 2 (§8).
+> T0, T3, T7, T13, T19 **[Observé]**). **Étape 2 faite le 2026-10-03** (§12,
+> `cd393d6`). Prochaine action : étape 3 (§8), `server.py`.
 
 ## Contexte
 
@@ -567,3 +568,68 @@ Versions : dbt-core 1.12.5, dbt-snowflake 1.12.1, `codegen` 0.14.1,
 
 Reste à lancer : T1, T2, T4 à T6, T8 à T10, T14 à T18 (durée des appels sur la
 cible `broken` inconnue pour T14 et T17).
+
+## 12. Résultats de l'étape 2 (2026-10-03)
+
+Livré dans `claude/mcp/dbt-enveloppe/` (commit `cd393d6`) : `pyproject.toml`
+et `uv.lock` (Python 3.12, `pyyaml` seule dépendance ; `mcp` viendra à
+l'étape 3), `src/dbt_enveloppe/{runner,conditions,session,cli}.py`, `tests/`
+(123 tests). Versions : dbt-core 1.12.5, dbt-snowflake 1.12.1, Claude Code
+2.1.287.
+
+### Critère de l'étape
+
+| Contrôle | Résultat |
+|---|---|
+| `uv run pytest` | **123 passed**, `ruff check` et `ruff format` propres |
+| Un cas d'échec silencieux par ligne du principe 2 | `tests/test_principle2.py` : 10 tests, docstring = ligne |
+| Test-first | Tests + squelettes soumis et validés avant l'implémentation (suite rouge : 123 `NotImplementedError`) |
+
+### Écarts et choix d'implémentation (validés avec les tests)
+
+- **`session.py` porte l'orchestration** : une méthode par outil, runner
+  injectable ; `cli.py` et `server.py` restent minces. Pas de module
+  supplémentaire.
+- **Toute réparse réussie efface les sélections `ls`** ; **`ls` exige un
+  parse sur l'état courant** (sinon « validé depuis ce parse » n'a pas de sens).
+- **`generate_source` reçoit `generate_columns: true` d'office** (sans lui, G5
+  échouerait toujours). **Un `codegen` qui échoue ne laisse aucun fichier**
+  (contenu invalide, colonnes vides, parse en échec).
+- **`check_show` refuse une ligne `{"status": …}` seule** (sortie réelle de T3
+  sous `dev`) : défense en profondeur derrière le rôle `ro` et le contrôle lexical.
+- **Statuts de `build`** : succès = `success`/`pass`/`warn` (`warn` remonté) ;
+  `error`, `fail`, `skipped`, `runtime error`, `partial success` échouent.
+- **Garde de version** : `debug` hors 1.12.x réussit mais bloque les outils B
+  et C en nommant la version.
+- **CLI** : session dans `<projet>/target/dbt-enveloppe-session.json`
+  (`dbt clean` = réinitialisation) ; fichier corrompu → session neuve. Le
+  serveur MCP gardera l'état en mémoire (même classe `Session`).
+- **Forme de `debug` en échec** (explication conservée après `N check(s)
+  failed`) : extrapolée de dbt-core 1.12, **T14 non lancé** — à confirmer.
+
+### Smoke test sur le testbed — **[Observé]** (lancé par Claude, avant l'étape 5)
+
+| Appel | Constat |
+|---|---|
+| `parse` | `{"ok": true}` ; empreinte prise, session écrite dans `target/` |
+| `ls --select tag:nightly --expected stg_orders` | Refus L2 : `unexpected ['stg_customers']`, liste renvoyée dans `data` |
+| `ls --select "fct_*"` | **Code 2 sous `--warn-error`** : `[WARNING]: The selection criterion 'fct_*' does not match any enabled nodes`, promu en erreur. Sur dbt 1.12.5, la ligne 1 du principe 2 est déjà explicite grâce à L1 ; l'enveloppe couvre tout de même le cas code 0 + sortie vide |
+| `compile` avant `debug` | Refus D3, aucun appel dbt |
+| `debug` | 7 lignes conservées sur 46 (versions, 4 `[OK …]`, `All checks passed!`), aucun champ `Connection` |
+| `show --name tag:nightly` | Refus K5/H4, aucun appel dbt |
+| `compile --name stg_orders` | SQL compilé + `materialized: view` (jointe depuis `ls`) |
+| `show --name stg_orders --limit 2` | 2 lignes, colonnes en majuscules, `note: null` |
+| `show-inline --sql "create table …"` | Refus H7 avant tout appel |
+| `show-inline --sql "select current_role() …"` | `DBT_AGENT_RO` / `DBT_AGENT_RO_USER` : la cible `ro` est bien imposée |
+
+Non exercés en réel : `build` et `codegen` (étape 6, par le subagent).
+
+### Pour l'étape 3
+
+- API du SDK MCP Python à lire via context7 (plan §6) ; `server.py` = une
+  fonction-outil par méthode de `Session`, état en mémoire, `CLAUDE_PROJECT_DIR`
+  lu au démarrage par `resolve_project_dir`.
+- `dbt_show_inline` : écrit et testé ; **à déclarer dans `server.py` par un
+  commit dédié** (point E, condition remplie le 2026-10-02).
+- Test à ajouter (plan §11) : les macros d'aide `t_exec`/`t_rows` refusées par
+  la liste blanche — déjà couvert par `test_line8` (`t_exec`, `t_rows`).
