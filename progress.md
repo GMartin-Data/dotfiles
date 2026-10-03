@@ -1,5 +1,48 @@
 ## Dernière mise à jour
-Date : 2026-10-03 10:28
+Date : 2026-10-03 11:15
+Session : 6b9daf61-b602-4419-8c8e-4899b379b546
+
+## Tâches complétées
+
+- **Étape 3 du plan dbt agent exécutée — serveur MCP par-dessus l'enveloppe, 136 tests verts** (`feat/dbt-agent`, 3 commits non poussés) :
+  1. **Push préalable vérifié et effectué** : les 3 commits de l'étape 2, restés locaux au checkpoint précédent, poussés (`66f5727..f366249`) avant toute nouvelle action, conformément à la demande de Greg en ouverture de session.
+  2. **`server.py` livré** (`afb21b3`) : une fonction-outil par méthode de `Session` (7 outils au commit initial), état en mémoire pour la durée du process, projet résolu depuis `CLAUDE_PROJECT_DIR` au premier appel et mis en cache (une variable ou un `.venv` manquant est désormais rapporté par chaque outil plutôt que de tuer le serveur silencieusement), appels sérialisés par un verrou. SDK `mcp` 2.3.0 (API v2 : `MCPServer`, `@tool()`, `ToolError`) — vérifié sur PyPI via context7, la v1 `FastMCP` n'étant plus la version publiée.
+  3. **Test-first respecté** : 11 tests + squelette soumis avant implémentation (suite rouge constatée), client MCP en mémoire (`mcp.Client`) pour les tests.
+  4. **`dbt_show_inline` déclaré par un commit dédié** (`bd060fc`, point E du plan) : 2 tests supplémentaires (rouge puis vert), cible `ro` confirmée à travers le serveur par appel réel (`current_role()` → `DBT_AGENT_RO`), DDL refusé H7 avant tout appel dbt.
+  5. **Vérifications réelles par stdio** sur `~/dbt-agent-testbed/` : un appel par outil (`debug`, `parse`, `ls`, `compile`, `show`, `show_inline` conformes ; `build` et `codegen` exercés sur leurs chemins de refus uniquement, sans effet de bord). Confirmé aussi depuis Claude Code réel (`claude -p --mcp-config`, Haiku) : serveur `connected`, 8 outils `mcp__dbt-enveloppe__dbt_*` listés, `dbt_parse` → `{"ok": true}`.
+  6. **Résultats consignés au plan §13** (critère, 9 appels [Observé], choix d'implémentation, constats pour l'étape 4), commit `ab90598`.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (4 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §13) avant toute action.
+3. **Étape 4 du plan** : `claude/agents/dbt.md` (corps = blocs de la spec + table règle → outil MCP), liens symboliques (`install.sh`), `permissions.allow` sur `dbt_parse` et `dbt_ls` (point D). Vérification : l'agent ne voit que Read/Grep/Glob/Edit/Write + outils MCP ; points 1, 2, 4, 6, 8 du §6 du plan observés. **Arrêt pour validation** en fin d'étape.
+4. **Étapes 5 et 6** (plan §8), un arrêt à la fin de chacune ; `/code-review` sur le diff de branche avant la PR.
+5. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins des étapes suivantes.
+6. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Push de l'étape 2 confirmé avant de démarrer l'étape 3** (demande explicite de Greg en ouverture de session).
+  - **SDK `mcp` API v2 retenue** (`MCPServer`/`@tool()`/`ToolError`), après vérification que la v1 `FastMCP` n'est plus publiée sur PyPI — pas une décision de portée, mais un fait vérifié qui conditionne tout le code de `server.py`.
+  - **Choix d'implémentation du serveur listés au point 2 ci-dessus** actés en bloc à la validation des tests (pas de contestation) ; détail et rationale au plan §13, pas ici (document source).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-03 10:28
 Session : 7d4f80e5-20cc-40d4-9c47-ee857a966a03
 
 ## Tâches complétées
