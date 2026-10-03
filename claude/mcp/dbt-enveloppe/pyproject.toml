@@ -3,10 +3,14 @@ name = "dbt-enveloppe"
 version = "0.1.0"
 description = "Guarded dbt wrapper: canonical calls, verified outputs, minimal replies."
 requires-python = ">=3.12"
-dependencies = ["pyyaml>=6.0"]
+dependencies = [
+    "mcp>=2.3,<3",
+    "pyyaml>=6.0",
+]
 
 [project.scripts]
 dbt-enveloppe = "dbt_enveloppe.cli:main"
+dbt-enveloppe-mcp = "dbt_enveloppe.server:main"
 
 [dependency-groups]
 dev = ["pytest>=8.3"]

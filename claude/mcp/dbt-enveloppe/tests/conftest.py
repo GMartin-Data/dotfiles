@@ -183,6 +183,11 @@ Runtime Error
 
 
 @pytest.fixture
+def anyio_backend() -> str:
+    return "asyncio"
+
+
+@pytest.fixture
 def project_dir(tmp_path: Path) -> Path:
     """A minimal dbt project with a fake ``.venv/bin/dbt`` and two models."""
     project = tmp_path / "proj"
