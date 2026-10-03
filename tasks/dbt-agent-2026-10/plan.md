@@ -4,7 +4,9 @@
 > tranchés et priment sur les formulations « à valider » restées dans les §1, §3
 > et §5. **Étapes 1 et 1 bis faites le 2026-10-02** (constats aux §10 et §11 ;
 > T0, T3, T7, T13, T19 **[Observé]**). **Étape 2 faite le 2026-10-03** (§12,
-> `cd393d6`). Prochaine action : étape 3 (§8), `server.py`.
+> `cd393d6`). **Étape 3 faite le 2026-10-03** (§13, `afb21b3` ; point E soldé
+> par `bd060fc`). Prochaine action : étape 4 (§8), `claude/agents/dbt.md`,
+> liens et `install.sh`.
 
 ## Contexte
 
@@ -633,3 +635,78 @@ Non exercés en réel : `build` et `codegen` (étape 6, par le subagent).
   commit dédié** (point E, condition remplie le 2026-10-02).
 - Test à ajouter (plan §11) : les macros d'aide `t_exec`/`t_rows` refusées par
   la liste blanche — déjà couvert par `test_line8` (`t_exec`, `t_rows`).
+
+## 13. Résultats de l'étape 3 (2026-10-03)
+
+Livré (commits `afb21b3`, `bd060fc`) : `src/dbt_enveloppe/server.py`,
+`tests/test_server.py` (13 tests, client MCP en mémoire), script
+`dbt-enveloppe-mcp` (nom du §1.4), dépendance `mcp>=2.3,<3` épinglée dans
+`uv.lock` (2.3.0). Versions : Claude Code 2.1.287, dbt-core 1.12.5,
+dbt-snowflake 1.12.1.
+
+### Critère de l'étape
+
+| Contrôle | Résultat |
+|---|---|
+| `uv run pytest` | **136 passed**, `ruff check` et `ruff format` propres |
+| Test-first | 11 tests + squelette soumis, choix validés en bloc, suite rouge constatée (`NotImplementedError`), puis vert ; même rituel pour les 2 tests de `dbt_show_inline` |
+| `claude --mcp-config` dans le testbed | Serveur `dbt-enveloppe` `status: connected` (message `init` du flux `stream-json`, `--strict-mcp-config`) |
+| Liste des outils | 8 outils `mcp__dbt-enveloppe__dbt_*` (7 au commit `afb21b3`, `dbt_show_inline` au commit `bd060fc`) ; `/mcp` interactif non joué |
+| Un appel par outil | Par stdio avec le vrai dbt (script client `mcp.Client` + `StdioServerParameters`, `CLAUDE_PROJECT_DIR` posé par le script) : voir table ci-dessous ; depuis Claude Code (`claude -p`, Haiku) : `dbt_parse` → `{"ok": true}`, ~0,05 $ en tout |
+
+### Appels réels par stdio — **[Observé]**
+
+| Appel | Constat |
+|---|---|
+| `dbt_debug` | 7 lignes (versions, `[OK …]`, `All checks passed!`), aucun champ `Connection` |
+| `dbt_parse` | `{"ok": true}` |
+| `dbt_ls(tag:nightly, [stg_orders, stg_customers])` | `{"models": [...]}`, 2 vues |
+| `dbt_compile(stg_orders)` | SQL compilé + `materialized: view` |
+| `dbt_show(stg_orders, 2)` | 2 lignes, `row_count: 2` |
+| `dbt_build(fct_orders)` | Refus L2 (sélection non validée), **aucun appel dbt** |
+| `dbt_codegen(t_exec, …)` | Refus O1/G1 (liste blanche), **aucun appel dbt** |
+| `dbt_show_inline(select current_role() …)` | `DBT_AGENT_RO` / `DBT_AGENT_RO_USER` : cible `ro` imposée à travers le serveur |
+| `dbt_show_inline(create table …)` | Refus H7 avant tout appel |
+
+`build` et `codegen` restent non exercés en réel (étape 6).
+
+### Choix d'implémentation (validés avec les tests)
+
+- **SDK `mcp` 2.3.0, API v2** (`MCPServer`, `@tool()`, `ToolError`) — la v1
+  (`FastMCP`) n'est plus la version publiée. Un outil `def` synchrone tourne
+  dans un thread de travail (vérifié dans la doc v2) : un `build` de 15 min ne
+  bloque pas le serveur.
+- **Échec = erreur d'outil** (`is_error`, texte = `Outcome.error`) ; si `data`
+  existe (écart `ls`, `build`), il est ajouté en JSON au texte. **Succès =
+  contenu structuré** : `data` tel quel ; `parse` → `{"ok": true}` ; `ls` →
+  `{"models": [...]}`.
+- **Projet résolu au premier appel et mis en cache** (`functools.cache` sur
+  `resolve_project_dir`) : si `CLAUDE_PROJECT_DIR` ou `.venv/bin/dbt` manque,
+  les outils existent et chaque appel renvoie le motif ; un `uv sync` suffit
+  ensuite, sans redémarrage. Un serveur qui meurt au démarrage ne laisserait
+  aucun message à l'agent.
+- **État en mémoire seulement** (pas de `target/dbt-enveloppe-session.json`
+  côté serveur) ; **un verrou sérialise les appels** (deux `dbt` concurrents
+  sur le même `target/` se marcheraient dessus) — non testé.
+- **Docstrings = descriptions d'outils** lues par l'agent, avec les
+  identifiants de règles (D1, L2, H7…) ; le corps de `dbt.md` (étape 4) reste
+  la source des règles.
+
+### Constats
+
+- Les erreurs d'outil sont journalisées par le SDK sur **stderr** (`Tool
+  'dbt_build' failed: …`) ; stdout reste au protocole. Rien à faire côté
+  enveloppe (le runner capture déjà la sortie de dbt).
+- Le message `init` de `claude -p --output-format stream-json --verbose`
+  donne le statut des serveurs et la liste des outils sans dépendre du modèle :
+  utilisable à l'étape 4 pour les points 1, 2, 6 et 8 du §6.
+- Pour l'étape 3, le `mcp.json` pointe sur `$HOME/dotfiles/claude/mcp/dbt-enveloppe`
+  (le lien `~/.claude/mcp/` n'existe qu'à l'étape 4).
+
+### Pour l'étape 4
+
+- `claude/agents/dbt.md` (corps = blocs de la spec + table règle → outil),
+  liens `install.sh`, `permissions.allow` sur `dbt_parse` et `dbt_ls` (point D).
+- Points du §6 à observer : 1 (`${HOME}` inline, un essai), 2
+  (`CLAUDE_PROJECT_DIR` dans un serveur inline de subagent), 4, 6, 8 ;
+  `claude plugin details` pour l'agent vu du plugin d'eval.
