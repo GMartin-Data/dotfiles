@@ -11,9 +11,9 @@ preuves et décisions : `plan.md` §10 à §16 (une section par étape).
 | Pièce | Où | Garantie |
 |---|---|---|
 | Subagent `dbt` | `claude/agents/dbt.md` → `~/.claude/agents/` | `tools: Read, Grep, Glob, Edit, Write, mcp__dbt-enveloppe__*` — **pas de Bash** : dbt n'est joignable que par l'enveloppe. Corps = règles de la spec copiées telles quelles (test de non-dérive `test_agent_sync.py`). `model: opus`, `effort: high`. Serveur MCP déclaré inline (`sh -c 'exec uv run --project "$HOME/.claude/mcp/dbt-enveloppe" --no-sync dbt-enveloppe-mcp'`) |
-| Serveur MCP `dbt-enveloppe` | `claude/mcp/dbt-enveloppe/` (paquet `uv`, 205 tests) | 8 outils : `dbt_debug`, `dbt_parse`, `dbt_ls`, `dbt_compile`, `dbt_show`, `dbt_show_inline`, `dbt_build`, `dbt_codegen`. Appel canonique imposé, préconditions tenues par le serveur (`debug` réussi, `parse` sur l'état courant des fichiers — empreinte taille/mtime —, noms et sélections validés par `ls`), sortie vérifiée (le code 0 ne suffit jamais), réponse réduite à l'utile. CLI `dbt-enveloppe` sur le même code |
+| Serveur MCP `dbt-enveloppe` | `claude/mcp/dbt-enveloppe/` (paquet `uv`, 233 tests) | 8 outils : `dbt_debug`, `dbt_parse`, `dbt_ls`, `dbt_compile`, `dbt_show`, `dbt_show_inline`, `dbt_build`, `dbt_codegen`. Appel canonique imposé, préconditions tenues par le serveur (`debug` réussi, `parse` sur l'état courant des fichiers — empreinte taille/mtime —, noms et sélections validés par `ls`), sortie vérifiée (le code 0 ne suffit jamais), réponse réduite à l'utile. CLI `dbt-enveloppe` sur le même code |
 | Cibles | profil dbt de l'utilisateur | **Lecture = `ro`** (`compile`, `show`, `show_inline`, `codegen`) : même base/schéma/warehouse que `dev`, rôle sans `CREATE` — toute écriture refusée par Snowflake. **Écriture = `dev`** (`build` seul) |
-| Hook `block-dbt.sh` + `deny "Bash(dbt *)"` | `claude/hooks/`, `claude/settings.json` | La conversation principale ne peut pas lancer dbt depuis Bash (position de commande, lanceurs `uv run`/`python -m`/`sh -c`/…, chemins `…/dbt`, heredocs) ; le texte cité passe. 58 tests. Les commandes `!` de l'utilisateur passent (canal prévu pour `deps`, `docs generate`…) |
+| Hook `block-dbt.sh` + `deny "Bash(dbt *)"` | `claude/hooks/`, `claude/settings.json` | La conversation principale ne peut pas lancer dbt depuis Bash (position de commande, lanceurs `uv run`/`python -m`/`sh -c`/…, chemins `…/dbt`, heredocs, mots-clés `if`/`do`/`!`, redirections) ; le texte cité et les arguments de `pytest`/`ruff`/`mypy` passent. 78 tests. Les commandes `!` de l'utilisateur passent (canal prévu pour `deps`, `docs generate`…) |
 | `permissions.allow` | `claude/settings.json` | `dbt_parse` et `dbt_ls` sans confirmation (palier A, hors ligne) ; les autres outils demandent |
 | `install.sh` | racine | Liens symboliques, `uv sync --frozen` du serveur, idempotent |
 
@@ -35,7 +35,7 @@ H7 DDL inline) lus et respectés ; deux règles anticipées par l'agent (H3 →
 | T20 — un schéma par session d'agent | Non implémenté : cible `dev` unique, schéma `DEV`. À rouvrir si deux sessions d'agent doivent tourner en parallèle sur le même projet | plan §16 |
 | T11, T12 — mesures de tokens et de crédits | L'enveloppe plafonne déjà les sorties (`limit ≤ 50`, listes de statuts, SQL compilé seul) ; plus d'enjeu de décision | plan §16 |
 | Subagents `dbt` concurrents | Le serveur inline est partagé par nom : le premier qui finit tue celui des autres (état de session perdu). Interdit par la `description` de l'agent | plan §16 constat 1, `c7d8adb` |
-| Empreinte restreinte aux chemins dbt | Empreinte large conservée (tout fichier non caché hors `target/`, `dbt_packages/`, `logs/`) : fail-closed, zéro code ; ne pas écrire de journaux dans le projet pendant une session | plan §16 constat 2 |
+| Empreinte restreinte aux chemins dbt | Empreinte large conservée (tout fichier non caché hors les répertoires de sortie dbt, résolus comme dbt le fait) : fail-closed, zéro code ; ne pas écrire de journaux dans le projet pendant une session | plan §16 constat 2 |
 | Exposer « modèle construit ou non » | L'agent ne peut pas le savoir et devine (rebuild inutile au run F, amont supposé absent au run H). Candidat event-driven | plan §16 constat 8 |
 
 ## 3. Écarts à reporter dans la spec (`spec.md`)
@@ -116,3 +116,25 @@ lancé par Greg ; enveloppe = subagent réel en `claude -p` ou CLI `dbt-envelopp
 inutile) ; T20 (à la première exécution concurrente) ; faiblesses adjacentes
 de `block-force-push.sh` (mot « force » non ancré) et `block-rm-rf.sh`
 (découpage non conscient des guillemets).
+
+## 7. Revue de code avant PR (2026-10-04, `/code-review high`)
+
+Session dédiée, 10 findings, triage un par tour ; chaque correctif test-first
+(cas rouge constaté, puis vert), un commit par finding. Suite : 205 → 233 tests.
+
+| # | Finding | Vérification | Sort | Commit |
+|---|---|---|---|---|
+| 1 | Hook : `if dbt …`, `do dbt …`, `! dbt`, `2>&1 dbt` passaient | **[Observé]** 4/4 | Corrigé : mots réservés et redirections transparents | `fcafccd` |
+| 2 | Timeout : `uv` tué, `dbt` petit-fils orphelin | **[Observé]** orphelin ; le blocage annoncé de l'enveloppe est **faux** sur POSIX | Corrigé : `start_new_session` + `killpg` | `3f2c801` |
+| 3 | `target/`, `logs/`, `dbt_packages/` codés en dur → refus en boucle sous `target-path` custom | Lecture | Corrigé : chemins lus comme dbt (`DBT_ENGINE_*`, `dbt_project.yml`, défauts) | `a8d196d` |
+| 4 | `build` échoué avant réécriture de `run_results.json` : stdout perdu | Lecture | Corrigé : `exit_message` ajouté | `2c37092` |
+| 5 | Hook : `uv run pytest -k dbt`, `uv run mypy dbt` bloqués | **[Observé]** 4/6 | Corrigé : programmes inertes (`pytest`, `ruff`, `mypy`, `pyright`, `pre-commit`) closent l'inspection ; `python`/`sh` restent fail-closed | `fe5bca6` |
+| 6 | `uv` absent → exception brute | **[Observé]** : le SDK MCP la masque en `Error executing tool`, serveur vivant — moins grave que décrit | Corrigé malgré tout (mineur) : `RefusalError` | `ce0b637` |
+| 7 | Sélection avec espace : validée par `ls`, refusée par `build` | Lecture | Corrigé : `validate_select` renvoie la forme normalisée | `37c8282` |
+| 8 | `codegen` : répertoires créés conservés après échec G5 | Lecture | Corrigé : `rmdir` ascendant jusqu'au premier répertoire préexistant | `31e0b15` |
+| 9 | Texte « timed out / exited N » ×3 | Lecture | Refactor `_status()`, sans test nouveau | `58692ba` |
+| 10 | `install.sh` en français | Lecture : tout le fichier l'est depuis l'origine | Exemption déclarée dans `CLAUDE.md` projet | `b4fea5d` |
+
+Adjacents relevés, non corrigés : `block-rm-rf.sh` bloque `rm -f` sur un fichier
+unique (déjà au §6) ; le hook bloque `python - <<EOF … import dbt` — voulu
+(python peut lancer dbt).

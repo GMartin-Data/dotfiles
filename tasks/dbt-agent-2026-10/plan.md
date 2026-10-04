@@ -10,9 +10,9 @@
 > **[Observé]**). **Étape 6 faite le 2026-10-04** (§16 ; point 9 du §6
 > **[Observé]** ; T0–T21 couverts sauf T20 non implémenté et T11/T12 actés hors
 > périmètre ; `compile`/`show`/`codegen` passés sous `ro`, `98b483a`).
-> **Livrable de fin écrit** (`livrable.md`, brief §6). Prochaine action :
-> `/code-review` sur le diff de branche en session dédiée, triage, puis PR
-> `feat/dbt-agent` → `main`.
+> **Livrable de fin écrit** (`livrable.md`, brief §6). **`/code-review high`
+> fait le 2026-10-04** (livrable §7 : 10 findings, 10 commits, 233 tests).
+> Prochaine action : PR `feat/dbt-agent` → `main`, merge commit.
 
 ## Contexte
 
