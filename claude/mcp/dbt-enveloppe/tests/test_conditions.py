@@ -207,6 +207,24 @@ def test_build_not_rewritten_artifact_is_a_failure() -> None:
     assert "run_results.json" in outcome.error
 
 
+def test_build_not_rewritten_artifact_reports_stdout_tail() -> None:
+    """A startup failure leaves the old artifact in place: the cause is in stdout."""
+    document = run_results(
+        {"stg_orders": "success", "stg_customers": "success"}, invocation_id="inv-1"
+    )
+    outcome = check_build(
+        2,
+        "Runtime Error\n  Could not find profile named 'testbed'\n",
+        document,
+        EXPECTED,
+        previous_invocation_id="inv-1",
+    )
+    assert not outcome.ok
+    assert "exited 2" in outcome.error
+    assert "Could not find profile" in outcome.error
+    assert "run_results.json" in outcome.error
+
+
 def test_build_missing_artifact_reports_stdout_tail() -> None:
     outcome = check_build(
         2, "Compilation Error in model stg_orders\n  boom\n", None, EXPECTED, None

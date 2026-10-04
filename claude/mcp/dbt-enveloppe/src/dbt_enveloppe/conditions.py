@@ -280,14 +280,15 @@ def check_build(
         return Outcome(
             False,
             error=exit_message("build", returncode, stdout)
-            + "; target/run_results.json not written",
+            + "; run_results.json not written",
         )
     metadata = run_results.get("metadata") or {}
     invocation_id = metadata.get("invocation_id")
     if invocation_id is None or invocation_id == previous_invocation_id:
         return Outcome(
             False,
-            error="target/run_results.json was not rewritten by this call (same invocation id): the build did not run",
+            error=exit_message("build", returncode, stdout)
+            + "; run_results.json was not rewritten by this call (same invocation id): the build did not run",
         )
     results = run_results.get("results") or []
     if not results:
