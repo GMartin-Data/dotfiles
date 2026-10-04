@@ -137,9 +137,10 @@ Revue :
 
 **Templates** (4) : `python-uv.md`, `dbt-uv.md`, `terraform.md`, `pro-banking.md` (overlay)
 
-**Hooks** (4) :
+**Hooks** (5) :
 - `block-force-push.sh` — PreToolUse sur `git push*`
 - `block-rm-rf.sh` — PreToolUse sur `rm *`
+- `block-dbt.sh` — PreToolUse sur **tout** Bash (sans `if`, qui manquerait `uv run dbt`) : bloque dbt en position de commande, derrière un lanceur (`uv run`, `python -m`, `sh -c`, `timeout`…) ou par chemin (`…/dbt`) ; laisse passer le texte cité (`git commit -m "… dbt …"`, `grep "ls|dbt"`) et `dbt-enveloppe`. Message renvoyé à Claude : déléguer au subagent `dbt`, ou demander à l'utilisateur un `! uv run dbt deps`. Doublé par `"Bash(dbt *)"` dans `permissions.deny`. Tests : `mcp/dbt-enveloppe/tests/test_block_dbt_hook.py`
 - `protect_env.py` — PreToolUse (Bash/Read/Edit/Write) sur `.env`
 - `ruff-check.sh` — PostToolUse sur Write/Edit
 

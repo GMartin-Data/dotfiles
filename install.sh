@@ -46,6 +46,7 @@ link "$DOTFILES_DIR/claude/commands/grill.md"       "$HOME/.claude/commands/gril
 # Hooks (fichiers individuels — même raison)
 link "$DOTFILES_DIR/claude/hooks/block-force-push.sh"        "$HOME/.claude/hooks/block-force-push.sh"
 link "$DOTFILES_DIR/claude/hooks/block-rm-rf.sh"             "$HOME/.claude/hooks/block-rm-rf.sh"
+link "$DOTFILES_DIR/claude/hooks/block-dbt.sh"               "$HOME/.claude/hooks/block-dbt.sh"
 link "$DOTFILES_DIR/claude/hooks/protect_env.py"             "$HOME/.claude/hooks/protect_env.py"
 link "$DOTFILES_DIR/claude/hooks/ruff-check.sh"              "$HOME/.claude/hooks/ruff-check.sh"
 
