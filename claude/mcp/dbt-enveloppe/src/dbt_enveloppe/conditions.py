@@ -64,11 +64,16 @@ class Outcome:
     error: str | None = None
 
 
+def _status(returncode: int | None) -> str:
+    return "timed out" if returncode is None else f"exited {returncode}"
+
+
 def exit_message(command: str, returncode: int | None, stdout: str) -> str:
     """Describe a failed dbt call from its exit code and the tail of its output."""
-    status = "timed out" if returncode is None else f"exited {returncode}"
     text = stdout.strip()[-OUTPUT_TAIL:]
-    return f"dbt {command} {status}" + (f": {text}" if text else " with no output")
+    return f"dbt {command} {_status(returncode)}" + (
+        f": {text}" if text else " with no output"
+    )
 
 
 def check_debug(returncode: int | None, stdout: str) -> Outcome:
@@ -104,8 +109,7 @@ def check_debug(returncode: int | None, stdout: str) -> Outcome:
             explanation = [item for item in lines[index:] if item]
             break
     details = [line for line in verdicts if "[ERROR" in line] + explanation
-    status = "timed out" if returncode is None else f"exited {returncode}"
-    error = f"dbt debug {status}" + (
+    error = f"dbt debug {_status(returncode)}" + (
         ":\n" + "\n".join(details) if details else " with no verdict line"
     )
     return Outcome(False, data, error)
@@ -324,9 +328,7 @@ def check_build(
             )
     problems: list[str] = []
     if returncode != 0:
-        problems.append(
-            "timed out" if returncode is None else f"dbt build exited {returncode}"
-        )
+        problems.append(f"dbt build {_status(returncode)}")
     if failures:
         problems.append("failing nodes:\n" + "\n".join(failures))
     missing = sorted(set(expected) - executed)
