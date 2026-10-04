@@ -6,8 +6,9 @@
 > T0, T3, T7, T13, T19 **[Observé]**). **Étape 2 faite le 2026-10-03** (§12,
 > `cd393d6`). **Étape 3 faite le 2026-10-03** (§13, `afb21b3` ; point E soldé
 > par `bd060fc`). **Étape 4 faite le 2026-10-04** (§14 ; points 1, 2, 4, 6, 8
-> du §6 **[Observé]**). Prochaine action : étape 5 (§8), règle `deny`, hook
-> `block-dbt.sh` et ses tests.
+> du §6 **[Observé]**). **Étape 5 faite le 2026-10-04** (§15 ; point 5 du §6
+> **[Observé]**, point 9 à observer par Greg en session interactive). Prochaine
+> action : étape 6 (§8), rejeu T0, T3, T7, T13, T19 par le subagent réel.
 
 ## Contexte
 
@@ -391,11 +392,11 @@ sur ton compte.
 | 2 | `CLAUDE_PROJECT_DIR` pour un serveur stdio **inline de subagent** | Documenté pour les serveurs stdio en général, pas pour ce cas précis | Le serveur refuse si la variable manque ; vérifié à l'étape 4 |
 | 3 | Répertoire de travail d'un serveur stdio lancé depuis un agent de scope user | Seul le cas `headersHelper` est documenté (`~/.claude`) | Aucun chemin relatif utilisé |
 | 4 | Fichier agent en lien symbolique dans `~/.claude/agents/` | Non mentionné dans la doc ; **[Observé]** : `tech-watch-scorer.md` est un lien vers les dotfiles et il est chargé dans la session courante | Aucune |
-| 5 | Les règles `permissions.deny` des settings user s'appliquent dans les subagents | Non dit explicitement (dit pour les hooks) | Test à l'étape 5 avec un subagent disposant de Bash |
+| 5 | Les règles `permissions.deny` des settings user s'appliquent dans les subagents | Non dit explicitement (dit pour les hooks) | **[Observé]** à l'étape 5 (§15) : appliquée dans un subagent avec Bash, et prioritaire sur un `allow` passé en CLI |
 | 6 | Une règle `allow` `mcp__dbt-enveloppe__dbt_parse` vise bien un serveur inline | Syntaxe documentée, cas inline non | Test à l'étape 4 |
 | 7 | `/mcp` liste-t-il un serveur inline pendant l'exécution du subagent | Non dit | L'étape 3 passe par `claude --mcp-config` (rien de persistant) |
 | 8 | Absence de dialogue de confiance pour un serveur inline d'un agent de scope user | Implicite (la règle de confiance ne cite que les agents de projet) | Constaté à l'étape 4 |
-| 9 | Les commandes `!` de l'utilisateur échappent au hook et à la règle `deny` | Non vérifié | Voir point F ci-dessous |
+| 9 | Les commandes `!` de l'utilisateur échappent au hook et à la règle `deny` | Non vérifié — **[Inféré]** : exécution utilisateur, pas un appel d'outil du modèle | À observer par Greg en session interactive fraîche après l'étape 5 (§15) ; voir aussi point F |
 
 Hors doc Claude Code : `private_key_path` et `query_tag` dans un profil
 dbt-snowflake 1.12 — **levé en partie à l'étape 1** (champs présents dans le code
@@ -789,3 +790,128 @@ déjà configurés — celle du §1.4.
   subagent disposant de Bash.
 - Après l'étape 5, plus aucun appel dbt brut par Claude : `t_series.sh` à la
   main de Greg (point F) ; les tests de l'enveloppe passent par le subagent.
+
+## 15. Résultats de l'étape 5 (2026-10-04)
+
+Livré : `claude/hooks/block-dbt.sh` (hook `PreToolUse`, matcher `Bash`, **sans
+champ `if`**), `claude/settings.json` (`"Bash(dbt *)"` dans `permissions.deny`
++ entrée hook), `install.sh` (lien du hook), `claude/README.md`,
+`tests/test_block_dbt_hook.py` (58 tests : 31 « doit bloquer », 23 « doit
+passer », message, 3 réglages). Versions : Claude Code 2.1.287, mawk 1.3.4,
+jq 1.6, shellcheck 0.11.0.
+
+### Décision préalable (Greg, 2026-10-04)
+
+- **`dbt docs generate` reste manuel** — comme `deps`, `seed`, `snapshot`,
+  `source freshness`, `test` seul, `clean`, `run-operation` hors codegen : rien
+  de ce que l'enveloppe n'expose pas n'est accessible à Claude après cette
+  étape (le subagent n'a pas Bash, la conversation principale a dbt bloqué).
+  Cohérent avec la spec (l'agent n'exécute que la boucle de modélisation).
+- **Candidat event-driven** : un 9ᵉ outil `dbt_docs_generate` (appel canonique,
+  cible `ro` probable, succès = code 0 **et** `target/catalog.json` +
+  `manifest.json` réécrits par l'appel **et** non vides ; commit dédié,
+  test-first, sur le modèle de `dbt_show_inline`, ~30 min). À ouvrir à la
+  première fois où Greg lance `docs generate` à la main après une session de
+  l'agent. Une exception dans le hook pour la conversation principale est
+  écartée : elle casserait « dbt uniquement par l'enveloppe ».
+- **Flux attendu pour `deps`** : `dbt_parse` échoue (« packages spécifiés mais
+  non installés »), l'enveloppe renvoie le message, le subagent le remonte, la
+  conversation principale demande `! uv run dbt deps`, Greg relance.
+
+### Critère de l'étape
+
+| Contrôle | Résultat |
+|---|---|
+| `uv run pytest` | **205 passed** (147 + 58), `ruff check` et `ruff format` propres ; `shellcheck` 0 trouvaille sur `block-dbt.sh` (et sur les 4 scripts existants) |
+| Test-first | Table écrite avant le hook : 49 échecs (hook absent) ; validée par Greg (table + choix de conception + option B heredoc) ; 48 cas de comportement verts au premier passage du hook, puis 2 réglages. Un faux positif rencontré en usage réel ensuite (ci-dessous) → 6 cas ajoutés, découpage réécrit, 58 verts |
+| `dbt`, `uv run dbt`, `python -m dbt`, chemin absolu bloqués | Tests verts + **[Observé]** `claude -p` (Haiku, testbed) : `uv run dbt --version` et `dbt --version` → `PreToolUse:Bash hook error: […] BLOCKED: dbt is never run from Bash…`, message complet lu par le modèle |
+| `dbt-enveloppe` et message de commit contenant « dbt » passent | Tests verts (`dbt-enveloppe parse`, `uv run … dbt-enveloppe-mcp`, 2 heredocs de commit dont un avec une ligne commençant par `dbt`) |
+| `install.sh` idempotent | Relancé en entier : liens recréés à l'identique, hook lié, « Checked 35 packages » |
+
+### Points du §6 — Claude Code 2.1.287, mode `-p`
+
+| # | Point | Constat |
+|---|---|---|
+| 5 | Règle `deny` dans un subagent avec Bash | **[Observé]** avant activation du hook (il la précède et la masque ensuite) : agent d'essai `bash-probe` (`tools: Bash`, Haiku, hors dotfiles, supprimé après lecture), `--allowedTools "Bash(echo probe-ok),Bash(dbt --version),Agent"` : `echo probe-ok` → `probe-ok` ; `dbt --version` → `Permission to use Bash with command dbt --version has been denied`. La règle `deny` des settings user s'applique dans le subagent **et prime sur un `allow` explicite passé en CLI** |
+| — | Hook dans un subagent avec Bash (dit par la doc) | **[Observé]** : même agent d'essai, `uv run dbt --version` → message `BLOCKED` du hook |
+| 9 | `!` échappe au hook | **Non observé** : `-p` est non interactif. À faire par Greg en session interactive, depuis `~/dbt-agent-testbed/` : `! uv run dbt --version` doit s'exécuter ; demander ensuite à Claude de lancer la même commande doit produire le `BLOCKED` |
+| — | Prise en compte à chaud d'un hook ajouté à `settings.json` | **[Observé]**, contraire à la doc `hooks` (« snapshot au démarrage ») : le hook a bloqué un appel Bash de la session même qui venait de l'ajouter, sans redémarrage ni passage par `/hooks`. Fichier lié par symlink depuis les dotfiles |
+
+### Choix de conception du hook (validés avec les tests)
+
+- **Position de commande** : chaque ligne est découpée en commandes simples
+  sur `;`, `&`, `|`, `$(`, `` ` `` ; dans chaque segment, après les `VAR=val`,
+  le premier mot est jugé. `git commit -m "… dbt build …"`, `echo "dbt build"`,
+  `grep "dbt run"` passent : les arguments d'une commande ordinaire sont des
+  données.
+- **Découpage conscient des guillemets** (ajouté après un faux positif réel :
+  `grep -n "block-rm-rf\|hooks/\|dbt" claude/README.md` bloqué, l'alternative
+  `\|dbt` du motif devenant un segment commençant par `dbt`). Les guillemets
+  simples et doubles protègent `;`, `&`, `|` ; **`$(` et `` ` `` ouvrent
+  toujours un segment dans les guillemets doubles** (sinon `echo "$(dbt ls)"`
+  passerait). L'état des guillemets est remis à zéro à chaque ligne. Le
+  pré-traitement `sed` de `block-rm-rf.sh` est remplacé par ce découpeur awk ;
+  `block-rm-rf.sh` garde la même faiblesse (`grep "a\|rm -rf"` bloqué),
+  non corrigée ici.
+- **Shell nourri par la ligne** : un lanceur sans commande à lancer (`sh`,
+  `uv run python`…) lit son script ailleurs sur la ligne (`echo 'dbt run' |
+  sh`) : toute la ligne est alors inspectée en mode « tous les jetons ».
+- **Derrière un lanceur** (`uv`, `uvx`, `pipx`, `poetry`, `pdm`, `hatch`,
+  `pixi`, `conda`, `mamba`, `run`, `tool`, `sh`, `bash`, `zsh`, `dash`, `ksh`, `exec`,
+  `command`, `builtin`, `eval`, `sudo`, `env`, `time`, `nice`, `nohup`,
+  `timeout`, `stdbuf`, `xargs`, `python[0-9.]*` et `*/python[0-9.]*`), **tous
+  les jetons restants** sont inspectés : `dbt`, `*/dbt`, `dbt.*`. C'est ce qui
+  attrape `uv run --project X --no-sync dbt` sans connaître les options de
+  `uv`, et `python -c "from dbt.cli.main import dbtRunner; …"` (5ᵉ contournement,
+  non cité par la doc). Fail-closed.
+- **Faux positifs tolérés** (hors table, ni bloqués ni passants attendus) :
+  `sh -c 'echo dbt'`, `python -c "import dbt"`, un chemin finissant par `/dbt`
+  derrière `uv run`. Pas rencontrés en usage ; Claude reformule.
+- **Heredocs (option B, décision Greg)** : un `<<EOF` reçu par une commande
+  ordinaire (`cat`, `git`, `tee`) fait sauter les lignes jusqu'au délimiteur ;
+  reçu par un lanceur (`bash <<EOF`, `python <<EOF`), les lignes restent
+  inspectées en mode « tous les jetons ». Les here-strings `<<<` ne sont pas
+  des heredocs. Résidu : une chaîne multi-ligne entre guillemets sans heredoc
+  (Claude n'en écrit pas pour les commits).
+- Jetons nettoyés de leurs guillemets et parenthèses/accolades englobantes
+  (`'dbt`, `(dbt` sont vus comme `dbt`).
+- **Limite connue reconduite** (§7) : un script qui appelle dbt en interne
+  (`bash run.sh`, `make`) n'est pas bloqué. La garantie structurelle est
+  celle du subagent (pas de Bash) ; le hook protège la conversation principale
+  contre l'invocation directe.
+
+### Constats
+
+- **Le hook précède la règle `deny`** : pour `dbt --version`, c'est le message
+  du hook que le modèle lit. La règle reste utile sans hook (settings copiés
+  sans le script) et comme deuxième couche.
+- **`--allowedTools` avec plusieurs valeurs séparées par des espaces avale le
+  prompt** (« Input must be provided either through stdin… ») ; une liste
+  séparée par des virgules **et** le prompt par stdin ont fonctionné.
+- **Faux positif de `block-force-push.sh`** : une commande sans `git push`
+  mais contenant le nom de fichier `block-force-push.sh` a été bloquée
+  (« git push --force is not allowed ») — le filtre `if` est fail-open sur les
+  commandes composées et le script cherche « force » sans ancrer sur `git
+  push`. Amélioration adjacente, non corrigée ici.
+- **shellcheck installé** (`uv tool install shellcheck-py`, 0.11.0.1 ; choix
+  uv plutôt qu'apt : version amont, sans sudo, même paquet que le hook
+  pre-commit `shellcheck-py`). Les 5 scripts (`claude/hooks/*.sh`,
+  `install.sh`) sortent sans trouvaille, toutes sévérités ; aucun commit de
+  triage nécessaire. Intégration pre-commit : décision à part, non prise.
+- Coût des trois appels `claude -p` : 0,033 + 0,025 + 0,035 ≈ 0,09 $.
+
+### Pour l'étape 6
+
+- **Greg d'abord** : observer le point 9 du §6 en session interactive
+  (`! uv run dbt --version` passe ; la même commande demandée à Claude est
+  bloquée). Si `!` était aussi bloqué, le repli est le terminal hors Claude
+  Code — viable, à consigner.
+- Rejeu T0, T3, T7, T13, T19 par le subagent réel (`dbt_debug`, `dbt_parse`,
+  `dbt_ls`, `dbt_compile`, `dbt_show`, `dbt_show_inline`, puis `dbt_build` et
+  `dbt_codegen` pour la première fois en réel), puis le reste de T1–T21 ;
+  lire les événements `parent_tool_use_id` du flux `stream-json`, pas le
+  résumé (§14). Tests bruts : `t_series.sh` à la main de Greg (point F).
+- **Critère de révision de l'effort** (§14) : refus de l'enveloppe et reprises
+  par tâche — `xhigh` si l'agent cale sur la modélisation, `medium` s'il ne
+  cale jamais.
+- `/code-review` sur le diff de branche avant la PR.
