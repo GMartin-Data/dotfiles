@@ -45,6 +45,15 @@ MUST_BLOCK = [
     "echo 'dbt run' | sh",
     "bash <<EOF\ncd ~/dbt-agent-testbed\ndbt run\nEOF",
     "python <<EOF\nfrom dbt.cli.main import dbtRunner\ndbtRunner().invoke(['run'])\nEOF",
+    "if dbt parse; then echo ok; fi",
+    "if true; then dbt run; else dbt test; fi",
+    "for m in a b; do dbt build -s $m; done",
+    "while true; do dbt run; done",
+    "until dbt parse; do sleep 1; done",
+    "! dbt parse",
+    "cd proj && 2>&1 dbt run",
+    "2>/dev/null dbt run",
+    "> build.log dbt run",
 ]
 
 MUST_PASS = [
@@ -74,6 +83,10 @@ MUST_PASS = [
     'echo "dbt build"',
     "cd ~/dbt-agent-testbed",
     "python -c \"print('hello')\"",
+    "if grep -q dbt README.md; then echo yes; fi",
+    "for f in dbt_project.yml; do cat $f; done",
+    "! grep -q dbt_packages .gitignore",
+    "2>/dev/null ls dbt_packages",
 ]
 
 

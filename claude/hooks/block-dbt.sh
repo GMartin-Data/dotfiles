@@ -22,6 +22,8 @@ verdict=$(printf '%s\n' "$COMMAND" | awk '
               "sh bash zsh dash ksh exec command builtin eval " \
               "sudo env time nice nohup timeout stdbuf xargs", l, " ")
         for (k in l) LAUNCHERS[l[k]] = 1
+        split("if then else elif do while until !", l, " ")
+        for (k in l) KEYWORDS[l[k]] = 1
         split("", seg)
         skip = ""; inspect = 0
     }
@@ -40,6 +42,7 @@ verdict=$(printf '%s\n' "$COMMAND" | awk '
             if (c == "`" || (c == "$" && substr(line, i + 1, 1) == "(")) {
                 seg[++n] = cur; cur = ""; if (c == "$") i++; continue
             }
+            if (c == "&" && q == "" && cur ~ /[<>]$/) { cur = cur c; continue }   # 2>&1 is a redirection
             if (q == "" && (c == ";" || c == "&" || c == "|")) { seg[++n] = cur; cur = ""; continue }
             cur = cur c
         }
@@ -63,6 +66,9 @@ verdict=$(printf '%s\n' "$COMMAND" | awk '
             t = clean(tok[i])
             if (t == "") continue
             if (t ~ /^[A-Za-z_][A-Za-z0-9_]*=/) continue             # VAR=val
+            if (t in KEYWORDS) continue                              # if dbt …; do dbt …; ! dbt …
+            if (t ~ /^[0-9]*[<>]+$/) { i++; continue }               # bare operator: next token is its target
+            if (t ~ /^[0-9]*[<>]+/) continue                         # 2>&1, 2>/dev/null, >build.log
             if (dbtish(t, launch)) block()
             if (is_launcher(t)) { launch = 1; bare = 1; continue }
             if (!launch) break                                       # ordinary command: arguments are data
