@@ -396,7 +396,7 @@ sur ton compte.
 | 6 | Une règle `allow` `mcp__dbt-enveloppe__dbt_parse` vise bien un serveur inline | Syntaxe documentée, cas inline non | Test à l'étape 4 |
 | 7 | `/mcp` liste-t-il un serveur inline pendant l'exécution du subagent | Non dit | L'étape 3 passe par `claude --mcp-config` (rien de persistant) |
 | 8 | Absence de dialogue de confiance pour un serveur inline d'un agent de scope user | Implicite (la règle de confiance ne cite que les agents de projet) | Constaté à l'étape 4 |
-| 9 | Les commandes `!` de l'utilisateur échappent au hook et à la règle `deny` | Non vérifié — **[Inféré]** : exécution utilisateur, pas un appel d'outil du modèle | À observer par Greg en session interactive fraîche après l'étape 5 (§15) ; voir aussi point F |
+| 9 | Les commandes `!` de l'utilisateur échappent au hook et à la règle `deny` | **[Observé]** le 2026-10-04 (§16) : `! uv run --project ~/dbt-agent-testbed dbt --version` tapé par Greg → versions affichées ; la même commande par l'outil Bash de Claude → `BLOCKED` du hook | Aucune ; c'est le canal prévu pour `deps`, `docs generate`… |
 
 Hors doc Claude Code : `private_key_path` et `query_tag` dans un profil
 dbt-snowflake 1.12 — **levé en partie à l'étape 1** (champs présents dans le code
@@ -949,16 +949,35 @@ dbt-core 1.12.5, dbt-snowflake 1.12.1.
 
 Coûts rapportés par `claude -p` (session + subagent) : 1,36 $ pour les 8 runs.
 
-### Couverture T0–T21 à l'issue des runs
+### Point 9 du §6 — **[Observé]** (session interactive, Claude Code 2.1.289)
+
+`! uv run --project ~/dbt-agent-testbed dbt --version` tapé par Greg dans la
+session : `Core: installed 1.12.5`, `snowflake: 1.12.1`, aucun hook. La même
+commande lancée par l'outil Bash de Claude dans la même session :
+`PreToolUse:Bash hook error: [~/.claude/hooks/block-dbt.sh]: BLOCKED…`. Le
+canal `!` est donc bien celui de `deps`, `docs generate`, etc.
+
+### Tests bruts T1, T2, T10, T14, T17, T18 — `t_series.sh` lancé par Greg le 2026-10-04 (15:02–15:05), tous **[Observé]**
+
+| T | Constat brut (Snowflake, dbt-core 1.12.5, dbt-snowflake 1.12.1) | Règle |
+|---|---|---|
+| T1 | `show --limit 5` d'un modèle finissant par `limit 3` → code 2, `001003 (42000): syntax error line 5 at position 2 unexpected 'limit'` (dbt colle son `limit` à la fin, pas de sous-requête) ; `--limit -1` → code 0, aperçu. **Identique à DuckDB** | H6 confirmée ; sous l'enveloppe, `dbt_show` renverra l'erreur et l'agent doit retirer le `limit` du modèle |
+| T2 | `show --inline "select 1 as x;"` → code 2, `syntax error line 1 at position 0 unexpected 'limit'` ; avec `--limit -1` → code 0 ; témoin sans `;` → code 0. **Identique à DuckDB** | H6/H7 ; l'enveloppe retire le `;` final avant dbt (`normalize_inline_sql`) |
+| T10 | `run-operation generate_model_yaml --quiet > f.yml` → 381 o, YAML propre, parse canonique code 0 ; **sans `--quiet`** → 526 o, `Running with dbt=…` en tête du fichier, parse code 2 (`Syntax error near line 2`) ; modèle inconnu → code 1, `depends on a node named 'does_not_exist' which was not found`. stderr toujours 0 o | G2/G5 confirmées ; `--quiet` indispensable à la redirection |
+| T14 | `debug --quiet --target broken` → **code 1, 0 octet** ; sans `--quiet` → 2 068 o : compte (faux), utilisateur, rôle, `host: None`, `Connection test: [ERROR]`, **aucune ligne clé/mot de passe** (grep `private_key`, `.p8`, `password` : 0) | D1 et D2 confirmées sur Snowflake |
+| T17 | `compile` de `run_query_side_effect` sous `dev` **avec** introspection → table `T17_SIDE_EFFECT` créée ; helper drop ; **`--no-introspect`** → **table créée à nouveau** (`['T17_SIDE_EFFECT']`, 1 ligne). Cible `broken` : `--no-introspect` seul → code 2 (`290404 (08001): 404 Not Found … login-request`, dbt se connecte quand même pour le cache) ; `--no-populate-cache --no-introspect` → code 0, SQL compilé de `dim_customers` **sans connexion** | **Constat 6 confirmé en brut** : `--no-introspect` n'empêche aucune requête introspective ; c'est `--no-populate-cache` qui évite la connexion (et seulement pour un modèle sans `run_query`). La parade `ro` (`98b483a`) est la bonne |
+| T18 | `materialized='nonsense'` : parse code 0, `compile` code 0 (64 o), **`run` code 1** : `No materialization 'nonsense' was found for adapter snowflake!` ; `materialized='dynamic_table'` : `build` code 0 (`PASS=1`), lecture sous `ro` code 0 | S5 confirmée : seul `run`/`build` détecte ; `dynamic_table` est une matérialisation valide de l'adaptateur (spec §F.3 fait 7) |
+
+### Couverture T0–T21 à l'issue de l'étape
 
 | Tests | État |
 |---|---|
 | T0, T3, T4, T6, T8, T9 (construit et non construit), T13, T15, T17, T19 | **[Observé]** par l'enveloppe (subagent ou CLI, même code) |
-| T5, T7 | Agent-level : le subagent contourne (T5, lecture seule) ou refuse (T7) sans appel ; comportement brut = `t_series.sh` (Greg) |
+| T1, T2, T10, T14, T17, T18 | **[Observé]** en brut (`t_series.sh`, table ci-dessus) |
+| T5, T7 | Agent-level : le subagent contourne (T5, lecture seule) ou refuse (T7) sans appel ; brut déjà **[Observé]** le 2026-10-02 pour T7 (§11) ; T5 brut non lancé (couvert par H5 côté agent et par l'erreur Snowflake « does not exist » que `dbt_show` renverrait) |
 | T16 | **[Observé]** au smoke test de l'étape 2 (§12) |
-| T21 | Partiel (cible `ro`) ; cible `dev` à lire par Greg dans Snowsight |
-| T1, T2, T10, T14, T18 | Bruts, `t_series.sh` à la main de Greg (point F) ; l'enveloppe les couvre par construction (T2 : `;` refusé avant dbt ; T10 : stdout seul ; T18 : `dbt_build` = `run`) |
-| T11, T12 | Mesures (tokens, crédits) — à la main de Greg, hors enveloppe |
+| T21 | Partiel : cible `ro` **[Observé]** (`dbt-agent-ro`) ; cible `dev` à lire par Greg dans Snowsight |
+| T11, T12 | Mesures (tokens, crédits) — à la main de Greg, hors enveloppe, sans verdict attendu |
 | T20 | **Non implémenté** : un schéma par session d'agent (spec §F.3 fait 7) n'est pas dans l'enveloppe — cible `dev` unique, schéma `DEV`. À décider au livrable de fin (candidat : `schema` dérivé d'un identifiant de session via `--vars` ou profil) |
 
 État du testbed après les runs (non commité, à la main de Greg) :
