@@ -196,7 +196,7 @@ class Session:
 
         Requires a parse on the current files.
         """
-        conditions.validate_select(select)
+        select = conditions.validate_select(select)
         self._require_parse_current()
         args = [
             "--select",
@@ -264,6 +264,7 @@ class Session:
         """
         self._require_debug()
         self._require_parse_current()
+        select = conditions.validate_select(select)
         expected = self._require_validated_selection(select)
         previous = _invocation_id(self._read_run_results())
         args = ["--select", select]
@@ -417,7 +418,7 @@ class Session:
         return models[name]
 
     def _require_validated_selection(self, select: str) -> dict[str, str]:
-        conditions.validate_select(select)
+        select = conditions.validate_select(select)
         if select not in self.selections:
             raise RefusalError(
                 f"selection {select!r} was not validated by dbt_ls since the last parse (L2); call dbt_ls with the same select first"

@@ -311,6 +311,23 @@ def test_build_requires_the_exact_validated_selection(
     assert [c for c in fake_run.calls if "build" in c] == []
 
 
+def test_selection_is_normalized_between_ls_and_build(
+    project_dir: Path, fake_run: FakeRun
+) -> None:
+    session = Session(project_dir, fake_run)
+    make_ready(session, fake_run, ls_select=" stg_orders stg_customers ")
+    assert fake_run.argv_for("ls")[fake_run.argv_for("ls").index("--select") + 1] == (
+        "stg_orders stg_customers"
+    )
+    document = run_results({"stg_orders": "success", "stg_customers": "success"})
+    fake_run.script(
+        "build", 0, "", side_effect=lambda: write_run_results(project_dir, document)
+    )
+    assert session.build(" stg_orders stg_customers").ok
+    argv = fake_run.argv_for("build")
+    assert argv[argv.index("--select") + 1] == "stg_orders stg_customers"
+
+
 def test_failed_ls_does_not_validate_anything(
     project_dir: Path, fake_run: FakeRun
 ) -> None:

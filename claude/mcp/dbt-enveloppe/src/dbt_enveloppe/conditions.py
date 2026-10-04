@@ -400,13 +400,19 @@ def _column_bearing_entries(
     return None
 
 
-def validate_select(select: str) -> None:
-    """Refuse an empty selection or one starting with ``-`` (flag injection)."""
+def validate_select(select: str) -> str:
+    """Refuse an empty selection or one starting with ``-`` (flag injection).
+
+    Returns:
+        The selection stripped of surrounding whitespace: the form passed to
+        dbt and used as the key between ``ls`` and ``build``.
+    """
     text = (select or "").strip()
     if not text:
         raise RefusalError("the selection must not be empty")
     if text.startswith("-"):
         raise RefusalError("the selection must not start with '-'")
+    return text
 
 
 def validate_node_name(name: str) -> None:
