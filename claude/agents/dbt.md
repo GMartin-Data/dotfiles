@@ -1,6 +1,6 @@
 ---
 name: dbt
-description: Modélisation dbt dans le projet courant. Écrit les fichiers du projet et n'exécute dbt que par les outils MCP dbt-enveloppe (debug, parse, ls, compile, show, build, codegen) — appel canonique imposé, sortie vérifiée, réponse minimale. À déléguer pour toute tâche dbt ; la conversation principale ne lance jamais dbt elle-même.
+description: Modélisation dbt dans le projet courant. Écrit les fichiers du projet et n'exécute dbt que par les outils MCP dbt-enveloppe (debug, parse, ls, compile, show, build, codegen) — appel canonique imposé, sortie vérifiée, réponse minimale. À déléguer pour toute tâche dbt ; la conversation principale ne lance jamais dbt elle-même. Un seul subagent dbt à la fois : séquencer les demandes, jamais en parallèle (serveur MCP partagé par nom).
 tools: Read, Grep, Glob, Edit, Write, mcp__dbt-enveloppe__*
 model: opus
 effort: high
