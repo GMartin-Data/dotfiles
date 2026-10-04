@@ -15,7 +15,7 @@ Session : 86755d4a-fc5f-4c9d-a934-6c8a09e318d9
 
 1. **Committer ce checkpoint** (`docs(progress)`) puis `git push origin main`.
 2. **À la main de Greg** : `./install.sh` post-merge, puis première tâche déléguée au subagent `dbt` sur un vrai projet (révision de l'effort à ce moment-là).
-3. **Hérité, inchangé** : faiblesses de `block-force-push.sh` et `block-rm-rf.sh` signalées, non corrigées ; event-driven dbt (`dbt_docs_generate`, « modèle construit ou non », T20) ; cycle `/insights` 2026-10-26 et evals Phase 4 — le chantier d'outillage dbt est fermé, à prendre en compte dans le ratio méta/produit.
+3. **Items dormants, event-driven et cycle `/insights` 2026-10-26** : tous dans `tasks/insights-actions.md`, section « Ordre du jour reconduit » (relogés le 2026-10-04 depuis les checkpoints — plus de report par référence ici).
 
 ## Écarts vs PRD
 

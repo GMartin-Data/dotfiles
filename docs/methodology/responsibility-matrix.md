@@ -211,7 +211,7 @@ divergence, la matrice fait foi.
 | Emplacement | Détient | Ne contient JAMAIS |
 |---|---|---|
 | `tasks/lessons-inbox.md` (projet) | Leçons brutes datées en attente de triage ; candidates globales taguées `[CANDIDATE-GLOBAL — eval pending]` | Fiches `[INSIGHTS]`, règles rédigées, leçons archivées |
-| `tasks/insights-actions.md` (projet) | Fiches d'action du cycle /insights, au cycle de vie à date de revue | Leçons brutes, règles |
+| `tasks/insights-actions.md` (projet) | Fiches d'action du cycle /insights, au cycle de vie à date de revue ; ordre du jour reconduit (items dormants, event-driven, revisites — datés, retirés sur verdict) | Leçons brutes, règles, état de session (progress.md) |
 | CLAUDE.md projet, `## Do NOT` | Règles de portée projet, promues sur récurrence (2+ occurrences), format 100 %-accurate | Patterns génériques, règles contournant un artefact fautif |
 | `~/.claude/CLAUDE.md`, `## Global Do NOT` | Règles génériques prouvées par eval avec/sans (cap 20) | Règles sans preuve d'eval, règles contournant un artefact fautif |
 | `tasks/lessons-archive.md` (projet) | Leçons sorties du cycle : uniques expirées, couvertes par une règle existante, routées artefact (trace du routage), candidates recalées (avec preuve) | Contenu encore actif |

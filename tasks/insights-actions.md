@@ -48,6 +48,49 @@ mono-population).
 
 ---
 
+## Ordre du jour reconduit (hors fiches)
+
+Items dormants, event-driven ou reconduits de cycle en cycle. Déplacés ici
+depuis `progress.md` le 2026-10-04 (dernier état complet : checkpoint du
+2026-10-02 13:23, désormais dans `tasks/progress-archive.md`) — `progress.md`
+ne les reporte plus par référence. Chaque item est daté ; en retirer un demande
+un verdict, pas un oubli.
+
+1. **Cycle /insights 2026-10-26** :
+   - revue de la fiche `check-before-delivery` (critère inchangé) ; **si elle
+     valide le levier de forme, reverser la leçon « forme > prohibition »**
+     par `/immunize "<leçon>"` (n = 2) ;
+   - **§6 de la roadmap (hors repo) : passer P4 à « archivé, n = 0 »** ;
+   - option `candide-*` en rubriques binaires (~1,7 $), qui porte seule
+     l'hypothèse non vérifiée « rubriques longues ↔ paire flaky » ; y
+     rattacher le constat « règle 7 présente dans le seul README de
+     `claude-md-skill` » (généraliser ou acter) ;
+   - candidats reconduits inchangés : S1, S6, constats TODO.md 1-3,
+     `dmi: true` (bloqué par R9/R10), Pocock, S10 ;
+   - remesurer le ratio méta/produit — **le chantier d'outillage dbt
+     (2026-10-02 → 04) est fermé**, à prendre en compte.
+2. **R10 à arbitrer avant exécution** (`disallowed-tools` sur `grill` et
+   `code-review` ; toucher `grill.md` pourrait armer R9).
+3. **Chantier evals, Phase 4** (event-driven) : R8 au D5 ; R9 sous-ensembles
+   mono-tour ; R10.
+4. **P5 verification-skills** (dormant) : ne reste que « projet concret à
+   surface lançable » — l'agent dbt en est un candidat.
+5. Event-driven : réponse vide Step 0 ; paire `candide-*` ; diagnosing-bugs ;
+   T2 ; échec de permissions d'un sous-agent d'exploration (`f6285148`) ;
+   P4 se rouvre à la première occurrence observée de name-dropping de
+   principe ; « gel des déclencheurs » passe en promotion projet à une
+   seconde occurrence (formulation dans `tasks/lessons-archive.md`) ;
+   **dbt (2026-10-04)** : 9ᵉ outil `dbt_docs_generate`, exposer « modèle
+   construit ou non », T20 à la première exécution concurrente, révision de
+   l'effort du subagent au premier vrai projet ; faiblesses de
+   `block-force-push.sh` (mot « force » non ancré) et `block-rm-rf.sh`
+   (bloque `rm -f` sur un fichier unique).
+6. Hors repo, à la main de Greg : pin `known-first-party` ; learning record
+   `0004`.
+7. Revisites : Pocock ~2026-11/12 ; pstack ~2026-12/2027-01.
+
+---
+
 ## Métriques de cycle
 
 Ratio méta/produit (P3, défini au cycle 2026-09-26) : part des sessions

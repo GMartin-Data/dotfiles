@@ -51,3 +51,9 @@ deux `## Checkpoint précédent`). Déplace tout ce qui dépasse, tel quel, en t
 de `tasks/progress-archive.md` (sous son en-tête, du plus récent au plus
 ancien ; crée le fichier avec cet en-tête s'il n'existe pas). Jamais de
 résumé ni de réécriture — on coupe, on ne condense pas.
+
+Corollaire : le checkpoint de tête doit se suffire. Un item reconduit se
+**réécrit en entier** ou **pointe vers un fichier durable** (`tasks/*.md`,
+mémoire, plan) — jamais « inchangé » par référence à un checkpoint antérieur,
+qui sortira de la fenêtre. Les items dormants ou event-driven vivent dans
+`tasks/insights-actions.md` (« Ordre du jour reconduit »), pas ici.
