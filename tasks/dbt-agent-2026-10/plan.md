@@ -937,7 +937,12 @@ dbt-core 1.12.5, dbt-snowflake 1.12.1.
 | C | Rôle courant seul (T19) | `debug` → `parse` → `show_inline` | `ROLE_NAME = DBT_AGENT_RO`, `SECONDARY_ROLES = {"roles":"","value":""}` — identique au T19 brut du 2026-10-02 | 0,11 $ |
 | D | Créer `stg_nation` (vue, source `tpch.NATION`, snake_case), construire, aperçu, YAML codegen | `Glob`, `debug`, 3 `Read`, `Grep`, `Write`, `parse` ×2, `ls`, **`build`**, `show`, **`codegen`**, `parse` | Premier `dbt_build` réel : `{"counts":{"success":1},"models":[{"name":"stg_nation","materialized":"view","status":"success"}],"warnings":[]}` ; `dbt_show` 5 lignes ; `dbt_codegen(generate_model_yaml)` **après** le build (G4 respecté) → 383 octets, 4 colonnes typées (`number`, `varchar`) ; `ls` a confirmé `view` héritée du dossier ; **0 refus, 0 reprise forcée** ; fichiers laissés non commités dans le testbed (`stg_nation.sql`, `_stg_nation.yml`) | 0,17 $ |
 
-Coûts rapportés par `claude -p` (session + subagent) : 0,58 $ pour les 4 runs.
+| E | SQL compilé + aperçu de `fct_orders` (T6) ; SQL compilé de `orders_by_status` (T17) | `debug`, `parse`, `ls` (2 noms), `compile`, `show`, `compile` | T6/H3/K4 : SQL compilé **avec** le filtre `is_incremental` (`where order_date > (select max(order_date) from DBT_AGENT_DEV.DEV.fct_orders)`), `materialized: incremental` ; `dbt_show` → `row_count: 0` **avec la note H3 de l'enveloppe** (« 0 rows is expected for a built incremental model… use dbt_compile with full_refresh »), relayée telle quelle par le subagent. **T17/K3 : écart** — `dbt_compile("orders_by_status")` a **réussi** et le `run_query` s'est exécuté (statuts `F`/`O`/`P` dans le SQL ; `logs/dbt.log` 14:16:01 : `introspect: False` dans les arguments **et** `select distinct o_orderstatus from SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.ORDERS` envoyée sur la connexion `list_DBT_AGENT_DEV_DEV`). Voir constat 6 | 0,15 $ |
+
+| F (après `98b483a`, cible `ro`) | Rejeu compile/show de `fct_orders`, compile de `orders_by_status`, compile d'un modèle `run_query` à **effet de bord** (fixture T17 copiée dans `models/_fixture/`), codegen de `stg_nation` vers un 2ᵉ YAML | `debug`, `parse`, `ls` ×4 (en parallèle), `compile`, `show`, `compile(full_refresh)`, `compile` ×2, `show`, `Read` ×2, `build`, `codegen`, `Glob`, `parse` | Sous `ro` : SQL compilé de `fct_orders` et d'`orders_by_status` **identiques** au run E (la lecture `run_query` passe) ; le subagent a de lui-même relancé `compile(full_refresh=true)` pour montrer le SQL sans filtre (suite à la note H3) ; **modèle à effet de bord : refusé** (`Schema 'DBT_AGENT_DEV.T_SCRATCH' does not exist or not authorized`) ; codegen vers `_stg_nation_ro.yml` : **G5 observé en réel** — `dbt parse` échoue (« two schema.yml entries for the same resource named stg_nation »), fichier supprimé par l'enveloppe, `Glob` du subagent confirme l'absence. Voir constats 7 et 8 | 0,25 $ |
+| F bis (CLI de l'enveloppe, même code) | Fixture pointée sur le schéma **existant** `DEV` | `debug`, `parse`, `ls`, `compile`, `show-inline` | `compile` → `003001 (42501): SQL access control error: Insufficient privileges to operate on schema 'DEV'. Your primary role DBT_AGENT_RO must have CREATE TABLE granted on SCHEMA DBT_AGENT_DEV.DEV.` ; puis `select count(*) from information_schema.tables where table_name = 'T17_SIDE_EFFECT'` → **0** : rien n'a été créé. **K3 structurelle [Observé]**. Fixture retirée du projet ensuite | — |
+
+Coûts rapportés par `claude -p` (session + subagent) : 0,98 $ pour les 6 runs.
 
 ### Constats
 
@@ -975,3 +980,38 @@ Coûts rapportés par `claude -p` (session + subagent) : 0,58 $ pour les 4 runs.
    ni reprise ; le compte rendu final est complet mais long (tableau d'aperçu,
    « reste à faire » avec rappel des conventions) — pas un défaut de l'enveloppe.
    Trop tôt pour passer à `medium` : attendre les tests T restants.
+6. **`--no-introspect` n'empêche pas `run_query` sur dbt-core 1.12.5 +
+   dbt-snowflake 1.12.1** (run E, T17). La doc dbt (`reference/commands/compile`,
+   relue via context7 le 2026-10-04) dit « dbt will raise an error if a
+   resource's definition requires running one » ; observé : aucune erreur, la
+   requête part sur une connexion de thread ouverte à la demande. Lecture :
+   sur le banc DuckDB le drapeau « marchait » par effet de bord (pas de
+   connexion maître → `Connection already closed`) ; Snowflake ouvre une
+   connexion par thread et la requête passe. **La garde K3 est donc une
+   consigne, pas un garde-fou** : un modèle au `run_query` à effet de bord
+   (fixture `run_query_side_effect.sql`) écrirait dans l'entrepôt pendant
+   `dbt_compile`, sous la cible `dev`. Parade structurelle candidate (principe
+   3) : exécuter `dbt_compile`, `dbt_show` et `dbt_codegen` sous la cible `ro`
+   — même base, schéma et warehouse que `dev` (profil §5), SQL compilé
+   identique, métadonnées et lectures suffisantes sous `ro` (§11), toute
+   écriture refusée par Snowflake (H7). `dbt_build` reste seul sous `dev`.
+   `--no-introspect` conservé (inoffensif, saute la population du cache).
+   **Décision Greg (2026-10-04) : fait**, `98b483a` — test-first (3 tests
+   rouges validés, 205 verts), docstrings, table règle → outil de `dbt.md` ;
+   vérifié en réel (runs F et F bis). Écart à reporter dans la spec au
+   livrable de fin : K3 n'est plus « `--no-introspect` » mais « cible `ro` »,
+   et `show`/`codegen` quittent le « schéma de dev » de la lettre de H1/G1
+   (même schéma, rôle différent).
+7. **Le rapport final du subagent n'est pas un événement texte `SUB`** : en
+   `-p`, il arrive dans le `task_notification` et dans le `tool_result` de
+   hand-back (encadré « [Subagent hand-back] … model output, NOT a message
+   from the user »). Le lecteur `read_subagent.sh` ne le voit pas ; lire aussi
+   `select(.subtype=="task_notification")`.
+8. **Le subagent rebâtit avant codegen quand il ne peut pas savoir si le
+   modèle est construit** (run F : `dbt_build("stg_nation")` avant
+   `generate_model_yaml`, en invoquant G4). Sur une vue c'est gratuit ; sur
+   une grosse table ce serait un rebuild inutile. L'enveloppe n'expose pas
+   « construit ou non » — candidat event-driven, pas construit.
+9. **Appels parallèles au sein du subagent** : 4 `dbt_ls` simultanés (run F)
+   sur le même serveur — sans incident (appels sérialisés par le verrou du
+   serveur).
