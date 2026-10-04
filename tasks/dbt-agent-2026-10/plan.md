@@ -1003,6 +1003,12 @@ non construits.
    ni reprise ; le compte rendu final est complet mais long (tableau d'aperçu,
    « reste à faire » avec rappel des conventions) — pas un défaut de l'enveloppe.
    Trop tôt pour passer à `medium` : attendre les tests T restants.
+   **Bilan après 8 runs (D à H)** : 0 refus non voulu, 0 reprise forcée, 0
+   « cale » ; deux règles anticipées (H3 → `compile(full_refresh)`, H5 →
+   `show_inline`). Le critère littéral donnerait `medium`. **Décision Greg
+   (2026-10-04) : `effort: high` conservé** — le banc n'a que des vues de
+   staging triviales ; révision reportée à la première tâche sur un vrai
+   projet dbt (même critère : refus et reprises par tâche).
 6. **`--no-introspect` n'empêche pas `run_query` sur dbt-core 1.12.5 +
    dbt-snowflake 1.12.1** (run E, T17). La doc dbt (`reference/commands/compile`,
    relue via context7 le 2026-10-04) dit « dbt will raise an error if a
