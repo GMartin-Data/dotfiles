@@ -7,6 +7,8 @@ appended by the envelope (plan §3). Arguments are passed as a list.
 
 from __future__ import annotations
 
+import os
+import signal
 import subprocess
 import time
 from collections.abc import Mapping, Sequence
@@ -102,35 +104,39 @@ def dbt_argv(
 def run(argv: Sequence[str], cwd: Path, timeout_s: float = DEFAULT_TIMEOUT_S) -> Result:
     """Run ``argv`` without a shell, stdin closed, and capture everything.
 
-    A timeout kills the process and yields a ``Result`` with
-    ``timed_out=True`` instead of raising.
+    A timeout kills the whole process group (``uv run`` forks dbt, which
+    would otherwise keep running on the warehouse) and yields a ``Result``
+    with ``timed_out=True`` instead of raising.
     """
     start = time.monotonic()
-    try:
-        completed = subprocess.run(
-            list(argv),
-            cwd=cwd,
-            stdin=subprocess.DEVNULL,
-            capture_output=True,
-            text=True,
-            timeout=timeout_s,
-            check=False,
-        )
-    except subprocess.TimeoutExpired as exc:
-        # On POSIX the partial output carried by the exception is bytes even in text mode.
-        return Result(
-            tuple(argv),
-            None,
-            _as_text(exc.stdout),
-            _as_text(exc.stderr),
-            time.monotonic() - start,
-            timed_out=True,
-        )
+    with subprocess.Popen(
+        list(argv),
+        cwd=cwd,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    ) as proc:
+        try:
+            stdout, stderr = proc.communicate(timeout=timeout_s)
+        except subprocess.TimeoutExpired as exc:
+            os.killpg(proc.pid, signal.SIGKILL)
+            proc.wait()
+            # On POSIX the partial output carried by the exception is bytes even in text mode.
+            return Result(
+                tuple(argv),
+                None,
+                _as_text(exc.stdout),
+                _as_text(exc.stderr),
+                time.monotonic() - start,
+                timed_out=True,
+            )
     return Result(
         tuple(argv),
-        completed.returncode,
-        completed.stdout,
-        completed.stderr,
+        proc.returncode,
+        stdout,
+        stderr,
         time.monotonic() - start,
     )
 

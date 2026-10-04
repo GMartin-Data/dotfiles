@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 
 import pytest
@@ -79,6 +80,16 @@ def test_run_times_out_without_raising(tmp_path: Path) -> None:
     assert result.timed_out
     assert result.returncode is None
     assert result.duration_s < 3
+
+
+def test_run_timeout_kills_the_grandchild_too(tmp_path: Path) -> None:
+    """`uv run` forks dbt: killing uv alone would leave dbt running on the warehouse."""
+    marker = tmp_path / "survived"
+    script = f"sh -c 'sleep 1; touch {marker}'; true"
+    result = run(["sh", "-c", script], cwd=tmp_path, timeout_s=0.3)
+    assert result.timed_out
+    time.sleep(1.5)
+    assert not marker.exists()
 
 
 def test_run_uses_cwd_and_closes_stdin(tmp_path: Path) -> None:
