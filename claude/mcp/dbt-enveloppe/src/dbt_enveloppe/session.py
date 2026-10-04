@@ -308,11 +308,13 @@ class Session:
         checked = conditions.check_codegen_output(macro, content)
         if not checked.ok:
             return checked
+        created_root = _first_missing_ancestor(target.parent)
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content)
         parsed = self.parse()
         if not parsed.ok:
             target.unlink()
+            _remove_empty_dirs(target.parent, up_to=created_root)
             return Outcome(
                 False,
                 error=f"dbt parse failed after writing {output_path}; file removed (G5): {parsed.error}",
@@ -435,6 +437,29 @@ class Session:
         except (OSError, ValueError):
             return None
         return document if isinstance(document, dict) else None
+
+
+def _first_missing_ancestor(directory: Path) -> Path | None:
+    """The topmost directory ``mkdir(parents=True)`` would create, if any."""
+    missing = None
+    while not directory.exists():
+        missing = directory
+        directory = directory.parent
+    return missing
+
+
+def _remove_empty_dirs(directory: Path, up_to: Path | None) -> None:
+    """Remove ``directory`` and its parents up to ``up_to`` while they are empty."""
+    if up_to is None:
+        return
+    while True:
+        try:
+            directory.rmdir()
+        except OSError:
+            return
+        if directory == up_to:
+            return
+        directory = directory.parent
 
 
 def _invocation_id(run_results: Mapping[str, Any] | None) -> str | None:

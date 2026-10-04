@@ -428,6 +428,24 @@ def test_codegen_removes_the_file_when_the_parse_fails(
     assert not (project_dir / "models" / "dim_customers.yml").exists()
 
 
+def test_codegen_removes_the_directories_it_created_when_the_parse_fails(
+    project_dir: Path, fake_run: FakeRun
+) -> None:
+    session = Session(project_dir, fake_run)
+    make_ready(session, fake_run)
+    (project_dir / "models" / "staging").mkdir()
+    fake_run.script("run-operation", 0, MODEL_YAML_DIM_CUSTOMERS)
+    fake_run.script("parse", 2, "Compilation Error\n")
+    outcome = session.codegen(
+        "generate_model_yaml",
+        {"model_names": ["dim_customers"]},
+        "models/staging/new_source/sub/_src.yml",
+    )
+    assert not outcome.ok
+    assert not (project_dir / "models" / "staging" / "new_source").exists()
+    assert (project_dir / "models" / "staging").is_dir()
+
+
 def test_codegen_removes_the_file_when_columns_are_empty(
     project_dir: Path, fake_run: FakeRun
 ) -> None:
