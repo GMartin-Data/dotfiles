@@ -6,6 +6,7 @@ Session : 86755d4a-fc5f-4c9d-a934-6c8a09e318d9
 
 - **`progress.md` mis sous fenêtre glissante** (`df497e4`, poussé) : mesuré 4 361 lignes pour 22 checkpoints **tous depuis le 2026-09-02** (~200 lignes chacun — il n'y avait rien d'« antérieur à septembre » à archiver), tronqué au `/catchup` par le plafond de 25k tokens du Read, en plein milieu d'un checkpoint. Coupe : `progress.md` → 132 lignes (3 checkpoints), 19 checkpoints déplacés tels quels dans `tasks/progress-archive.md` (en-tête : jamais lu au `/catchup`). Règle ajoutée à `claude/commands/progress.md` (symlinké, actif) : après écriture, déplacer le surplus en tête de l'archive, sans condenser ; README mis à jour.
 - Checkpoint précédent (17:02) commité et poussé (`327f1ef`).
+- **Perte de disponibilité révélée par la fenêtre, corrigée** (`aa3dc22`) : les items reconduits « inchangés » pointaient vers un checkpoint sorti de la fenêtre. Relogés dans `tasks/insights-actions.md` « Ordre du jour reconduit » (cellule de la matrice alignée) ; règle dans `/progress` : checkpoint de tête auto-suffisant, jamais de report par référence. Fenêtre maintenue à 3 (plafond utile = 5, le Read tronque à 25k tokens ; 3 ≈ 15k par reprise).
 
 ## En cours
 
