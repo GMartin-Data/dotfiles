@@ -18,3 +18,10 @@
 - **Brancher reste possible ad hoc** pour un changement réellement risqué
   (expérimentation pouvant casser le shell, migration de structure) — au cas par
   cas, à l'initiative de l'humain, jamais imposé par défaut.
+
+## Langue — exemption `install.sh`
+
+- **`install.sh` reste en français** (commentaires et messages utilisateur) :
+  convention historique du fichier, dérogation à la règle globale « code et
+  commentaires en anglais ». Les sources de `claude/hooks/` et `claude/mcp/`
+  (bash, Python, tests) restent en anglais.
