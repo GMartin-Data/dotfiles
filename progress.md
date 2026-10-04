@@ -1,5 +1,49 @@
 ## Dernière mise à jour
-Date : 2026-10-03 11:15
+Date : 2026-10-04 09:15
+Session : 32880c42-60d4-4ce8-8295-bae07eb68376
+
+## Tâches complétées
+
+- **Étape 4 du plan dbt agent exécutée — subagent `dbt` livré, 147 tests verts** (`feat/dbt-agent`, 6 commits non poussés) :
+  1. **`claude/agents/dbt.md` livré** (`2e7aba7`) : frontmatter du §1.4 (`mcpServers` inline via `sh -c`), `tools: Read, Grep, Glob, Edit, Write, mcp__dbt-enveloppe__*` (pas de Bash), corps = socle + 7 sections + schéma IV §1 + liste IV §4 copiés tels quels depuis la spec, table « règle → outil MCP ». Test-first : `tests/test_agent_sync.py` (11 tests de non-dérive spec → agent) écrit et rouge (fichier absent) avant l'agent, vert après.
+  2. **`install.sh` étendu** (`36ba9e3`) : liens `agents/dbt.md` et `mcp/dbt-enveloppe`, contrôle `uv`, `uv sync --frozen` du serveur (sans lequel `--no-sync` au démarrage de l'agent échouerait silencieusement).
+  3. **`claude/settings.json`** (`0c619ed`) : `permissions.allow` sur `mcp__dbt-enveloppe__dbt_parse` et `dbt_ls` (point D du plan, palier A hors ligne) ; les autres outils gardent le prompt.
+  4. **`claude/README.md`** (`4158276`) : agent et serveur MCP documentés (tableau des composants, inventaire, convention de symlink).
+  5. **Plan §14 consigné** (`6635b39`), puis **`model: opus` et `effort: high` fixés** (`ca883a7`, décision Greg du jour, doc `model-config` relue) : l'alias `opus` suit la dernière Opus (5.5 à ce jour) — le garde-fou est structurel (enveloppe), pas dans le modèle ; `effort` explicite parce que le défaut d'Opus 5.5 est `medium` et que la clé `effortLevel` top-level des settings ne s'applique pas à ce modèle. Pas de réglage thinking par subagent (hérite de la session, doc confirmée).
+  6. **Vérifications réelles par `claude -p`** (Haiku, depuis `~/dbt-agent-testbed/`) : l'agent réel ne liste que `Read, Edit, Write, Grep, Glob` + 8 `mcp__dbt-enveloppe__dbt_*`, aucun Bash **[Observé]**. Points 1, 2, 4, 6, 8 du plan §6 tous **[Observé]** : `${HOME}` non expansé sans `sh -c` (essai contrôlé, agent temporaire supprimé après lecture) ; `CLAUDE_PROJECT_DIR` posé dans un serveur inline de subagent ; agent listé dans `init.agents` ; règle `allow` appliquée sur un serveur inline (`dbt_parse` sans prompt, `dbt_debug` refusé) ; aucun dialogue de confiance en scope user.
+  7. **Deux constats nouveaux pour la suite** : un agent dont `tools` ne contient que `mcp__<inline>__*` est refusé au spawn (« zero tools ») — au moins un outil natif requis ; vu du plugin d'eval, `mcpServers` inline est ignoré (sans effet en session, plugin non installé).
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (10 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §14) avant toute action.
+3. **Étape 5 du plan** : règle `"Bash(dbt *)"` dans `permissions.deny`, hook `block-dbt.sh` sur le modèle de `block-rm-rf.sh` (sans champ `if`, lanceurs `uv run`/`uvx`/`python -m`/`sh -c`, chemin finissant par `/dbt`), tests du hook (table « doit bloquer / doit passer »), lien dans `install.sh`. Vérification : `dbt`, `uv run dbt`, `python -m dbt`, chemin absolu bloqués ; `dbt-enveloppe` et un message de commit contenant « dbt » passent. Point 5 du §6 à observer (règles `deny` appliquées dans un subagent disposant de Bash). **Arrêt pour validation** en fin d'étape.
+4. **Étape 6** (plan §8) : rejeu T0, T3, T7, T13, T19 puis le reste de T1–T21 par le subagent réel ; **critère de révision de l'effort** posé ce jour — passer à `xhigh` si l'agent cale sur la modélisation, à `medium` s'il ne cale jamais ; `/code-review` avant la PR.
+5. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins.
+6. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **`model: opus`, alias plutôt qu'ID figé** : suit la dernière version Opus ; le garde-fou étant structurel (enveloppe), pas de besoin de figer un ID pour la reproductibilité.
+  - **`effort: high`** comme point de départ, pas un plafond (`xhigh`/`max` existent) — critère de révision fixé à l'étape 6 (refus/reprises par tâche).
+  - **Agent d'essai `${HOME}` sans `sh -c`** créé hors dotfiles pour le point 1 du §6, lu puis supprimé — non conservé comme artefact.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-03 11:15
 Session : 6b9daf61-b602-4419-8c8e-4899b379b546
 
 ## Tâches complétées
