@@ -20,7 +20,7 @@ Session : 457625a3-c2c2-47f5-a0af-bf3ed90e991c
 
 ## Prochaines étapes
 
-1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (12 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (3 commits d'avance sur `origin` après ce commit — `6199e6a`, `1d0b79e`, checkpoint — à pousser à la main de Greg).
 2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §15) avant toute action.
 3. **À la main de Greg, avant l'étape 6** : observer le point 9 du §6 en session interactive — `! uv run dbt --version` doit s'exécuter ; demander ensuite à Claude de lancer la même commande doit produire le `BLOCKED`.
 4. **Étape 6 du plan** (plan §8) : rejeu T0, T3, T7, T13, T19 puis le reste de T1–T21 par le subagent réel ; lire les événements `parent_tool_use_id` du flux `stream-json`, pas le résumé (constat étape 4) ; critère de révision de l'effort posé à l'étape 4 (`xhigh` si l'agent cale, `medium` s'il ne cale jamais) ; `/code-review` avant la PR.
