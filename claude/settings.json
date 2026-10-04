@@ -1,6 +1,10 @@
 {
   "syncClaudeAiSkills": false,
   "permissions": {
+    "allow": [
+      "mcp__dbt-enveloppe__dbt_parse",
+      "mcp__dbt-enveloppe__dbt_ls"
+    ],
     "deny": [
       "Read(**/.venv/**)",
       "Edit(**/.venv/**)",
