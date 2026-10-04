@@ -942,7 +942,30 @@ dbt-core 1.12.5, dbt-snowflake 1.12.1.
 | F (après `98b483a`, cible `ro`) | Rejeu compile/show de `fct_orders`, compile de `orders_by_status`, compile d'un modèle `run_query` à **effet de bord** (fixture T17 copiée dans `models/_fixture/`), codegen de `stg_nation` vers un 2ᵉ YAML | `debug`, `parse`, `ls` ×4 (en parallèle), `compile`, `show`, `compile(full_refresh)`, `compile` ×2, `show`, `Read` ×2, `build`, `codegen`, `Glob`, `parse` | Sous `ro` : SQL compilé de `fct_orders` et d'`orders_by_status` **identiques** au run E (la lecture `run_query` passe) ; le subagent a de lui-même relancé `compile(full_refresh=true)` pour montrer le SQL sans filtre (suite à la note H3) ; **modèle à effet de bord : refusé** (`Schema 'DBT_AGENT_DEV.T_SCRATCH' does not exist or not authorized`) ; codegen vers `_stg_nation_ro.yml` : **G5 observé en réel** — `dbt parse` échoue (« two schema.yml entries for the same resource named stg_nation »), fichier supprimé par l'enveloppe, `Glob` du subagent confirme l'absence. Voir constats 7 et 8 | 0,25 $ |
 | F bis (CLI de l'enveloppe, même code) | Fixture pointée sur le schéma **existant** `DEV` | `debug`, `parse`, `ls`, `compile`, `show-inline` | `compile` → `003001 (42501): SQL access control error: Insufficient privileges to operate on schema 'DEV'. Your primary role DBT_AGENT_RO must have CREATE TABLE granted on SCHEMA DBT_AGENT_DEV.DEV.` ; puis `select count(*) from information_schema.tables where table_name = 'T17_SIDE_EFFECT'` → **0** : rien n'a été créé. **K3 structurelle [Observé]**. Fixture retirée du projet ensuite | — |
 
-Coûts rapportés par `claude -p` (session + subagent) : 0,98 $ pour les 6 runs.
+| G | Construire tout `tag:nightly` tests compris (T4) ; `generate_source` sur `REGION`, `PART` de `TPCH_SF1` en majuscules (T8) | `debug`, `Grep`, `Read`, `parse`, `Glob`, `ls`, **`build`**, `Glob`, `codegen`, `Read` | T4/L1–L4 : liste attendue **déduite par le subagent** (`+tags: [nightly]` sur le dossier `staging` dans `dbt_project.yml` + `Glob` des `.sql`) → `dbt_ls("tag:nightly", expected=[stg_orders, stg_customers, stg_nation])` conforme ; `dbt_build("tag:nightly")` → `{"success":3,"pass":3}`, `warnings: []` (3 vues + 3 tests). T8/G2 : `generate_source(schema_name=TPCH_SF1, database_name=SNOWFLAKE_SAMPLE_DATA, table_names=[REGION, PART])` → 859 octets, **12 colonnes**, **tout en minuscules** (source `tpch_sf1`, tables `region`/`part`, colonnes `r_regionkey`…, types `number`/`varchar`) — exploitable tel quel sur Snowflake (identifiants non cités insensibles à la casse). Hypothèse §E levée. 0 refus | 0,20 $ |
+| H | Créer `stg_region` (source `tpch_sf1.region`) et `dim_region` (table, jointure) ; **« ne construis rien »** ; aperçu de `dim_region` (T5) ; YAML de `stg_region` par codegen (T9 non construit) | `Glob`, `Read` ×5, `Glob`, `Read`, `Write` ×2, `debug`, `parse`, `ls` (3 noms), `compile` ×3, `show_inline` | T5/H5 : le subagent **n'a pas appelé `dbt_show("dim_region")`** — il a anticipé l'échec (amont `stg_region` non construit) et recomposé l'aperçu en `show_inline` lecture seule à partir du SQL compilé des deux amonts, en l'expliquant (5 lignes correctes). Il a supposé à tort que `stg_nation` n'existait pas non plus (construit aux runs D, F, G) : il **ne peut pas savoir ce qui est construit** (constat 8, 2ᵉ occurrence, sens inverse). T9/G4 : **codegen non lancé** sur le modèle non construit, consigne « ne rien construire » respectée, arbitrage demandé (construire `stg_region` seul, ou YAML à la main). Remarque adjacente signalée sans correction : `dim_customers` lit `source('tpch','NATION')` au lieu de `ref('stg_nation')`. 0 refus de l'enveloppe | 0,18 $ |
+| H bis (CLI) | `generate_model_yaml` sur `stg_region` **non construit** | `parse`, `ls`, `codegen` | `{"ok": false, "error": "generate_model_yaml: 'stg_region' has no columns; build the model first (G4, G5)"}`, code 2, **aucun fichier laissé** (`_stg_region.yml` absent). **G4/G5 [Observé]** sur Snowflake | — |
+| T21 (CLI, partiel) | `query_history` des 3 dernières heures vue par `ro` | `show_inline` | 44 requêtes, toutes `QUERY_TAG = dbt-agent-ro`, `USER_NAME = DBT_AGENT_RO_USER`. Les requêtes `dev` (autre utilisateur, tag `dbt-agent`) ne sont pas visibles au rôle `ro` : à confirmer par Greg dans Snowsight | — |
+
+Coûts rapportés par `claude -p` (session + subagent) : 1,36 $ pour les 8 runs.
+
+### Couverture T0–T21 à l'issue des runs
+
+| Tests | État |
+|---|---|
+| T0, T3, T4, T6, T8, T9 (construit et non construit), T13, T15, T17, T19 | **[Observé]** par l'enveloppe (subagent ou CLI, même code) |
+| T5, T7 | Agent-level : le subagent contourne (T5, lecture seule) ou refuse (T7) sans appel ; comportement brut = `t_series.sh` (Greg) |
+| T16 | **[Observé]** au smoke test de l'étape 2 (§12) |
+| T21 | Partiel (cible `ro`) ; cible `dev` à lire par Greg dans Snowsight |
+| T1, T2, T10, T14, T18 | Bruts, `t_series.sh` à la main de Greg (point F) ; l'enveloppe les couvre par construction (T2 : `;` refusé avant dbt ; T10 : stdout seul ; T18 : `dbt_build` = `run`) |
+| T11, T12 | Mesures (tokens, crédits) — à la main de Greg, hors enveloppe |
+| T20 | **Non implémenté** : un schéma par session d'agent (spec §F.3 fait 7) n'est pas dans l'enveloppe — cible `dev` unique, schéma `DEV`. À décider au livrable de fin (candidat : `schema` dérivé d'un identifiant de session via `--vars` ou profil) |
+
+État du testbed après les runs (non commité, à la main de Greg) :
+`models/staging/stg_nation.sql`, `_stg_nation.yml`, `_tpch_extra__sources.yml`,
+`stg_region.sql`, `models/marts/dim_region.sql` ; vues `stg_nation` (×3
+builds) construites dans `DBT_AGENT_DEV.DEV` ; `stg_region` et `dim_region`
+non construits.
 
 ### Constats
 
