@@ -107,17 +107,24 @@ def run(argv: Sequence[str], cwd: Path, timeout_s: float = DEFAULT_TIMEOUT_S) ->
     A timeout kills the whole process group (``uv run`` forks dbt, which
     would otherwise keep running on the warehouse) and yields a ``Result``
     with ``timed_out=True`` instead of raising.
+
+    Raises:
+        RefusalError: If the launcher itself cannot be started.
     """
     start = time.monotonic()
-    with subprocess.Popen(
-        list(argv),
-        cwd=cwd,
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        start_new_session=True,
-    ) as proc:
+    try:
+        proc = subprocess.Popen(
+            list(argv),
+            cwd=cwd,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            start_new_session=True,
+        )
+    except OSError as exc:
+        raise RefusalError(f"cannot start {argv[0]}: {exc}") from exc
+    with proc:
         try:
             stdout, stderr = proc.communicate(timeout=timeout_s)
         except subprocess.TimeoutExpired as exc:

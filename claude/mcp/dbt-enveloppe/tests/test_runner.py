@@ -92,6 +92,11 @@ def test_run_timeout_kills_the_grandchild_too(tmp_path: Path) -> None:
     assert not marker.exists()
 
 
+def test_run_refuses_when_the_launcher_cannot_start(tmp_path: Path) -> None:
+    with pytest.raises(RefusalError, match="no-such-launcher"):
+        run(["no-such-launcher", "run", "dbt"], cwd=tmp_path)
+
+
 def test_run_uses_cwd_and_closes_stdin(tmp_path: Path) -> None:
     result = run(["sh", "-c", "pwd; cat"], cwd=tmp_path, timeout_s=5)
     assert result.stdout.strip() == str(tmp_path.resolve())
