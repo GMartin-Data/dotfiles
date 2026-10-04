@@ -54,6 +54,8 @@ MUST_BLOCK = [
     "cd proj && 2>&1 dbt run",
     "2>/dev/null dbt run",
     "> build.log dbt run",
+    "uv run pytest && dbt build",
+    "uv run pytest -k dbt; dbt build",
 ]
 
 MUST_PASS = [
@@ -83,6 +85,11 @@ MUST_PASS = [
     'echo "dbt build"',
     "cd ~/dbt-agent-testbed",
     "python -c \"print('hello')\"",
+    "uv run pytest -k dbt",
+    'uv run pytest -k "dbt and hook"',
+    "uv run mypy dbt",
+    "uv run --no-sync ruff check dbt",
+    "uv run pre-commit run --files dbt",
     "if grep -q dbt README.md; then echo yes; fi",
     "for f in dbt_project.yml; do cat $f; done",
     "! grep -q dbt_packages .gitignore",

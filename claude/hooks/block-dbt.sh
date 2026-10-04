@@ -10,7 +10,8 @@
 # separators, but `$(` and backticks still open a segment inside double quotes.
 # Behind a launcher (uv, python, sh, timeout, …) every remaining token is
 # inspected, because launcher options cannot be told apart from the command
-# they launch — fail-closed. Heredoc bodies fed to an ordinary command (cat,
+# they launch — fail-closed, except once a program that cannot run dbt
+# (pytest, ruff, …) is reached. Heredoc bodies fed to an ordinary command (cat,
 # git, tee) are skipped; fed to a launcher (`bash <<EOF`) they stay inspected.
 set -euo pipefail
 
@@ -24,6 +25,8 @@ verdict=$(printf '%s\n' "$COMMAND" | awk '
         for (k in l) LAUNCHERS[l[k]] = 1
         split("if then else elif do while until !", l, " ")
         for (k in l) KEYWORDS[l[k]] = 1
+        split("pytest mypy ruff pyright pre-commit", l, " ")
+        for (k in l) INERT[l[k]] = 1
         split("", seg)
         skip = ""; inspect = 0
     }
@@ -72,6 +75,7 @@ verdict=$(printf '%s\n' "$COMMAND" | awk '
             if (dbtish(t, launch)) block()
             if (is_launcher(t)) { launch = 1; bare = 1; continue }
             if (!launch) break                                       # ordinary command: arguments are data
+            if (t in INERT) { bare = 0; break }                      # `uv run pytest -k dbt`: cannot run dbt
             if (t !~ /^-/) bare = 0
         }
         d = heredoc_delim(seg)
