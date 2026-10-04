@@ -765,8 +765,18 @@ déjà configurés — celle du §1.4.
   `parent_tool_use_id` (texte et appels du subagent), pas le résumé final.
 - **Le subagent part en arrière-plan même en `-p`** (« Async agent launched
   successfully ») ; la session attend sa fin avant de répondre.
-- `model` non fixé dans le frontmatter (hérite de la session) ; la
-  `description` coûte ~130 tok dans chaque session — à raccourcir si besoin.
+- **`model: opus` et `effort: high` fixés** (décision Greg, 2026-10-04, doc
+  `model-config` relue) : l'alias `opus` suit la dernière Opus (5.5 à ce
+  jour, 4 $/20 $ par MTok contre 10 $/50 $ pour Fable 5.1) — le garde-fou est
+  dans l'enveloppe, pas dans le modèle. L'effort est explicite parce que le
+  défaut d'Opus 5.5 est `medium` et que la clé `effortLevel` top-level des
+  settings ne s'applique pas à ce modèle : sans le champ, le niveau hérité
+  serait indéterminé. `high` est un point de départ, pas un plafond
+  (`xhigh`, `max` existent) ; **critère de révision à l'étape 6** : refus de
+  l'enveloppe et reprises par tâche — `xhigh` si l'agent cale sur la
+  modélisation, `medium` s'il ne cale jamais. Pas de réglage thinking par
+  subagent (hérite de la session, doc `sub-agents`).
+- La `description` coûte ~130 tok dans chaque session — à raccourcir si besoin.
 - Coût des trois appels `claude -p` : 0,049 + 0,019 + 0,027 ≈ 0,10 $.
 
 ### Pour l'étape 5
