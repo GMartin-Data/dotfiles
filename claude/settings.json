@@ -1,7 +1,12 @@
 {
   "syncClaudeAiSkills": false,
   "permissions": {
+    "allow": [
+      "mcp__dbt-enveloppe__dbt_parse",
+      "mcp__dbt-enveloppe__dbt_ls"
+    ],
     "deny": [
+      "Bash(dbt *)",
       "Read(**/.venv/**)",
       "Edit(**/.venv/**)",
       "Read(**/.env)",
@@ -31,6 +36,15 @@
             "type": "command",
             "command": "~/.claude/hooks/block-rm-rf.sh",
             "if": "Bash(rm *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/block-dbt.sh"
           }
         ]
       },

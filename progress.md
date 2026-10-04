@@ -1,5 +1,347 @@
 ## Dernière mise à jour
-Date : 2026-10-02 13:23
+Date : 2026-10-04 15:34
+Session : a9402681-d49d-4e6e-bbaf-04b0771d3cfc
+
+## Tâches complétées
+
+- **Étape 6 du plan dbt agent close — rejeu T0–T21 par le subagent réel, livrable écrit, branche poussée** (`feat/dbt-agent`, 14 commits poussés `d3aaf94..62ee6f1`, 0 d'avance) :
+  1. **8 runs du subagent réel** (`claude -p` stream-json, Haiku en session principale, subagent `claude-opus-5-5`, 1,36 $) depuis le testbed ; lecture des événements `parent_tool_use_id` + `task_notification`. Boucle complète écrire → `parse` → `ls` → `build` → `show` → `codegen` sans refus non voulu ; refus de l'enveloppe (G4, G5, P1, H7) lus et respectés ; deux règles anticipées par l'agent (H3, H5). Lanceur et transcripts : `~/dbt-agent-testbed-results/step6/` (hors du projet dbt).
+  2. **Trois décisions Greg, une par tour, toutes exécutées** : (a) subagents `dbt` concurrents interdits par la `description` — Claude Code tue le serveur inline partagé par nom quand l'un finit (`c7d8adb`) ; (b) empreinte de fichiers large conservée, contrat écrit au README ; (c) **`compile`/`show`/`codegen` passés sous la cible `ro`** (`98b483a`, test-first 3 rouges → 205 verts) parce que `--no-introspect` n'empêche pas `run_query` sur dbt-snowflake — garde K3 devenue structurelle, prouvée (`Insufficient privileges`, 0 table créée).
+  3. **Point 9 du §6 [Observé]** : `! uv run … dbt --version` passe, la même commande par mon Bash est `BLOCKED`.
+  4. **Tests bruts T1, T2, T10, T14, T17, T18 lancés par Greg** (`t_series.sh`), lus et étiquetés ; T21 [Observé] sur `dev` (Snowsight, 15 requêtes `dbt-agent`) et `ro` (44 `dbt-agent-ro`). T11/T12 actés hors périmètre ; T20 non implémenté, noté.
+  5. **`effort: high` conservé** (décision Greg) malgré 0 « cale » sur 8 runs : banc trivial, révision au premier vrai projet.
+  6. **Livrable de fin écrit** (`tasks/dbt-agent-2026-10/livrable.md`, brief §6) : fonctionne / écarté / 9 écarts à reporter dans la spec / table T0–T21 / usage / suites. Plan §16 complet, statut en tête à jour. README : paragraphe « Désinstaller l'agent dbt » (`62ee6f1`).
+  7. **Testbed** : 5 modèles écrits par le subagent commités (`0434792`, dépôt local sans remote).
+
+## En cours
+
+- Rien — ce checkpoint à committer puis pousser (1 commit).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis `git push origin feat/dbt-agent`.
+2. **`/clear` → `/catchup` → `/code-review` sur le diff `feat/dbt-agent` → `main`, session dédiée** (décision Greg : la revue a sa propre session). Effort `high` au moins ; zones sensibles : `block-dbt.sh` (découpeur awk), `session.py`, `conditions.py`. Triage des findings un par tour, puis **PR** — merge commit (pas squash, pas rebase) pour que le rollback tienne en un `git revert -m 1`.
+3. **Après merge, hors chantier** : archiver les checkpoints antérieurs à septembre de `progress.md` (4 275 lignes, ~108k tokens, tronqué au `/catchup`) ; signaler sans corriger : faiblesses de `block-force-push.sh` et `block-rm-rf.sh` (plan §15).
+4. **Event-driven, non planifié** : 9ᵉ outil `dbt_docs_generate` ; exposer « modèle construit ou non » (constat 8) ; T20 à la première exécution concurrente ; révision de l'effort au premier vrai projet.
+5. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles). Écarts avec la spec dbt : listés au livrable §3, à reporter dans `spec.md` au besoin.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Un seul subagent `dbt` à la fois** (phrase dans la `description`).
+  - **Empreinte large conservée** plutôt que restreinte aux chemins dbt.
+  - **Lecture sous `ro`, écriture sous `dev`** : `compile`, `show`, `codegen` rejoignent `show_inline` ; seul `build` reste sur `dev`.
+  - **`effort: high` conservé**, révision reportée au premier vrai projet.
+  - **T11/T12 actés hors périmètre** ; fichiers du subagent **commités dans le testbed**.
+  - **Session dédiée au `/code-review`**, après push et checkpoint ; paragraphe de désinstallation écrit avant la revue (insensible à ses findings, et revu avec le reste).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-04 10:30
+Session : 457625a3-c2c2-47f5-a0af-bf3ed90e991c
+
+## Tâches complétées
+
+- **Étape 5 du plan dbt agent exécutée — hook `block-dbt.sh`, 205 tests verts** (`feat/dbt-agent`, 2 commits non poussés) :
+  1. **Clarification préalable actée** (décision Greg) : bloquer dbt au niveau Bash ne touche que l'outil Bash de Claude Code — ni le terminal de Greg, ni le serveur MCP (sous-processus Python, pas l'outil Bash), ni les commandes préfixées `!` (**[Inféré]**, non observé en session non interactive). `dbt docs generate` (absent des 8 outils du serveur, **[Observé]** par lecture de `server.py`) reste manuel, comme `deps`, `seed`, `snapshot`, `source freshness`, `test` seul, `clean` — un 9ᵉ outil `dbt_docs_generate` est noté candidat event-driven, pas construit.
+  2. **Table de tests écrite avant le hook** (`test_block_dbt_hook.py`, test-first) : rouge à 49 cas (hook absent) ; choix de conception validés par Greg avant écriture (position de commande, tous les jetons derrière un lanceur fail-closed, option B pour les heredocs avec 3 cas dédiés demandés par Greg).
+  3. **`claude/hooks/block-dbt.sh` livré** : hook `PreToolUse` sur tout Bash, **sans champ `if`** (couvre `uv run dbt`, `python -m dbt`, `sh -c`, chemins absolus) ; `"Bash(dbt *)"` ajouté à `permissions.deny` en doublon ; lien dans `install.sh` ; entrée dans `claude/README.md`.
+  4. **Faux positif réel rencontré et corrigé en cours de route** : un `grep "block-rm-rf\|hooks/\|dbt"` lancé par Claude a été bloqué (l'alternative `\|dbt` du motif lue comme un segment commençant par `dbt`). Découpage réécrit pour être conscient des guillemets (`$(` et `` ` `` restent des ouvreurs de segment même entre guillemets doubles, pour ne pas laisser passer `echo "$(dbt ls)"`) ; 6 cas ajoutés à la table ; 48 → 58 tests verts.
+  5. **Points du §6 du plan observés** : règle `deny` appliquée dans un subagent disposant de Bash **et prioritaire sur un `allow` passé en CLI** (agent d'essai `bash-probe`, créé hors dotfiles, lu puis supprimé) ; hook actif **sans redémarrage de session**, contrairement à ce que dit la doc (« snapshot au démarrage ») — fichier lié par symlink depuis les dotfiles, modification prise en compte à chaud dans la session même qui l'a faite.
+  6. **`shellcheck` installé** (`uv tool install shellcheck-py`, 0.11.0.1 — choix argumenté : version amont, sans sudo, même paquet que le hook pre-commit, contre apt 0.8.0 figé par Ubuntu 22.04) : les 5 scripts bash du repo sortent propres, aucun triage nécessaire.
+  7. **Constat adjacent signalé, non corrigé** : `block-force-push.sh` bloque toute commande contenant le mot « force » sans ancrer sur `git push` (a bloqué un appel `shellcheck` sur son propre nom de fichier) ; `block-rm-rf.sh` garde la même faiblesse de guillemets que celle corrigée ici.
+  8. **Résultats consignés au plan §15** (critère, points du §6, choix de conception, constats, suite pour l'étape 6), commits `6199e6a` puis `1d0b79e`.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (3 commits d'avance sur `origin` après ce commit — `6199e6a`, `1d0b79e`, checkpoint — à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §15) avant toute action.
+3. **À la main de Greg, avant l'étape 6** : observer le point 9 du §6 en session interactive — `! uv run dbt --version` doit s'exécuter ; demander ensuite à Claude de lancer la même commande doit produire le `BLOCKED`.
+4. **Étape 6 du plan** (plan §8) : rejeu T0, T3, T7, T13, T19 puis le reste de T1–T21 par le subagent réel ; lire les événements `parent_tool_use_id` du flux `stream-json`, pas le résumé (constat étape 4) ; critère de révision de l'effort posé à l'étape 4 (`xhigh` si l'agent cale, `medium` s'il ne cale jamais) ; `/code-review` avant la PR.
+5. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins.
+6. **Candidat event-driven noté à l'étape 5** : 9ᵉ outil `dbt_docs_generate` — à ouvrir à la première fois où Greg se surprend à lancer `docs generate` à la main après une session de l'agent.
+7. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Portée du blocage clarifiée avant exécution** : Bash de Claude Code uniquement ; terminal de Greg, serveur MCP et commandes `!` hors scope (ce dernier point **[Inféré]**, à observer §6 point 9).
+  - **`dbt docs generate` reste manuel**, pas de 9ᵉ outil construit maintenant — candidat event-driven écrit plutôt qu'implémenté par anticipation.
+  - **Option B retenue pour les heredocs** (hook conscient des délimiteurs plutôt que tolérance simple) + 3 cas de test demandés explicitement.
+  - **`shellcheck` installé via `uv tool install`** plutôt qu'`apt`, après avis argumenté demandé par Greg.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-04 09:15
+Session : 32880c42-60d4-4ce8-8295-bae07eb68376
+
+## Tâches complétées
+
+- **Étape 4 du plan dbt agent exécutée — subagent `dbt` livré, 147 tests verts** (`feat/dbt-agent`, 6 commits non poussés) :
+  1. **`claude/agents/dbt.md` livré** (`2e7aba7`) : frontmatter du §1.4 (`mcpServers` inline via `sh -c`), `tools: Read, Grep, Glob, Edit, Write, mcp__dbt-enveloppe__*` (pas de Bash), corps = socle + 7 sections + schéma IV §1 + liste IV §4 copiés tels quels depuis la spec, table « règle → outil MCP ». Test-first : `tests/test_agent_sync.py` (11 tests de non-dérive spec → agent) écrit et rouge (fichier absent) avant l'agent, vert après.
+  2. **`install.sh` étendu** (`36ba9e3`) : liens `agents/dbt.md` et `mcp/dbt-enveloppe`, contrôle `uv`, `uv sync --frozen` du serveur (sans lequel `--no-sync` au démarrage de l'agent échouerait silencieusement).
+  3. **`claude/settings.json`** (`0c619ed`) : `permissions.allow` sur `mcp__dbt-enveloppe__dbt_parse` et `dbt_ls` (point D du plan, palier A hors ligne) ; les autres outils gardent le prompt.
+  4. **`claude/README.md`** (`4158276`) : agent et serveur MCP documentés (tableau des composants, inventaire, convention de symlink).
+  5. **Plan §14 consigné** (`6635b39`), puis **`model: opus` et `effort: high` fixés** (`ca883a7`, décision Greg du jour, doc `model-config` relue) : l'alias `opus` suit la dernière Opus (5.5 à ce jour) — le garde-fou est structurel (enveloppe), pas dans le modèle ; `effort` explicite parce que le défaut d'Opus 5.5 est `medium` et que la clé `effortLevel` top-level des settings ne s'applique pas à ce modèle. Pas de réglage thinking par subagent (hérite de la session, doc confirmée).
+  6. **Vérifications réelles par `claude -p`** (Haiku, depuis `~/dbt-agent-testbed/`) : l'agent réel ne liste que `Read, Edit, Write, Grep, Glob` + 8 `mcp__dbt-enveloppe__dbt_*`, aucun Bash **[Observé]**. Points 1, 2, 4, 6, 8 du plan §6 tous **[Observé]** : `${HOME}` non expansé sans `sh -c` (essai contrôlé, agent temporaire supprimé après lecture) ; `CLAUDE_PROJECT_DIR` posé dans un serveur inline de subagent ; agent listé dans `init.agents` ; règle `allow` appliquée sur un serveur inline (`dbt_parse` sans prompt, `dbt_debug` refusé) ; aucun dialogue de confiance en scope user.
+  7. **Deux constats nouveaux pour la suite** : un agent dont `tools` ne contient que `mcp__<inline>__*` est refusé au spawn (« zero tools ») — au moins un outil natif requis ; vu du plugin d'eval, `mcpServers` inline est ignoré (sans effet en session, plugin non installé).
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (10 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §14) avant toute action.
+3. **Étape 5 du plan** : règle `"Bash(dbt *)"` dans `permissions.deny`, hook `block-dbt.sh` sur le modèle de `block-rm-rf.sh` (sans champ `if`, lanceurs `uv run`/`uvx`/`python -m`/`sh -c`, chemin finissant par `/dbt`), tests du hook (table « doit bloquer / doit passer »), lien dans `install.sh`. Vérification : `dbt`, `uv run dbt`, `python -m dbt`, chemin absolu bloqués ; `dbt-enveloppe` et un message de commit contenant « dbt » passent. Point 5 du §6 à observer (règles `deny` appliquées dans un subagent disposant de Bash). **Arrêt pour validation** en fin d'étape.
+4. **Étape 6** (plan §8) : rejeu T0, T3, T7, T13, T19 puis le reste de T1–T21 par le subagent réel ; **critère de révision de l'effort** posé ce jour — passer à `xhigh` si l'agent cale sur la modélisation, à `medium` s'il ne cale jamais ; `/code-review` avant la PR.
+5. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins.
+6. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **`model: opus`, alias plutôt qu'ID figé** : suit la dernière version Opus ; le garde-fou étant structurel (enveloppe), pas de besoin de figer un ID pour la reproductibilité.
+  - **`effort: high`** comme point de départ, pas un plafond (`xhigh`/`max` existent) — critère de révision fixé à l'étape 6 (refus/reprises par tâche).
+  - **Agent d'essai `${HOME}` sans `sh -c`** créé hors dotfiles pour le point 1 du §6, lu puis supprimé — non conservé comme artefact.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-03 11:15
+Session : 6b9daf61-b602-4419-8c8e-4899b379b546
+
+## Tâches complétées
+
+- **Étape 3 du plan dbt agent exécutée — serveur MCP par-dessus l'enveloppe, 136 tests verts** (`feat/dbt-agent`, 3 commits non poussés) :
+  1. **Push préalable vérifié et effectué** : les 3 commits de l'étape 2, restés locaux au checkpoint précédent, poussés (`66f5727..f366249`) avant toute nouvelle action, conformément à la demande de Greg en ouverture de session.
+  2. **`server.py` livré** (`afb21b3`) : une fonction-outil par méthode de `Session` (7 outils au commit initial), état en mémoire pour la durée du process, projet résolu depuis `CLAUDE_PROJECT_DIR` au premier appel et mis en cache (une variable ou un `.venv` manquant est désormais rapporté par chaque outil plutôt que de tuer le serveur silencieusement), appels sérialisés par un verrou. SDK `mcp` 2.3.0 (API v2 : `MCPServer`, `@tool()`, `ToolError`) — vérifié sur PyPI via context7, la v1 `FastMCP` n'étant plus la version publiée.
+  3. **Test-first respecté** : 11 tests + squelette soumis avant implémentation (suite rouge constatée), client MCP en mémoire (`mcp.Client`) pour les tests.
+  4. **`dbt_show_inline` déclaré par un commit dédié** (`bd060fc`, point E du plan) : 2 tests supplémentaires (rouge puis vert), cible `ro` confirmée à travers le serveur par appel réel (`current_role()` → `DBT_AGENT_RO`), DDL refusé H7 avant tout appel dbt.
+  5. **Vérifications réelles par stdio** sur `~/dbt-agent-testbed/` : un appel par outil (`debug`, `parse`, `ls`, `compile`, `show`, `show_inline` conformes ; `build` et `codegen` exercés sur leurs chemins de refus uniquement, sans effet de bord). Confirmé aussi depuis Claude Code réel (`claude -p --mcp-config`, Haiku) : serveur `connected`, 8 outils `mcp__dbt-enveloppe__dbt_*` listés, `dbt_parse` → `{"ok": true}`.
+  6. **Résultats consignés au plan §13** (critère, 9 appels [Observé], choix d'implémentation, constats pour l'étape 4), commit `ab90598`.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (4 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §13) avant toute action.
+3. **Étape 4 du plan** : `claude/agents/dbt.md` (corps = blocs de la spec + table règle → outil MCP), liens symboliques (`install.sh`), `permissions.allow` sur `dbt_parse` et `dbt_ls` (point D). Vérification : l'agent ne voit que Read/Grep/Glob/Edit/Write + outils MCP ; points 1, 2, 4, 6, 8 du §6 du plan observés. **Arrêt pour validation** en fin d'étape.
+4. **Étapes 5 et 6** (plan §8), un arrêt à la fin de chacune ; `/code-review` sur le diff de branche avant la PR.
+5. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins des étapes suivantes.
+6. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Push de l'étape 2 confirmé avant de démarrer l'étape 3** (demande explicite de Greg en ouverture de session).
+  - **SDK `mcp` API v2 retenue** (`MCPServer`/`@tool()`/`ToolError`), après vérification que la v1 `FastMCP` n'est plus publiée sur PyPI — pas une décision de portée, mais un fait vérifié qui conditionne tout le code de `server.py`.
+  - **Choix d'implémentation du serveur listés au point 2 ci-dessus** actés en bloc à la validation des tests (pas de contestation) ; détail et rationale au plan §13, pas ici (document source).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-03 10:28
+Session : 7d4f80e5-20cc-40d4-9c47-ee857a966a03
+
+## Tâches complétées
+
+- **Étape 2 du plan dbt agent exécutée — enveloppe CLI pure, 123 tests verts** (`feat/dbt-agent`, 2 commits non poussés) :
+  1. **Test-first respecté** : squelettes (`runner.py`, `conditions.py`, `session.py`, `cli.py`) + 123 tests unitaires soumis et validés avant implémentation ; suite rouge constatée (123 `NotImplementedError`), puis implémentation jusqu'au vert (`cd393d6`).
+  2. **`tests/test_principle2.py`** : un test par ligne du principe 2 de la spec (10 échecs silencieux), docstring = la ligne testée — critère explicite de l'étape.
+  3. **Fixtures réelles** : sorties capturées de T3 et T13 (Snowflake, 2026-10-02) reprises dans `conftest.py`, identifiant de compte anonymisé.
+  4. **Choix d'implémentation actés avec les tests** (détail au plan §12) : orchestration dans `session.py` (runner injectable) ; toute réparse efface les sélections `ls` ; `generate_source` reçoit `generate_columns: true` d'office ; `check_show` refuse une ligne `{"status": …}` seule (défense en profondeur derrière le rôle `ro`) ; statuts `build` : succès = `success`/`pass`/`warn`, échec sinon ; garde de version dbt 1.12.x ; session CLI persistée dans `target/dbt-enveloppe-session.json`.
+  5. **Smoke test réel sur `~/dbt-agent-testbed/`** (avant l'étape 5, donc sans la règle `deny`) : `parse`, `ls` (refus L2, joker nu `fct_*` → code 2 sous `--warn-error`, succès), `debug` (7 lignes sur 46, aucun champ `Connection`), `compile`, `show`, `show-inline` (DDL refusé H7 ; `select current_role()` confirme la cible `ro`). Tous conformes.
+  6. **Constat nouveau pour la spec** : sous dbt 1.12.5 + `--warn-error`, une sélection `ls` vide ou un joker nu sort en **code 2** (avertissement promu), pas en code 0 silencieux comme décrit par la ligne 1 du principe 2 sur le banc DuckDB — l'enveloppe couvre les deux cas.
+  7. **Résultats consignés au plan §12** (critère, écarts, smoke test, suite pour l'étape 3), commit `5c8f292`.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (3 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §12) avant toute action.
+3. **Étape 3 du plan** : `server.py`, exposition MCP de la `Session`. API du SDK MCP Python à lire via context7 (plan §6, non vérifiée) ; une fonction-outil par méthode de `Session`, état en mémoire, `CLAUDE_PROJECT_DIR` lu au démarrage. Vérification : `claude --mcp-config` dans le projet de test, `/mcp` liste les outils, un appel par outil. **Arrêt pour validation** en fin d'étape.
+4. **`dbt_show_inline` à déclarer par un commit dédié** dans `server.py` (point E du plan, condition remplie le 2026-10-02 par T3 + T19).
+5. **`build` et `codegen` non exercés en réel** — à tester par le subagent à l'étape 6, pas avant (effets de bord sur l'entrepôt).
+6. **Étapes 4 à 6** (plan §8), un arrêt à la fin de chacune ; `/code-review` sur le diff de branche avant la PR.
+7. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins des étapes suivantes.
+8. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Implémentation validée après lecture de la suite rouge** (123 `NotImplementedError`), conformément au test-first.
+  - **Choix d'implémentation listés au point 4 ci-dessus** actés en bloc à la validation des tests (pas de contestation) ; détail et rationale au plan §12, pas ici (document source).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-02 19:55
+Session : 5dcc8600-4077-4e55-a085-ad31aec60217
+
+## Tâches complétées
+
+- **Étape 1 du plan dbt agent exécutée — trial Snowflake opérationnel** (`feat/dbt-agent`, non poussée) :
+  1. **`~/dbt-agent-testbed/` créé** (dépôt git distinct, hors dotfiles) : `pyproject.toml`/`uv.lock` (dbt-core 1.12.5, dbt-snowflake 1.12.1 épinglés), `dbt_project.yml`, `setup/snowflake_setup.sql`, `setup/profiles.example.yml` (commit `1215c6c`).
+  2. **SQL Snowflake exécuté par Greg** : deux utilisateurs de service (`DBT_AGENT_RW_USER`, `DBT_AGENT_RO_USER`), deux rôles, grants futurs sur `DBT_AGENT_DEV`, warehouse `AUTO_SUSPEND=60`. Contrôles passés : privilèges du rôle RO (uniquement `USAGE`/`SELECT`), empreintes des deux clés, un seul rôle par utilisateur.
+  3. **T0 [Observé] conforme** sur `dev` et `ro` : `dbt debug` code 0, `All checks passed!`, aucun navigateur ouvert.
+  4. **Constats consignés au plan §10** : `private_key_path`/`query_tag` confirmés dans le code dbt-snowflake 1.12.1 ; une clé inconnue dans le profil n'est pas rejetée par `dbt parse` ; `SHOW GRANTS TO ROLE` détaille `SNOWFLAKE_SAMPLE_DATA` objet par objet (89 lignes), nécessitant une requête de résumé ajoutée au pas-à-pas §5.1.
+- **Étape 1 bis exécutée — projet dbt de test et série de tests bruts** (commits `d20996c`, `f010a84`) :
+  1. **Projet nominal** : 4 sources TPC-H, `stg_orders`/`stg_customers` (vues, tag `nightly`), `dim_customers` (table), `fct_orders` (incremental), `orders_by_status` (`run_query`), tests génériques + singulier. `dbt deps` (codegen 0.14.1, dbt_utils 1.4.1) et deux `dbt build` verts (`PASS=15 ERROR=0`).
+  2. **`t_series.sh` livré, couverture élargie à T1–T10 et T13–T19** (décision Greg, hors les 6 tests du point F du plan — presque tout le protocole teste le comportement brut que l'enveloppe refusera par construction). 15 fixtures, macros d'aide `t_exec`/`t_rows` pour préparer/nettoyer/contrôler indépendamment des commandes testées.
+  3. **Périmètre minimal lancé par Greg et lu** (T3, T7, T13, T19, tous [Observé]) : H7 confirmée (écriture refusée sous `ro`, acceptée sous `dev`) ; grants futurs + métadonnées suffisants pour `show`/`compile`/`codegen` sous `ro` ; `run-operation --sql` persiste immédiatement sur Snowflake (inverse de DuckDB) ; `debug` n'affiche aucun secret et ne réveille pas le warehouse.
+  4. **Constats pour l'étape 2 consignés au plan §11** : les erreurs sortent toujours sur stdout (stderr à 0 octet, y compris en code 2) ; la clé `show` ne distingue pas lecture et écriture ; `--limit -1` fonctionne correctement.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent` (3 commits d'avance sur `origin` après ce commit, à pousser à la main de Greg).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`.
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §10, §11) avant toute action.
+3. **Étape 2 du plan** : enveloppe dbt en CLI pur (`runner.py`, `conditions.py`, `session.py`, `cli.py`), tests unitaires sur les conditions de succès de §D de la spec — un cas « échec silencieux » par ligne du principe 2. Approche test-first proposée : soumettre les tests avant l'implémentation. **Arrêt pour validation** en fin d'étape.
+4. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins de l'étape 2 (durée des appels sur la cible `broken` inconnue pour T14 et T17).
+5. **Étapes 3 à 6** (plan §8), un arrêt à la fin de chacune ; `/code-review` sur le diff de branche avant la PR.
+6. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés (cf. checkpoint du 13:23 du 02/10).
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Couverture de `t_series.sh` élargie** à T1–T10 et T13–T19, au-delà des 6 tests prévus au point F du plan.
+  - **Périmètre minimal (T3, T7, T13, T19) lancé avant l'étape 6**, pour disposer de sorties réelles dès l'écriture de l'enveloppe (étape 2).
+  - **Profil `~/.dbt/profiles.yml` édité par Greg lui-même** (règle D2 : l'agent n'a pas à connaître le compte). L'identifiant est tout de même apparu en séance : gabarit du dépôt modifié par erreur (marqueur remis avant commit) et bloc `Connection` de T13, lu avec accord.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-02 15:32
+Session : b1b76bdf-3271-4b38-9af8-344acbbbdcbb
+
+## Tâches complétées
+
+- **Checkpoint du triage /immunize commité et poussé sur `main`** (`2c3f55a`).
+- **Chantier « agent dbt au scope user » ouvert — plan validé, rien d'implémenté.**
+  Subagent `dbt` + serveur MCP « enveloppe » ; pièces dans
+  `tasks/dbt-agent-2026-10/` (`brief.md`, `spec.md`, `plan.md`), commitées sur
+  la branche `feat/dbt-agent` (`6b96293`, non poussée) :
+  1. **Brief et spécification lus en entier** (originaux dans
+     `~/implement_dbt_agent/`, copies vérifiées identiques).
+  2. **Doc Claude Code vérifiée** (sub-agents, mcp, hooks, permissions,
+     cli-reference) : aucune décision du brief contredite ; table au §0 du plan,
+     neuf points non vérifiés au §6 avec leur parade.
+  3. **Doc Snowflake vérifiée** pour le SQL des rôles : rôles secondaires
+     actifs par défaut, utilisateurs de service créables en SQL seulement.
+  4. **Six points tranchés un par tour** (A à F, §7 du plan).
+  5. **Plan complété** : pas-à-pas Snowsight (§5.1), emplacement des pièces
+     (§2), séquence de reprise (§9).
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent` ; push
+   de la branche à décider.
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire
+   `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §7, §8, §9) avant toute
+   action. Ne pas relire la doc Claude Code, sauf champ nouveau.
+3. **Étape 1 du plan** : livrer dans `~/dbt-agent-testbed/` (hors dotfiles)
+   `setup/snowflake_setup.sql`, `setup/profiles.example.yml` et le squelette
+   minimal du projet ; Greg suit le pas-à-pas §5.1 (trial, clés, SQL, contrôles)
+   puis lance `dbt debug` sur `dev` et `ro` (T0). **Arrêt pour validation.**
+4. **Étapes 1 bis à 6** (plan §8), un arrêt à la fin de chacune ; `/code-review`
+   sur le diff de branche avant la PR.
+5. **Cycle /insights 2026-10-26** : inchangé (cf. checkpoint de 13:23, point 2) ;
+   **à prendre en compte à la mesure du ratio méta/produit** : un chantier
+   d'outillage est désormais ouvert dans ce workspace.
+6. Points 3 à 8 du checkpoint de 13:23 inchangés (R10, evals Phase 4, P5,
+   event-driven, hors repo, revisites).
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — le plan est la source
+  (`tasks/dbt-agent-2026-10/plan.md`) ; décisions Greg :
+  - **Branche dédiée `feat/dbt-agent`** pour ce chantier : exception ad hoc à
+    l'exemption « direct sur main » du repo.
+  - **Réponses aux 4 points ouverts du brief** → plan §1 (`dbt_build` spécifié,
+    dbt du projet via `uv run --no-sync`, `show --inline` en lecture seule,
+    chemin du serveur résolu par `sh -c`).
+  - **Points A à F** → plan §7 (deux utilisateurs Snowflake ; cible `ro` ;
+    empreinte des fichiers ; `allow` limité à `dbt_parse` et `dbt_ls` ;
+    `dbt_show_inline` déclaré après T3 + T19 ; tests bruts lancés par Greg).
+  - **Pièces du chantier dans `tasks/dbt-agent-2026-10/`**, sur le précédent
+    de l'audit skill-evals.
+  - **Implémentation démarrée d'un contexte frais** (plan §9), pour limiter la
+    dégradation du contexte.
+
+## Blocages
+
+- Aucun. Dépendance : l'étape 1 attend le trial Snowflake, créé par Greg.
+
+---
+
+## Checkpoint précédent — 2026-10-02 13:23
 Session : b1b76bdf-3271-4b38-9af8-344acbbbdcbb
 
 ## Tâches complétées

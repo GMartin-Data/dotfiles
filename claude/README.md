@@ -14,6 +14,7 @@ Configuration Claude Code versionnée dans ce dotfiles. La structure suit le lay
 | `commands/` | `~/.claude/commands/*.md` | Explicite (`/nom`) | Slash commands — gestes rituels en contexte principal |
 | `skills/` | `~/.claude/skills/<name>/` | Explicite (découverte par description) | Workflows spécialisés multi-étapes |
 | `agents/` | `~/.claude/agents/*.md` | Explicite (délégation) | Subagents avec contexte isolé |
+| `mcp/` | `~/.claude/mcp/<server>/` | Au démarrage du subagent qui le déclare (`mcpServers` inline) | Serveurs MCP maison — projets uv autonomes |
 | `hooks/` | `~/.claude/hooks/*` | Événementiel (SessionStart, PreToolUse, PostToolUse) | Automatismes déclenchés par l'harness |
 | `agent-memory/` | `~/.claude/agent-memory/<agent>/` | Lu/écrit par subagents | Mémoire custom portable (pas l'auto memory native) |
 | `templates/` | `~/.claude/templates/*.md` | Jamais par Claude | Starters pour bootstrapper les `CLAUDE.md` projet |
@@ -125,15 +126,21 @@ Couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/re
 Revue :
 - `code-review` — première passe sur le diff (bugs, sécurité, invariants, conventions) ; **surcharge** la bundled, signale sans appliquer (cf. [ADR-0010](../adr/0010-surcharge-code-review-user-scope.md))
 
-**Agents** (1) : `tech-watch-scorer` (stateless)
+**Agents** (2) :
+- `tech-watch-scorer` — stateless
+- `dbt` — modélisation dbt dans le projet courant ; outils `Read, Grep, Glob, Edit, Write` + `mcp__dbt-enveloppe__*`, **pas de Bash** : dbt n'est joignable que par le serveur ci-dessous. Corps = blocs de `tasks/dbt-agent-2026-10/spec.md` copiés tels quels (test de synchronisation `mcp/dbt-enveloppe/tests/test_agent_sync.py`). `permissions.allow` sur `dbt_parse` et `dbt_ls` seulement (palier A, hors ligne) ; les autres outils demandent confirmation
+
+**Serveurs MCP** (1) :
+- `dbt-enveloppe` — déclaré inline dans `agents/dbt.md` (stdio, `sh -c 'exec uv run --project "$HOME/.claude/mcp/dbt-enveloppe" --no-sync dbt-enveloppe-mcp'`) ; impose l'appel dbt canonique, vérifie la sortie, ne renvoie que l'utile ; cible le projet de `CLAUDE_PROJECT_DIR` avec le dbt de ce projet (`uv run --no-sync`). « Parse sur l'état courant » = empreinte (taille, mtime) de **tout** fichier non caché du projet hors les répertoires de sortie dbt (`target-path`, `log-path`, `packages-install-path`, lus comme dbt les résout : env `DBT_ENGINE_*`, puis `dbt_project.yml`, puis `target/`, `logs/`, `dbt_packages/`) : toute écriture tierce dans l'arbre pendant une session force un nouveau `dbt_parse` (fail-closed, délibéré — ne pas écrire de journaux dans le projet pendant qu'un agent tourne). Un seul subagent `dbt` à la fois : le serveur inline est partagé par nom entre subagents concurrents, le premier qui finit tue celui des autres. `install.sh` crée son `.venv` par `uv sync --frozen`. Plan et constats : `tasks/dbt-agent-2026-10/plan.md` ; bilan (ce qui marche, écarts avec la spec, table T0–T21) : `tasks/dbt-agent-2026-10/livrable.md`
 
 **Rules** (3) : `python.md`, `dbt-sql.md`, `terraform.md`
 
 **Templates** (4) : `python-uv.md`, `dbt-uv.md`, `terraform.md`, `pro-banking.md` (overlay)
 
-**Hooks** (4) :
+**Hooks** (5) :
 - `block-force-push.sh` — PreToolUse sur `git push*`
 - `block-rm-rf.sh` — PreToolUse sur `rm *`
+- `block-dbt.sh` — PreToolUse sur **tout** Bash (sans `if`, qui manquerait `uv run dbt`) : bloque dbt en position de commande (y compris derrière `if`/`do`/`!` ou une redirection), derrière un lanceur (`uv run`, `python -m`, `sh -c`, `timeout`…) ou par chemin (`…/dbt`) ; laisse passer le texte cité (`git commit -m "… dbt …"`, `grep "ls|dbt"`), `dbt-enveloppe`, et les arguments d'un programme inerte derrière un lanceur (`uv run pytest -k dbt`, `ruff`, `mypy`, `pyright`, `pre-commit`) — derrière `python`/`sh`, tout jeton reste inspecté (fail-closed). Message renvoyé à Claude : déléguer au subagent `dbt`, ou demander à l'utilisateur un `! uv run dbt deps`. Doublé par `"Bash(dbt *)"` dans `permissions.deny`. Tests : `mcp/dbt-enveloppe/tests/test_block_dbt_hook.py`
 - `protect_env.py` — PreToolUse (Bash/Read/Edit/Write) sur `.env`
 - `ruff-check.sh` — PostToolUse sur Write/Edit
 
@@ -170,6 +177,28 @@ cp ~/.claude/templates/dbt-uv.md ./CLAUDE.md
 | Commands, hooks, rules | Individuel | Le dossier cible peut contenir des fichiers gérés par Claude Code |
 | Skills, templates, agent-memory | Dossier entier | Contrôle complet du contenu côté dotfiles |
 | Agents | Mixte | Fichiers individuels + dossier `scripts/` partagé |
+| Serveurs MCP | Dossier entier | Projet uv autonome (`pyproject.toml`, `uv.lock`, `.venv` local ignoré par git) |
+
+### Désinstaller l'agent dbt
+
+`install.sh` crée les liens, il ne les retire jamais. Pour revenir en arrière :
+
+1. **Dotfiles** : `git revert -m 1 <sha du merge commit de feat/dbt-agent>` — un
+   seul commit, réversible ; il restaure `settings.json` (hook `block-dbt.sh`,
+   `deny "Bash(dbt *)"`, `allow` sur `dbt_parse`/`dbt_ls`), `install.sh`, ce
+   README, et supprime `agents/dbt.md`, `hooks/block-dbt.sh`, `mcp/dbt-enveloppe/`.
+2. **Liens et venv** (hors git) :
+   `rm ~/.claude/agents/dbt.md ~/.claude/hooks/block-dbt.sh ~/.claude/mcp/dbt-enveloppe`
+   (trois liens symboliques, pas des dossiers) puis
+   `rm -rf ~/dotfiles/claude/mcp/dbt-enveloppe/.venv` si le dossier ignoré a survécu au revert.
+3. **Hors repo, sans urgence** : `~/dbt-agent-testbed/`, `~/dbt-agent-testbed-results/`,
+   les cibles `dev`/`ro`/`broken` de `~/.dbt/profiles.yml`, les clés
+   `~/.snowflake/keys/dbt_agent_*.p8`, et côté Snowflake les deux utilisateurs,
+   les deux rôles, `DBT_AGENT_DEV` et `DBT_AGENT_WH`.
+
+Les pièces sont indépendantes : retirer seulement le hook et la règle `deny`
+rend dbt à la conversation principale sans toucher l'agent ; retirer seulement
+`agents/dbt.md` (et son lien) garde le hook et le serveur.
 
 ---
 
