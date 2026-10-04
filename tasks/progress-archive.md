@@ -6,6 +6,52 @@
 
 ---
 
+## Checkpoint précédent — 2026-10-04 10:30
+Session : 457625a3-c2c2-47f5-a0af-bf3ed90e991c
+
+## Tâches complétées
+
+- **Étape 5 du plan dbt agent exécutée — hook `block-dbt.sh`, 205 tests verts** (`feat/dbt-agent`, 2 commits non poussés) :
+  1. **Clarification préalable actée** (décision Greg) : bloquer dbt au niveau Bash ne touche que l'outil Bash de Claude Code — ni le terminal de Greg, ni le serveur MCP (sous-processus Python, pas l'outil Bash), ni les commandes préfixées `!` (**[Inféré]**, non observé en session non interactive). `dbt docs generate` (absent des 8 outils du serveur, **[Observé]** par lecture de `server.py`) reste manuel, comme `deps`, `seed`, `snapshot`, `source freshness`, `test` seul, `clean` — un 9ᵉ outil `dbt_docs_generate` est noté candidat event-driven, pas construit.
+  2. **Table de tests écrite avant le hook** (`test_block_dbt_hook.py`, test-first) : rouge à 49 cas (hook absent) ; choix de conception validés par Greg avant écriture (position de commande, tous les jetons derrière un lanceur fail-closed, option B pour les heredocs avec 3 cas dédiés demandés par Greg).
+  3. **`claude/hooks/block-dbt.sh` livré** : hook `PreToolUse` sur tout Bash, **sans champ `if`** (couvre `uv run dbt`, `python -m dbt`, `sh -c`, chemins absolus) ; `"Bash(dbt *)"` ajouté à `permissions.deny` en doublon ; lien dans `install.sh` ; entrée dans `claude/README.md`.
+  4. **Faux positif réel rencontré et corrigé en cours de route** : un `grep "block-rm-rf\|hooks/\|dbt"` lancé par Claude a été bloqué (l'alternative `\|dbt` du motif lue comme un segment commençant par `dbt`). Découpage réécrit pour être conscient des guillemets (`$(` et `` ` `` restent des ouvreurs de segment même entre guillemets doubles, pour ne pas laisser passer `echo "$(dbt ls)"`) ; 6 cas ajoutés à la table ; 48 → 58 tests verts.
+  5. **Points du §6 du plan observés** : règle `deny` appliquée dans un subagent disposant de Bash **et prioritaire sur un `allow` passé en CLI** (agent d'essai `bash-probe`, créé hors dotfiles, lu puis supprimé) ; hook actif **sans redémarrage de session**, contrairement à ce que dit la doc (« snapshot au démarrage ») — fichier lié par symlink depuis les dotfiles, modification prise en compte à chaud dans la session même qui l'a faite.
+  6. **`shellcheck` installé** (`uv tool install shellcheck-py`, 0.11.0.1 — choix argumenté : version amont, sans sudo, même paquet que le hook pre-commit, contre apt 0.8.0 figé par Ubuntu 22.04) : les 5 scripts bash du repo sortent propres, aucun triage nécessaire.
+  7. **Constat adjacent signalé, non corrigé** : `block-force-push.sh` bloque toute commande contenant le mot « force » sans ancrer sur `git push` (a bloqué un appel `shellcheck` sur son propre nom de fichier) ; `block-rm-rf.sh` garde la même faiblesse de guillemets que celle corrigée ici.
+  8. **Résultats consignés au plan §15** (critère, points du §6, choix de conception, constats, suite pour l'étape 6), commits `6199e6a` puis `1d0b79e`.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `feat/dbt-agent`.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `feat/dbt-agent`, puis push (3 commits d'avance sur `origin` après ce commit — `6199e6a`, `1d0b79e`, checkpoint — à pousser à la main de Greg).
+2. **Reprise en contexte frais** : `/clear` puis `/catchup` ; lire `tasks/dbt-agent-2026-10/plan.md` (statut en tête, §15) avant toute action.
+3. **À la main de Greg, avant l'étape 6** : observer le point 9 du §6 en session interactive — `! uv run dbt --version` doit s'exécuter ; demander ensuite à Claude de lancer la même commande doit produire le `BLOCKED`.
+4. **Étape 6 du plan** (plan §8) : rejeu T0, T3, T7, T13, T19 puis le reste de T1–T21 par le subagent réel ; lire les événements `parent_tool_use_id` du flux `stream-json`, pas le résumé (constat étape 4) ; critère de révision de l'effort posé à l'étape 4 (`xhigh` si l'agent cale, `medium` s'il ne cale jamais) ; `/code-review` avant la PR.
+5. **Tests T restants** (hors périmètre minimal) : T1, T2, T4 à T6, T8 à T10, T14 à T18 — à relancer par Greg au fil des besoins.
+6. **Candidat event-driven noté à l'étape 5** : 9ᵉ outil `dbt_docs_generate` — à ouvrir à la première fois où Greg se surprend à lancer `docs generate` à la main après une session de l'agent.
+7. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Portée du blocage clarifiée avant exécution** : Bash de Claude Code uniquement ; terminal de Greg, serveur MCP et commandes `!` hors scope (ce dernier point **[Inféré]**, à observer §6 point 9).
+  - **`dbt docs generate` reste manuel**, pas de 9ᵉ outil construit maintenant — candidat event-driven écrit plutôt qu'implémenté par anticipation.
+  - **Option B retenue pour les heredocs** (hook conscient des délimiteurs plutôt que tolérance simple) + 3 cas de test demandés explicitement.
+  - **`shellcheck` installé via `uv tool install`** plutôt qu'`apt`, après avis argumenté demandé par Greg.
+
+## Blocages
+
+- Aucun.
+
+---
 
 ## Checkpoint précédent — 2026-10-04 09:15
 Session : 32880c42-60d4-4ce8-8295-bae07eb68376
