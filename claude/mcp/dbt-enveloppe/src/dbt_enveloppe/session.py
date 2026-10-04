@@ -11,10 +11,13 @@ from __future__ import annotations
 
 import functools
 import json
+import os
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+import yaml
 
 from dbt_enveloppe import conditions, runner
 from dbt_enveloppe.conditions import Outcome, RefusalError
@@ -24,27 +27,85 @@ RunFn = Callable[[list[str], Path, float], Result]
 
 BUILD_TIMEOUT_S = 900.0
 IGNORED_DIRS: frozenset[str] = frozenset({"target", "dbt_packages", "logs"})
-RUN_RESULTS = Path("target/run_results.json")
+
+
+@dataclass(frozen=True)
+class OutputPaths:
+    """Where dbt writes, relative to the project: skipped by the fingerprint.
+
+    Resolved as dbt does (``DBT_ENGINE_*`` env, then the older ``DBT_*``
+    names, then ``dbt_project.yml``, then the defaults). An absolute path
+    outside the project leaves nothing to skip.
+    """
+
+    target: str = "target"
+    ignored: frozenset[str] = IGNORED_DIRS
+
+    @property
+    def run_results(self) -> Path:
+        return Path(self.target) / "run_results.json"
+
+
+def output_paths(project_dir: Path, env: Mapping[str, str]) -> OutputPaths:
+    """Read the dbt output locations for ``project_dir``."""
+    try:
+        project = yaml.safe_load((project_dir / "dbt_project.yml").read_text()) or {}
+    except (OSError, yaml.YAMLError):
+        project = {}
+    if not isinstance(project, dict):
+        project = {}
+
+    def pick(*env_names: str, key: str, default: str) -> str:
+        for name in env_names:
+            if env.get(name):
+                return env[name]
+        value = project.get(key)
+        return str(value) if value else default
+
+    target = pick(
+        "DBT_ENGINE_TARGET_PATH", "DBT_TARGET_PATH", key="target-path", default="target"
+    )
+    logs = pick("DBT_ENGINE_LOG_PATH", "DBT_LOG_PATH", key="log-path", default="logs")
+    packages = pick(key="packages-install-path", default="dbt_packages")
+    ignored = frozenset(
+        relative
+        for relative in (_inside(project_dir, raw) for raw in (target, logs, packages))
+        if relative is not None
+    )
+    return OutputPaths(target, ignored)
+
+
+def _inside(project_dir: Path, raw: str) -> str | None:
+    path = Path(raw)
+    if not path.is_absolute():
+        path = project_dir / path
+    try:
+        return path.resolve().relative_to(project_dir.resolve()).as_posix()
+    except ValueError:
+        return None
 
 
 @dataclass(frozen=True)
 class Fingerprint:
     """Snapshot of the project files: relative path -> (size, mtime_ns).
 
-    Hidden entries and ``IGNORED_DIRS`` (written by dbt itself) are skipped.
+    Hidden entries and the dbt output directories are skipped.
     """
 
     files: Mapping[str, tuple[int, int]] = field(default_factory=dict)
 
 
-def fingerprint(project_dir: Path) -> Fingerprint:
+def fingerprint(
+    project_dir: Path, ignored: frozenset[str] = IGNORED_DIRS
+) -> Fingerprint:
     """Take the fingerprint of the project files as they are now."""
     files: dict[str, tuple[int, int]] = {}
     for root, dirs, names in project_dir.walk():
         dirs[:] = [
             d
             for d in dirs
-            if not d.startswith(".") and not (root == project_dir and d in IGNORED_DIRS)
+            if not d.startswith(".")
+            and (root / d).relative_to(project_dir).as_posix() not in ignored
         ]
         for name in names:
             if name.startswith("."):
@@ -86,11 +147,19 @@ class Session:
     Args:
         project_dir: The dbt project (already resolved and checked).
         run: Subprocess runner; injected in tests.
+        env: Where dbt's ``DBT_ENGINE_*`` path overrides are read; the process
+            environment by default.
     """
 
-    def __init__(self, project_dir: Path, run: RunFn = runner.run) -> None:
+    def __init__(
+        self,
+        project_dir: Path,
+        run: RunFn = runner.run,
+        env: Mapping[str, str] | None = None,
+    ) -> None:
         self.project_dir = project_dir
         self._run = run
+        self.paths = output_paths(project_dir, os.environ if env is None else env)
         self.debug_ok = False
         self.dbt_version: str | None = None
         self.adapter_version: str | None = None
@@ -113,7 +182,7 @@ class Session:
     @_refusals_as_outcome
     def parse(self) -> Outcome:
         """Canonical ``dbt parse`` (P1); records the fingerprint, resets selections."""
-        snapshot = fingerprint(self.project_dir)
+        snapshot = fingerprint(self.project_dir, self.paths.ignored)
         result = self._call("parse", ["--no-partial-parse", "--warn-error"])
         outcome = conditions.check_parse(result.returncode, result.stdout)
         if outcome.ok:
@@ -190,7 +259,7 @@ class Session:
     def build(self, select: str, full_refresh: bool = False) -> Outcome:
         """``dbt build --target dev`` of a selection validated by ``ls`` (plan §1.1).
 
-        Reads ``target/run_results.json`` before and after the call so that
+        Reads ``run_results.json`` before and after the call so that
         an artifact left by an earlier run cannot pass for this one.
         """
         self._require_debug()
@@ -323,7 +392,9 @@ class Session:
     def _require_parse_current(self) -> None:
         if self.parse_fingerprint is None:
             raise RefusalError("dbt_parse must succeed first on this project (S1)")
-        changed = changed_files(self.parse_fingerprint, fingerprint(self.project_dir))
+        changed = changed_files(
+            self.parse_fingerprint, fingerprint(self.project_dir, self.paths.ignored)
+        )
         if changed:
             shown = ", ".join(changed[:10]) + (
                 f" and {len(changed) - 10} more" if len(changed) > 10 else ""
@@ -357,7 +428,9 @@ class Session:
 
     def _read_run_results(self) -> dict[str, Any] | None:
         try:
-            document = json.loads((self.project_dir / RUN_RESULTS).read_text())
+            document = json.loads(
+                (self.project_dir / self.paths.run_results).read_text()
+            )
         except (OSError, ValueError):
             return None
         return document if isinstance(document, dict) else None

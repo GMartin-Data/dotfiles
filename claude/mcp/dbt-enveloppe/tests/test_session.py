@@ -52,6 +52,64 @@ def test_changed_files_detects_add_remove_modify(project_dir: Path) -> None:
     assert changed_files(before, before) == []
 
 
+# --- dbt output paths -------------------------------------------------------
+
+
+def _write_under(project_dir: Path, *relatives: str) -> None:
+    for relative in relatives:
+        path = project_dir / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("x")
+
+
+def test_custom_output_paths_from_the_project_file_are_not_file_changes(
+    project_dir: Path, fake_run: FakeRun
+) -> None:
+    (project_dir / "dbt_project.yml").write_text(
+        "name: testbed\nversion: '1.0'\n"
+        "target-path: build/dbt\nlog-path: build/logs\npackages-install-path: packages\n"
+    )
+    session = Session(project_dir, fake_run, env={})
+    make_ready(session, fake_run)
+    _write_under(
+        project_dir, "build/dbt/manifest.json", "build/logs/dbt.log", "packages/u/m.sql"
+    )
+    fake_run.script("ls", 0, LS_TWO_VIEWS)
+    assert session.ls("stg_orders stg_customers", ["stg_orders", "stg_customers"]).ok
+
+
+def test_env_target_path_wins_over_the_project_file(
+    project_dir: Path, fake_run: FakeRun
+) -> None:
+    (project_dir / "dbt_project.yml").write_text(
+        "name: testbed\nversion: '1.0'\ntarget-path: build\n"
+    )
+    session = Session(project_dir, fake_run, env={"DBT_ENGINE_TARGET_PATH": "out"})
+    make_ready(session, fake_run)
+    _write_under(project_dir, "out/manifest.json")
+    fake_run.script("ls", 0, LS_TWO_VIEWS)
+    assert session.ls("stg_orders stg_customers", ["stg_orders", "stg_customers"]).ok
+    _write_under(project_dir, "build/manifest.json")
+    outcome = session.ls("stg_orders stg_customers", ["stg_orders", "stg_customers"])
+    assert not outcome.ok
+    assert "build/manifest.json" in outcome.error
+
+
+def test_build_reads_run_results_from_the_custom_target_path(
+    project_dir: Path, fake_run: FakeRun
+) -> None:
+    session = Session(project_dir, fake_run, env={"DBT_ENGINE_TARGET_PATH": "out"})
+    make_ready(session, fake_run)
+    document = run_results({"stg_orders": "success", "stg_customers": "success"})
+
+    def write_out() -> None:
+        (project_dir / "out").mkdir(exist_ok=True)
+        (project_dir / "out" / "run_results.json").write_text(json.dumps(document))
+
+    fake_run.script("build", 0, "", side_effect=write_out)
+    assert session.build("stg_orders stg_customers").ok
+
+
 # --- canonical calls --------------------------------------------------------
 
 
