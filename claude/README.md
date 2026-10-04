@@ -14,6 +14,7 @@ Configuration Claude Code versionnée dans ce dotfiles. La structure suit le lay
 | `commands/` | `~/.claude/commands/*.md` | Explicite (`/nom`) | Slash commands — gestes rituels en contexte principal |
 | `skills/` | `~/.claude/skills/<name>/` | Explicite (découverte par description) | Workflows spécialisés multi-étapes |
 | `agents/` | `~/.claude/agents/*.md` | Explicite (délégation) | Subagents avec contexte isolé |
+| `mcp/` | `~/.claude/mcp/<server>/` | Au démarrage du subagent qui le déclare (`mcpServers` inline) | Serveurs MCP maison — projets uv autonomes |
 | `hooks/` | `~/.claude/hooks/*` | Événementiel (SessionStart, PreToolUse, PostToolUse) | Automatismes déclenchés par l'harness |
 | `agent-memory/` | `~/.claude/agent-memory/<agent>/` | Lu/écrit par subagents | Mémoire custom portable (pas l'auto memory native) |
 | `templates/` | `~/.claude/templates/*.md` | Jamais par Claude | Starters pour bootstrapper les `CLAUDE.md` projet |
@@ -125,7 +126,12 @@ Couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/re
 Revue :
 - `code-review` — première passe sur le diff (bugs, sécurité, invariants, conventions) ; **surcharge** la bundled, signale sans appliquer (cf. [ADR-0010](../adr/0010-surcharge-code-review-user-scope.md))
 
-**Agents** (1) : `tech-watch-scorer` (stateless)
+**Agents** (2) :
+- `tech-watch-scorer` — stateless
+- `dbt` — modélisation dbt dans le projet courant ; outils `Read, Grep, Glob, Edit, Write` + `mcp__dbt-enveloppe__*`, **pas de Bash** : dbt n'est joignable que par le serveur ci-dessous. Corps = blocs de `tasks/dbt-agent-2026-10/spec.md` copiés tels quels (test de synchronisation `mcp/dbt-enveloppe/tests/test_agent_sync.py`). `permissions.allow` sur `dbt_parse` et `dbt_ls` seulement (palier A, hors ligne) ; les autres outils demandent confirmation
+
+**Serveurs MCP** (1) :
+- `dbt-enveloppe` — déclaré inline dans `agents/dbt.md` (stdio, `sh -c 'exec uv run --project "$HOME/.claude/mcp/dbt-enveloppe" --no-sync dbt-enveloppe-mcp'`) ; impose l'appel dbt canonique, vérifie la sortie, ne renvoie que l'utile ; cible le projet de `CLAUDE_PROJECT_DIR` avec le dbt de ce projet (`uv run --no-sync`). `install.sh` crée son `.venv` par `uv sync --frozen`. Plan et constats : `tasks/dbt-agent-2026-10/plan.md`
 
 **Rules** (3) : `python.md`, `dbt-sql.md`, `terraform.md`
 
@@ -170,6 +176,7 @@ cp ~/.claude/templates/dbt-uv.md ./CLAUDE.md
 | Commands, hooks, rules | Individuel | Le dossier cible peut contenir des fichiers gérés par Claude Code |
 | Skills, templates, agent-memory | Dossier entier | Contrôle complet du contenu côté dotfiles |
 | Agents | Mixte | Fichiers individuels + dossier `scripts/` partagé |
+| Serveurs MCP | Dossier entier | Projet uv autonome (`pyproject.toml`, `uv.lock`, `.venv` local ignoré par git) |
 
 ---
 
