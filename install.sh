@@ -68,9 +68,23 @@ link "$DOTFILES_DIR/claude/templates"            "$HOME/.claude/templates"
 
 # Agents (fichiers individuels)
 link "$DOTFILES_DIR/claude/agents/tech-watch-scorer.md" "$HOME/.claude/agents/tech-watch-scorer.md"
+link "$DOTFILES_DIR/claude/agents/dbt.md"               "$HOME/.claude/agents/dbt.md"
 
 # Agents (dossier scripts partagé)
 link "$DOTFILES_DIR/claude/agents/scripts"              "$HOME/.claude/agents/scripts"
+
+# Serveurs MCP (dossiers entiers — projets uv autonomes, .venv local hors git)
+link "$DOTFILES_DIR/claude/mcp/dbt-enveloppe"           "$HOME/.claude/mcp/dbt-enveloppe"
+
+# Environnement du serveur dbt-enveloppe : l'agent dbt le lance avec `uv run --no-sync`,
+# qui ne crée rien — sans ce sync, le serveur ne démarre pas et l'agent n'a aucun outil.
+if command -v uv >/dev/null 2>&1; then
+    uv sync --frozen --project "$DOTFILES_DIR/claude/mcp/dbt-enveloppe"
+    echo "Synced: $DOTFILES_DIR/claude/mcp/dbt-enveloppe/.venv"
+else
+    echo "ATTENTION : uv introuvable — le serveur MCP de l'agent dbt n'a pas d'environnement." >&2
+    echo "            Installe uv puis lance : uv sync --frozen --project $DOTFILES_DIR/claude/mcp/dbt-enveloppe" >&2
+fi
 
 echo ""
 echo "=== Symlinks créés. ==="
