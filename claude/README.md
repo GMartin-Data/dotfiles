@@ -74,7 +74,7 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 - `immunize` — consolide `lessons-inbox.md` : promeut les patterns récurrents, archive le bruit
 - `planning` — génère PLAN.md (architecture cible + phases) à partir de PRD + CLAUDE.md
 - `prd` — interview structurée produisant un PRD (détection d'instance Cruft)
-- `progress` — sauvegarde un checkpoint d'avancement dans `progress.md` (human-in-the-loop)
+- `progress` — sauvegarde un checkpoint d'avancement dans `progress.md` (human-in-the-loop) ; fenêtre glissante de 3 checkpoints, le surplus part tel quel dans `tasks/progress-archive.md`
 - `tech-watch` — pipeline de veille techno : fetch, score et classe des sources
 
 > Quatre commands ont un sous-dossier compagnon `commands/<name>/evals/` (corpus de tests A→B→A — interne au repo, non symlinké) : `adr`, `grill`, `planning`, `prd`. Une command qui a besoin d'assets runtime (`reference/`, progressive disclosure) devient une skill : le dossier est l'unité de symlink et l'invocation explicite `/<name>` est conservée (précédent : `claude-md`, 2026-09).

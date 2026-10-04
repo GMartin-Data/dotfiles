@@ -45,4 +45,9 @@ Session : [CLAUDE_SESSION_ID]
 5. **Montre-moi la mise à jour AVANT d'écrire** — attends ma confirmation explicite
 6. Écris dans `progress.md` (crée le fichier s'il n'existe pas)
 
-Ne supprime pas l'historique existant — ajoute en tête du fichier.
+Ne supprime pas l'historique existant — ajoute en tête du fichier, puis tiens la
+**fenêtre glissante** : `progress.md` ne garde que 3 checkpoints (le courant et
+deux `## Checkpoint précédent`). Déplace tout ce qui dépasse, tel quel, en tête
+de `tasks/progress-archive.md` (sous son en-tête, du plus récent au plus
+ancien ; crée le fichier avec cet en-tête s'il n'existe pas). Jamais de
+résumé ni de réécriture — on coupe, on ne condense pas.
