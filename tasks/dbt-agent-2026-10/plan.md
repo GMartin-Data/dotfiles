@@ -5,8 +5,9 @@
 > et §5. **Étapes 1 et 1 bis faites le 2026-10-02** (constats aux §10 et §11 ;
 > T0, T3, T7, T13, T19 **[Observé]**). **Étape 2 faite le 2026-10-03** (§12,
 > `cd393d6`). **Étape 3 faite le 2026-10-03** (§13, `afb21b3` ; point E soldé
-> par `bd060fc`). Prochaine action : étape 4 (§8), `claude/agents/dbt.md`,
-> liens et `install.sh`.
+> par `bd060fc`). **Étape 4 faite le 2026-10-04** (§14 ; points 1, 2, 4, 6, 8
+> du §6 **[Observé]**). Prochaine action : étape 5 (§8), règle `deny`, hook
+> `block-dbt.sh` et ses tests.
 
 ## Contexte
 
@@ -710,3 +711,71 @@ dbt-snowflake 1.12.1.
 - Points du §6 à observer : 1 (`${HOME}` inline, un essai), 2
   (`CLAUDE_PROJECT_DIR` dans un serveur inline de subagent), 4, 6, 8 ;
   `claude plugin details` pour l'agent vu du plugin d'eval.
+
+## 14. Résultats de l'étape 4 (2026-10-04)
+
+Livré : `claude/agents/dbt.md` (frontmatter du §1.4, corps = socle + 7
+sections + schéma IV §1 + liste IV §4 copiés tels quels, table « règle →
+outil MCP »), `tests/test_agent_sync.py` (11 tests de non-dérive spec →
+agent), `install.sh` (liens `agents/dbt.md` et `mcp/dbt-enveloppe`, contrôle
+`uv`, `uv sync --frozen`), `claude/settings.json` (`permissions.allow` sur
+`dbt_parse` et `dbt_ls`, point D), `claude/README.md`. Versions : Claude Code
+2.1.287, dbt-core 1.12.5, dbt-snowflake 1.12.1.
+
+### Critère de l'étape
+
+| Contrôle | Résultat |
+|---|---|
+| `uv run pytest` | **147 passed** (136 + 11), `ruff check` et `ruff format` propres |
+| Test-first | Test de synchronisation écrit avant l'agent : 10 erreurs (fichier absent), 1 passé (la spec a ses 8 blocs) ; vert après écriture |
+| L'agent ne voit que Read/Grep/Glob/Edit/Write + outils MCP | **[Observé]** : liste rapportée par le subagent lui-même (`claude -p`, Haiku, depuis le testbed) : `Read, Edit, Write, Grep, Glob` + les 8 `mcp__dbt-enveloppe__dbt_*` ; pas de Bash |
+| `install.sh` idempotent | Relancé en entier : liens existants recréés à l'identique, 2 nouveaux, `uv sync --frozen` → « Checked 35 packages » |
+
+### Points du §6 — tous **[Observé]** (Claude Code 2.1.287, mode `-p`)
+
+| # | Point | Constat |
+|---|---|---|
+| 1 | `${HOME}` dans `args` inline sans `sh -c` | **Non expansé.** Agent d'essai hors dotfiles, identique à `dbt.md` (mêmes `tools`, même nom de serveur) sauf `command: uv`, `args: ["run", "--project", "${HOME}/.claude/mcp/dbt-enveloppe", …]` : le subagent n'a que `Read, Edit, Write, Grep, Glob`, aucun outil MCP. Le `sh -c` du §1.4 est nécessaire. Essai supprimé après lecture |
+| 2 | `CLAUDE_PROJECT_DIR` dans un serveur inline de subagent | Posé : `dbt_parse` → `{"ok": true}` à travers le serveur inline (il refuse sans la variable) |
+| 4 | Agent en lien symbolique dans `~/.claude/agents/` | `dbt` figure dans `agents` du message `init` ; délégation réussie |
+| 6 | Règle `allow` sur un serveur inline | Appliquée : `dbt_parse` sans prompt. Contre-épreuve : `dbt_debug` (hors `allow`) → `Permission to use mcp__dbt-enveloppe__dbt_debug has been denied` en mode non interactif. Le point D tient tel quel |
+| 8 | Dialogue de confiance | Aucun : serveur connecté en `-p` (un dialogue l'aurait bloqué). Doc relue le 2026-10-04 : le contrôle de confiance (≥ 2.1.238) ne vise que `.claude/agents/` du projet et les dossiers `--add-dir` |
+
+Forme du frontmatter vérifiée dans la doc le 2026-10-04 : `mcpServers` est
+une **liste** d'entrées `- nom: {type, command, args}` ou de noms de serveurs
+déjà configurés — celle du §1.4.
+
+### Constats
+
+- **Un agent dont `tools` ne liste que `mcp__<serveur-inline>__*` est refusé
+  au spawn** : « would be spawned with zero tools — refusing. Its tools list
+  resolved to nothing: recognized but matched no tools in this session ». Les
+  outils d'un serveur inline ne sont pas résolus avant le lancement ; au moins
+  un outil natif est requis dans `tools`. Sans effet sur `dbt.md` (5 outils
+  natifs), à savoir pour tout agent « MCP seul ».
+- **Vu du plugin d'eval** (`claude --plugin-dir ./claude plugin details
+  dotfiles`) : `Agents (2) tech-watch-scorer, dbt`, `MCP servers (0)` — le
+  `mcpServers` inline est ignoré en contexte plugin, comme dit par la doc.
+  Sans effet sur les sessions quotidiennes (`claude plugin details dotfiles`
+  sans `--plugin-dir` → « not found » : plugin non installé). Coût estimé par
+  le runner : ~130 tok always-on (description), ~3,4k on-invoke.
+- **Le relais du rapport par la session principale est lossy** : Haiku a
+  omis `dbt_show_inline` de la liste et le résultat brut de `dbt_parse` en
+  résumant. Pour observer, lire les événements du flux `stream-json` portant
+  `parent_tool_use_id` (texte et appels du subagent), pas le résumé final.
+- **Le subagent part en arrière-plan même en `-p`** (« Async agent launched
+  successfully ») ; la session attend sa fin avant de répondre.
+- `model` non fixé dans le frontmatter (hérite de la session) ; la
+  `description` coûte ~130 tok dans chaque session — à raccourcir si besoin.
+- Coût des trois appels `claude -p` : 0,049 + 0,019 + 0,027 ≈ 0,10 $.
+
+### Pour l'étape 5
+
+- `"Bash(dbt *)"` dans `permissions.deny` ; hook `block-dbt.sh` sur le modèle
+  de `block-rm-rf.sh`, **sans champ `if`** (plan §2), lanceurs `uv run`,
+  `uvx`, `python -m`, `sh -c`, chemin finissant par `/dbt` ; table « doit
+  bloquer / doit passer » ; lien dans `install.sh`.
+- Point 5 du §6 (règles `deny` appliquées dans les subagents) : test avec un
+  subagent disposant de Bash.
+- Après l'étape 5, plus aucun appel dbt brut par Claude : `t_series.sh` à la
+  main de Greg (point F) ; les tests de l'enveloppe passent par le subagent.
