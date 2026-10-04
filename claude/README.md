@@ -179,6 +179,27 @@ cp ~/.claude/templates/dbt-uv.md ./CLAUDE.md
 | Agents | Mixte | Fichiers individuels + dossier `scripts/` partagé |
 | Serveurs MCP | Dossier entier | Projet uv autonome (`pyproject.toml`, `uv.lock`, `.venv` local ignoré par git) |
 
+### Désinstaller l'agent dbt
+
+`install.sh` crée les liens, il ne les retire jamais. Pour revenir en arrière :
+
+1. **Dotfiles** : `git revert -m 1 <sha du merge commit de feat/dbt-agent>` — un
+   seul commit, réversible ; il restaure `settings.json` (hook `block-dbt.sh`,
+   `deny "Bash(dbt *)"`, `allow` sur `dbt_parse`/`dbt_ls`), `install.sh`, ce
+   README, et supprime `agents/dbt.md`, `hooks/block-dbt.sh`, `mcp/dbt-enveloppe/`.
+2. **Liens et venv** (hors git) :
+   `rm ~/.claude/agents/dbt.md ~/.claude/hooks/block-dbt.sh ~/.claude/mcp/dbt-enveloppe`
+   (trois liens symboliques, pas des dossiers) puis
+   `rm -rf ~/dotfiles/claude/mcp/dbt-enveloppe/.venv` si le dossier ignoré a survécu au revert.
+3. **Hors repo, sans urgence** : `~/dbt-agent-testbed/`, `~/dbt-agent-testbed-results/`,
+   les cibles `dev`/`ro`/`broken` de `~/.dbt/profiles.yml`, les clés
+   `~/.snowflake/keys/dbt_agent_*.p8`, et côté Snowflake les deux utilisateurs,
+   les deux rôles, `DBT_AGENT_DEV` et `DBT_AGENT_WH`.
+
+Les pièces sont indépendantes : retirer seulement le hook et la règle `deny`
+rend dbt à la conversation principale sans toucher l'agent ; retirer seulement
+`agents/dbt.md` (et son lien) garde le hook et le serveur.
+
 ---
 
 ## Mémoire des subagents
