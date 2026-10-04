@@ -7,8 +7,11 @@
 > `cd393d6`). **Étape 3 faite le 2026-10-03** (§13, `afb21b3` ; point E soldé
 > par `bd060fc`). **Étape 4 faite le 2026-10-04** (§14 ; points 1, 2, 4, 6, 8
 > du §6 **[Observé]**). **Étape 5 faite le 2026-10-04** (§15 ; point 5 du §6
-> **[Observé]**, point 9 à observer par Greg en session interactive). Prochaine
-> action : étape 6 (§8), rejeu T0, T3, T7, T13, T19 par le subagent réel.
+> **[Observé]**). **Étape 6 faite le 2026-10-04** (§16 ; point 9 du §6
+> **[Observé]** ; T0–T21 couverts sauf T20 non implémenté et T11/T12 actés hors
+> périmètre ; `compile`/`show`/`codegen` passés sous `ro`, `98b483a`). Prochaine
+> action : livrable de fin (`livrable.md`), puis `/code-review` sur le diff de
+> branche en session dédiée, puis PR `feat/dbt-agent` → `main`.
 
 ## Contexte
 
@@ -916,7 +919,7 @@ jq 1.6, shellcheck 0.11.0.
   cale jamais.
 - `/code-review` sur le diff de branche avant la PR.
 
-## 16. Résultats de l'étape 6 (2026-10-04, en cours)
+## 16. Résultats de l'étape 6 (2026-10-04)
 
 Méthode : `claude -p --output-format stream-json --verbose --model haiku
 --permission-mode acceptEdits --allowedTools "Agent,mcp__dbt-enveloppe"` depuis
@@ -976,15 +979,24 @@ canal `!` est donc bien celui de `deps`, `docs generate`, etc.
 | T1, T2, T10, T14, T17, T18 | **[Observé]** en brut (`t_series.sh`, table ci-dessus) |
 | T5, T7 | Agent-level : le subagent contourne (T5, lecture seule) ou refuse (T7) sans appel ; brut déjà **[Observé]** le 2026-10-02 pour T7 (§11) ; T5 brut non lancé (couvert par H5 côté agent et par l'erreur Snowflake « does not exist » que `dbt_show` renverrait) |
 | T16 | **[Observé]** au smoke test de l'étape 2 (§12) |
-| T21 | Partiel : cible `ro` **[Observé]** (`dbt-agent-ro`) ; cible `dev` à lire par Greg dans Snowsight |
-| T11, T12 | Mesures (tokens, crédits) — à la main de Greg, hors enveloppe, sans verdict attendu |
+| T21 | **[Observé]** sur les deux cibles : `ro` via `show_inline` (44 requêtes `dbt-agent-ro`, `DBT_AGENT_RO_USER`) ; `dev` lu par Greg dans Snowsight *Query History* (filtre `Query Tag = dbt-agent` → 15 requêtes, toutes de `DBT_AGENT_RW_USER`). Le `query_tag` du profil est bien transmis en paramètre de session (spec §F.3 fait 8 confirmé) |
+| T11, T12 | **Actés « non mesurés, hors périmètre »** (décision Greg, 2026-10-04) : l'enveloppe plafonne déjà les sorties (`limit ≤ 50`, listes de statuts au lieu de journaux, SQL compilé seul) ; la mesure n'a plus d'enjeu de décision |
 | T20 | **Non implémenté** : un schéma par session d'agent (spec §F.3 fait 7) n'est pas dans l'enveloppe — cible `dev` unique, schéma `DEV`. À décider au livrable de fin (candidat : `schema` dérivé d'un identifiant de session via `--vars` ou profil) |
 
-État du testbed après les runs (non commité, à la main de Greg) :
-`models/staging/stg_nation.sql`, `_stg_nation.yml`, `_tpch_extra__sources.yml`,
-`stg_region.sql`, `models/marts/dim_region.sql` ; vues `stg_nation` (×3
-builds) construites dans `DBT_AGENT_DEV.DEV` ; `stg_region` et `dim_region`
+État du testbed après les runs : les 5 fichiers écrits par le subagent
+(`models/staging/stg_nation.sql`, `_stg_nation.yml`, `_tpch_extra__sources.yml`,
+`stg_region.sql`, `models/marts/dim_region.sql`) **commités dans le testbed**
+(`0434792`, décision Greg) comme trace de ce que l'agent produit ; vue
+`stg_nation` construite dans `DBT_AGENT_DEV.DEV` ; `stg_region` et `dim_region`
 non construits.
+
+### Étape 6 close le 2026-10-04
+
+Critère du §8 tenu : chaque résultat **[Observé]** avec versions (Claude Code
+2.1.289, subagent `claude-opus-5-5`, dbt-core 1.12.5, dbt-snowflake 1.12.1) ;
+T20 non implémenté et T11/T12 actés hors périmètre, en toute connaissance.
+Reste avant la PR : livrable de fin (`livrable.md`), `/code-review` sur le
+diff de branche (session dédiée), triage.
 
 ### Constats
 
