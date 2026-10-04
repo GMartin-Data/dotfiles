@@ -9,9 +9,10 @@
 > du §6 **[Observé]**). **Étape 5 faite le 2026-10-04** (§15 ; point 5 du §6
 > **[Observé]**). **Étape 6 faite le 2026-10-04** (§16 ; point 9 du §6
 > **[Observé]** ; T0–T21 couverts sauf T20 non implémenté et T11/T12 actés hors
-> périmètre ; `compile`/`show`/`codegen` passés sous `ro`, `98b483a`). Prochaine
-> action : livrable de fin (`livrable.md`), puis `/code-review` sur le diff de
-> branche en session dédiée, puis PR `feat/dbt-agent` → `main`.
+> périmètre ; `compile`/`show`/`codegen` passés sous `ro`, `98b483a`).
+> **Livrable de fin écrit** (`livrable.md`, brief §6). Prochaine action :
+> `/code-review` sur le diff de branche en session dédiée, triage, puis PR
+> `feat/dbt-agent` → `main`.
 
 ## Contexte
 
