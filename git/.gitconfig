@@ -12,3 +12,6 @@
 	rebase = true
 [fetch]
 	prune = true
+[alias]
+	# History without the progress.md checkpoints (one commit per checkpoint)
+	lg = log --oneline --invert-grep --grep=^docs(progress)
