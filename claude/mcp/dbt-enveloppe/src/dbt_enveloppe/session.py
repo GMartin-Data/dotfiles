@@ -151,6 +151,8 @@ class Session:
         """Canonical ``dbt compile`` (K1) of one model validated by ``ls``.
 
         Requires debug, a supported version, and a parse on the current files.
+        Runs on the read-only target: ``--no-introspect`` does not stop
+        ``run_query`` on dbt-snowflake, so writes are refused by the role (K3).
         """
         self._require_debug()
         self._require_parse_current()
@@ -158,7 +160,7 @@ class Session:
         args = ["--select", name, "--no-introspect", "--output", "json"]
         if full_refresh:
             args.append("--full-refresh")
-        result = self._call("compile", args)
+        result = self._call("compile", args, target="ro")
         outcome = conditions.check_compile(result.returncode, result.stdout)
         if outcome.ok:
             return Outcome(True, {**outcome.data, "materialized": materialized})
@@ -168,14 +170,17 @@ class Session:
     def show(self, name: str, limit: int = 5) -> Outcome:
         """Canonical ``dbt show`` (H1) of one model validated by ``ls``.
 
-        Same preconditions as ``compile``; joins the materialization (H3).
+        Same preconditions and read-only target as ``compile``; joins the
+        materialization (H3).
         """
         self._require_debug()
         self._require_parse_current()
         materialized = self._require_validated_name(name)
         conditions.validate_limit(limit)
         result = self._call(
-            "show", ["--select", name, "--limit", str(limit), "--output", "json"]
+            "show",
+            ["--select", name, "--limit", str(limit), "--output", "json"],
+            target="ro",
         )
         return conditions.check_show(
             result.returncode, result.stdout, materialized=materialized
@@ -209,7 +214,7 @@ class Session:
         """Whitelisted ``codegen`` macro written to a new file, then re-parsed (G1 to G5).
 
         The file is removed if the content check or the parse fails. The
-        content is never returned (G6).
+        content is never returned (G6). The macro runs on the read-only target.
         """
         self._require_debug()
         self._require_parse_current()
@@ -219,7 +224,9 @@ class Session:
         macro_args = dict(args)
         if macro == "generate_source":
             macro_args["generate_columns"] = True
-        result = self._call("run-operation", [macro, "--args", json.dumps(macro_args)])
+        result = self._call(
+            "run-operation", [macro, "--args", json.dumps(macro_args)], target="ro"
+        )
         if result.returncode != 0:
             return Outcome(
                 False,

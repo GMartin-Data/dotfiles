@@ -93,7 +93,7 @@ def test_compile_canonical_call_and_data(project_dir: Path, fake_run: FakeRun) -
         "json",
         "--full-refresh",
     ]
-    assert argv[-2:] == ["--target", "dev"]
+    assert argv[-2:] == ["--target", "ro"]
 
 
 def test_show_canonical_call_joins_materialization(
@@ -117,6 +117,7 @@ def test_show_canonical_call_joins_materialization(
         "--output",
         "json",
     ]
+    assert argv[-2:] == ["--target", "ro"]
 
 
 def test_show_inline_canonical_call(project_dir: Path, fake_run: FakeRun) -> None:
@@ -328,6 +329,7 @@ def test_codegen_writes_the_file_reparses_and_hides_the_content(
     assert argv[i + 1] == "generate_model_yaml"
     assert argv[i + 2] == "--args"
     assert json.loads(argv[i + 3]) == {"model_names": ["dim_customers"]}
+    assert argv[-2:] == ["--target", "ro"]
     assert fake_run.calls[-1] is fake_run.argv_for("parse")
     assert "columns" in outcome.data and "content" not in outcome.data
 

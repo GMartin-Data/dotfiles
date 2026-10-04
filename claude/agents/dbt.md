@@ -26,11 +26,11 @@ s'applique : lis le motif, corrige, ne contourne pas.
 | D1–D3 | `dbt_debug()` | Sans `--quiet` ; renvoie les lignes `[OK …]`, `[ERROR …]`, `All checks passed!` et les versions, jamais le bloc `Connection` |
 | P1–P2 | `dbt_parse()` | `--no-partial-parse --warn-error` ; succès = `{"ok": true}`, toute sortie = échec ; une réparse réussie efface les sélections validées par `dbt_ls` |
 | L1–L4 | `dbt_ls(select, expected)` | `--resource-type model --warn-error` ; `expected` = liste exacte des noms attendus ; échoue sur tout écart et renvoie la liste réelle ; valide `select` pour `dbt_build` et chaque nom pour `dbt_compile`/`dbt_show`, jusqu'au prochain parse |
-| K1–K5 | `dbt_compile(name, full_refresh=False)` | `--no-introspect` ; `name` = nom exact validé par `dbt_ls` ; renvoie le SQL compilé et la matérialisation |
-| H1–H6, H8 | `dbt_show(name, limit=5)` | Nom exact validé par `dbt_ls` ; `limit` de 1 à 50, ou `-1` (tronqué à 50) ; un `incremental` à 0 ligne est signalé comme tel |
+| K1–K5 | `dbt_compile(name, full_refresh=False)` | `--no-introspect` et cible `ro` (un `run_query` à effet de bord est refusé par le rôle, pas par le drapeau) ; `name` = nom exact validé par `dbt_ls` ; renvoie le SQL compilé et la matérialisation |
+| H1–H6, H8 | `dbt_show(name, limit=5)` | Cible `ro` ; nom exact validé par `dbt_ls` ; `limit` de 1 à 50, ou `-1` (tronqué à 50) ; un `incremental` à 0 ligne est signalé comme tel |
 | H7 | `dbt_show_inline(sql, limit=5)` | Un seul `select` ou `with … select`, aucun `;` ; cible `ro` (utilisateur et rôle Snowflake en lecture seule) imposée par le serveur — c'est le « profil lecture seule » de H7 |
 | S1, S5 | `dbt_build(select, full_refresh=False)` | Cible `dev` imposée ; refusé sans `dbt_debug` réussi, sans `dbt_parse` réussi sur l'état courant des fichiers, sans `select` validé par `dbt_ls` ; succès = `run_results.json` réécrit par cet appel, aucun `error`/`fail`/`skipped`, modèles exécutés = liste validée ; `warn` remonté, jamais le journal complet |
-| O1–O3, G1–G6 | `dbt_codegen(macro, args, output_path)` | Les 5 macros `codegen` seulement ; `output_path` relatif au projet et **inexistant** ; le fichier écrit est reparsé et supprimé si le parse échoue ou si les colonnes sont vides ; renvoie chemin, taille, nombre de colonnes — jamais le contenu |
+| O1–O3, G1–G6 | `dbt_codegen(macro, args, output_path)` | Les 5 macros `codegen` seulement, sous la cible `ro` ; `output_path` relatif au projet et **inexistant** ; le fichier écrit est reparsé et supprimé si le parse échoue ou si les colonnes sont vides ; renvoie chemin, taille, nombre de colonnes — jamais le contenu |
 
 Préconditions tenues par le serveur : `dbt_compile`, `dbt_show`, `dbt_build`,
 `dbt_codegen` et `dbt_show_inline` exigent un `dbt_debug` réussi et un
