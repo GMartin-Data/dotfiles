@@ -1,5 +1,46 @@
 ## Dernière mise à jour
-Date : 2026-10-04 15:34
+Date : 2026-10-04 17:02
+Session : 86755d4a-fc5f-4c9d-a934-6c8a09e318d9
+
+## Tâches complétées
+
+- **Chantier dbt agent clos — revue de code, triage, PR #5 mergée sur `main`** (`924e4fd`, merge commit, parents `2c3f55a` ← main et `1865d9d` ← branche ; `feat/dbt-agent` conservée sur `origin` pour l'historique) :
+  1. **`/code-review high` en session dédiée** (décision Greg) : 10 findings. Chaque finding vérifié avant soumission (reproduction sur le hook ou l'enveloppe, sinon lecture), **triage un par tour**, correctifs **test-first** (rouge constaté → go → vert), **un commit par finding** : hook — mots-clés `if`/`do`/`!` et redirections (`fcafccd`), programmes inertes `pytest`/`ruff`/`mypy`/`pyright`/`pre-commit` derrière un lanceur (`fe5bca6`) ; enveloppe — kill du groupe de processus au timeout (`3f2c801`), chemins de sortie dbt résolus comme dbt (`DBT_ENGINE_*` > `dbt_project.yml` > défauts, `a8d196d`), stdout conservé sur `run_results` périmé (`2c37092`), `RefusalError` si le lanceur ne démarre pas (`ce0b637`), sélection normalisée entre `ls` et `build` (`37c8282`), rollback des répertoires de `codegen` (`31e0b15`), refactor `_status()` (`58692ba`) ; `install.sh` en français — exemption déclarée dans `CLAUDE.md` projet (`b4fea5d`). Suite : 205 → **233 tests verts**, shellcheck propre.
+  2. **Deux claims de la revue invalidés par reproduction** : le blocage de l'enveloppe au timeout (faux sur POSIX, `wait()` après `kill`) ; la « traceback brute » sur `uv` absent (le SDK MCP la masque en `Error executing tool`, serveur vivant). Corrigés quand même, à moindre portée.
+  3. **Livrable §7 écrit** (table des 10 findings : vérification, sort, commit), compteurs du §1/§2 mis à jour, statut du plan à jour ; README : hook et empreinte réécrits pour les findings 1, 3, 5.
+  4. **PR #5 ouverte puis mergée** (`gh pr merge --merge`, décision Greg en séance) ; `main` local ramené à `924e4fd`.
+
+## En cours
+
+- Rien — ce checkpoint à committer sur `main` puis pousser.
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) sur `main`, puis `git push origin main`.
+2. **À la main de Greg** : `./install.sh` (post-merge, test plan de la PR), puis première tâche déléguée au subagent `dbt` sur un vrai projet — critère de révision de l'effort (`high` → `medium`/`xhigh`) à ce moment-là.
+3. **Hors chantier, hérité** : archiver les checkpoints antérieurs à septembre de `progress.md` (4 300+ lignes, tronqué au `/catchup`) ; faiblesses de `block-force-push.sh` (mot « force » non ancré) et `block-rm-rf.sh` (bloque `rm -f` sur un fichier unique, subi en séance) — signalées, non corrigées.
+4. **Event-driven, non planifié** : 9ᵉ outil `dbt_docs_generate` ; exposer « modèle construit ou non » ; T20 à la première exécution concurrente ; le hook bloque `python - <<EOF … import dbt` (voulu, noté au livrable §7).
+5. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés ; **à prendre en compte à la mesure du ratio méta/produit** : le chantier d'outillage dbt est désormais fermé.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles). Écarts avec la spec dbt : livrable §3, inchangés par la revue.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **10 findings sur 10 traités** (8 fix, 1 refactor, 1 exemption documentaire), y compris les deux requalifiés mineurs après reproduction (findings 6 et 8).
+  - **Finding 5** : option (b) liste de programmes inertes plutôt qu'acter le fail-closed ; `python`/`sh` restent inspectés.
+  - **Finding 10** : exemption `install.sh` en français déclarée dans `CLAUDE.md` projet plutôt que traduire (bloc neuf ou fichier entier).
+  - **Merge par Claude** (revirement en séance : « j'aimerais en fait que tu merges »), merge commit, **branche distante conservée**.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-04 15:34
 Session : a9402681-d49d-4e6e-bbaf-04b0771d3cfc
 
 ## Tâches complétées
