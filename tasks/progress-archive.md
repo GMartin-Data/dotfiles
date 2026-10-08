@@ -6,6 +6,52 @@
 
 ---
 
+## Checkpoint précédent — 2026-10-04 15:34
+Session : a9402681-d49d-4e6e-bbaf-04b0771d3cfc
+
+## Tâches complétées
+
+- **Étape 6 du plan dbt agent close — rejeu T0–T21 par le subagent réel, livrable écrit, branche poussée** (`feat/dbt-agent`, 14 commits poussés `d3aaf94..62ee6f1`, 0 d'avance) :
+  1. **8 runs du subagent réel** (`claude -p` stream-json, Haiku en session principale, subagent `claude-opus-5-5`, 1,36 $) depuis le testbed ; lecture des événements `parent_tool_use_id` + `task_notification`. Boucle complète écrire → `parse` → `ls` → `build` → `show` → `codegen` sans refus non voulu ; refus de l'enveloppe (G4, G5, P1, H7) lus et respectés ; deux règles anticipées par l'agent (H3, H5). Lanceur et transcripts : `~/dbt-agent-testbed-results/step6/` (hors du projet dbt).
+  2. **Trois décisions Greg, une par tour, toutes exécutées** : (a) subagents `dbt` concurrents interdits par la `description` — Claude Code tue le serveur inline partagé par nom quand l'un finit (`c7d8adb`) ; (b) empreinte de fichiers large conservée, contrat écrit au README ; (c) **`compile`/`show`/`codegen` passés sous la cible `ro`** (`98b483a`, test-first 3 rouges → 205 verts) parce que `--no-introspect` n'empêche pas `run_query` sur dbt-snowflake — garde K3 devenue structurelle, prouvée (`Insufficient privileges`, 0 table créée).
+  3. **Point 9 du §6 [Observé]** : `! uv run … dbt --version` passe, la même commande par mon Bash est `BLOCKED`.
+  4. **Tests bruts T1, T2, T10, T14, T17, T18 lancés par Greg** (`t_series.sh`), lus et étiquetés ; T21 [Observé] sur `dev` (Snowsight, 15 requêtes `dbt-agent`) et `ro` (44 `dbt-agent-ro`). T11/T12 actés hors périmètre ; T20 non implémenté, noté.
+  5. **`effort: high` conservé** (décision Greg) malgré 0 « cale » sur 8 runs : banc trivial, révision au premier vrai projet.
+  6. **Livrable de fin écrit** (`tasks/dbt-agent-2026-10/livrable.md`, brief §6) : fonctionne / écarté / 9 écarts à reporter dans la spec / table T0–T21 / usage / suites. Plan §16 complet, statut en tête à jour. README : paragraphe « Désinstaller l'agent dbt » (`62ee6f1`).
+  7. **Testbed** : 5 modèles écrits par le subagent commités (`0434792`, dépôt local sans remote).
+
+## En cours
+
+- Rien — ce checkpoint à committer puis pousser (1 commit).
+
+## Prochaines étapes
+
+1. **Committer ce checkpoint** (`docs(progress)`) puis `git push origin feat/dbt-agent`.
+2. **`/clear` → `/catchup` → `/code-review` sur le diff `feat/dbt-agent` → `main`, session dédiée** (décision Greg : la revue a sa propre session). Effort `high` au moins ; zones sensibles : `block-dbt.sh` (découpeur awk), `session.py`, `conditions.py`. Triage des findings un par tour, puis **PR** — merge commit (pas squash, pas rebase) pour que le rollback tienne en un `git revert -m 1`.
+3. **Après merge, hors chantier** : archiver les checkpoints antérieurs à septembre de `progress.md` (4 275 lignes, ~108k tokens, tronqué au `/catchup`) ; signaler sans corriger : faiblesses de `block-force-push.sh` et `block-rm-rf.sh` (plan §15).
+4. **Event-driven, non planifié** : 9ᵉ outil `dbt_docs_generate` ; exposer « modèle construit ou non » (constat 8) ; T20 à la première exécution concurrente ; révision de l'effort au premier vrai projet.
+5. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles). Écarts avec la spec dbt : listés au livrable §3, à reporter dans `spec.md` au besoin.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg, une par tour :
+  - **Un seul subagent `dbt` à la fois** (phrase dans la `description`).
+  - **Empreinte large conservée** plutôt que restreinte aux chemins dbt.
+  - **Lecture sous `ro`, écriture sous `dev`** : `compile`, `show`, `codegen` rejoignent `show_inline` ; seul `build` reste sur `dev`.
+  - **`effort: high` conservé**, révision reportée au premier vrai projet.
+  - **T11/T12 actés hors périmètre** ; fichiers du subagent **commités dans le testbed**.
+  - **Session dédiée au `/code-review`**, après push et checkpoint ; paragraphe de désinstallation écrit avant la revue (insensible à ses findings, et revu avec le reste).
+
+## Blocages
+
+- Aucun.
+
+---
+
 ## Checkpoint précédent — 2026-10-04 10:30
 Session : 457625a3-c2c2-47f5-a0af-bf3ed90e991c
 

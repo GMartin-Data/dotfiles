@@ -1,5 +1,57 @@
 ## Dernière mise à jour
-Date : 2026-10-04 18:37
+Date : 2026-10-08 14:10
+Session : 445c822b-515b-4ca5-960f-37f1e011301f
+
+## Tâches complétées
+
+- **Précondition « `./install.sh` post-merge » vérifiée, non rejouée** : symlinks
+  `agents/dbt.md`, `hooks/block-dbt.sh`, `mcp/dbt-enveloppe` en place depuis le
+  2026-10-04 10:06 (posés sur la branche, pointent dans le working tree donc sur
+  `main` fusionné) ; `.venv` présent, installation **editable** (`uv pip show`),
+  donc les correctifs de la revue sont vivants ; lockfile inchangé depuis le
+  2026-10-03 ; `uv sync --frozen --dry-run` ne ferait que ré-enregistrer le
+  paquet local. `settings.json` : hook `block-dbt.sh` et `Bash(dbt *)` en deny
+  actifs. La dernière case du test plan de la PR #5 est donc remplie pour sa
+  moitié « installation » ; sa moitié « tâche réelle » est reportée (voir
+  Décisions).
+- Checkpoint du 2026-10-04 18:37 commité (`874190f`), `git lg` ajouté (`8289fba`).
+- **Deuxième rotation de la fenêtre** : checkpoint du 2026-10-04 15:34 déplacé
+  tel quel en tête de `tasks/progress-archive.md` (20 → 21 checkpoints archivés).
+
+## En cours
+
+- **Tâche de fix, à cadrer par Greg** (annoncée en séance, non encore décrite) —
+  analyse méticuleuse demandée ; démarre après ce checkpoint.
+
+## Prochaines étapes
+
+1. Committer ce checkpoint (`docs(progress)`) sur `main`, puis `git push origin main`.
+2. Cadrer la tâche de fix : énoncé, critère de succès vérifiable, fichiers
+   concernés — avant tout outil d'exploration.
+3. **Premier vrai test du subagent `dbt`** : event-driven, déplacé dans
+   `tasks/insights-actions.md` « Ordre du jour reconduit » item 5 (déclencheur :
+   un projet dbt tangible ; la révision de l'effort `high` y est déjà rattachée).
+4. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décision Greg :
+  - **Test réel du subagent `dbt` reporté sine die** : aucun projet dbt tangible
+    disponible ; l'item devient event-driven dans `insights-actions.md` plutôt
+    qu'une « prochaine étape » reconduite sans déclencheur. `./install.sh` n'est
+    pas rejoué (no-op idempotent, précondition déjà acquise).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-04 18:37
 Session : 86755d4a-fc5f-4c9d-a934-6c8a09e318d9
 
 ## Tâches complétées
@@ -71,50 +123,3 @@ Session : 86755d4a-fc5f-4c9d-a934-6c8a09e318d9
 ## Blocages
 
 - Aucun.
-
----
-
-## Checkpoint précédent — 2026-10-04 15:34
-Session : a9402681-d49d-4e6e-bbaf-04b0771d3cfc
-
-## Tâches complétées
-
-- **Étape 6 du plan dbt agent close — rejeu T0–T21 par le subagent réel, livrable écrit, branche poussée** (`feat/dbt-agent`, 14 commits poussés `d3aaf94..62ee6f1`, 0 d'avance) :
-  1. **8 runs du subagent réel** (`claude -p` stream-json, Haiku en session principale, subagent `claude-opus-5-5`, 1,36 $) depuis le testbed ; lecture des événements `parent_tool_use_id` + `task_notification`. Boucle complète écrire → `parse` → `ls` → `build` → `show` → `codegen` sans refus non voulu ; refus de l'enveloppe (G4, G5, P1, H7) lus et respectés ; deux règles anticipées par l'agent (H3, H5). Lanceur et transcripts : `~/dbt-agent-testbed-results/step6/` (hors du projet dbt).
-  2. **Trois décisions Greg, une par tour, toutes exécutées** : (a) subagents `dbt` concurrents interdits par la `description` — Claude Code tue le serveur inline partagé par nom quand l'un finit (`c7d8adb`) ; (b) empreinte de fichiers large conservée, contrat écrit au README ; (c) **`compile`/`show`/`codegen` passés sous la cible `ro`** (`98b483a`, test-first 3 rouges → 205 verts) parce que `--no-introspect` n'empêche pas `run_query` sur dbt-snowflake — garde K3 devenue structurelle, prouvée (`Insufficient privileges`, 0 table créée).
-  3. **Point 9 du §6 [Observé]** : `! uv run … dbt --version` passe, la même commande par mon Bash est `BLOCKED`.
-  4. **Tests bruts T1, T2, T10, T14, T17, T18 lancés par Greg** (`t_series.sh`), lus et étiquetés ; T21 [Observé] sur `dev` (Snowsight, 15 requêtes `dbt-agent`) et `ro` (44 `dbt-agent-ro`). T11/T12 actés hors périmètre ; T20 non implémenté, noté.
-  5. **`effort: high` conservé** (décision Greg) malgré 0 « cale » sur 8 runs : banc trivial, révision au premier vrai projet.
-  6. **Livrable de fin écrit** (`tasks/dbt-agent-2026-10/livrable.md`, brief §6) : fonctionne / écarté / 9 écarts à reporter dans la spec / table T0–T21 / usage / suites. Plan §16 complet, statut en tête à jour. README : paragraphe « Désinstaller l'agent dbt » (`62ee6f1`).
-  7. **Testbed** : 5 modèles écrits par le subagent commités (`0434792`, dépôt local sans remote).
-
-## En cours
-
-- Rien — ce checkpoint à committer puis pousser (1 commit).
-
-## Prochaines étapes
-
-1. **Committer ce checkpoint** (`docs(progress)`) puis `git push origin feat/dbt-agent`.
-2. **`/clear` → `/catchup` → `/code-review` sur le diff `feat/dbt-agent` → `main`, session dédiée** (décision Greg : la revue a sa propre session). Effort `high` au moins ; zones sensibles : `block-dbt.sh` (découpeur awk), `session.py`, `conditions.py`. Triage des findings un par tour, puis **PR** — merge commit (pas squash, pas rebase) pour que le rollback tienne en un `git revert -m 1`.
-3. **Après merge, hors chantier** : archiver les checkpoints antérieurs à septembre de `progress.md` (4 275 lignes, ~108k tokens, tronqué au `/catchup`) ; signaler sans corriger : faiblesses de `block-force-push.sh` et `block-rm-rf.sh` (plan §15).
-4. **Event-driven, non planifié** : 9ᵉ outil `dbt_docs_generate` ; exposer « modèle construit ou non » (constat 8) ; T20 à la première exécution concurrente ; révision de l'effort au premier vrai projet.
-5. Points du cycle `/insights` 2026-10-26 et chantier evals Phase 4 : inchangés.
-
-## Écarts vs PRD
-
-- N/A (pas de PRD — repo dotfiles). Écarts avec la spec dbt : listés au livrable §3, à reporter dans `spec.md` au besoin.
-
-## Décisions prises
-
-- Track léger, sans ADR — décisions Greg, une par tour :
-  - **Un seul subagent `dbt` à la fois** (phrase dans la `description`).
-  - **Empreinte large conservée** plutôt que restreinte aux chemins dbt.
-  - **Lecture sous `ro`, écriture sous `dev`** : `compile`, `show`, `codegen` rejoignent `show_inline` ; seul `build` reste sur `dev`.
-  - **`effort: high` conservé**, révision reportée au premier vrai projet.
-  - **T11/T12 actés hors périmètre** ; fichiers du subagent **commités dans le testbed**.
-  - **Session dédiée au `/code-review`**, après push et checkpoint ; paragraphe de désinstallation écrit avant la revue (insensible à ses findings, et revu avec le reste).
-
-## Blocages
-
-- Aucun.
-

@@ -81,8 +81,11 @@ un verdict, pas un oubli.
    principe ; « gel des déclencheurs » passe en promotion projet à une
    seconde occurrence (formulation dans `tasks/lessons-archive.md`) ;
    **dbt (2026-10-04)** : 9ᵉ outil `dbt_docs_generate`, exposer « modèle
-   construit ou non », T20 à la première exécution concurrente, révision de
-   l'effort du subagent au premier vrai projet ; faiblesses de
+   construit ou non », T20 à la première exécution concurrente, **premier vrai
+   test du subagent (reporté le 2026-10-08, pas de projet tangible —
+   déclencheur : un projet dbt réel)** et révision de l'effort à ce moment-là
+   (la précondition `./install.sh` est acquise, vérifiée le 2026-10-08) ;
+   faiblesses de
    `block-force-push.sh` (mot « force » non ancré) et `block-rm-rf.sh`
    (bloque `rm -f` sur un fichier unique).
 6. Hors repo, à la main de Greg : pin `known-first-party` ; learning record
