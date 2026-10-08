@@ -17,21 +17,21 @@ Session : 445c822b-515b-4ca5-960f-37f1e011301f
 - Checkpoint du 2026-10-04 18:37 commité (`874190f`), `git lg` ajouté (`8289fba`).
 - **Deuxième rotation de la fenêtre** : checkpoint du 2026-10-04 15:34 déplacé
   tel quel en tête de `tasks/progress-archive.md` (20 → 21 checkpoints archivés).
+- **`/model` et `/effort` persistent dans le repo** : une bascule ponctuelle vers
+  Opus 5.5 / high a réécrit `claude/settings.json` (symlink global : `"model"`,
+  bloc `modelSettings`) ; restauré par `git restore`, défaut resté sur Fable.
 
 ## En cours
 
-- **Tâche de fix, à cadrer par Greg** (annoncée en séance, non encore décrite) —
-  analyse méticuleuse demandée ; démarre après ce checkpoint.
+- Rien. La tâche de fix annoncée en séance se traite sur claude.ai, hors de ce
+  repo — rien à reprendre ici.
 
 ## Prochaines étapes
 
-1. Committer ce checkpoint (`docs(progress)`) sur `main`, puis `git push origin main`.
-2. Cadrer la tâche de fix : énoncé, critère de succès vérifiable, fichiers
-   concernés — avant tout outil d'exploration.
-3. **Premier vrai test du subagent `dbt`** : event-driven, déplacé dans
+1. **Premier vrai test du subagent `dbt`** : event-driven, dans
    `tasks/insights-actions.md` « Ordre du jour reconduit » item 5 (déclencheur :
-   un projet dbt tangible ; la révision de l'effort `high` y est déjà rattachée).
-4. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+   un projet dbt tangible ; la révision de l'effort `high` y est rattachée).
+2. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
 
 ## Écarts vs PRD
 
