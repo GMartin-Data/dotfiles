@@ -191,9 +191,17 @@ Vérifications **[Observé]** contre `https://tech-watch-mcp-ocbwcs6sjq-ew.a.run
 
 Note S4 : la vidéo officielle dure 3:21, donc `video_duration="medium"` (≥ 4 min) l'aurait **exclue** — confirme le choix de laisser la skill filtrer sur `duration_seconds` plutôt que le paramètre API (K4/K5, phase 3).
 
-**Trouvé en lisant les logs, non corrigé (hors revue)** : httpx journalise chaque requête au niveau INFO avec son URL complète, donc `youtube/v3/search?…&key=<YOUTUBE_API_KEY>` est écrit dans les logs Cloud Run à chaque recherche YouTube. **Antérieur à ce chantier** : déjà présent dans les logs de `00007-5kt` (entrée du 2026-10-09 07:34 UTC). 8a3418a n'a couvert que les messages d'erreur. Correctif d'une ligne côté serveur, `logging.getLogger("httpx").setLevel(logging.WARNING)` dans `utils/logger.py`, test-first puis révision `00009`. Rejoint le risque « endpoint public » : clé lisible par quiconque lit les logs du projet.
+**Trouvé en lisant les logs, corrigé le jour même (hors revue)** : httpx journalise chaque requête au niveau INFO avec son URL complète, donc `youtube/v3/search?…&key=<YOUTUBE_API_KEY>` était écrit dans les logs Cloud Run à chaque recherche YouTube. **Antérieur à ce chantier** : déjà présent dans les logs de `00007-5kt` (entrée du 2026-10-09 07:34 UTC). 8a3418a n'a couvert que les messages d'erreur ; la ligne vient du logger `httpx` lui-même, relayé par le handler racine que le SDK `mcp` installe au démarrage.
 
-**Phase 2 close** (2026-10-09) : critère observé — révision `00008` active, mêmes résultats qu'en local, variables intactes.
+| Étape | Résultat **[Observé]** |
+|---|---|
+| Branche `fix/httpx-request-logging`, test-first | `test_youtube_api_key_never_reaches_the_logs` (session MCP en mémoire + vrai client httpx sur `MockTransport`) : rouge sur `INFO httpx: HTTP Request: GET …&key=AIzaSECRET…`, vert après la ligne `logging.getLogger("httpx").setLevel(logging.WARNING)` dans `setup_logger`. **98 tests verts** |
+| PR #2 mergée `9fccf2b` | 1 ligne de code + 1 test ; pas de `/code-review` (taille), travail mené depuis la session dotfiles par chemins absolus |
+| Révision **`tech-watch-mcp-00009-qgq`**, 100 % | recherche `Claude Code mods` → 3 vidéos avec vues/durée ; logs de la révision : `Searching YouTube` → `Found 3 videos` **sans ligne `HTTP Request`**, 0 entrée contenant `key=` (contre une par appel sur `00008`). Sonde `✅ valid` inchangée |
+
+Reste à la main de Greg : les logs des révisions ≤ `00008` contiennent la clé (rétention Cloud Logging 30 j par défaut) — rotation de `YOUTUBE_API_KEY` dans la console Google puis `gcloud run services update --update-env-vars` si l'on veut fermer le risque, et non seulement le tarir.
+
+**Phase 2 close** (2026-10-09) : critère observé — révision `00009` active (`00008` validée puis remplacée par le correctif httpx), mêmes résultats qu'en local, variables intactes.
 
 ## 6. Ce que Greg doit fournir
 
