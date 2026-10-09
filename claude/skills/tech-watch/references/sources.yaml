@@ -1,0 +1,84 @@
+# Tech Watch — Source Configuration
+
+# -------------------------------------------------------------------
+# TIER 1 — MCP tools (always run first, structured metadata)
+# -------------------------------------------------------------------
+tier_1:
+  - tool: search_arxiv_papers
+    priority: high
+    coverage: Research papers (cs.AI, cs.LG, cs.SE, cs.DB)
+
+  - tool: search_github_repos
+    priority: high
+    coverage: Repos, implementations, trending projects
+    note: Falls back to web_search site:github.com if 401/rate-limited
+
+  - tool: search_youtube_videos
+    priority: high
+    coverage: Tutorials, demos, conference talks
+
+# -------------------------------------------------------------------
+# TIER 2 — Web search (always run after Tier 1)
+# -------------------------------------------------------------------
+tier_2:
+  query_templates:
+    - '"{query}" {current_year}'                              # general
+    - '"{query}" site:substack.com OR site:dev.to OR site:hashnode.dev'  # community
+    - '"{query}" tutorial guide walkthrough'                  # practical
+
+# -------------------------------------------------------------------
+# TIER 3 — Extended sources (only if Tier 1+2 return < 12 results)
+# -------------------------------------------------------------------
+tier_3:
+  - name: Papers With Code
+    url: paperswithcode.com
+    fetch: 'web_search site:paperswithcode.com "{query}"'
+    priority: high
+    note: Benchmark + implementation context, more actionable than arXiv alone
+
+  - name: Hugging Face Blog
+    url: huggingface.co/blog
+    fetch: 'web_search site:huggingface.co/blog "{query}"'
+    priority: high
+    note: Model/dataset releases with practical context
+
+  - name: Anthropic Engineering Blog
+    url: anthropic.com/engineering
+    fetch: 'web_search site:anthropic.com/engineering "{query}"'
+    priority: high
+
+  - name: Google DeepMind Blog
+    url: deepmind.google/research
+    fetch: 'web_search site:deepmind.google "{query}"'
+    priority: medium
+
+  - name: The Batch (Andrew Ng)
+    url: deeplearning.ai/the-batch
+    fetch: 'web_search site:deeplearning.ai/the-batch "{query}"'
+    priority: medium
+    note: Weekly editorial curation, strong signal-to-noise ratio
+
+  - name: Import AI / Ahead of AI
+    fetch: 'web_search "import AI" OR "ahead of AI" "{query}"'
+    priority: medium
+    note: Deep analytical newsletters, less noise than general blogs
+
+  - name: Hacker News
+    fetch: 'web_search site:news.ycombinator.com "{query}"'
+    priority: medium
+    note: Early-stage signal, unfiltered technical discussion
+
+  - name: DEV.to / Hashnode
+    fetch: 'web_search site:dev.to OR site:hashnode.dev "{query}"'
+    priority: low
+    note: Practitioner experience, less academic than arXiv
+
+# -------------------------------------------------------------------
+# SEARCH CONFIG
+# -------------------------------------------------------------------
+search_config:
+  default_days_back: 30
+  extended_days_back: 60       # for niche/slow-moving topics
+  target_results: 20
+  min_results_before_tier3: 12
+  min_score_threshold: 60      # results below this are excluded
