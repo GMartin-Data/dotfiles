@@ -1,5 +1,89 @@
 ## Dernière mise à jour
-Date : 2026-10-09 13:51
+Date : 2026-10-09 16:21
+Session : 71570f5a-6005-4fcb-a082-dd041048698a
+
+## Tâches complétées
+
+- **Phase 1 bis (revue) close** — menée en session dédiée sur `~/mcp-server-code` :
+  `/code-review high` sur `main..fix/search-quality`, 10 findings triagés,
+  6 commits de correctifs test-first (clé YouTube hors des messages d'erreur,
+  sonde du token une fois par processus, `_fetch_details` best-effort sur toute
+  erreur, `Field`/`Literal` dans les schémas + refus de `query=""`, phrase
+  entre guillemets dans une requête arXiv, `channelTitle` décodé). PR #1 mergée
+  (`574d580`), 79 → 97 tests. Détail commit par commit : `plan.md` §5.
+- **Phase 2 (déploiement) close** — go Greg, D6 : `gcloud run deploy --source .`
+  depuis `main` → révision `tech-watch-mcp-00008-mp2`, puis `00009-qgq`
+  (voir ci-dessous), 100 % du trafic, variables d'env intactes (noms
+  vérifiés). **Vérifications live [Observé]** contre l'endpoint SSE via le
+  client du SDK `mcp` : 3 outils avec descriptions, enums et `minLength` ;
+  `dbt` → `dbt-labs/dbt` n° 1 sans avertissement 401 ; arXiv 4/5 pertinents ;
+  **critère S4 live rempli** (« Mods in Claude Code », chaîne Claude, n° 2/10,
+  341 916 vues, 3:21) ; `sort='popular'` et `query=''` → `isError` sans appel
+  amont ; logs de révision `🦑 GitHub token: ✅ valid`. Repli documenté dans
+  `plan.md` §5 (`update-traffic --to-revisions …00007-5kt=100`).
+- **Fuite de la clé YouTube dans les logs Cloud Run trouvée et corrigée** :
+  httpx journalisait chaque requête au niveau INFO avec l'URL complète
+  (`…&key=<YOUTUBE_API_KEY>`), antérieur au chantier (déjà sur `00007`).
+  Branche `fix/httpx-request-logging` menée **depuis cette session dotfiles**
+  (chemins absolus) : test rouge (session MCP en mémoire + `MockTransport`,
+  la ligne `HTTP Request … key=AIzaSECRET` capturée) → logger `httpx` au
+  niveau `WARNING` dans `setup_logger` → 98 tests verts. PR #2 mergée
+  (`9fccf2b`), révision **`00009-qgq`** déployée ; logs vérifiés : recherche
+  YouTube sans ligne `HTTP Request`, 0 entrée `key=`.
+- Plan tenu à jour : `plan.md` §5 (phase 1 bis, phase 2, fix httpx), commits
+  `f8d0411` et `8aa493c` sur `feat/tech-watch-skill` (8 commits docs,
+  **non poussée**).
+
+## En cours
+
+- Rien côté serveur : `main` = `origin/main` (`9fccf2b`), suite verte, prod
+  sur `00009`. Le chantier bascule sur la skill (phase 0), qui attend l'export.
+
+## Prochaines étapes
+
+1. **Phase 0 — bloquée par Greg** : export de la skill depuis Claude.ai
+   (`.skill` ou les 4 fichiers `SKILL.md` + `references/`) → import verbatim
+   dans `claude/skills/tech-watch/`, déclaration MCP (D3a : `claude mcp add
+   --transport sse tech-watch https://tech-watch-mcp-ocbwcs6sjq-ew.a.run.app/sse`),
+   référence E1–E10 dans `baseline/`. **Session neuve** (`/clear` + `/catchup`)
+   une fois l'export disponible : `plan.md` §3 phase 0.
+2. Phases 3–4 (skill K1–K12 dans l'ordre du plan, K5 en tour dédié ; evals ;
+   retrait de l'ancien trio `/tech-watch` command + agent + script — D2a ;
+   seconde `/code-review` sur `feat/tech-watch-skill`, PR) : `plan.md` §3.
+3. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles). Écarts à la passation : S6 étendu à la
+  fusion des deux entrées serveur ; ordre S6 avant S1 ; revue insérée avant
+  le déploiement ; correctif httpx (hors passation) livré en révision `00009`.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg :
+  - **Phase 2 (D6)** : go donné le 2026-10-09 ; déploiements `00008` puis
+    `00009` lancés par Claude, variables d'env non touchées.
+  - **Fix httpx traité depuis la session dotfiles**, branche de fix + PR #2
+    sans `/code-review` (1 ligne de code + 1 test) — exception ponctuelle à
+    « une session par dépôt », motivée par la taille.
+  - Les logs des révisions ≤ `00008` contiennent la clé : **rotation de
+    `YOUTUBE_API_KEY` laissée à la main de Greg** (console Google puis
+    `gcloud run services update --update-env-vars`).
+  - Reprise de la skill dans un **contexte frais** après ce checkpoint.
+- Rappel des décisions de la phase 1 (D1 remote privé, S6 (a) module unique,
+  choix S2/S3/S4, S6 avant S1) : `plan.md` §1 et §5.
+
+## Blocages
+
+- **Export de la skill** depuis Claude.ai (à la main de Greg) — bloque les
+  phases 0, 3, 4.
+- Risque hors chantier maintenu : endpoint Cloud Run `/sse` **public sans
+  auth** (quota YouTube exposé) — à traiter séparément (IAM ou clé en header).
+  S'y ajoute la rotation de la clé YouTube (logs historiques), optionnelle.
+
+---
+
+## Checkpoint précédent — 2026-10-09 13:51
 Session : 847b86f0-f265-4644-aa61-225cbecc5943
 
 ## Tâches complétées
@@ -139,40 +223,6 @@ Session : 445c822b-515b-4ca5-960f-37f1e011301f
     disponible ; l'item devient event-driven dans `insights-actions.md` plutôt
     qu'une « prochaine étape » reconduite sans déclencheur. `./install.sh` n'est
     pas rejoué (no-op idempotent, précondition déjà acquise).
-
-## Blocages
-
-- Aucun.
-
----
-
-## Checkpoint précédent — 2026-10-04 18:37
-Session : 86755d4a-fc5f-4c9d-a934-6c8a09e318d9
-
-## Tâches complétées
-
-- **`progress.md` mis sous fenêtre glissante** (`df497e4`, poussé) : mesuré 4 361 lignes pour 22 checkpoints **tous depuis le 2026-09-02** (~200 lignes chacun — il n'y avait rien d'« antérieur à septembre » à archiver), tronqué au `/catchup` par le plafond de 25k tokens du Read, en plein milieu d'un checkpoint. Coupe : `progress.md` → 132 lignes (3 checkpoints), 19 checkpoints déplacés tels quels dans `tasks/progress-archive.md` (en-tête : jamais lu au `/catchup`). Règle ajoutée à `claude/commands/progress.md` (symlinké, actif) : après écriture, déplacer le surplus en tête de l'archive, sans condenser ; README mis à jour.
-- Checkpoint précédent (17:02) commité et poussé (`327f1ef`).
-- **Perte de disponibilité révélée par la fenêtre, corrigée** (`aa3dc22`) : les items reconduits « inchangés » pointaient vers un checkpoint sorti de la fenêtre. Relogés dans `tasks/insights-actions.md` « Ordre du jour reconduit » (cellule de la matrice alignée) ; règle dans `/progress` : checkpoint de tête auto-suffisant, jamais de report par référence. Fenêtre maintenue à 3 (plafond utile = 5, le Read tronque à 25k tokens ; 3 ≈ 15k par reprise).
-
-## En cours
-
-- Rien — ce checkpoint à committer sur `main` puis pousser ; première rotation de la fenêtre par la règle (le checkpoint du 10:30 part à l'archive).
-
-## Prochaines étapes
-
-1. **Committer ce checkpoint** (`docs(progress)`) puis `git push origin main`.
-2. **À la main de Greg** : `./install.sh` post-merge, puis première tâche déléguée au subagent `dbt` sur un vrai projet (révision de l'effort à ce moment-là).
-3. **Items dormants, event-driven et cycle `/insights` 2026-10-26** : tous dans `tasks/insights-actions.md`, section « Ordre du jour reconduit » (relogés le 2026-10-04 depuis les checkpoints — plus de report par référence ici).
-
-## Écarts vs PRD
-
-- N/A (pas de PRD — repo dotfiles).
-
-## Décisions prises
-
-- Track léger, sans ADR — décisions Greg :
-  - **Fenêtre glissante de 3 checkpoints + archive** plutôt que « supprimer, git garde tout » (grep facile conservé) ; verbosité des checkpoints (~200 lignes) **non touchée**, le format fait son travail de reprise.
 
 ## Blocages
 
