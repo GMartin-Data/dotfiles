@@ -96,7 +96,16 @@ Ordre : **S3 → S2 → S4 → S5 → S1 → S6**. Pour chaque item : test qui �
 
 **Critère** : chacun de S1–S5 a un test rouge avant / vert après ; suite complète verte ; appels de reproduction du §9 de la passation rejoués en stdio local avec les résultats attendus (`dbt-core` top 3, ≥ 4/5 arXiv pertinents, vidéo officielle présente).
 
-### Phase 2 — Déploiement
+### Phase 1 bis — Revue avant production (ajoutée le 2026-10-09)
+
+`/code-review high` sur `main..fix/search-quality`, **en session dédiée** (CWD
+`~/mcp-server-code`, précédent dbt), triage un finding par tour, correctifs
+test-first, un commit par finding. La revue précède le déploiement : un bug
+trouvé après coup forcerait une seconde révision en production. Seconde revue
+prévue sur `feat/tech-watch-skill` avant la PR dotfiles (phase 4) — une revue
+par dépôt, chacune avant que sa branche ne sorte.
+
+### Phase 2 — Déploiement (après la phase 1 bis)
 
 `gcloud run deploy tech-watch-mcp --source . --region europe-west1 --project mcp-servers-prod` (D6, après go). Vérification : les appels du §9 rejoués **contre l'endpoint déployé**.
 
