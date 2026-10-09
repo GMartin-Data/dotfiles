@@ -159,6 +159,42 @@ Choix S3 validés par Greg : multi-mots = `AND` des termes (expression exacte su
 
 Dette adjacente **signalée, non corrigée** : `tests/unit/test_arxiv.py` porte ~48 avertissements ruff hérités (W293, I001, SIM117) — un commit `style` séparé si Greg le souhaite.
 
+### Phase 1 bis — Revue avant production (2026-10-09, session dédiée, CWD serveur)
+
+`/code-review high` sur `main..fix/search-quality` : 10 findings triagés, **6 commits de correctifs** test-first, puis PR #1 mergée (`574d580`, 13:22 UTC), `main` = `origin/main`. **79 → 97 tests verts** (relancé depuis les dotfiles : `97 passed`).
+
+| Commit | Finding corrigé |
+|---|---|
+| `8a3418a` `fix(youtube)` | Le message de `HTTPStatusError` embarquait l'URL, donc `key=<YOUTUBE_API_KEY>` — renvoyé aux clients et écrit dans les logs Cloud Run. Message rebâti depuis le statut + `reason`/`message` de Google ; branche `if 'error' in data` morte retirée |
+| `11c8cdb` `fix(github)` | Sonde `/rate_limit` rejouée à **chaque connexion SSE** (lifespan par connexion) et verdict `rejected` jamais répercuté sur les recherches. Une sonde par processus (cache module), rejet mémorisé d'emblée |
+| `1862247` `fix(youtube)` | `_fetch_details` « best effort » seulement sur `HTTPError` : corps non-JSON ou durée inconnue faisait échouer toute la recherche |
+| `590f0e3` `fix(server)` | `Annotated[type, "text"]` ignoré par pydantic : aucune description ni enum dans les `inputSchema`, `query=""` atteignait l'amont. `Field(description=…)`, `Field(min_length=1)`, `Literal[…]` |
+| `00a2ce7` `fix(arxiv)` | `agent "trust layer"` découpé sur les espaces en termes `all:` déséquilibrés |
+| `484b140` `fix(youtube)` | `channelTitle` non décodé ; description tronquée avant décodage (coupe possible dans une entité) |
+
+Signalé, non corrigé (PR #1) : pas de log dans `tools/` quand l'enrichissement YouTube se dégrade ; une `query` d'espaces passe `min_length=1` ; ruff hérité dans `tests/`.
+
+### Phase 2 — Déploiement (2026-10-09, go Greg)
+
+`gcloud run deploy tech-watch-mcp --source .` depuis `main` (`574d580`) → révision **`tech-watch-mcp-00008-mp2`** (13:35 UTC), 100 % du trafic ; précédente `00007-5kt`. Variables d'env intactes (`GITHUB_TOKEN`, `YOUTUBE_API_KEY` — noms seulement). `requirements.txt` vérifié identique à `uv export --frozen` avant le build. Repli : `gcloud run services update-traffic tech-watch-mcp --region europe-west1 --project mcp-servers-prod --to-revisions tech-watch-mcp-00007-5kt=100`.
+
+Vérifications **[Observé]** contre `https://tech-watch-mcp-ocbwcs6sjq-ew.a.run.app/sse` (client SSE du SDK `mcp`, script de session) :
+
+| Critère | Résultat |
+|---|---|
+| 3 outils, nouveaux params | `search_github_repos` (`days_back`, `sort` enum), `search_youtube_videos` (`order`, `video_duration` enums, `language`), `search_arxiv_papers` (`categories`) ; description sur chaque param, `minLength=1` sur `query` |
+| GitHub `dbt` | `dbt-labs/dbt` n° 1 (⭐ 13 981), `Created: 2016-03-10 · Last push: 2026-10-09`, aucun avertissement 401 |
+| arXiv `AI agent evaluation` (30 j) | 5 résultats, 4/5 pertinents (5ᵉ UAV, adjacent) — identique au local |
+| **S4 live** | « Mods in Claude Code: change how Claude Code works », chaîne **Claude**, n° 2/10, 341 916 vues, **3:21** ; vues et durée sur les 10 vidéos |
+| Validation (590f0e3) | `sort='popular'` et `query=''` → `isError=True` (pydantic), aucun appel amont dans les logs |
+| Sonde du token réel | logs de la révision : `🦑 GitHub token: ✅ valid`, `🎬 YouTube API key: ✅ found` ; une seule sonde pour les 5 appels (cache par processus, 11c8cdb) |
+
+Note S4 : la vidéo officielle dure 3:21, donc `video_duration="medium"` (≥ 4 min) l'aurait **exclue** — confirme le choix de laisser la skill filtrer sur `duration_seconds` plutôt que le paramètre API (K4/K5, phase 3).
+
+**Trouvé en lisant les logs, non corrigé (hors revue)** : httpx journalise chaque requête au niveau INFO avec son URL complète, donc `youtube/v3/search?…&key=<YOUTUBE_API_KEY>` est écrit dans les logs Cloud Run à chaque recherche YouTube. **Antérieur à ce chantier** : déjà présent dans les logs de `00007-5kt` (entrée du 2026-10-09 07:34 UTC). 8a3418a n'a couvert que les messages d'erreur. Correctif d'une ligne côté serveur, `logging.getLogger("httpx").setLevel(logging.WARNING)` dans `utils/logger.py`, test-first puis révision `00009`. Rejoint le risque « endpoint public » : clé lisible par quiconque lit les logs du projet.
+
+**Phase 2 close** (2026-10-09) : critère observé — révision `00008` active, mêmes résultats qu'en local, variables intactes.
+
 ## 6. Ce que Greg doit fournir
 
 1. **Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).
