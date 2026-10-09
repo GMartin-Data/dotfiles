@@ -123,7 +123,34 @@ Retrait de l'ancien trio (D2a), `install.sh` + README des dotfiles, `claude/eval
 - **`server.py` stdio** : couvert par les tests mais pas déployé ; `server_http.py` déployé mais pas testé. S6 inverse cela — décision explicite attendue sur le sort de `server.py`.
 - **Dépendances `mcp>=1.20`** : vérifier la version installée dans `.venv` avant de choisir le mécanisme d'erreur S5.
 
-## 5. Ce que Greg doit fournir
+## 5. Résultats de la phase 1 (serveur, branche `fix/search-quality`)
+
+| Item | Commit | Rouge → vert | Critère **[Observé]** |
+|---|---|---|---|
+| S3 | `fix(arxiv)` 2026-10-09 | 6 tests (ImportError, `sortBy`, `http`) → 49/49 | `AI agent evaluation` : 4/5 pertinents (5ᵉ adjacent, UAV) ; requête experte `all:… AND cat:cs.AI` → 200 (était 400) ; liens `https` ; `zzqxjkwv` → `[]`. Syntaxe `submittedDate:[…]`, `sortBy=relevance`, parenthèses vérifiées en live avant d'écrire les tests |
+
+| S2 | `fix(github)` 2026-10-09 | 9 tests (ImportError, `sort=stars`, `TypeError`, `KeyError: created_at`, `None`) → 58/58 | `dbt` → **`dbt-labs/dbt` n° 1** (`dbt-core` est redirigé 301 vers ce nom) ; `claude mods` + `days_back=30` → 10/10 dépôts sur le sujet (l'homonyme `ccproxy` sort) ; sortie MCP : `📅 Created: 2016-03-10 · Last push: 2026-10-09`. Premier fichier de tests sur `server_http.py` (entrée déployée) |
+| — | `chore` `c86d054` | — | `.gitignore` ajouté, 4 fichiers `.pytest_cache` dé-versionnés (décision Greg) |
+| S4 | `fix(youtube)` 2026-10-09 | 9 tests (ImportError, `order=date`, 1 appel au lieu de 2, `&amp;`, `KeyError: views`, `......`) → 67/67 | Params vérifiés dans la doc officielle (context7) : `order`, `publishedAfter`, `videoDuration` (short <4 min), `videos.list part=statistics,contentDetails`. **Critère live (vidéo officielle présente) reporté à la phase 2** : la clé n'existe que sur Cloud Run (décision Greg). Deux tests hérités alignés sur le 2ᵉ appel |
+
+| S5 | `fix(server)` 2026-10-09 | 4 tests (`DID NOT RAISE ToolError`, `isError` faux) + 2 gardes vertes → 73/73 | Via le client MCP en mémoire du SDK (`mcp.shared.memory`) : échec amont → `isError=True` avec le message ; `[]` → `isError=False`, « Found 0 … ». Mécanisme seul, texte des messages inchangé |
+
+| S6 | `refactor(server)` 2026-10-09 (option **(a)**, décision Greg) | 12 tests d'intégration réécrits (client MCP en mémoire) ; `server.main()` → stdio | **69/69** ; `server_http.py` → `server.py`, ancien stdio bas niveau et `test_server.py` racine supprimés ; Dockerfile `uvicorn server:app` ; README réécrit. **Transport stdio réel vérifié** : serveur lancé par un client MCP, 3 outils listés, `categories` exposé (manquait depuis S3 — rattrapé), appel arXiv → `isError: False`. Piège rencontré : fixture async pytest + cancel scope anyio → session ouverte dans chaque test |
+| — | `chore(ruff)` | — | `known-first-party` déclaré : le hook ruff ne signale plus les imports locaux correctement groupés |
+
+| S1 | `fix(github)` 2026-10-09 | 10 tests (8 erreurs de setup sur `_token_rejected`, `KeyError: name`, `github_token_status` absent) → **79/79** | Sonde `/rate_limit` → `absent`/`valid`/`rejected`/`unverifiable` ; 401 avec token → **un** retry sans header, avertissement en tête de sortie (`⚠️ … without authentication`), token mémorisé comme rejeté jusqu'au redémarrage ; log de session via le `lifespan` FastMCP. Smoke stdio **[Observé]** : `🦑 GitHub token: ⚠️ absent (unauthenticated: 10 searches/min)` |
+
+**Ordre modifié (décision Greg)** : S6 avant S1, pour ne pas écrire deux fois dans le module serveur.
+
+**Phase 1 close** (2026-10-09) : S1–S6 traités test-first, 43 → 79 tests, 7 commits sur `fix/search-quality`. Reste à vérifier en phase 2 contre l'endpoint déployé : critère S4 (vidéo officielle « Claude Code mods » présente, vues et durée affichées) et sonde du token réel (`valid` attendu).
+
+Choix S2 validés par Greg : `days_back` optionnel (défaut `None`), qualificatif `pushed:>` ; `sort` optionnel (défaut meilleure correspondance).
+
+Choix S3 validés par Greg : multi-mots = `AND` des termes (expression exacte sur guillemets explicites) ; `categories` optionnel ; filtre de date client supprimé.
+
+Dette adjacente **signalée, non corrigée** : `tests/unit/test_arxiv.py` porte ~48 avertissements ruff hérités (W293, I001, SIM117) — un commit `style` séparé si Greg le souhaite.
+
+## 6. Ce que Greg doit fournir
 
 1. **Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).
 2. Optionnel : le rapport `tech-watch-claude-mods-2026-10-09.md` (référence E1).
