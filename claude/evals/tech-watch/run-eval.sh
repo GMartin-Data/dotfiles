@@ -6,11 +6,15 @@
 # Sandbox layout: config/ (isolated CLAUDE_CONFIG_DIR: skill copy, global CLAUDE.md,
 # credentials symlink, .claude.json copy, empty settings), cwd/ (report lands here),
 # mcp.json (session-only server declaration), transcript.jsonl, stderr.log, exit_code.
+# Env: MODEL (default opus), EXTRA_ARGS (e.g. "--max-turns 2" for trigger probes),
+#      FIXTURE_DIR (its contents are copied into cwd/ before the run).
 set -uo pipefail
 ID="${1:?run id required}"
 PROMPT="${2:?prompt required}"
 RUN="/tmp/claude-eval-tech-watch-$ID"
 MODEL="${MODEL:-opus}"
+EXTRA_ARGS="${EXTRA_ARGS:-}"
+FIXTURE_DIR="${FIXTURE_DIR:-}"
 SKILL_SRC="$HOME/dotfiles/claude/skills/tech-watch"
 GLOBAL_MD="$HOME/dotfiles/claude/CLAUDE.md"
 
@@ -24,10 +28,12 @@ cat > "$RUN/mcp.json" <<'EOF'
 {"mcpServers":{"tech-watch":{"type":"sse","url":"https://tech-watch-mcp-ocbwcs6sjq-ew.a.run.app/sse"}}}
 EOF
 printf '%s\n' "$PROMPT" > "$RUN/prompt.txt"
+[ -n "$FIXTURE_DIR" ] && cp -r "$FIXTURE_DIR"/. "$RUN/cwd/"
 
 cd "$RUN/cwd" || exit 97
 date -Is > "$RUN/started_at"
-CLAUDE_CONFIG_DIR="$RUN/config" claude -p "$PROMPT" --model "$MODEL" \
+# shellcheck disable=SC2086  # EXTRA_ARGS is meant to be word-split
+CLAUDE_CONFIG_DIR="$RUN/config" claude -p "$PROMPT" --model "$MODEL" $EXTRA_ARGS \
   --mcp-config "$RUN/mcp.json" --strict-mcp-config \
   --allowedTools "WebSearch,WebFetch,mcp__tech-watch,Read,Write,Edit,Bash,Glob,Grep" \
   --output-format stream-json --verbose < /dev/null > "$RUN/transcript.jsonl" 2> "$RUN/stderr.log"
