@@ -43,12 +43,19 @@ Run the three `WebSearch` calls of `references/sources.yaml` (general, community
 On title and description only (same reading as criterion 1 of the scoring grid), label every raw result from Tiers 1 and 2:
 - **on-topic**: directly addresses the topic;
 - **adjacent**: same field, different object (an agent framework, for a watch on agent evaluation);
-- **off-topic**: word coincidence only (homonyms, repositories that predate the feature).
+- **off-topic**: word coincidence only. Two binary tests catch homonyms, results whose name matches the topic but not their object; both label the result `homonym`:
+  - date test: when the topic is a dated thing (product, feature, version), the reference date is the **earliest** date a primary source of step 3 establishes for it: preview, early access or beta if documented, otherwise launch. Anything created or published before that date is off-topic. If a primary source mentions a preview or early-access period without dating it, skip the date test and rely on the meaning test alone. Not applicable to a practice or a concept.
+  - meaning test: the description or metadata designates another object (`ccproxy` is a proxy; "Claude Models" is not "Claude Mods").
 
-Drop at the same time, unlabeled: videos under 3 minutes (`duration_seconds` < 180: Shorts and teasers) and results without a usable title. Off-topic results leave the pipeline here: they are neither deduplicated nor scored. Keep the three counts (raw, on-topic, adjacent) for the report header.
+Drop at the same time, unlabeled: videos under 3 minutes (`duration_seconds` < 180: Shorts and teasers) and results without a usable title. Off-topic results leave the pipeline here: they are neither deduplicated nor scored. Keep the counts (raw, on-topic, adjacent, homonyms) for the report header.
 
 ### Step 6 - Deduplicate
-Remove results pointing to the same content on different URLs. Keep the most authoritative URL.
+One entry per content; keep the original, in English, under its canonical URL.
+- Variants of one page: localized or translated pages, `.md` and HTML versions, mirrors, a personal post republished on dev.to or Medium, a re-uploaded video.
+- Teaser and full version: a clip, trailer or excerpt of an episode or talk duplicates the full one; keep the full one.
+- Same author, same topic: at most **2 entries per author, channel or organization** in the ranking; fold the others into the summary of the best-scored one ("companion repository: ...", "part 2 of the series").
+
+A rewrite of an announcement or documentation without original content is not a duplicate: it is low-signal (authority D in the scoring grid).
 
 ### Step 7 - Run Tier 3 if unique on-topic < 12
 Count unique on-topic results only; adjacent ones do not count. If fewer than 12, run the Tier 3 `WebSearch` calls of `references/sources.yaml` in priority order, filter and deduplicate each batch the same way, and stop as soon as the on-topic count reaches 12 or the list is exhausted. Ten off-topic results never replace Tier 3.

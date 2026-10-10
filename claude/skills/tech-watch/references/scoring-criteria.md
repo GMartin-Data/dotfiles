@@ -40,7 +40,7 @@ web page = verified date (step 8), `unverified` = 5.
 | **A** Primary | 20 | the topic owner: official docs, announcement, reference repository or spec, official channel or blog |
 | **B** Expert | 14 | identified research group or organization, established engineering blog, conference talk, maintainer of a related project, editorially curated newsletter |
 | **C** Community | 8 | personal blog, dev.to / Medium / Substack post, community repository, YouTube creator |
-| **D** Low-signal | 0 | SEO page, listicle without original content, auto-generated or lead-magnet page |
+| **D** Low-signal | 0 | SEO page, listicle without original content, auto-generated or lead-magnet page, rewrite of an announcement or documentation without original content (no example, test or information absent from the primary source) |
 
 arXiv papers are B by default, A when the group owns the topic. A YouTube
 video or a GitHub repository is C unless its author qualifies for A or B.
