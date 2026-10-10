@@ -343,6 +343,27 @@ entièrement orienté IA et n'a rien rendu sur un sujet data engineering — à
 compléter par des domaines data, ou à laisser au modèle le soin de proposer
 des domaines par sujet.
 
+#### K6 — enrichissement budgété, « non vérifié » (2026-10-10)
+
+Règle validée par Greg (budget 10 pages, échecs compris ; Tier 1 jamais ouvert ;
+E8 par retrait de `WebFetch`) : `SKILL.md` étape 7 (candidats web on-topic
+seulement, une ouverture par URL sans relance, trois valeurs extraites,
+provenance admise = outil Tier 1, page ouverte, chemin d'URL, sinon
+`unverified`) ; `report-template.md` admet `unverified` pour date et autorité.
+Outil : `claude/evals/tech-watch/check-dates.py` (provenance de chaque date de
+source web depuis le transcript). Détail : `phase3/K6-enrichissement-2026-10-10/`.
+
+| Run | **[Observé]** | Verdict |
+|---|---|---|
+| E8a, `WebFetch` retiré | « 0 pages opened out of a budget of 10 … `unverified` for all 20 unique web candidates », aucune relance, aucune date inventée | Réussi |
+| E8b, normal | 10 pages sur 10, 10 URL distinctes, 0 échec ; 4 pages sans année → `unverified` ; aucune date inventée | Réussi |
+
+**Critère K6 observé** sur les deux runs. Limite : aucune source web dans les
+deux top 20 (non vérifiée = 59 max, vérifiée = 85 max, contre 84–97 pour le
+Tier 1), donc le marquage par source n'est attesté qu'en en-tête — visible dès
+que K5 laissera passer le web. Confirmé pour K7 : les pages officielles
+Anthropic ne remontent pas par le Tier 2 général (deux runs de suite).
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
