@@ -462,6 +462,22 @@ pré-créer. Détail et deux rapports : `phase3/K11-sortie-2026-10-10/`.
 Coût 1,82 $. À reporter : permission `Write` hors CWD en session interactive
 (phase 4, `install.sh` / README) ; paraphrase de la livraison (K1).
 
+#### K1 — limitations réécrites d'après les comportements observés (2026-10-10)
+
+Texte validé par Greg, sans run : chaque ligne adossée à une fiche de la
+phase 3 (traçabilité dans `phase3/K1-limitations-2026-10-10.md`). Supprimées,
+jamais reproduites : arXiv `301`, YouTube « < 48 h », paywall. Réécrites :
+GitHub 401 (un retry sans auth, 10 recherches/min, avertissement en tête,
+`degraded`), serveur injoignable (outils absents sans erreur, K12 `down`).
+Nouvelles : YouTube sans clé (`failed`, repli non classable, Essential
+possiblement vide), arXiv `empty` sur un sujet produit, `WebFetch` absent ou
+budget épuisé (`unverified`, plafond 59), lecture tronquée ≈ 100 000
+caractères, paraphrase de la ligne `Report:` sous déclenchement en langage
+naturel. Laissé dehors faute d'observation : permission `Write` hors CWD
+(phase 4). **Critère rempli** (chaque limitation reproductible). Coût 0 $.
+
+**Phase 3 close** (2026-10-10) : 11 items sur 11.
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
