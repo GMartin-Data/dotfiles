@@ -74,7 +74,7 @@ Apply the scoring criteria in `references/scoring-criteria.md` to the on-topic r
 Threshold: 60/100, strict. Cap: 20 sources. If fewer than 10 reach 60 after Tier 3, say so in a coverage note instead of filling in.
 
 ### Step 10 - Generate the Markdown report
-Use the template in `references/report-template.md`.
+Use the template in `references/report-template.md`. Its header is fixed: fill the source status table from what each tool and search actually returned at steps 2, 3, 4 and 7 (status vocabulary in the template), the `Pipeline` and `Enrichment` lines from the counts kept at steps 5 and 8, and derive the footer's `Sources used` from the table. Anything else goes under `Notes`.
 Output filename: `tech-watch-{query}-{date}.md`
 
 ---
@@ -86,4 +86,4 @@ Output filename: `tech-watch-{query}-{date}.md`
 - YouTube MCP tool depends on server index; videos < 48h old may not appear - fall back to `WebSearch` site:youtube.com "{query}"
 - Paywalled content (Nature, IEEE, ACM) returns title/abstract only
 - Reddit excluded: API requires paid auth since 2023
-- If the three `mcp__tech-watch__*` tools are absent from your tool list (MCP server not connected) or all fail, continue with Tier 2 + Tier 3 web search only. Say so in the first line of your answer, and add a "Degraded mode" note in the report header (next to Sources count) naming the tools that were unavailable.
+- If one or more `mcp__tech-watch__*` tools are absent from your tool list (MCP server not connected) or fail, continue with the remaining tools and the web search tiers. Say so in the first line of your answer; in the report, the source status table of the header carries it (`absent`, `failed`, `degraded`), there is no separate "Degraded mode" note.
