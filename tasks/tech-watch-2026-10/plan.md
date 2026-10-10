@@ -270,11 +270,38 @@ Points pour Greg :
 1. **`model: opus` figé dans l'agent** — aligné sur la décision « Opus 5.5 pour la
    série E1–E10 » ; le choix pour l'usage réel (Fable par défaut, Opus en
    repli) reste à trancher avant la phase 4.
-2. **Skill claude.ai à retirer ou renommer maintenant** : la version fichier
-   diverge depuis ce commit, la skill synchronisée (`anthropic-skills:tech-watch`)
-   coexiste dans chaque session. `/tech-watch` explicite a pris la version
-   fichier (prouvé par le fork) ; le déclenchement en langage naturel (E7) peut
-   tomber sur l'une ou l'autre tant que le doublon existe.
+2. ~~**Skill claude.ai à retirer ou renommer maintenant**~~ — **supprimée par
+   Greg le 2026-10-10** (Customize > Skills > … > Delete ; recommandation :
+   supprimer plutôt que renommer, car le déclenchement se fait sur la
+   description, pas sur le nom). Sonde **[Observé]** dans un sandbox neuf
+   (`run-eval.sh sync-check`, `--max-turns 1`) : 23 skills synchronisées
+   depuis le compte, aucune `tech-watch` ; `slash_commands` à l'init ne liste
+   que la `tech-watch` fichier. Le doublon n'existe plus ; le zip d'origine
+   reste dans `~/Téléchargements` et le verbatim dans `e9609c3`.
+
+#### K8 — description et déclencheurs (2026-10-10)
+
+`SKILL.md` : description réécrite sur le patron maison (fonction, six
+phrases-types FR/EN citées, « Do not use for » avec les quatre cas négatifs) ;
+section « Negative cases » du corps supprimée (remontée dans la description, où
+elle filtre avant déclenchement). Détail et transcripts :
+`phase3/K8-declenchement-2026-10-10.md`.
+
+| Sonde | Rejeu **[Observé]** | Verdict |
+|---|---|---|
+| E5a `What is RAG?` | 0 outil, réponse directe | Réussi |
+| E5b `Summarize this document: notes.md` | `Read` seul | Réussi |
+| E7a « Fais-moi une veille sur… » | `Skill tech-watch` au tour 1, veille menée par le fork (0,75 $) | Réussi |
+| E7b « Veille techno sur… » | `Skill tech-watch` au tour 1, veille menée par le fork, puis `error_max_turns` au tour 3 de la session principale (artefact) | Réussi |
+
+**Critère K8 observé** : E5 ×2 et E7 ×2 identiques à la référence, la
+description enrichie n'a créé ni faux positif ni faux négatif sur Opus.
+
+Montage : sous le fork, `--max-turns` ne borne pas le subagent, une sonde E7
+coûte une veille entière. Ajout de `fixtures/k8/agent-stub.md` (agent `tech-watch`
+bouchon, Haiku, sans serveur, répond `PROBE: … Arguments received: …`) :
+validé sur E7a (0,15 $, 8 s, args transmis). Recette des rejeux E5/E7 :
+`AGENT_MD` = bouchon, `--max-turns 1`.
 
 ## 6. Ce que Greg doit fournir
 
