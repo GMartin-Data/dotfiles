@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "tech-watch": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--directory", "/home/martin/mcp-server-code", "--no-sync", "python", "server.py"],
+      "env": {"GITHUB_TOKEN": "invalid"}
+    }
+  }
+}

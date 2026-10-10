@@ -7,7 +7,8 @@
 # credentials symlink, .claude.json copy, empty settings), cwd/ (report lands here),
 # mcp.json (session-only server declaration), transcript.jsonl, stderr.log, exit_code.
 # Env: MODEL (default opus), EXTRA_ARGS (e.g. "--max-turns 2" for trigger probes),
-#      FIXTURE_DIR (its contents are copied into cwd/ before the run).
+#      FIXTURE_DIR (its contents are copied into cwd/ before the run),
+#      MCP_JSON (path to an mcp config to use instead of the default SSE one).
 set -uo pipefail
 ID="${1:?run id required}"
 PROMPT="${2:?prompt required}"
@@ -15,6 +16,7 @@ RUN="/tmp/claude-eval-tech-watch-$ID"
 MODEL="${MODEL:-opus}"
 EXTRA_ARGS="${EXTRA_ARGS:-}"
 FIXTURE_DIR="${FIXTURE_DIR:-}"
+MCP_JSON="${MCP_JSON:-}"
 SKILL_SRC="$HOME/dotfiles/claude/skills/tech-watch"
 GLOBAL_MD="$HOME/dotfiles/claude/CLAUDE.md"
 
@@ -24,9 +26,13 @@ cp "$GLOBAL_MD" "$RUN/config/CLAUDE.md"
 ln -sf "$HOME/.claude/.credentials.json" "$RUN/config/.credentials.json"
 cp "$HOME/.claude.json" "$RUN/config/.claude.json"
 echo '{}' > "$RUN/config/settings.json"
-cat > "$RUN/mcp.json" <<'EOF'
+if [ -n "$MCP_JSON" ]; then
+  cp "$MCP_JSON" "$RUN/mcp.json"
+else
+  cat > "$RUN/mcp.json" <<'EOF'
 {"mcpServers":{"tech-watch":{"type":"sse","url":"https://tech-watch-mcp-ocbwcs6sjq-ew.a.run.app/sse"}}}
 EOF
+fi
 printf '%s\n' "$PROMPT" > "$RUN/prompt.txt"
 [ -n "$FIXTURE_DIR" ] && cp -r "$FIXTURE_DIR"/. "$RUN/cwd/"
 
