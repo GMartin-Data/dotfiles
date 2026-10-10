@@ -1,6 +1,6 @@
 ---
 name: tech-watch
-description: Technology monitoring - curated source search and scored ranking for a given tech topic.
+description: Technology monitoring (veille technologique) - multi-source search (arXiv, GitHub, YouTube, web), scoring and ranked Markdown report on a given tech topic. Use when the user asks for a tech watch or a curated survey of recent sources on a topic, in French or English - "fais-moi une veille sur X", "veille techno sur X", "qu'est-ce qui sort sur X en ce moment", "tech watch on X", "what's new around X this month", "curate recent sources on X". Do not use for a factual question ("What is RAG?"), summarizing content the user provides, a single-source lookup ("find me a YouTube video on X") or general news ("what happened in AI last week") - answer directly or use WebSearch alone.
 context: fork
 agent: tech-watch
 ---
@@ -39,15 +39,6 @@ Minimum threshold: 60/100. Target: 15-20 sources in the final report.
 ### Step 7 - Generate the Markdown report
 Use the template in `references/report-template.md`.
 Output filename: `tech-watch-{query}-{date}.md`
-
----
-
-## Negative cases - do NOT trigger this Skill
-
-- "Summarize this document" -> work with provided content directly
-- "What is RAG?" -> factual question, answer directly without search
-- "Find me a YouTube video on X" -> single-source lookup, use `WebSearch` only
-- "What happened in AI last week?" -> use `WebSearch` only, no full curation workflow needed
 
 ---
 
