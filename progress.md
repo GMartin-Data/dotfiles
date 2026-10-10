@@ -1,5 +1,120 @@
 ## Dernière mise à jour
-Date : 2026-10-10 11:56
+Date : 2026-10-10 15:19
+Session : c353e960-a614-4035-b178-7387d249e416
+
+## Tâches complétées
+
+- **Phase 3 — 8 items sur 11 clos**, chacun avec règle validée par Greg
+  (un point par tour), rejeu d'eval contre le critère, fiche dans
+  `tasks/tech-watch-2026-10/phase3/` et section dans `plan.md` §5 :
+  - **K12** sonde du montage D3 (d) : le `mcpServers` inline d'un subagent est
+    connecté quand une skill le fork ; serveur injoignable = outils absents
+    sans erreur. `claude/agents/tech-watch.md` créé, `SKILL.md` en
+    `context: fork` + `agent: tech-watch`. E1 rejoué sous le fork : 121 s, 0,50 $.
+  - **K8** description enrichie (6 phrases-types FR/EN, cas négatifs remontés) ;
+    E5 ×2, E7 ×2 identiques à la référence. Skill claude.ai **supprimée par
+    Greg** (doublon synchronisé disparu, vérifié par sonde).
+  - **K2/K9** une requête par outil, paramètres explicites, Tier 2/3 en
+    `WebSearch` + `allowed_domains`, Papers With Code → Hugging Face ;
+    E2 arXiv **5/5** strict (référence 3/5), Tier 2 9–10 liens par recherche.
+  - **K4** filtre rapide on-topic / adjacent / off-topic, dédoublonnage avant
+    comptage, Tier 3 si on-topic uniques < 12 ; E10 sur 3 sujets, déclenché
+    sur « Apache Iceberg row lineage » (83 adjacents/off-topic n'ont pas
+    dispensé du Tier 3).
+  - **K6** enrichissement budgété (10 `WebFetch`, une par URL, Tier 1 jamais
+    ouvert, `unverified` sinon) ; E8 sans `WebFetch` et run normal : aucune
+    date inventée, budget tenu à l'unité. `check-dates.py` créé.
+  - **K7** sources primaires d'abord (recherche sur les domaines du
+    propriétaire, bloc « Primary sources » hors classement, règle de
+    contradiction) ; E1 : billet, docs `en`, changelog ouverts en premier ;
+    une contradiction réelle signalée (E9 opportuniste).
+  - **K5** grille réécrite (autorité par nature A/B/C/D, fraîcheur relative
+    à la fenêtre, dépôt sur sa date de création, seuil 60 strict) ; E1 :
+    vidéo officielle n° 1 à 94, vidéos-listes de 97 à 85, 3 sources web
+    classées ; E4 : sources de 31–60 j gardées.
+  - **K10** tests d'homonymie (date, sens) et dédoublonnage élargi (plafond
+    2 par auteur) ; correctif en cours de route (référence = plus ancienne
+    date d'une source primaire, préversion comprise, sinon test sauté) ;
+    E6 réussi, `0xDarkMatter/claude-mods` écarté par règle.
+- Montage d'evals stabilisé : `run-eval.sh` sans `--strict-mcp-config` (bloque
+  aussi les serveurs du frontmatter), `AGENT_MD` (E3 stdio, bouchon
+  `fixtures/k8/agent-stub.md` pour E5/E7 avec `--max-turns 1`),
+  `probe-k12.sh`, `check-dates.py`. Transcripts dans `claude/evals/results/`
+  (gitignorés). Coût cumulé de la phase 3 ≈ 10 $ (≈ 20 runs).
+- Branche `feat/tech-watch-skill` : **40 commits d'avance sur `main`, non
+  poussée**, arbre propre.
+
+## En cours
+
+- Rien. Checkpoint pris à 35 % de contexte, par découpage : le lot « sortie »
+  (K3, K11, K1) s'ouvre dans une session neuve sur les fichiers finaux.
+
+## Prochaines étapes
+
+1. **K3** — état par source : figer dans `report-template.md` un en-tête à
+   format fixe (comptes, requêtes, tiers, enrichissement, couverture, date
+   test — aujourd'hui 5 lignes spontanées, format différent à chaque run) et
+   un pied de page généré d'après les sources réellement utilisées (figé
+   « arXiv · GitHub · YouTube · Web search » depuis la référence). Rejeu E3 :
+   `AGENT_MD=claude/evals/tech-watch/fixtures/e3/agent-stdio-invalid-token.md`
+   (syntaxe `env:` du frontmatter à vérifier au passage), comparer à
+   `baseline/E3-github-401-2026-10-10/`. Proposer le format avant d'écrire.
+2. **K11** — slug, langue, emplacement (rapport en anglais ou français selon
+   les runs, résumé en français ; slug observé `claude-code-mods` /
+   `ai-agent-evaluation` ; emplacement = CWD).
+3. **K1** — limitations réécrites d'après les comportements réels
+   post-correction (S1 avertissement 401, serveur absent = outils absents,
+   budget de pages, `unverified`).
+4. Rejeu final E1–E7 via `run-eval.sh`, comparaison à `baseline/`, puis
+   **phase 4** : retrait de l'ancien trio command + agent + script (D2a),
+   `install.sh`, README, `claude/evals/tech-watch/README.md`, `/code-review`
+   sur la branche, PR.
+5. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles). Écarts à la passation : E10 a demandé
+  3 sujets (les deux premiers trop couverts) ; E8 simulé par retrait de
+  `WebFetch` ; E9 joué de façon opportuniste sur E1 ; Papers With Code
+  remplacé (archivé) ; DEV.to/Hashnode retiré du Tier 3 (doublon Tier 2).
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg du 2026-10-10 (détail dans `plan.md`
+  §5, phase 3) :
+  - Skill claude.ai **supprimée** plutôt que renommée (le déclenchement se
+    fait sur la description).
+  - K2/K9 : catégories arXiv `cs.AI, cs.LG, cs.CL, cs.SE, cs.DB` ; YouTube
+    `language=en` sauf demande FR ; Hugging Face Papers remplace Papers With Code.
+  - K4 : coupe vidéo < 3 min binaire ; adjacents hors du compte des 12.
+  - K6 : budget 10 pages échecs compris ; Tier 1 jamais ouvert ; E8 par
+    retrait de `WebFetch`.
+  - K7 : bloc « Primary sources » hors classement ; contradiction écartée si
+    dans le titre, sinon signalée ; 3 pages réservées ; AWS et Azure ajoutés
+    aux propriétaires connus.
+  - K5 : autorité par nature A/B/C/D ; date `unverified` = 5, adjacents non
+    classés ; seuil 60 strict avec note de couverture.
+  - K10 : test de date adossé à la source primaire ; plafond 2 par auteur ;
+    réécritures sans apport en D.
+- Ajustements pris par Claude, signalés, non contestés : dédoublonnage avant
+  comptage (K4) ; test de date sur la plus ancienne date primaire, sauté si
+  préversion non datée (K10).
+- **Points en suspens pour Greg** (consignés dans `plan.md` §5) : `model: opus`
+  figé dans l'agent (choix pour l'usage réel avant la phase 4) ; Tier 3 de
+  `sources.yaml` orienté IA, inutile sur un sujet data (compléter ou laisser
+  le modèle proposer) ; frontière B/C au jugement du modèle ; plateau à 85
+  des vidéos-listes (levier engagement ou seuil de tranche) ; E9 à rejouer
+  sur une source classée ; `check-dates.py` ne lit pas le bloc « Primary sources ».
+
+## Blocages
+
+- Aucun côté chantier. Hors chantier, inchangés : endpoint Cloud Run `/sse`
+  public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions
+  ≤ `00008`) à la main de Greg.
+
+---
+
+## Checkpoint précédent — 2026-10-10 11:56
 Session : 08467072-cb71-4adb-bde3-d8c9315a577a
 
 ## Tâches complétées
@@ -150,99 +265,3 @@ Session : 71570f5a-6005-4fcb-a082-dd041048698a
 - Risque hors chantier maintenu : endpoint Cloud Run `/sse` **public sans
   auth** (quota YouTube exposé) — à traiter séparément (IAM ou clé en header).
   S'y ajoute la rotation de la clé YouTube (logs historiques), optionnelle.
-
----
-
-## Checkpoint précédent — 2026-10-09 13:51
-Session : 847b86f0-f265-4644-aa61-225cbecc5943
-
-## Tâches complétées
-
-- **Chantier `tech-watch` ouvert** (transfert de la skill Claude.ai + correctifs
-  du serveur MCP) : passation reçue et figée dans
-  `tasks/tech-watch-2026-10/handover.md` ; plan dans `plan.md` du même dossier
-  (vérification du code §0, décisions §1, arborescence §2, phases §3, risques
-  §4, résultats §5). Branche `feat/tech-watch-skill` (dotfiles, 6 commits docs,
-  **non poussée**).
-- **Phase 1 (serveur) close** sur `~/mcp-server-code`, branche
-  `fix/search-quality`, 9 commits test-first, **43 → 79 tests verts** :
-  S3 arXiv (termes `AND`, `submittedDate` côté API, `relevance`, `categories`,
-  `https`) · S2 GitHub (meilleure correspondance, `days_back` → `pushed:>`,
-  dates émises, `n/a`) · S4 YouTube (`relevance`, `videos.list` → vues/durée,
-  entités HTML, `…` seulement si tronqué) · S5 (`ToolError` → `isError=True`) ·
-  S6 (`server_http.py` → `server.py` unique FastMCP, SSE + stdio ; ancien stdio
-  bas niveau supprimé ; 12 tests d'intégration via le client MCP en mémoire ;
-  Dockerfile, README réécrits) · S1 (sonde `/rate_limit` au démarrage de
-  session, retry unique sans header sur 401, avertissement en tête de sortie,
-  token rejeté mémorisé). Chores : `.gitignore`, `.gcloudignore`, config isort
-  ruff. Toutes les `HYPOTHÈSE` serveur de la passation levées (plan §0).
-- **Vérifications live [Observé]** : arXiv `AI agent evaluation` 4/5
-  pertinents, requête experte 200 (était 400) ; GitHub `dbt` → `dbt-labs/dbt`
-  n° 1 (`dbt-core` redirigé 301), `claude mods` 10/10 sur le sujet ; transport
-  stdio réel (serveur lancé par un client MCP) ; log de session
-  `🦑 GitHub token: ⚠️ absent`.
-- **D1 tranché** : dépôt privé `git@github.com:GMartin-Data/tech-watch-mcp.git`
-  créé, `main` et `fix/search-quality` poussées, branche par défaut `main` ;
-  scan de l'historique propre (`.env` jamais suivi, 6 motifs = placeholders de
-  tests). Motif : la source avait déjà été perdue une fois.
-
-## En cours
-
-- **Phase 1 bis — revue avant production**, à lancer dans une **session neuve,
-  CWD `~/mcp-server-code`** : `/code-review high` sur `main..fix/search-quality`,
-  triage un finding par tour, test-first, un commit par finding, push. Prompt
-  d'ouverture donné en séance (lire `plan.md` §0/§3/§5 + `handover.md` §6 par
-  chemin absolu ; ne pas toucher au plan ni à `progress.md`). Dette connue à
-  ne pas redécouvrir : ruff hérité dans `tests/` (W293, SIM117).
-
-## Prochaines étapes
-
-1. Au retour de la revue (ici, `/clear` + `/catchup`) : relire
-   `git -C ~/mcp-server-code log` et consigner la revue dans `plan.md` §5.
-2. **Phase 2 — déploiement** (go explicite D6) : `gcloud run deploy
-   tech-watch-mcp --source . --region europe-west1 --project mcp-servers-prod`
-   (révision `00007-5kt` → `00008`, variables conservées) ; vérifs contre
-   l'endpoint déployé : 3 outils + nouveaux params, `dbt`, arXiv, **critère S4
-   live** (vidéo officielle « Claude Code mods », vues/durée), log
-   `✅ valid` pour le vrai token. Repli : `update-traffic --to-revisions
-   tech-watch-mcp-00007-5kt=100`.
-3. **Phase 0 — bloquée par Greg** : export de la skill depuis Claude.ai
-   (`.skill` ou les 4 fichiers `SKILL.md` + `references/`) → import verbatim
-   dans `claude/skills/tech-watch/`, déclaration MCP (D3a : `claude mcp add
-   --transport sse`), référence E1–E10 dans `baseline/`.
-4. Phases 3–4 (skill K1–K12, evals, retrait de l'ancien trio `/tech-watch`
-   command + agent + script — D2a, seconde `/code-review` sur
-   `feat/tech-watch-skill`, PR) : `plan.md` §3.
-5. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- N/A (pas de PRD — repo dotfiles). Écarts à la passation : S6 étendu à la
-  fusion des deux entrées serveur (plan §5) ; ordre S6 avant S1 ; revue
-  insérée avant le déploiement (phase 1 bis).
-
-## Décisions prises
-
-- Track léger, sans ADR — décisions Greg :
-  - **Feature branches** dans les deux dépôts (D4) ; **passation dans
-    `tasks/`** plutôt que `docs/handoff/` (D5).
-  - **D1 (a)** : serveur dans son propre dépôt, remote privé (pas d'absorption
-    dans `claude/mcp/`).
-  - **S6 (a)** : un seul module `server.py` FastMCP pour SSE et stdio ;
-    **S6 avant S1**.
-  - S3 : multi-mots = `AND`, `categories` optionnel, filtre client supprimé ·
-    S2 : `days_back` défaut `None`, `pushed:>` · S4 : pas de filtre Shorts côté
-    API (la skill filtrera sur `duration_seconds`), critère live reporté à la
-    phase 2 · S5 : mécanisme seul · S1 : sentinelle d'avertissement, sonde via
-    `lifespan` (par connexion en SSE).
-  - **`.gitignore` serveur** ajouté (cache dé-versionné).
-  - **Revue avant déploiement**, en session dédiée ; cette session reste seule
-    à écrire `progress.md` et le plan.
-
-## Blocages
-
-- **Export de la skill** depuis Claude.ai (à la main de Greg) — bloque les
-  phases 0, 3, 4 ; pas la revue ni le déploiement.
-- Risque hors chantier noté : endpoint Cloud Run `/sse` **public sans auth**
-  (quota YouTube exposé) — à traiter séparément (IAM ou clé en header).
-
