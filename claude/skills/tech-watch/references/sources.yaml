@@ -129,4 +129,4 @@ search_config:
   target_results: 20
   min_results_before_tier3: 12   # counted on unique on-topic results only (SKILL.md, steps 5-7)
   min_video_duration_seconds: 180  # shorter videos (Shorts, teasers) are dropped at step 5
-  min_score_threshold: 60      # results below this are excluded
+  min_score_threshold: 60      # strict: results below this are excluded, no fallback

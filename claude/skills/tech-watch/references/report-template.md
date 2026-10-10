@@ -38,7 +38,7 @@ Within each group, order by score descending.]
 
 **[N] {Title}**
 🔗 {URL}
-📅 {publication_date | unverified} | ⭐ Authority: High/Medium/Low/unverified | 📊 Score: {score}/100
+📅 {publication_date | unverified} | ⭐ Authority: {A Primary | B Expert | C Community | D Low-signal} | 📊 Score: {score}/100
 **Summary**: {2–3 sentences — what makes this source specifically relevant to the query}
 **Score reason**: {one line from scoring-criteria.md}
 **Tags**: `{tag1}`, `{tag2}`, `{tag3}`
@@ -54,6 +54,13 @@ Within each group, order by score descending.]
 ### 🟡 Worth including (score 60–69)
 
 [same format]
+
+---
+
+## Adjacent, not ranked
+
+[At most 3 one-liners: title, URL, why it is adjacent and not on-topic. No score.
+Omit the section if there is none.]
 
 ---
 

@@ -63,8 +63,8 @@ Only primary sources and on-topic web candidates from Tiers 2 and 3 are enriched
 - Keep the counts (pages opened out of the budget, failures) for the report header.
 
 ### Step 9 - Score and rank
-Apply the scoring criteria in `references/scoring-criteria.md`, then the contradiction rule of step 3.
-Minimum threshold: 60/100. Target: 15-20 sources in the final report.
+Apply the scoring criteria in `references/scoring-criteria.md` to the on-topic results only, then the contradiction rule of step 3. Adjacent results are not ranked: list at most 3 of them apart, without a score.
+Threshold: 60/100, strict. Cap: 20 sources. If fewer than 10 reach 60 after Tier 3, say so in a coverage note instead of filling in.
 
 ### Step 10 - Generate the Markdown report
 Use the template in `references/report-template.md`.
