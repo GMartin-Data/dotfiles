@@ -44,11 +44,20 @@ Remove results pointing to the same content on different URLs. Keep the most aut
 ### Step 6 - Run Tier 3 if unique on-topic < 12
 Count unique on-topic results only; adjacent ones do not count. If fewer than 12, run the Tier 3 `WebSearch` calls of `references/sources.yaml` in priority order, filter and deduplicate each batch the same way, and stop as soon as the on-topic count reaches 12 or the list is exhausted. Ten off-topic results never replace Tier 3.
 
-### Step 7 - Score and rank
+### Step 7 - Enrich web candidates (budgeted)
+Only on-topic web candidates from Tiers 2 and 3 are enriched. Never open Tier 1 results (github.com, youtube.com, arxiv.org): the tools already return their date, stars or views, duration and categories.
+
+- Budget: **10 `WebFetch` per watch**, one per URL, no retry. A failure (403, network error, video page, commit history, unreadable content) consumes the budget and leaves the source `unverified`.
+- Order: candidates most likely to reach 60 first, official and primary sources before blogs.
+- Extract three values only: publication date, approximate length, author or organization. No summary at this step.
+- A date is accepted from a Tier 1 tool output, from the fetched page itself, or from the URL path (`/2026/07/16/`). Anything else, including a plausible estimate or a search snippet, is not: write `unverified`. Same rule for length and authority.
+- Keep the counts (pages opened out of the budget, failures) for the report header.
+
+### Step 8 - Score and rank
 Apply the scoring criteria in `references/scoring-criteria.md`.
 Minimum threshold: 60/100. Target: 15-20 sources in the final report.
 
-### Step 8 - Generate the Markdown report
+### Step 9 - Generate the Markdown report
 Use the template in `references/report-template.md`.
 Output filename: `tech-watch-{query}-{date}.md`
 
