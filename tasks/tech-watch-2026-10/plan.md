@@ -402,6 +402,23 @@ Coût 1,36 $. À surveiller : frontière B/C (jugement du modèle, E4 tout en B)
 et plateau à 85 des vidéos-listes (levier engagement ou seuil de tranche, non
 touché).
 
+#### K10 — homonymes, dédoublonnage élargi (2026-10-10)
+
+Règle validée par Greg (test de date adossé à la source primaire ; plafond de
+2 entrées par auteur, chaîne ou organisation ; réécritures sans apport en D) :
+`SKILL.md` étape 5 (tests de date et de sens → étiquette `homonym`, compte en
+en-tête) et étape 6 (variantes d'une page, teaser/complet, plafond par auteur,
+repli dans le résumé) ; `scoring-criteria.md` D étendu. Détail et deux
+rapports : `phase3/K10-homonymes-2026-10-10/`.
+
+| Run | **[Observé]** | Verdict |
+|---|---|---|
+| E1a, règle initiale | 10 homonymes dont `0xDarkMatter/claude-mods` ; **mais** le test de date (référence = annonce du 1er octobre) a écarté 4 dépôts de la préversion de mi-septembre, dont le plus étoilé du sujet — signalé par le modèle lui-même | critère rempli, dommage collatéral |
+| Correctif | référence = **plus ancienne** date établie par une source primaire (préversion comprise) ; préversion mentionnée sans date → test de date sauté | — |
+| E1b, règle corrigée | test de date sauté (motif explicite), 5 homonymes au test de sens, `0xDarkMatter` absent du rapport, dépôts de la préversion de retour (62–64, sous le plafond), aucun auteur à plus d'une entrée, dépôt compagnon replié | **Réussi** (E6) |
+
+Coût 1,52 $.
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
