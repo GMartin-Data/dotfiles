@@ -30,17 +30,25 @@ Default window: `days_back=30`. Use 60 for niche or slow-moving topics.
 ### Step 3 - Run Tier 2 web search (always)
 Run the three `WebSearch` calls of `references/sources.yaml` (general, community with `allowed_domains`, practical).
 
-### Step 4 - Run Tier 3 if needed
-If Tier 1 + 2 return fewer than 12 relevant results, run the Tier 3 `WebSearch` calls of `references/sources.yaml`, highest priority first.
+### Step 4 - Quick relevance filter, then count
+On title and description only (same reading as criterion 1 of the scoring grid), label every raw result from Tiers 1 and 2:
+- **on-topic**: directly addresses the topic;
+- **adjacent**: same field, different object (an agent framework, for a watch on agent evaluation);
+- **off-topic**: word coincidence only (homonyms, repositories that predate the feature).
+
+Drop at the same time, unlabeled: videos under 3 minutes (`duration_seconds` < 180: Shorts and teasers) and results without a usable title. Off-topic results leave the pipeline here: they are neither deduplicated nor scored. Keep the three counts (raw, on-topic, adjacent) for the report header.
 
 ### Step 5 - Deduplicate
 Remove results pointing to the same content on different URLs. Keep the most authoritative URL.
 
-### Step 6 - Score and rank
+### Step 6 - Run Tier 3 if unique on-topic < 12
+Count unique on-topic results only; adjacent ones do not count. If fewer than 12, run the Tier 3 `WebSearch` calls of `references/sources.yaml` in priority order, filter and deduplicate each batch the same way, and stop as soon as the on-topic count reaches 12 or the list is exhausted. Ten off-topic results never replace Tier 3.
+
+### Step 7 - Score and rank
 Apply the scoring criteria in `references/scoring-criteria.md`.
 Minimum threshold: 60/100. Target: 15-20 sources in the final report.
 
-### Step 7 - Generate the Markdown report
+### Step 8 - Generate the Markdown report
 Use the template in `references/report-template.md`.
 Output filename: `tech-watch-{query}-{date}.md`
 

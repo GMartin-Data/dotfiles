@@ -109,5 +109,6 @@ search_config:
   default_days_back: 30
   extended_days_back: 60       # for niche/slow-moving topics
   target_results: 20
-  min_results_before_tier3: 12
+  min_results_before_tier3: 12   # counted on unique on-topic results only (SKILL.md, steps 4-6)
+  min_video_duration_seconds: 180  # shorter videos (Shorts, teasers) are dropped at step 4
   min_score_threshold: 60      # results below this are excluded
