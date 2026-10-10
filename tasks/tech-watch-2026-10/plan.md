@@ -382,6 +382,26 @@ localisée → page `en`, ouverture en premier), étapes renumérotées 1–10 ;
 
 Coût 0,77 $, 206 s (+1 recherche, +3 pages). Top 20 toujours 100 % Tier 1 : K5.
 
+#### K5 — grille de notation (2026-10-10, tour dédié)
+
+Grille validée par Greg (autorité par nature A/B/C/D, créateurs et dépôts
+communautaires en C ; date `unverified` à 5 et adjacents hors classement ;
+seuil 60 strict avec note de couverture, clause de repli supprimée) :
+`scoring-criteria.md` réécrit (fraîcheur relative à la fenêtre, dépôt sur sa
+date de création sinon push plafonné à 10, profondeur par type, tranches
+renommées, égalités par engagement) ; gabarit (autorité par lettre, section
+« Adjacent, not ranked ») ; `SKILL.md` étape 9. Détail et deux rapports :
+`phase3/K5-grille-2026-10-10/`.
+
+| Critère | Rejeu **[Observé]** | Verdict |
+|---|---|---|
+| E1 : docs et annonce dans la tranche la plus haute, aucun Short | bloc « Primary sources » à 3 entrées ; vidéo officielle Claude n° 1, **A Primary 94**, seule au-dessus de 85 ; vidéos-listes communautaires de 97 à **85** ; **3 sources web classées** (première fois depuis K12) ; dépôts sur leur date de création ; 0 Short | **Réussi** |
+| E4 : sources de 31 à 60 jours non éliminées (`days_back=60`) | sources de 37–39 jours à 77 (fraîcheur 10), de 30 jours à 82 ; dépôt ancien maintenu plafonné (80 au lieu de 90) ; 2 échecs de `WebFetch` laissés `unverified` | **Réussi** |
+
+Coût 1,36 $. À surveiller : frontière B/C (jugement du modèle, E4 tout en B)
+et plateau à 85 des vidéos-listes (levier engagement ou seuil de tranche, non
+touché).
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
