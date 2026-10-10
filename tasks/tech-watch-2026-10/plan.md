@@ -203,8 +203,41 @@ Reste à la main de Greg : les logs des révisions ≤ `00008` contiennent la cl
 
 **Phase 2 close** (2026-10-09) : critère observé — révision `00009` active (`00008` validée puis remplacée par le correctif httpx), mêmes résultats qu'en local, variables intactes.
 
+### Phase 0 — Import et référence (2026-10-09 → 2026-10-10, export reçu le 09)
+
+| Étape | Résultat **[Observé]** |
+|---|---|
+| 1. Import | `~/Téléchargements/tech-watch-skill.zip` (4 fichiers, datés du 2026-10-08 14:18) décompressé dans `claude/skills/tech-watch/`, tailles identiques à l'archive, **aucun symlink** (D2a). Commit `e9609c3` |
+| 2. Serveur | D3 (a) essayé (`claude mcp add --scope user`, `✔ Connected`) puis **retiré le jour même** sur objection de Greg (context-engineering) ; D3 révisé en **(d)** : subagent à `mcpServers` inline + skill en `context: fork`, à construire en phase 3 (K12). Noms vérifiés par sonde en session neuve : `mcp__tech-watch__search_{arxiv_papers,github_repos,youtube_videos}`, outil web `WebSearch`. Commit `cef27c1` |
+| 3. Référence | 6 scénarios joués ou actés, sorties datées dans `baseline/<E>-<slug>-<date>/` (rapport tel quel + `run.md` : montage, appels, verdict, observations). **Critère de phase rempli** : la skill tourne de bout en bout (E1, 171 s, 20 sources) |
+
+Montage des runs (réutilisable en phase 3) : `claude/evals/tech-watch/run-eval.sh <id> "<prompt>"` — sandbox `/tmp/claude-eval-tech-watch-<id>` selon le patron batch A (`CLAUDE_CONFIG_DIR` isolé : copie verbatim de la skill, global `CLAUDE.md`, aucun hook, ancienne command et agent absents), serveur fourni à la session seule par `--mcp-config` + `--strict-mcp-config`, `--model opus` ; variables `EXTRA_ARGS` (sondes `--max-turns 2`), `FIXTURE_DIR`, `MCP_JSON` (E3 : stdio local, `fixtures/e3/`). Tableau des appels par `extract-run.sh`. Transcripts dans `claude/evals/results/tech-watch-<id>-<date>/`, **gitignorés** comme le batch A.
+
+| E | Attendu (passation §8) | Observé | Verdict |
+|---|---|---|---|
+| E1 « Claude Mods » | Sources officielles dans la tranche haute ; aucun Short | Docs officielles 80 et billet 77 en « High value », tranche haute menée par une vidéo communautaire (97) et trois catalogues (92) ; 7 vidéos de 3:21 à 12:47 | **Échec / Réussi** (K5 reproduit ; S4 tient) |
+| E2 « AI agent evaluation » | ≥ 4 arXiv pertinents sur 5 | Top 5 : 3 sûrs + Qwen-Planner (adjacent) + UAV (non) ; 9 arXiv retenus, tous sur le sujet | **Réussi** sous la lecture des phases 1–2 (3/5 en lecture stricte) ; K2 réussi |
+| E3 GitHub 401 (+ YouTube sans clé en local) | État par source en en-tête ; pied de page fidèle | En-tête « Partially degraded mode » détaillé par source ; pied de page figé « arXiv · GitHub · YouTube · Web search » ; S1 : avertissement + 20 dépôts, une seule sonde 401 | **Réussi / Échec** (K3 reproduit côté pied de page) ; S1 réussi |
+| E5 non-déclenchement | La skill ne se déclenche pas | « What is RAG? » : 0 outil ; « Summarize this document » (fixture `fixtures/e5/notes.md`, sujet proche d'une veille) : `Read` seul | **Réussi** ×2 |
+| E6 homonymes (acté sur E1, décision Greg) | Les dépôts sans rapport sont écartés | Serveur : 1 homonyme sur 20 (`0xDarkMatter/claude-mods`, contre 2/10 avant S2) ; la skill l'a **retenu** à 72, étiqueté « adjacent » | **Échec** (K10 reproduit) |
+| E7 déclenchement FR | La skill se déclenche | `Skill tech-watch` au tour 1 sur « Fais-moi une veille sur… » et « Veille techno sur… » | **Réussi** ×2 |
+
+Non joués : E4 (`days_back=60`), E8 (pages illisibles), E9 (contradiction), E10 (bruit massif) — décrits dans la passation, une veille complète chacun (≈ 0,9 $, 3 min), à jouer si besoin avant ou après la phase 3. Coût de la série jouée ≈ 3,9 $.
+
+Décisions Greg (track léger) : **Opus 5.5 pour toute la série E1–E10** (E1 avait tourné sur Opus par défaut du CLI alors que Fable était annoncé ; tier frontière des evals, à ne rouvrir qu'en cas de fort désaccord) ; E6 acté sur E1 sans rejeu ; fixture E5 validée après explication.
+
+Observations transverses pour la phase 3 (détail dans chaque `run.md`) :
+- **K5** : la grille élimine le Tier 2 en entier faute de date (E2 : 0 source web classée) et fait dépendre le rang des sources primaires d'une interprétation refaite à chaque run (E1 docs 80 → E3 docs 88, même requête). Six dépôts à égalité à 89 (E3). Ajustements hors grille déclarés par le modèle (petites chaînes, « lead magnet »).
+- **K6** : 0 à 6 pages ouvertes par veille, jamais 25 ; données non vérifiées déclarées comme telles en tête de rapport (bon comportement obtenu sans règle).
+- **K3** : état par source en en-tête obtenu spontanément, pied de page figé par le gabarit.
+- **K4** : Tier 3 jamais déclenché, le compte se fait avant filtrage.
+- **K12** : Claude Code synchronise la skill du compte claude.ai dans chaque session (`skills/synced/<org>_<user>/tech-watch`, exposée `anthropic-skills:tech-watch`), identique à l'export aujourd'hui ; **dès que la version fichier divergera, deux skills coexisteront** — retirer ou renommer la skill côté claude.ai au moment de la phase 3. Point non documenté à sonder en ouverture de phase 3 : le `mcpServers` inline d'un subagent est-il connecté quand une skill le fork.
+- **K8** : ni faux positif ni faux négatif sur Opus ; les sondes E5/E7 servent de garde de non-régression à l'enrichissement de la description.
+
+**Phase 0 close** (2026-10-10).
+
 ## 6. Ce que Greg doit fournir
 
-1. **Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).
+1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
 2. Optionnel : le rapport `tech-watch-claude-mods-2026-10-09.md` (référence E1).
 3. Les décisions D1–D6, une par tour, au fil des phases.
