@@ -236,6 +236,46 @@ Observations transverses pour la phase 3 (détail dans chaque `run.md`) :
 
 **Phase 0 close** (2026-10-10).
 
+### Phase 3 — Skill (ouverte le 2026-10-10)
+
+#### K12 — portabilité (2026-10-10)
+
+Sonde du point non documenté, trois variantes (`claude/evals/tech-watch/probe-k12.sh`,
+détail dans `phase3/K12-probe-2026-10-10.md`) :
+
+| Variante | Résultat **[Observé]** |
+|---|---|
+| Skill `context: fork` → agent à `mcpServers` inline (SSE `00009`) | **Serveur connecté** : pool = liste `tools:` de l'agent (3 outils MCP + `WebSearch` + `Read`), `search_github_repos("dbt")` → `dbt-labs/dbt`. 12 s, 0,05 $ |
+| Témoin sans fork | Aucun `mcp__tech-watch__*` dans la session principale, `RESULT: UNAVAILABLE` |
+| Serveur injoignable (`.invalid`) | Le fork démarre, outils MCP **silencieusement absents** (ni `stderr`, ni ligne système) ; pool = `WebSearch`, `Read` |
+
+Conséquences inscrites :
+
+| Fichier | Changement |
+|---|---|
+| `claude/agents/tech-watch.md` (nouveau) | Agent cible de D3 (d) : `tools: mcp__tech-watch__*, WebSearch, WebFetch, Read, Write, Edit` (liste tirée du run E1 de référence : `Bash`, `Glob`, `Grep` jamais utiles), `model: opus`, serveur SSE inline, corps court (suivre la skill, règle « outils absents = serveur injoignable », résumé final pour l'humain) |
+| `claude/skills/tech-watch/SKILL.md` | `context: fork` + `agent: tech-watch` ; `web_search` → `WebSearch` (5 occurrences) ; dernière limitation étendue à « outils **absents** de la liste ou en échec », annonce en première ligne de la réponse + note « Degraded mode » en en-tête |
+| `claude/evals/tech-watch/run-eval.sh` | Montage fork : copie de l'agent dans `config/agents/`, **plus de `--mcp-config` / `--strict-mcp-config`** (le mode strict bloque aussi les serveurs du frontmatter d'un subagent — doc sub-agents), `AGENT_MD` remplace `MCP_JSON`, `--allowedTools` étendu (`Skill`, `Agent`, `Edit`, `Bash` : les 11 refus du run E1 de référence) |
+| `fixtures/e3/agent-stdio-invalid-token.md` | Remplace `mcp-stdio-invalid-token.json` : même serveur stdio local, `GITHUB_TOKEN=invalid`, sous forme d'agent (syntaxe `env:` du frontmatter **à vérifier au rejeu E3**) |
+
+**Critère K12 observé** : E1 rejoué sous le montage fork
+(`phase3/E1-claude-mods-fork-2026-10-10/`) — 12 appels sans refus, `references/`
+résolus dans le fork, arguments transmis, rapport de 20 sources écrit dans le
+CWD, 121 s et 0,50 $ (contre 171 s et 0,92 $ en référence). Verdict E1 inchangé
+(K5 reproduit, aucun Short), comme attendu avant K5. Notes pour la suite : sans
+`max_results` explicite les outils rendent 10 résultats (K2/K9) ; l'homonyme E6
+écarté cette fois par variance, pas par règle (K10).
+
+Points pour Greg :
+1. **`model: opus` figé dans l'agent** — aligné sur la décision « Opus 5.5 pour la
+   série E1–E10 » ; le choix pour l'usage réel (Fable par défaut, Opus en
+   repli) reste à trancher avant la phase 4.
+2. **Skill claude.ai à retirer ou renommer maintenant** : la version fichier
+   diverge depuis ce commit, la skill synchronisée (`anthropic-skills:tech-watch`)
+   coexiste dans chaque session. `/tech-watch` explicite a pris la version
+   fichier (prouvé par le fork) ; le déclenchement en langage naturel (E7) peut
+   tomber sur l'une ou l'autre tant que le doublon existe.
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
