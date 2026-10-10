@@ -419,6 +419,28 @@ rapports : `phase3/K10-homonymes-2026-10-10/`.
 
 Coût 1,52 $.
 
+#### K3 — état par source, pied de page dérivé (2026-10-10)
+
+Format proposé puis validé par Greg (pied de page **dérivé** du tableau plutôt
+que supprimé) : `report-template.md` en-tête à lignes fixes (métadonnées avec
+`Topic` et propriétaire ; tableau d'état par source à 6 lignes, statuts fermés
+`ok` / `empty` / `degraded` / `failed` / `absent` / `not run` ; lignes
+`Pipeline`, `Enrichment`, `Date test`, `Notes` ≤ 5 puces), pied de page
+`Sources used` = lignes à `In report` ≥ 1, section « Header rules » ;
+`SKILL.md` étape 10 et limitation « Degraded mode » (un ou plusieurs outils,
+tableau au lieu d'une note). Détail et rapport :
+`phase3/K3-etat-par-source-2026-10-10/`.
+
+| Run | **[Observé]** | Verdict |
+|---|---|---|
+| E3 (stdio local, `GITHUB_TOKEN=invalid` par `env:` du frontmatter, pas de clé YouTube) | Tableau : GitHub `degraded` (401, repli github.com 10 résultats, 6 nouveaux) 20/19/15, YouTube `failed` (repli youtube.com, 10 résultats, aucun classable) –/–/0, arXiv `empty`, Tier 3 `not run`, Owner domains 10/–/3 ; pied de page `Sources used: GitHub · Web (Tier 2) · Owner domains` ; `Date test: skipped` motivé | **Réussi** (E3, les deux attendus) |
+| Correctif après le run | `Pipeline` 68 contre une somme de lignes à 58 : les résultats de repli comptent désormais dans la ligne de l'outil remplacé, `–` seulement sans demande ni repli | signalé, non rejoué (comptes, pas statuts) |
+
+Coût 0,83 $. Syntaxe `env:` du `mcpServers` inline **vérifiée** (avertissement
+« rejected (401) », pas « absent »). Observations : tranche Essential vide sans
+YouTube (K5) ; deux dépôts Anthropic en bloc primaire sans ouverture (K7) ;
+résumé de chat en français, rapport en anglais (K11).
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
