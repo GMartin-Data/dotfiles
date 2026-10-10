@@ -303,6 +303,23 @@ bouchon, Haiku, sans serveur, répond `PROBE: … Arguments received: …`) :
 validé sur E7a (0,15 $, 8 s, args transmis). Recette des rejeux E5/E7 :
 `AGENT_MD` = bouchon, `--max-turns 1`.
 
+#### K2 / K9 — requêtes par outil (2026-10-10)
+
+Proposition validée par Greg (catégories arXiv `cs.AI, cs.LG, cs.CL, cs.SE,
+cs.DB` ; YouTube `language=en` sauf demande en français ; Papers With Code
+remplacé par Hugging Face Papers). `sources.yaml` réécrit (règle de requête et
+paramètres explicites par outil Tier 1 ; Tier 2 = trois `WebSearch`, la
+communautaire par `allowed_domains` ; Tier 3 converti en `WebSearch` +
+`allowed_domains`, DEV.to/Hashnode retiré car doublon du Tier 2) ; `SKILL.md`
+étapes 1–4 (une requête par outil, deux exemples). Détail et rapports :
+`phase3/K2-K9-requetes-2026-10-10/`.
+
+| Critère | Rejeu **[Observé]** | Verdict |
+|---|---|---|
+| K2 / E2 : ≥ 4 arXiv pertinents sur 5 | `"agent evaluation"` + catégories → **5/5** en lecture stricte (référence 3/5) ; ≈ 15/20 sur le sujet | **Réussi** |
+| K9 : Tier 2 renvoie des résultats sur quatre mots | 9 / 10 / 9 liens par recherche sur E2 comme sur E1 ; la recherche communautaire rendait 0 en référence | **Réussi** |
+| E1 (contrôle) | `claude code mods` → 20 dépôts, homonyme écarté par la skill, aucun Short ; **aucune page officielle Anthropic dans le rapport** (non remontées par le Tier 2 ce run) | inchangé sur K5 ; **à traiter en K7** |
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
