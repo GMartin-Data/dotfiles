@@ -6,6 +6,58 @@
 
 ---
 
+## Checkpoint précédent — 2026-10-08 14:10
+Session : 445c822b-515b-4ca5-960f-37f1e011301f
+
+## Tâches complétées
+
+- **Précondition « `./install.sh` post-merge » vérifiée, non rejouée** : symlinks
+  `agents/dbt.md`, `hooks/block-dbt.sh`, `mcp/dbt-enveloppe` en place depuis le
+  2026-10-04 10:06 (posés sur la branche, pointent dans le working tree donc sur
+  `main` fusionné) ; `.venv` présent, installation **editable** (`uv pip show`),
+  donc les correctifs de la revue sont vivants ; lockfile inchangé depuis le
+  2026-10-03 ; `uv sync --frozen --dry-run` ne ferait que ré-enregistrer le
+  paquet local. `settings.json` : hook `block-dbt.sh` et `Bash(dbt *)` en deny
+  actifs. La dernière case du test plan de la PR #5 est donc remplie pour sa
+  moitié « installation » ; sa moitié « tâche réelle » est reportée (voir
+  Décisions).
+- Checkpoint du 2026-10-04 18:37 commité (`874190f`), `git lg` ajouté (`8289fba`).
+- **Deuxième rotation de la fenêtre** : checkpoint du 2026-10-04 15:34 déplacé
+  tel quel en tête de `tasks/progress-archive.md` (20 → 21 checkpoints archivés).
+- **`/model` et `/effort` persistent dans le repo** : une bascule ponctuelle vers
+  Opus 5.5 / high a réécrit `claude/settings.json` (symlink global : `"model"`,
+  bloc `modelSettings`) ; restauré par `git restore`, défaut resté sur Fable.
+
+## En cours
+
+- Rien. La tâche de fix annoncée en séance se traite sur claude.ai, hors de ce
+  repo — rien à reprendre ici.
+
+## Prochaines étapes
+
+1. **Premier vrai test du subagent `dbt`** : event-driven, dans
+   `tasks/insights-actions.md` « Ordre du jour reconduit » item 5 (déclencheur :
+   un projet dbt tangible ; la révision de l'effort `high` y est rattachée).
+2. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — décision Greg :
+  - **Test réel du subagent `dbt` reporté sine die** : aucun projet dbt tangible
+    disponible ; l'item devient event-driven dans `insights-actions.md` plutôt
+    qu'une « prochaine étape » reconduite sans déclencheur. `./install.sh` n'est
+    pas rejoué (no-op idempotent, précondition déjà acquise).
+
+## Blocages
+
+- Aucun.
+
+---
+
 ## Checkpoint précédent — 2026-10-04 18:37
 Session : 86755d4a-fc5f-4c9d-a934-6c8a09e318d9
 

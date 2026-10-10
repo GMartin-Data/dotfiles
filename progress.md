@@ -1,5 +1,75 @@
 ## Dernière mise à jour
-Date : 2026-10-09 16:21
+Date : 2026-10-10 11:56
+Session : 08467072-cb71-4adb-bde3-d8c9315a577a
+
+## Tâches complétées
+
+- **Phase 0 close** (`plan.md` §5, commit `cbef0a2`) :
+  - Import verbatim de l'export claude.ai (`tech-watch-skill.zip`, 4 fichiers)
+    dans `claude/skills/tech-watch/`, **sans symlink** (D2a) — `e9609c3`.
+  - **D3 révisé en (d)** : scope user essayé puis retiré le jour même sur
+    objection de Greg (context-engineering) ; cible = subagent `tech-watch` à
+    `mcpServers` inline + skill en `context: fork`, à construire en phase 3.
+    Noms vérifiés par sonde : `mcp__tech-watch__search_*`, `WebSearch` — `cef27c1`.
+  - **Référence E1–E7** dans `tasks/tech-watch-2026-10/baseline/<E>-<slug>-<date>/`
+    (rapport tel quel + `run.md`). Verdicts : E1 échec/réussi (K5 reproduit,
+    aucun Short) · E2 réussi (lecture phases 1–2) · E3 réussi/échec (en-tête
+    par source OK, pied de page figé) · E5 réussi ×2 · E6 échec (K10, acté sur
+    E1) · E7 réussi ×2. Coût ≈ 3,9 $.
+  - Outillage réutilisable : `claude/evals/tech-watch/run-eval.sh` (sandbox
+    isolé patron batch A, `--mcp-config` session, Opus pinné, `EXTRA_ARGS`,
+    `FIXTURE_DIR`, `MCP_JSON`), `extract-run.sh`, fixtures `e3/` (stdio, token
+    bidon) et `e5/notes.md`. Transcripts dans `claude/evals/results/`
+    (gitignorés).
+- Branche `feat/tech-watch-skill` : 19 commits, **non poussée**.
+
+## En cours
+
+- Rien. La phase 3 s'ouvre dans une session neuve.
+
+## Prochaines étapes
+
+1. **Phase 3 — skill**, ordre du plan §3 : K12 d'abord (sonde du point non
+   documenté : le `mcpServers` inline d'un subagent est-il connecté quand une
+   skill le fork ; agent `tech-watch` sur le patron `agents/dbt.md` ; skill en
+   `context: fork` ; `web_search` → `WebSearch` ; retirer ou renommer la skill
+   côté claude.ai dès que la version fichier diverge, car Claude Code la
+   synchronise sous `anthropic-skills:tech-watch`), puis K8 → K2/K9 → K4 → K6
+   → K7 → **K5 en tour dédié** → K10 → K3 → K11 → K1. Observations transverses
+   à relire avant : `plan.md` §5 « Phase 0 ».
+2. Rejeu E1–E7 après chaque lot via `run-eval.sh`, comparaison à `baseline/`.
+   E4, E8, E9, E10 : non joués, une veille complète chacun, selon budget.
+3. **Phase 4** : retrait de l'ancien trio command + agent + script (D2a),
+   `install.sh`, README, `claude/evals/tech-watch/README.md`, `/code-review`
+   sur la branche, PR.
+4. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- N/A (pas de PRD — repo dotfiles). Écarts à la passation : E3 joué avec
+  YouTube également en panne (pas de clé en local) ; E6 acté sur E1 ; série
+  sur Opus 5.5 et non Fable.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg (2026-10-09 → 10) :
+  - **D3 (d)** subagent inline plutôt que scope user (`plan.md` §1).
+  - **Opus 5.5 pour toute la série E1–E10** ; ne rouvrir qu'en cas de fort
+    désaccord.
+  - E6 acté sur le run E1, sans rejeu ; fixture E5 à sujet « proche d'une
+    veille » validée après explication.
+  - Transcripts non committés (précédent batch A, `claude/evals/results/`
+    gitignoré).
+
+## Blocages
+
+- Aucun côté chantier. Hors chantier, inchangés : endpoint Cloud Run `/sse`
+  public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions
+  ≤ `00008`) à la main de Greg.
+
+---
+
+## Checkpoint précédent — 2026-10-09 16:21
 Session : 71570f5a-6005-4fcb-a082-dd041048698a
 
 ## Tâches complétées
@@ -176,54 +246,3 @@ Session : 847b86f0-f265-4644-aa61-225cbecc5943
 - Risque hors chantier noté : endpoint Cloud Run `/sse` **public sans auth**
   (quota YouTube exposé) — à traiter séparément (IAM ou clé en header).
 
----
-
-## Checkpoint précédent — 2026-10-08 14:10
-Session : 445c822b-515b-4ca5-960f-37f1e011301f
-
-## Tâches complétées
-
-- **Précondition « `./install.sh` post-merge » vérifiée, non rejouée** : symlinks
-  `agents/dbt.md`, `hooks/block-dbt.sh`, `mcp/dbt-enveloppe` en place depuis le
-  2026-10-04 10:06 (posés sur la branche, pointent dans le working tree donc sur
-  `main` fusionné) ; `.venv` présent, installation **editable** (`uv pip show`),
-  donc les correctifs de la revue sont vivants ; lockfile inchangé depuis le
-  2026-10-03 ; `uv sync --frozen --dry-run` ne ferait que ré-enregistrer le
-  paquet local. `settings.json` : hook `block-dbt.sh` et `Bash(dbt *)` en deny
-  actifs. La dernière case du test plan de la PR #5 est donc remplie pour sa
-  moitié « installation » ; sa moitié « tâche réelle » est reportée (voir
-  Décisions).
-- Checkpoint du 2026-10-04 18:37 commité (`874190f`), `git lg` ajouté (`8289fba`).
-- **Deuxième rotation de la fenêtre** : checkpoint du 2026-10-04 15:34 déplacé
-  tel quel en tête de `tasks/progress-archive.md` (20 → 21 checkpoints archivés).
-- **`/model` et `/effort` persistent dans le repo** : une bascule ponctuelle vers
-  Opus 5.5 / high a réécrit `claude/settings.json` (symlink global : `"model"`,
-  bloc `modelSettings`) ; restauré par `git restore`, défaut resté sur Fable.
-
-## En cours
-
-- Rien. La tâche de fix annoncée en séance se traite sur claude.ai, hors de ce
-  repo — rien à reprendre ici.
-
-## Prochaines étapes
-
-1. **Premier vrai test du subagent `dbt`** : event-driven, dans
-   `tasks/insights-actions.md` « Ordre du jour reconduit » item 5 (déclencheur :
-   un projet dbt tangible ; la révision de l'effort `high` y est rattachée).
-2. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- N/A (pas de PRD — repo dotfiles).
-
-## Décisions prises
-
-- Track léger, sans ADR — décision Greg :
-  - **Test réel du subagent `dbt` reporté sine die** : aucun projet dbt tangible
-    disponible ; l'item devient event-driven dans `insights-actions.md` plutôt
-    qu'une « prochaine étape » reconduite sans déclencheur. `./install.sh` n'est
-    pas rejoué (no-op idempotent, précondition déjà acquise).
-
-## Blocages
-
-- Aucun.
