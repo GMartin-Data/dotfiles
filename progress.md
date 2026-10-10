@@ -1,5 +1,93 @@
 ## Dernière mise à jour
-Date : 2026-10-10 15:19
+Date : 2026-10-10 16:14
+Session : 74a6446f-bfe1-4ed1-9f87-7b70c2f7a0ba
+
+## Tâches complétées
+
+- **Phase 3 close : 11 items sur 11** (`plan.md` §5), chacun avec règle validée
+  par Greg, rejeu d'eval contre le critère, fiche dans
+  `tasks/tech-watch-2026-10/phase3/`. Lot « sortie » de cette session :
+  - **K3** état par source : en-tête à lignes fixes dans `report-template.md`
+    (tableau de 6 lignes, statuts fermés `ok` / `empty` / `degraded` / `failed`
+    / `absent` / `not run`, lignes `Pipeline`, `Enrichment`, `Date test`,
+    `Notes`), pied de page `Sources used` dérivé du tableau. E3 rejoué :
+    GitHub `degraded`, YouTube `failed`, pied de page sans arXiv ni YouTube,
+    syntaxe `env:` du `mcpServers` inline vérifiée. 0,83 $. Correctif après
+    run, non rejoué : les résultats de repli comptent dans la ligne de l'outil
+    remplacé.
+  - **K11** sortie : slug = sujet normalisé (minuscules, ASCII, tirets), nom
+    `tech-watch-{slug}-{date}.md` (`-{days}d` hors fenêtre 30), rapport en
+    **anglais fixe**, dossier fixe `/home/martin/tech-watch/` créé si absent,
+    première ligne de chat `Report: <chemin> — n ranked + m primary — normal |
+    degraded: …`. E1 et E7a : même nom de fichier sur deux formulations,
+    dossier créé par `Write`. 1,82 $. Correctif après run, non rejoué : titre
+    du gabarit = sujet normalisé, demande tapée en métadonnée `Request`.
+  - **K1** limitations réécrites d'après les fiches (3 lignes supprimées
+    jamais reproduites, 2 réécrites, 5 nouvelles), traçabilité dans
+    `phase3/K1-limitations-2026-10-10.md`. Sans run, 0 $.
+- `run-eval.sh` réécrit le dossier de sortie fixe en `cwd/tech-watch/` du
+  sandbox (sans le pré-créer) ; fixture E3 alignée sur l'agent.
+- Coût cumulé de la phase 3 ≈ 13 $. Branche `feat/tech-watch-skill` :
+  **47 commits d'avance sur `main`, non poussée**, arbre propre.
+
+## En cours
+
+- Rien. Phase 3 close ; le rejeu final et la phase 4 s'ouvrent dans une
+  session neuve.
+
+## Prochaines étapes
+
+1. **Rejeu final E1 à E7** via `run-eval.sh`, comparaison à `baseline/` (≈ 4 $) :
+   E1 et E7a servent aussi à observer la ligne `Request` du gabarit, non
+   rejouée depuis le correctif de titre. État des autres scénarios, d'après
+   les fiches : E4 joué en K5 (fenêtre 60 jours, réussi), E8 joué en K6 (E8a
+   sans `WebFetch`, E8b normal, réussi), E10 joué en K4 (trois sujets, Tier 3
+   déclenché sur « Apache Iceberg row lineage », réussi) ; E9 réussi de façon
+   opportuniste sur E1 en K7, sur une source hors top 20, à rejouer quand un
+   cas connu de contradiction existera.
+2. **Phase 4** : retrait de l'ancien trio command + agent `tech-watch-scorer`
+   + script (D2a, `claude/commands/tech-watch.md`, `claude/agents/scripts/`,
+   lignes correspondantes d'`install.sh`), liens `install.sh` pour la skill et
+   l'agent, README, `claude/evals/tech-watch/README.md`, règle de permission
+   `Write(/home/martin/tech-watch/**)` ou `--add-dir` dans la configuration
+   livrée, `/code-review` sur la branche, PR.
+3. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles). Écarts à la passation de la phase 3 :
+  E10 sur 3 sujets, E8 simulé par retrait de `WebFetch`, E9 opportuniste,
+  Papers With Code remplacé par Hugging Face Papers, DEV.to/Hashnode retirés
+  du Tier 3 ; en fin de phase, E1 + E7a joués ensemble pour K11.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg du 2026-10-10 (détail dans `plan.md`
+  §5, phase 3) :
+  - K3 : pied de page **dérivé** du tableau d'état plutôt que supprimé.
+  - K11 : rapport en **anglais fixe** ; sortie dans un **dossier fixe**
+    plutôt que `./tech-watch/` ou la racine du CWD.
+  - K1 : texte des limitations validé tel quel.
+  - Décisions des items K12, K8, K2/K9, K4, K6, K7, K5, K10 : checkpoint
+    précédent et `plan.md` §5.
+- Ajustements pris par Claude, signalés, non rejoués : comptes de repli dans la
+  ligne de l'outil remplacé (K3) ; titre du gabarit au sujet normalisé (K11).
+- **Points en suspens pour Greg** (consignés dans `plan.md` §5) : `model: opus`
+  figé dans l'agent ; Tier 3 de `sources.yaml` orienté IA, inutile sur un sujet
+  data ; frontière B/C au jugement du modèle ; plateau à 85 des vidéos-listes ;
+  E9 à rejouer sur une source classée ; `check-dates.py` ne lit pas le bloc
+  « Primary sources » ; sans YouTube, la tranche Essential peut rester vide
+  (K5, observé au rejeu K3).
+
+## Blocages
+
+- Aucun côté chantier. Hors chantier, inchangés : endpoint Cloud Run `/sse`
+  public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions
+  ≤ `00008`) à la main de Greg.
+
+---
+
+## Checkpoint précédent — 2026-10-10 15:19
 Session : c353e960-a614-4035-b178-7387d249e416
 
 ## Tâches complétées
@@ -182,86 +270,3 @@ Session : 08467072-cb71-4adb-bde3-d8c9315a577a
   public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions
   ≤ `00008`) à la main de Greg.
 
----
-
-## Checkpoint précédent — 2026-10-09 16:21
-Session : 71570f5a-6005-4fcb-a082-dd041048698a
-
-## Tâches complétées
-
-- **Phase 1 bis (revue) close** — menée en session dédiée sur `~/mcp-server-code` :
-  `/code-review high` sur `main..fix/search-quality`, 10 findings triagés,
-  6 commits de correctifs test-first (clé YouTube hors des messages d'erreur,
-  sonde du token une fois par processus, `_fetch_details` best-effort sur toute
-  erreur, `Field`/`Literal` dans les schémas + refus de `query=""`, phrase
-  entre guillemets dans une requête arXiv, `channelTitle` décodé). PR #1 mergée
-  (`574d580`), 79 → 97 tests. Détail commit par commit : `plan.md` §5.
-- **Phase 2 (déploiement) close** — go Greg, D6 : `gcloud run deploy --source .`
-  depuis `main` → révision `tech-watch-mcp-00008-mp2`, puis `00009-qgq`
-  (voir ci-dessous), 100 % du trafic, variables d'env intactes (noms
-  vérifiés). **Vérifications live [Observé]** contre l'endpoint SSE via le
-  client du SDK `mcp` : 3 outils avec descriptions, enums et `minLength` ;
-  `dbt` → `dbt-labs/dbt` n° 1 sans avertissement 401 ; arXiv 4/5 pertinents ;
-  **critère S4 live rempli** (« Mods in Claude Code », chaîne Claude, n° 2/10,
-  341 916 vues, 3:21) ; `sort='popular'` et `query=''` → `isError` sans appel
-  amont ; logs de révision `🦑 GitHub token: ✅ valid`. Repli documenté dans
-  `plan.md` §5 (`update-traffic --to-revisions …00007-5kt=100`).
-- **Fuite de la clé YouTube dans les logs Cloud Run trouvée et corrigée** :
-  httpx journalisait chaque requête au niveau INFO avec l'URL complète
-  (`…&key=<YOUTUBE_API_KEY>`), antérieur au chantier (déjà sur `00007`).
-  Branche `fix/httpx-request-logging` menée **depuis cette session dotfiles**
-  (chemins absolus) : test rouge (session MCP en mémoire + `MockTransport`,
-  la ligne `HTTP Request … key=AIzaSECRET` capturée) → logger `httpx` au
-  niveau `WARNING` dans `setup_logger` → 98 tests verts. PR #2 mergée
-  (`9fccf2b`), révision **`00009-qgq`** déployée ; logs vérifiés : recherche
-  YouTube sans ligne `HTTP Request`, 0 entrée `key=`.
-- Plan tenu à jour : `plan.md` §5 (phase 1 bis, phase 2, fix httpx), commits
-  `f8d0411` et `8aa493c` sur `feat/tech-watch-skill` (8 commits docs,
-  **non poussée**).
-
-## En cours
-
-- Rien côté serveur : `main` = `origin/main` (`9fccf2b`), suite verte, prod
-  sur `00009`. Le chantier bascule sur la skill (phase 0), qui attend l'export.
-
-## Prochaines étapes
-
-1. **Phase 0 — bloquée par Greg** : export de la skill depuis Claude.ai
-   (`.skill` ou les 4 fichiers `SKILL.md` + `references/`) → import verbatim
-   dans `claude/skills/tech-watch/`, déclaration MCP (D3a : `claude mcp add
-   --transport sse tech-watch https://tech-watch-mcp-ocbwcs6sjq-ew.a.run.app/sse`),
-   référence E1–E10 dans `baseline/`. **Session neuve** (`/clear` + `/catchup`)
-   une fois l'export disponible : `plan.md` §3 phase 0.
-2. Phases 3–4 (skill K1–K12 dans l'ordre du plan, K5 en tour dédié ; evals ;
-   retrait de l'ancien trio `/tech-watch` command + agent + script — D2a ;
-   seconde `/code-review` sur `feat/tech-watch-skill`, PR) : `plan.md` §3.
-3. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- N/A (pas de PRD — repo dotfiles). Écarts à la passation : S6 étendu à la
-  fusion des deux entrées serveur ; ordre S6 avant S1 ; revue insérée avant
-  le déploiement ; correctif httpx (hors passation) livré en révision `00009`.
-
-## Décisions prises
-
-- Track léger, sans ADR — décisions Greg :
-  - **Phase 2 (D6)** : go donné le 2026-10-09 ; déploiements `00008` puis
-    `00009` lancés par Claude, variables d'env non touchées.
-  - **Fix httpx traité depuis la session dotfiles**, branche de fix + PR #2
-    sans `/code-review` (1 ligne de code + 1 test) — exception ponctuelle à
-    « une session par dépôt », motivée par la taille.
-  - Les logs des révisions ≤ `00008` contiennent la clé : **rotation de
-    `YOUTUBE_API_KEY` laissée à la main de Greg** (console Google puis
-    `gcloud run services update --update-env-vars`).
-  - Reprise de la skill dans un **contexte frais** après ce checkpoint.
-- Rappel des décisions de la phase 1 (D1 remote privé, S6 (a) module unique,
-  choix S2/S3/S4, S6 avant S1) : `plan.md` §1 et §5.
-
-## Blocages
-
-- **Export de la skill** depuis Claude.ai (à la main de Greg) — bloque les
-  phases 0, 3, 4.
-- Risque hors chantier maintenu : endpoint Cloud Run `/sse` **public sans
-  auth** (quota YouTube exposé) — à traiter séparément (IAM ou clé en header).
-  S'y ajoute la rotation de la clé YouTube (logs historiques), optionnelle.
