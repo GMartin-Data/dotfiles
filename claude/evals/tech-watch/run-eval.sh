@@ -13,7 +13,9 @@
 #      EXTRA_ARGS (e.g. "--max-turns 2" for trigger probes),
 #      FIXTURE_DIR (its contents are copied into cwd/ before the run),
 #      AGENT_MD (agent file to use instead of claude/agents/tech-watch.md, e.g. the E3
-#                fixture: local stdio server with an invalid GitHub token).
+#                fixture: local stdio server with an invalid GitHub token; or
+#                fixtures/k8/agent-stub.md with "--max-turns 1" for trigger probes
+#                E5/E7 - --max-turns bounds the main session only, not the fork).
 set -uo pipefail
 ID="${1:?run id required}"
 PROMPT="${2:?prompt required}"
