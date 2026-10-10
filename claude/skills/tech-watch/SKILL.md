@@ -1,13 +1,15 @@
 ---
 name: tech-watch
 description: Technology monitoring - curated source search and scored ranking for a given tech topic.
+context: fork
+agent: tech-watch
 ---
 
 # Tech Watch
 
 Technology monitoring skill. Aggregates sources from curated channels, scores and ranks them, and produces a Markdown report optimized for NotebookLM import.
 
-**Runtime**: MCP tools + web search. No Python script is executed.
+**Runtime**: the three `mcp__tech-watch__*` MCP tools (arXiv, GitHub, YouTube) + `WebSearch` / `WebFetch`. No Python script is executed.
 
 ---
 
@@ -44,16 +46,16 @@ Output filename: `tech-watch-{query}-{date}.md`
 
 - "Summarize this document" -> work with provided content directly
 - "What is RAG?" -> factual question, answer directly without search
-- "Find me a YouTube video on X" -> single-source lookup, use web_search only
-- "What happened in AI last week?" -> use web_search only, no full curation workflow needed
+- "Find me a YouTube video on X" -> single-source lookup, use `WebSearch` only
+- "What happened in AI last week?" -> use `WebSearch` only, no full curation workflow needed
 
 ---
 
 ## Known limitations
 
-- GitHub MCP tool requires auth token for > 60 req/hour; unauthenticated calls may fail silently - fall back to web_search site:github.com
-- arXiv MCP tool may return a redirect error (HTTP 301) - known server issue, not a query problem; retry once or use web_search site:arxiv.org
-- YouTube MCP tool depends on server index; videos < 48h old may not appear - fall back to web_search site:youtube.com "{query}"
+- GitHub MCP tool requires auth token for > 60 req/hour; unauthenticated calls may fail silently - fall back to `WebSearch` site:github.com
+- arXiv MCP tool may return a redirect error (HTTP 301) - known server issue, not a query problem; retry once or use `WebSearch` site:arxiv.org
+- YouTube MCP tool depends on server index; videos < 48h old may not appear - fall back to `WebSearch` site:youtube.com "{query}"
 - Paywalled content (Nature, IEEE, ACM) returns title/abstract only
 - Reddit excluded: API requires paid auth since 2023
-- If all three MCP tools fail, continue with Tier 2 + Tier 3 web search only. Add a "Degraded mode" note in the report header (next to Sources count) and mention which tools were unavailable.
+- If the three `mcp__tech-watch__*` tools are absent from your tool list (MCP server not connected) or all fail, continue with Tier 2 + Tier 3 web search only. Say so in the first line of your answer, and add a "Degraded mode" note in the report header (next to Sources count) naming the tools that were unavailable.
