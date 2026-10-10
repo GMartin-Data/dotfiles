@@ -320,6 +320,29 @@ communautaire par `allowed_domains` ; Tier 3 converti en `WebSearch` +
 | K9 : Tier 2 renvoie des résultats sur quatre mots | 9 / 10 / 9 liens par recherche sur E2 comme sur E1 ; la recherche communautaire rendait 0 en référence | **Réussi** |
 | E1 (contrôle) | `claude code mods` → 20 dépôts, homonyme écarté par la skill, aucun Short ; **aucune page officielle Anthropic dans le rapport** (non remontées par le Tier 2 ce run) | inchangé sur K5 ; **à traiter en K7** |
 
+#### K4 — filtre rapide avant comptage, Tier 3 (2026-10-10)
+
+Règle validée par Greg (coupe vidéo < 3 min binaire ; adjacents hors du compte
+des 12 ; sujet E10 au choix de Claude) : `SKILL.md` étapes 4 (filtre
+on-topic / adjacent / off-topic sur titre et description, vidéos < 180 s et
+résultats sans titre écartés), 5 (dédoublonnage, remonté avant le comptage
+après E10b) et 6 (Tier 3 si on-topic uniques < 12, par priorité, arrêt à 12 ou
+à épuisement). Détail, trois rapports : `phase3/K4-tier3-2026-10-10/`.
+
+| Run E10 | Comptes **[Observé]** | Tier 3 |
+|---|---|---|
+| MCP elicitation | 63 bruts, 38 on-topic | non, motivé (« on-topic >= 12 ») |
+| Apache Iceberg variant type | 42 bruts, 21 on-topic (14 uniques) | non — a révélé le comptage avant dédoublonnage, corrigé |
+| Apache Iceberg row lineage | 94 bruts, 11 on-topic (7 uniques), 47 adjacents, 36 off-topic | **oui, 6 entrées, épuisé sans atteindre 12** |
+
+**Critère K4 observé** : 83 résultats adjacents ou hors sujet n'ont pas dispensé
+du Tier 3. Coût des trois runs : 1,87 $.
+
+Point pour Greg (contenu, pas mécanisme) : le Tier 3 de `sources.yaml` est
+entièrement orienté IA et n'a rien rendu sur un sujet data engineering — à
+compléter par des domaines data, ou à laisser au modèle le soin de proposer
+des domaines par sujet.
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
