@@ -364,6 +364,24 @@ Tier 1), donc le marquage par source n'est attesté qu'en en-tête — visible d
 que K5 laissera passer le web. Confirmé pour K7 : les pages officielles
 Anthropic ne remontent pas par le Tier 2 général (deux runs de suite).
 
+#### K7 — sources primaires d'abord, contradictions (2026-10-10)
+
+Règle validée par Greg (bloc « Primary sources » hors classement ; contradiction
+écartée si dans le titre, sinon gardée et signalée ; 3 pages du budget
+réservées ; AWS et Azure ajoutés aux propriétaires connus à sa demande) :
+`SKILL.md` étape 3 (propriétaire du sujet, `WebSearch` sur ses domaines, page
+localisée → page `en`, ouverture en premier), étapes renumérotées 1–10 ;
+`sources.yaml` section `primary_sources.known_owners` (9 propriétaires) ;
+`report-template.md` bloc « Primary sources ». Détail :
+`phase3/K7-sources-primaires-2026-10-10/`.
+
+| Critère | Rejeu E1 **[Observé]** | Verdict |
+|---|---|---|
+| Sources primaires citées quand elles existent | Recherche ciblée exécutée avant le Tier 2 ; billet, docs `en` et changelog ouverts en premier (3 des 10 pages) ; bloc « Primary sources » à 3 entrées + 4 pages officielles non ouvertes. Quatre runs auparavant n'avaient que des docs localisées | **Réussi** |
+| E9, contradiction signalée ou écartée | Article dev.to datant le lancement au 3 octobre contre le 1er dans l'annonce : signalé dans « Trends » (source hors top 20) | **Réussi** (opportuniste ; à rejouer sur une source classée) |
+
+Coût 0,77 $, 206 s (+1 recherche, +3 pages). Top 20 toujours 100 % Tier 1 : K5.
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
