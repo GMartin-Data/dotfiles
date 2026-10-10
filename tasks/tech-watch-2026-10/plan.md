@@ -441,6 +441,27 @@ Coût 0,83 $. Syntaxe `env:` du `mcpServers` inline **vérifiée** (avertissemen
 YouTube (K5) ; deux dépôts Anthropic en bloc primaire sans ouverture (K7) ;
 résumé de chat en français, rapport en anglais (K11).
 
+#### K11 — slug, langue, emplacement, livraison (2026-10-10)
+
+Deux décisions Greg, une par tour : **rapport en anglais fixe** (résumé de chat
+dans la langue de la demande) ; **dossier fixe `/home/martin/tech-watch/`**,
+créé si absent, chemin de la demande prioritaire. Règles : `SKILL.md` étape 1
+(slug = sujet normalisé, minuscules, ASCII, tirets) et étape 10 (nom
+`tech-watch-{slug}-{date}.md`, `-{days}d` hors fenêtre 30, même nom = remplace,
+emplacement, langue) ; `agents/tech-watch.md` et fixture E3 (dossier, première
+ligne de chat `Report: <chemin> — n ranked + m primary — normal | degraded: …`) ;
+`run-eval.sh` réécrit le dossier en `cwd/tech-watch/` du sandbox sans le
+pré-créer. Détail et deux rapports : `phase3/K11-sortie-2026-10-10/`.
+
+| Run | **[Observé]** | Verdict |
+|---|---|---|
+| E1 `/tech-watch Claude Mods` | `cwd/tech-watch/tech-watch-claude-code-mods-2026-10-10.md`, dossier créé par `Write`, rapport anglais, première ligne `Report: … — 20 ranked + 3 primary — normal`, résumé français | **Réussi** |
+| E7a `Fais-moi une veille sur les mods de Claude Code` | **même nom de fichier**, dossier créé, rapport anglais (titre en français : gabarit `{query}`), ligne `Report:` produite par le fork puis **paraphrasée par la session principale** (chemin relatif, comptes conservés) | **Réussi** (critère K11) ; livraison partielle sous déclenchement en langage naturel, fonctionnement du fork |
+| Correctif après les runs | titre du gabarit = sujet normalisé, demande tapée en métadonnée `Request` | signalé, non rejoué |
+
+Coût 1,82 $. À reporter : permission `Write` hors CWD en session interactive
+(phase 4, `install.sh` / README) ; paraphrase de la livraison (K1).
+
 ## 6. Ce que Greg doit fournir
 
 1. ~~**Bloquant pour les phases 0, 3, 4** : l'export de la skill depuis Claude.ai (`.skill`, ou les quatre fichiers collés).~~ **Reçu le 2026-10-09** (`tech-watch-skill.zip`), importé en `e9609c3`.
