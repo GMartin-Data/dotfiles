@@ -86,9 +86,38 @@ Use the template in `references/report-template.md`. Its header is fixed: fill t
 
 ## Known limitations
 
-- GitHub MCP tool requires auth token for > 60 req/hour; unauthenticated calls may fail silently - fall back to `WebSearch` site:github.com
-- arXiv MCP tool may return a redirect error (HTTP 301) - known server issue, not a query problem; retry once or use `WebSearch` site:arxiv.org
-- YouTube MCP tool depends on server index; videos < 48h old may not appear - fall back to `WebSearch` site:youtube.com "{query}"
-- Paywalled content (Nature, IEEE, ACM) returns title/abstract only
-- Reddit excluded: API requires paid auth since 2023
-- If one or more `mcp__tech-watch__*` tools are absent from your tool list (MCP server not connected) or fail, continue with the remaining tools and the web search tiers. Say so in the first line of your answer; in the report, the source status table of the header carries it (`absent`, `failed`, `degraded`), there is no separate "Degraded mode" note.
+Every line below was observed at least once on the 2026-10 eval runs
+(`tasks/tech-watch-2026-10/`). Any row of the status table that is not `ok`
+is named in the first line of your answer.
+
+**MCP server and Tier 1 tools**
+- Server unreachable: the three `mcp__tech-watch__*` tools are simply missing
+  from your tool list, with no error anywhere. Continue with the web tiers and
+  mark the three rows `absent`.
+- GitHub token rejected (401): the server retries once without authentication
+  (10 searches per minute instead of 30) and prefixes its results with
+  `⚠️ GitHub token rejected (401) …`. The results are usable: row `degraded`,
+  warning quoted in the status cell, rotation mentioned in your answer. Do not retry.
+- YouTube key missing on the server: the tool returns `Error executing tool
+  search_youtube_videos: YouTube API key not configured.` Row `failed`. The
+  fallback `WebSearch` on `youtube.com` returns links without date, duration,
+  views or channel: those videos stay `unverified`, cannot reach 60 and are not
+  ranked. The official video, if any, is then only named in `Notes`, and the
+  Essential band may be empty.
+- arXiv returns 0 papers on product features and vendor tooling (Claude Code
+  mods: 0 on every run). That is `empty`, not a failure: no retry, no wider query.
+
+**Web search and pages**
+- `WebFetch` is the only way to establish a date, length or author for a web
+  result. Without it, or past the budget of 10 pages, web sources stay
+  `unverified`, cap at 59 and are excluded, not judged poor. Say how many in `Notes`.
+- A long page is read truncated after roughly 100,000 characters (the Claude
+  Code changelog, about 1 MB, was read down to 2.1.288 only). Say what was not
+  reached when it matters (a launch entry, a date).
+- Reddit is not searched (API behind paid auth). dev.to, Medium, Substack and
+  Hashnode are reached through Tier 2 only.
+
+**Delivery**
+- Under a natural-language trigger ("fais-moi une veille sur…"), the main
+  session receives your `Report:` line as a tool result and rephrases it for
+  the user (relative path observed). Under `/tech-watch …` it is delivered as is.
