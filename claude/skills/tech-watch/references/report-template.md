@@ -16,6 +16,17 @@ Do NOT list sources here — synthesize across them.]
 
 ---
 
+## Primary sources
+
+[1–3 entries from the topic owner (official docs, announcement, reference repo or spec),
+outside the ranking: no score, no threshold, no cap. If none exists, write
+"No primary source found for this topic." and say what was searched.]
+
+**{Title}** — 🔗 {URL} — 📅 {publication_date | unverified}
+{one line: what this source establishes (version, availability, requirements)}
+
+---
+
 ## Sources ranked by score
 
 [Group by tier/score band using the labels from scoring-criteria.md.
@@ -58,4 +69,4 @@ Example: "GitHub activity suggests Y is replacing Z in production stacks"]
 *Scoring: Relevance 40% · Freshness 20% · Authority 20% · Depth 10% · Engagement 10%*
 ```
 
-`unverified` is the only allowed value for a date, length or authority that could not be established (SKILL.md, step 7). Never estimate one.
+`unverified` is the only allowed value for a date, length or authority that could not be established (SKILL.md, step 8). Never estimate one.

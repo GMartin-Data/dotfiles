@@ -44,6 +44,24 @@ tier_1:
       # no `video_duration`: official videos can be under 4 min; Shorts are filtered at scoring time on duration_seconds
 
 # -------------------------------------------------------------------
+# PRIMARY SOURCES - one WebSearch restricted to the topic owner's domains
+# (SKILL.md, step 3). Known owners below; any other owner is identified at
+# run time with a `{query} official documentation OR announcement` search.
+# -------------------------------------------------------------------
+primary_sources:
+  query: '{query}'
+  known_owners:
+    Anthropic / Claude Code: [claude.com, code.claude.com, docs.claude.com, anthropic.com]
+    dbt Labs: [docs.getdbt.com, getdbt.com]
+    Apache projects (Iceberg, Spark, Kafka, Airflow...): [apache.org]
+    Model Context Protocol: [modelcontextprotocol.io]
+    Snowflake: [docs.snowflake.com, snowflake.com]
+    Databricks: [docs.databricks.com, databricks.com]
+    AWS: [docs.aws.amazon.com, aws.amazon.com]
+    Azure / Microsoft: [learn.microsoft.com, azure.microsoft.com]
+    Google Cloud: [cloud.google.com]
+
+# -------------------------------------------------------------------
 # TIER 2 - WebSearch (always run after Tier 1): three searches
 # -------------------------------------------------------------------
 tier_2:
@@ -109,6 +127,6 @@ search_config:
   default_days_back: 30
   extended_days_back: 60       # for niche/slow-moving topics
   target_results: 20
-  min_results_before_tier3: 12   # counted on unique on-topic results only (SKILL.md, steps 4-6)
-  min_video_duration_seconds: 180  # shorter videos (Shorts, teasers) are dropped at step 4
+  min_results_before_tier3: 12   # counted on unique on-topic results only (SKILL.md, steps 5-7)
+  min_video_duration_seconds: 180  # shorter videos (Shorts, teasers) are dropped at step 5
   min_score_threshold: 60      # results below this are excluded
