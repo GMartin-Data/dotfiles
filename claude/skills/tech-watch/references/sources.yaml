@@ -1,77 +1,106 @@
-# Tech Watch — Source Configuration
+# Tech Watch - Source Configuration
+#
+# Tool names are the Claude Code ones: the three `mcp__tech-watch__*` MCP tools
+# and `WebSearch` (parameters: query, allowed_domains, blocked_domains).
+# Quoting rule, every tier: quote only proper nouns and fixed expressions
+# ("Claude Code", "agent evaluation"), never the whole query - an exact phrase
+# on 3-4 words kills recall.
 
 # -------------------------------------------------------------------
-# TIER 1 — MCP tools (always run first, structured metadata)
+# TIER 1 - MCP tools (always run first, in parallel, structured metadata)
+# One query per tool, derived from the normalized topic (SKILL.md, step 1).
+# Pass every parameter below explicitly: server defaults differ (10 results).
 # -------------------------------------------------------------------
 tier_1:
-  - tool: search_arxiv_papers
+  - tool: mcp__tech-watch__search_arxiv_papers
     priority: high
-    coverage: Research papers (cs.AI, cs.LG, cs.SE, cs.DB)
+    coverage: Research papers
+    query: concept terms only, fixed expression quoted ("agent evaluation"); no product name unless the product is the subject
+    params:
+      max_results: 20
+      days_back: 30          # 60 for niche or slow-moving topics
+      categories: [cs.AI, cs.LG, cs.CL, cs.SE, cs.DB]   # omit when the topic falls outside these
+    note: 0 papers is a valid answer for product or tooling topics - do not retry with broader terms
 
-  - tool: search_github_repos
+  - tool: mcp__tech-watch__search_github_repos
     priority: high
     coverage: Repos, implementations, trending projects
-    note: Falls back to web_search site:github.com if 401/rate-limited
+    query: implementation words, unquoted, plus the context word that removes ambiguity ("claude code mods", not "Claude Mods")
+    params:
+      max_results: 20
+      days_back: 30          # repositories pushed to within the window
+      # no `sort`: best match (sorting by stars favors old homonyms)
+    note: on a 401 / rate-limit warning in the output, fall back to WebSearch with allowed_domains [github.com]
 
-  - tool: search_youtube_videos
+  - tool: mcp__tech-watch__search_youtube_videos
     priority: high
     coverage: Tutorials, demos, conference talks
+    query: natural phrasing of the topic
+    params:
+      max_results: 15
+      days_back: 30
+      order: relevance
+      language: en           # fr only when the request asks for French-language content
+      # no `video_duration`: official videos can be under 4 min; Shorts are filtered at scoring time on duration_seconds
 
 # -------------------------------------------------------------------
-# TIER 2 — Web search (always run after Tier 1)
+# TIER 2 - WebSearch (always run after Tier 1): three searches
 # -------------------------------------------------------------------
 tier_2:
-  query_templates:
-    - '"{query}" {current_year}'                              # general
-    - '"{query}" site:substack.com OR site:dev.to OR site:hashnode.dev'  # community
-    - '"{query}" tutorial guide walkthrough'                  # practical
+  searches:
+    - name: general
+      query: '{query} {current_year}'
+    - name: community
+      query: '{query}'
+      allowed_domains: [substack.com, dev.to, hashnode.dev, medium.com]
+    - name: practical
+      query: '{query} tutorial OR guide'
 
 # -------------------------------------------------------------------
-# TIER 3 — Extended sources (only if Tier 1+2 return < 12 results)
+# TIER 3 - Extended sources (only if Tier 1+2 return < 12 relevant results)
+# One WebSearch call per entry, highest priority first. WebSearch filters by
+# domain, not by path: an entry can return pages outside the listed section.
 # -------------------------------------------------------------------
 tier_3:
-  - name: Papers With Code
-    url: paperswithcode.com
-    fetch: 'web_search site:paperswithcode.com "{query}"'
+  - name: Hugging Face (Papers + Blog)
+    url: huggingface.co/papers, huggingface.co/blog
+    query: '{query}'
+    allowed_domains: [huggingface.co]
     priority: high
-    note: Benchmark + implementation context, more actionable than arXiv alone
-
-  - name: Hugging Face Blog
-    url: huggingface.co/blog
-    fetch: 'web_search site:huggingface.co/blog "{query}"'
-    priority: high
-    note: Model/dataset releases with practical context
+    note: Papers = community-upvoted arXiv papers (replaces Papers With Code, archived in 2025 and redirected here); Blog = model/dataset releases with practical context
 
   - name: Anthropic Engineering Blog
     url: anthropic.com/engineering
-    fetch: 'web_search site:anthropic.com/engineering "{query}"'
+    query: '{query} engineering'
+    allowed_domains: [anthropic.com]
     priority: high
 
   - name: Google DeepMind Blog
     url: deepmind.google/research
-    fetch: 'web_search site:deepmind.google "{query}"'
+    query: '{query}'
+    allowed_domains: [deepmind.google]
     priority: medium
 
   - name: The Batch (Andrew Ng)
     url: deeplearning.ai/the-batch
-    fetch: 'web_search site:deeplearning.ai/the-batch "{query}"'
+    query: '{query}'
+    allowed_domains: [deeplearning.ai]
     priority: medium
     note: Weekly editorial curation, strong signal-to-noise ratio
 
   - name: Import AI / Ahead of AI
-    fetch: 'web_search "import AI" OR "ahead of AI" "{query}"'
+    url: importai.substack.com, magazine.sebastianraschka.com
+    query: '{query}'
+    allowed_domains: [importai.substack.com, magazine.sebastianraschka.com]
     priority: medium
     note: Deep analytical newsletters, less noise than general blogs
 
   - name: Hacker News
-    fetch: 'web_search site:news.ycombinator.com "{query}"'
+    url: news.ycombinator.com
+    query: '{query}'
+    allowed_domains: [news.ycombinator.com]
     priority: medium
     note: Early-stage signal, unfiltered technical discussion
-
-  - name: DEV.to / Hashnode
-    fetch: 'web_search site:dev.to OR site:hashnode.dev "{query}"'
-    priority: low
-    note: Practitioner experience, less academic than arXiv
 
 # -------------------------------------------------------------------
 # SEARCH CONFIG

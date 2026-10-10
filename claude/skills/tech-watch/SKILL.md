@@ -15,19 +15,23 @@ Technology monitoring skill. Aggregates sources from curated channels, scores an
 
 ## Workflow
 
-### Step 1 - Normalize the query
-Reduce to 2-4 focused keywords before running any tool.
-> "latest stuff on AI agents and evaluation" -> "AI agent evaluation"
+### Step 1 - Normalize the topic, one query per tool
+Reduce the request to a 2-4 word topic, then derive one query per tool (rules and parameters in `references/sources.yaml`, Tier 1). Quote only proper nouns and fixed expressions, never the whole query.
+
+| Request | Topic | arXiv | GitHub | YouTube |
+|---|---|---|---|---|
+| "latest stuff on AI agents and evaluation" | AI agent evaluation | `"agent evaluation"` + default categories | `agent evaluation framework` | `AI agent evaluation` |
+| "veille sur les mods de Claude Code" | Claude Code mods | `"Claude Code" mods` (0 papers expected: accept) | `claude code mods` | `Claude Code mods` |
 
 ### Step 2 - Run Tier 1 tools (always)
-Run the three MCP tools in parallel with the normalized query.
+Run the three MCP tools in parallel, each with its own query and with every parameter listed in `sources.yaml` passed explicitly (`max_results`, `days_back`, `categories`, `order`, `language`).
 Default window: `days_back=30`. Use 60 for niche or slow-moving topics.
 
 ### Step 3 - Run Tier 2 web search (always)
-Run 2-3 web searches after Tier 1. See `references/sources.yaml` for recommended queries.
+Run the three `WebSearch` calls of `references/sources.yaml` (general, community with `allowed_domains`, practical).
 
 ### Step 4 - Run Tier 3 if needed
-If Tier 1 + 2 return fewer than 12 relevant results, fetch directly from extended sources listed in `references/sources.yaml`.
+If Tier 1 + 2 return fewer than 12 relevant results, run the Tier 3 `WebSearch` calls of `references/sources.yaml`, highest priority first.
 
 ### Step 5 - Deduplicate
 Remove results pointing to the same content on different URLs. Keep the most authoritative URL.
