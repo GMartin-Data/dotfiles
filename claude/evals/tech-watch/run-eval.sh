@@ -7,8 +7,11 @@
 #   run-id  e.g. e2  -> sandbox /tmp/claude-eval-tech-watch-<run-id>
 #   prompt  e.g. "/tech-watch AI agent evaluation"
 # Sandbox layout: config/ (isolated CLAUDE_CONFIG_DIR: skill copy, agents/tech-watch.md,
-# global CLAUDE.md, credentials symlink, .claude.json copy, empty settings), cwd/ (report
-# lands here), transcript.jsonl, stderr.log, exit_code.
+# global CLAUDE.md, credentials symlink, .claude.json copy, empty settings), cwd/ (session
+# working directory), cwd/tech-watch/ (report lands here: the agent's fixed output
+# directory /home/martin/tech-watch is rewritten to it in the agent copy, and it is NOT
+# pre-created, so each run also checks that the agent creates it), transcript.jsonl,
+# stderr.log, exit_code.
 # Env: MODEL (default opus, main session only - the fork runs on the agent's `model`),
 #      EXTRA_ARGS (e.g. "--max-turns 2" for trigger probes),
 #      FIXTURE_DIR (its contents are copied into cwd/ before the run),
@@ -29,7 +32,7 @@ GLOBAL_MD="$HOME/dotfiles/claude/CLAUDE.md"
 
 mkdir -p "$RUN/cwd" "$RUN/config/skills" "$RUN/config/agents"
 cp -r "$SKILL_SRC" "$RUN/config/skills/"
-cp "$AGENT_MD" "$RUN/config/agents/tech-watch.md"
+sed "s#/home/martin/tech-watch/#$RUN/cwd/tech-watch/#g" "$AGENT_MD" > "$RUN/config/agents/tech-watch.md"
 cp "$GLOBAL_MD" "$RUN/config/CLAUDE.md"
 ln -sf "$HOME/.claude/.credentials.json" "$RUN/config/.credentials.json"
 cp "$HOME/.claude.json" "$RUN/config/.claude.json"

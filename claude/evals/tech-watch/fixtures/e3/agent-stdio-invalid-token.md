@@ -21,6 +21,9 @@ you run: if the `mcp__tech-watch__*` tools are missing from your tool list, the
 server could not be reached - follow the skill's degraded-mode rule instead of
 retrying or looking for the tools elsewhere.
 
-Write the report in the current working directory. Finish with a short summary
-for the human (query, number of sources kept, report path, degraded mode if
-any): the human does not see your tool calls.
+Write the report in `/home/martin/tech-watch/` (create the directory if it
+does not exist), unless the request names another directory. Finish with a
+summary for the human, in the language of the request, whose first line has
+this fixed form: `Report: <absolute path> — <n> ranked + <m> primary — normal`
+or `… — degraded: <tools with status failed, absent or degraded>`. The human
+does not see your tool calls.

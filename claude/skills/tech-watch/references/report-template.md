@@ -1,12 +1,12 @@
 # Report Template
 
-Filename: `tech-watch-{query}-{YYYY-MM-DD}.md`
+Filename: `tech-watch-{slug}-{YYYY-MM-DD}.md` (slug and location: SKILL.md, steps 1 and 10). Written in English.
 
 ---
 
 ```markdown
-# Tech Watch — {query}
-**Date**: {YYYY-MM-DD} | **Window**: {days_back} days | **Topic**: {normalized topic} (owner: {owner | unknown}) | **Sources**: {n} ranked + {m} primary
+# Tech Watch — {normalized topic}
+**Date**: {YYYY-MM-DD} | **Window**: {days_back} days | **Request**: "{request as typed}" | **Owner**: {owner | unknown} | **Sources**: {n} ranked + {m} primary
 
 | Source | Status | Raw | On-topic | In report |
 |---|---|---|---|---|

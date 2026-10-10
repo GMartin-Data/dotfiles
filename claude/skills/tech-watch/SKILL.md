@@ -16,7 +16,9 @@ Technology monitoring skill. Aggregates sources from curated channels, scores an
 ## Workflow
 
 ### Step 1 - Normalize the topic, one query per tool
-Reduce the request to a 2-4 word topic, then derive one query per tool (rules and parameters in `references/sources.yaml`, Tier 1). Quote only proper nouns and fixed expressions, never the whole query.
+Reduce the request to a 2-4 word topic in English, then derive one query per tool (rules and parameters in `references/sources.yaml`, Tier 1). Quote only proper nouns and fixed expressions, never the whole query.
+
+The normalized topic also gives the report's file slug, never the request as typed: lowercase, ASCII (accents stripped), every run of non-alphanumeric characters becomes one hyphen, no leading or trailing hyphen. "Claude Mods" and "les mods de Claude Code" both normalize to `Claude Code mods` and both give `claude-code-mods`.
 
 | Request | Topic | arXiv | GitHub | YouTube |
 |---|---|---|---|---|
@@ -75,7 +77,10 @@ Threshold: 60/100, strict. Cap: 20 sources. If fewer than 10 reach 60 after Tier
 
 ### Step 10 - Generate the Markdown report
 Use the template in `references/report-template.md`. Its header is fixed: fill the source status table from what each tool and search actually returned at steps 2, 3, 4 and 7 (status vocabulary in the template), the `Pipeline` and `Enrichment` lines from the counts kept at steps 5 and 8, and derive the footer's `Sources used` from the table. Anything else goes under `Notes`.
-Output filename: `tech-watch-{query}-{date}.md`
+
+- Filename: `tech-watch-{slug}-{YYYY-MM-DD}.md`, slug from step 1. When the window is not 30 days, insert `-{days}d` before the date: `tech-watch-ai-agent-evaluation-60d-2026-10-10.md`. Same name on the same day: the new report replaces the old one.
+- Location: the output directory named by the agent you run in (`/home/martin/tech-watch/` in normal use), created if missing, unless the request names another directory.
+- Language: the report is written in English whatever the language of the request (sources, template and scoring vocabulary are English). The chat summary is in the language of the request.
 
 ---
 
