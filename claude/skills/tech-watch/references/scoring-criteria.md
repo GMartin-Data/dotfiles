@@ -15,8 +15,10 @@ slow-moving topics).
 
 | Label (from step 5) | Points |
 |---|---|
-| exact: the source is about the topic | 40 |
-| partial: the topic is one section among others | 25 |
+| on-topic, exact: the topic is the subject of the source | 40 |
+| on-topic, partial: the topic is one section among others | 25 |
+
+Adjacent results carry no relevance points: they are not scored at all (step 9).
 
 ## 2. Freshness — 20 points, relative to the window
 

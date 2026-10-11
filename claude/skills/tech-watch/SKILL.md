@@ -45,7 +45,7 @@ Run the three `WebSearch` calls of `references/sources.yaml` (general, community
 
 ### Step 5 - Quick relevance filter, then count
 On title and description only (same reading as criterion 1 of the scoring grid), label every raw result from Tiers 1 and 2:
-- **on-topic**: directly addresses the topic;
+- **on-topic**: directly addresses the topic — **exact** when the topic is the subject of the source, **partial** when the topic is one section among others (a chapter of a course, one entry of a round-up). Both are ranked; the two labels give different relevance points at step 9;
 - **adjacent**: same field, different object (an agent framework, for a watch on agent evaluation);
 - **off-topic**: word coincidence only. Two binary tests catch homonyms, results whose name matches the topic but not their object; both label the result `homonym`:
   - date test: when the topic is a dated thing (product, feature, version), the reference date is the **earliest** date a primary source of step 3 establishes for it: preview, early access or beta if documented, otherwise launch. Anything created or published before that date is off-topic. If a primary source mentions a preview or early-access period without dating it, skip the date test and rely on the meaning test alone. Not applicable to a practice or a concept.
