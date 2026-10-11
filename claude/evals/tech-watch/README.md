@@ -67,13 +67,19 @@ final E1–E7 sur les fichiers finaux (2026-10-11,
   d'outils dans l'ordre, comptes, bloc `result` (coût, tours, durée), texte
   final.
 - **`check-dates.py <report.md> <transcript.jsonl>`** (lancer avec
-  `python3 -I`) — pour chaque source web classée hors Tier 1, d'où vient la
-  date affichée : `url`, `fetched`, `unverified` (acceptés), `search`
-  (snippet, refusé par la règle K6) ou `UNSOURCED` (inventée). Sortie 1 si
-  `search` ou `UNSOURCED`. Limites connues : ne lit pas le bloc « Primary
-  sources » ; ignore les graphies `10/7/2026`, `Oct 06, 2026` et le jour-mois
-  sans année (faux `UNSOURCED` sur dev.to, Kanaries, Substack — vérifiés à la
-  main au rejeu final, aucune date inventée).
+  `python3 -I`) — pour chaque source web hors Tier 1, entrées classées et
+  bloc « Primary sources », d'où vient la date affichée : `url`, `fetched`
+  (date complète sur la page ouverte : ISO, `10/7/2026`, `October 7, 2026`,
+  `Oct 07, 2026`, `7 October 2026`), `fetched-month` (rapport au mois seul,
+  mois présent sur la page), `unverified` (acceptés) ; `fetched-noyear`
+  (jour et mois sur la page, année absente : l'année a été inférée —
+  signalé, non fatal, point ouvert pour Greg) ; `search` (snippet, refusé par
+  la règle K6) ou `UNSOURCED` (inventée). Sortie 1 si `search` ou
+  `UNSOURCED`. Une date complète n'est jamais validée par le seul mois
+  présent sur la page (variante `YYYY-MM` retirée le 2026-10-11, finding [4]
+  de la revue de la PR #6). Rejoué sur E1, E2, E3, E7a du rejeu final : 0
+  faux `UNSOURCED`, 5 `fetched-noyear` (dev.to), 1 `fetched-month`
+  (StationX, run `e1-bearer`).
 
 ## Fixtures
 

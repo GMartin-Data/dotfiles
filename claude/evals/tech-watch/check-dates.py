@@ -3,16 +3,27 @@
 
 Usage: python3 -I check-dates.py <report.md> <transcript.jsonl>
 
-For each source whose URL is not a Tier 1 domain (arxiv.org, github.com,
-youtube.com), the date on its `📅` line is classified as:
-  unverified   - the allowed value when nothing could be established
-  url          - the date appears in the URL path (e.g. /2026/07/16/)
-  fetched      - the date appears in a WebFetch result for that URL
-  search       - the date appears in a WebSearch result (snippet), which the
-                 skill rule does NOT accept as a source
-  UNSOURCED    - found nowhere above: invented or estimated
-Exit code 1 if any source is UNSOURCED or search-derived.
+Covers the ranked entries (a `🔗` line followed by a `📅` line) and the Primary
+sources block (one line: `**Title** — 🔗 URL — 📅 date`). For each source whose
+URL is not a Tier 1 domain (arxiv.org, github.com, youtube.com), the date on its
+`📅` line is classified as:
+  unverified      - the allowed value when nothing could be established
+  url             - the date appears in the URL path (e.g. /2026/07/16/)
+  fetched         - the date appears, year included, in a WebFetch result for
+                    that URL (ISO, 10/7/2026, October 7, 2026, Oct 07, 2026,
+                    7 October 2026, ...)
+  fetched-month   - the report gives a month only (YYYY-MM) and the fetched page
+                    shows that month
+  fetched-noyear  - the fetched page shows the day and month but no year: the
+                    year in the report was inferred
+  search          - the date appears in a WebSearch result (snippet), which the
+                    skill rule does NOT accept as a source
+  UNSOURCED       - found nowhere above: invented or estimated
+Exit code 1 if any source is UNSOURCED or search-derived. `fetched-noyear` is
+reported, not failed: whether an inferred year is acceptable is an open point
+(final replay 2026-10-11).
 """
+
 from __future__ import annotations
 
 import json
@@ -26,24 +37,62 @@ MONTHS = [
     "January", "February", "March", "April", "May", "June", "July",
     "August", "September", "October", "November", "December",
 ]
+UNVERIFIED_PREFIXES = ("unverified", "undated", "unknown", "n/a")
+
+# A source: `🔗 URL` then `📅 date`, either on the same line (Primary sources
+# block) or within the next three lines (ranked entries).
+SOURCE = re.compile(r"🔗\s*(\S+)(?:[^\n]*?|\n(?:[^\n]*\n){0,2}?)📅\s*([^|\n]+)")
+FULL_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+MONTH_ONLY = re.compile(r"\d{4}-\d{2}(?!-\d)")
 
 
-def date_variants(iso: str) -> list[str]:
-    """ISO date -> spellings to look for in page or snippet text."""
-    try:
-        d = date.fromisoformat(iso)
-    except ValueError:
-        return [iso]
-    month = MONTHS[d.month - 1]
+def _month_names(month: int) -> tuple[str, str]:
+    """Full and abbreviated month name, e.g. ("October", "Oct")."""
+    name = MONTHS[month - 1]
+    return name, name[:3]
+
+
+def full_date_patterns(d: date) -> list[re.Pattern[str]]:
+    """Spellings of a full date, year included, as seen in fetched pages."""
+    month, mon = _month_names(d.month)
+    day2 = f"{d.day:02d}"
     return [
-        iso,
-        f"{month} {d.day}, {d.year}",
-        f"{month[:3]} {d.day}, {d.year}",
-        f"{d.day} {month} {d.year}",
-        f"{d.day} {month[:3]} {d.year}",
-        f"{d.year}/{d.month:02d}/{d.day:02d}",
-        f"{d.year}-{d.month:02d}",
+        re.compile(p)
+        for p in (
+            rf"{d.year}-{d.month:02d}-{day2}",
+            rf"{d.year}/{d.month:02d}/{day2}",
+            rf"\b(?:{month}|{mon})\.? 0?{d.day}(?:st|nd|rd|th)?,? {d.year}\b",
+            rf"\b0?{d.day} (?:{month}|{mon})\.? {d.year}\b",
+            rf"\b0?{d.month}/0?{d.day}/{d.year}\b",
+        )
     ]
+
+
+def noyear_patterns(d: date) -> list[re.Pattern[str]]:
+    """Day and month without a year right after (`Oct 5`, `October 5`, `5 Oct`)."""
+    month, mon = _month_names(d.month)
+    return [
+        re.compile(rf"\b(?:{month}|{mon})\.? 0?{d.day}(?:st|nd|rd|th)?\b(?!,? ?\d{{4}})"),
+        re.compile(rf"\b0?{d.day} (?:{month}|{mon})\.?\b(?! \d{{4}})"),
+    ]
+
+
+def month_patterns(year: int, month_num: int) -> list[re.Pattern[str]]:
+    """Spellings of a month without a day (`October 2026`, `2026-10`, `10/2026`)."""
+    month, mon = _month_names(month_num)
+    return [
+        re.compile(rf"\b(?:{month}|{mon})\.? {year}\b"),
+        re.compile(rf"\b{year}-{month_num:02d}\b"),
+        re.compile(rf"\b0?{month_num}/{year}\b"),
+    ]
+
+
+def normalize_url(url: str) -> str:
+    """Comparable form of a URL: no scheme, no `www.`, no fragment, no trailing slash."""
+    url = url.split("#")[0].rstrip("/")
+    for prefix in ("https://", "http://"):
+        url = url.removeprefix(prefix)
+    return url.removeprefix("www.")
 
 
 def tool_texts(transcript: str, tool: str) -> list[tuple[dict, str]]:
@@ -72,47 +121,71 @@ def tool_texts(transcript: str, tool: str) -> list[tuple[dict, str]]:
     return [(calls[k], results.get(k, "")) for k in calls]
 
 
+def _any(patterns: list[re.Pattern[str]], text: str) -> bool:
+    return any(p.search(text) for p in patterns)
+
+
+def classify(url: str, shown: str, page_text: str, search_text: str) -> str:
+    """Verdict for one source, given the fetched text of its own URL and all snippets."""
+    if shown.lower().startswith(UNVERIFIED_PREFIXES):
+        return "unverified"
+
+    full = FULL_DATE.search(shown)
+    if full:
+        d = date.fromisoformat(full.group(0))
+        if f"/{d.year}/{d.month:02d}/{d.day:02d}" in url or full.group(0) in url:
+            return "url"
+        if _any(full_date_patterns(d), page_text):
+            return "fetched"
+        if _any(noyear_patterns(d), page_text):
+            return "fetched-noyear"
+        if _any(full_date_patterns(d), search_text):
+            return "search"
+        return "UNSOURCED"
+
+    month = MONTH_ONLY.search(shown)
+    if month:
+        year, month_num = int(month.group(0)[:4]), int(month.group(0)[5:7])
+        if f"/{year}/{month_num:02d}/" in url:
+            return "url"
+        if _any(month_patterns(year, month_num), page_text):
+            return "fetched-month"
+        if _any(month_patterns(year, month_num), search_text):
+            return "search"
+        return "UNSOURCED"
+
+    # Neither ISO nor unverified: look for the literal text.
+    if shown in page_text:
+        return "fetched"
+    if shown in search_text:
+        return "search"
+    return "UNSOURCED"
+
+
 def main() -> int:
+    """Print one verdict per web source and return 1 when any is UNSOURCED or search-derived."""
     report, transcript = sys.argv[1], sys.argv[2]
     text = Path(report).read_text(encoding="utf-8")
     search_text = "\n".join(t for _, t in tool_texts(transcript, "WebSearch"))
-    fetches = tool_texts(transcript, "WebFetch")
+    fetched: dict[str, str] = {}
+    for inp, out in tool_texts(transcript, "WebFetch"):
+        key = normalize_url(inp.get("url") or "")
+        fetched[key] = fetched.get(key, "") + "\n" + out
 
-    # Each source: a 🔗 line followed (within a few lines) by a 📅 line.
-    pattern = re.compile(r"🔗\s*(\S+)\s*\n(?:[^\n]*\n){0,2}?📅\s*([^|\n]+)")
     bad = 0
-    print(f"{'verdict':<11} {'date':<12} url")
-    for url, raw_date in pattern.findall(text):
+    noyear = 0
+    print(f"{'verdict':<15} {'date':<12} url")
+    for url, raw_date in SOURCE.findall(text):
         if any(d in url for d in TIER1):
             continue
         shown = raw_date.strip()
-        if shown.lower().startswith(("unverified", "undated", "unknown", "n/a")):
-            verdict = "unverified"
-        else:
-            iso = re.search(r"\d{4}-\d{2}-\d{2}", shown)
-            variants = date_variants(iso.group(0)) if iso else [shown]
-            path_hit = iso and (
-                f"/{iso.group(0)[:4]}/{iso.group(0)[5:7]}/{iso.group(0)[8:10]}" in url
-                or iso.group(0) in url
-            )
-            fetched_hit = any(
-                (inp.get("url") or "").split("#")[0].rstrip("/") == url.split("#")[0].rstrip("/")
-                and any(v in out for v in variants)
-                for inp, out in fetches
-            )
-            search_hit = any(v in search_text for v in variants)
-            if path_hit:
-                verdict = "url"
-            elif fetched_hit:
-                verdict = "fetched"
-            elif search_hit:
-                verdict = "search"
-                bad += 1
-            else:
-                verdict = "UNSOURCED"
-                bad += 1
-        print(f"{verdict:<11} {shown:<12} {url}")
-    print(f"\nWebFetch calls in transcript: {len(fetches)}")
+        verdict = classify(url, shown, fetched.get(normalize_url(url), ""), search_text)
+        bad += verdict in ("search", "UNSOURCED")
+        noyear += verdict == "fetched-noyear"
+        print(f"{verdict:<15} {shown:<12} {url}")
+    print(f"\nWebFetch calls in transcript: {len(fetched)} distinct URLs")
+    if noyear:
+        print(f"Year inferred on {noyear} source(s) (fetched-noyear): reported, not failed.")
     return 1 if bad else 0
 
 
