@@ -20,7 +20,7 @@ Filename: `tech-watch-{slug}-{YYYY-MM-DD}.md` (slug and location: SKILL.md, step
 **Pipeline**: {raw} raw → {on-topic} on-topic, {adjacent} adjacent, {homonyms} homonyms, {dropped} dropped → {unique} unique → {above} ≥ 60 → {ranked} ranked (cap 20).
 **Enrichment**: {opened}/10 pages opened ({primary} primary), {failures} failures, {truncated} truncated.
 **Date test**: {not applicable | reference {YYYY-MM-DD} ({primary source}) | skipped ({reason})}.
-**Notes** (at most 5 bullets; omit the line if none):
+**Notes**:
 - {cap cut, unopened pages, truncated reads, scoring interpretations}
 
 ---
@@ -109,6 +109,8 @@ The header is the only place that states which sources contributed and which fai
 - Fallback results (`WebSearch` with `site:` for a failed or degraded tool) count in that tool's row, added to its `Raw` and `On-topic`; the status cell says how many came from the fallback.
 - A row with nothing asked and no fallback (`absent`, `not run`, or `failed` without fallback) has `–` in `Raw` and `On-topic`, not `0`: `0` means "asked, nothing found".
 - `Pipeline` counts are the sums of the rows (`Owner domains` excluded: its results are not labeled); the unique count exists only here, since deduplication merges across sources.
+
+**Notes**: at most 5 bullets; when there is none, omit the `**Notes**:` line altogether. The label is exactly `**Notes**:`, nothing in parentheses — the parenthetical rule used to sit on the label line and was copied verbatim into reports.
 
 **Footer**: `Sources used` is derived from the table (rows with `In report` ≥ 1, same names, table order). Failures are not repeated in the footer; the table carries them.
 
