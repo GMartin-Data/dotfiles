@@ -4,7 +4,9 @@
 # declares the MCP server inline. No --mcp-config / --strict-mcp-config: strict mode
 # would also block servers declared in subagent frontmatter (documented).
 # Usage: run-eval.sh <run-id> <prompt>
-#   run-id  e.g. e2  -> sandbox /tmp/claude-eval-tech-watch-<run-id>
+#   run-id  e.g. e2  -> sandbox /tmp/claude-eval-tech-watch-<run-id>, letters, digits,
+#           dot, dash, underscore only; an existing sandbox with that id is wiped first
+#           (a stale cwd/tech-watch/ would void the "agent creates the directory" check)
 #   prompt  e.g. "/tech-watch AI agent evaluation"
 # Sandbox layout: config/ (isolated CLAUDE_CONFIG_DIR: skill copy, agents/tech-watch.md,
 # global CLAUDE.md, credentials symlink, .claude.json copy, empty settings), cwd/ (session
@@ -22,6 +24,9 @@
 set -uo pipefail
 ID="${1:?run id required}"
 PROMPT="${2:?prompt required}"
+case "$ID" in
+  *[!A-Za-z0-9._-]*|.|..|"") echo "run id must match [A-Za-z0-9._-]+ : '$ID'" >&2; exit 2 ;;
+esac
 RUN="/tmp/claude-eval-tech-watch-$ID"
 MODEL="${MODEL:-opus}"
 EXTRA_ARGS="${EXTRA_ARGS:-}"
@@ -30,6 +35,7 @@ AGENT_MD="${AGENT_MD:-$HOME/dotfiles/claude/agents/tech-watch.md}"
 SKILL_SRC="$HOME/dotfiles/claude/skills/tech-watch"
 GLOBAL_MD="$HOME/dotfiles/claude/CLAUDE.md"
 
+rm -rf "$RUN"
 mkdir -p "$RUN/cwd" "$RUN/config/skills" "$RUN/config/agents"
 cp -r "$SKILL_SRC" "$RUN/config/skills/"
 sed "s#/home/martin/tech-watch/#$RUN/cwd/tech-watch/#g" "$AGENT_MD" > "$RUN/config/agents/tech-watch.md"

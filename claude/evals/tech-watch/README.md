@@ -164,6 +164,10 @@ pour le fond, `check-dates.py` pour les dates. Pas de grader automatique.
   c'est le shell qui expanse `$TECH_WATCH_MCP_TOKEN`.
 - **Même nom de fichier sur E1, E3 et E7a** (`tech-watch-claude-code-mods-<date>.md`,
   voulu par K11) : un run par sandbox, sinon le second écrase le premier.
+  Depuis le 2026-10-11 (finding [5] de la revue), `run-eval.sh` **efface le
+  sandbox** d'un `run-id` déjà utilisé avant de le recréer, comme
+  `probe-k12.sh` : copier ailleurs ce qu'on veut garder avant de rejouer un
+  id, et l'id est restreint à `[A-Za-z0-9._-]`.
 - **Permission `Write` hors CWD en session interactive** (K11) : couverte
   par `Edit(~/tech-watch/**)` dans `claude/settings.json` (les règles de
   chemin ne sont consultées que pour `Edit` et `Read`). Hors sandbox
