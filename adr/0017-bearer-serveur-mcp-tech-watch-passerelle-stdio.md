@@ -1,7 +1,10 @@
 # ADR-0017 : Authentification par bearer du serveur MCP tech-watch, passerelle stdio dans l'agent
 
-Status: Proposed
+Status: Accepted
 Date: 2026-10-11
+Accepted: 2026-10-11 — porte franchie : PR #6 (dotfiles) et PR #3 (serveur)
+mergées après `/code-review`, E1 vert à travers la passerelle, révision Cloud
+Run `00013` = `main` (401 sans en-tête, 200 avec le token)
 
 ## Contexte
 
