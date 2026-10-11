@@ -45,6 +45,14 @@ web page = verified date (step 8), `unverified` = 5.
 arXiv papers are B by default, A when the group owns the topic. A YouTube
 video or a GitHub repository is C unless its author qualifies for A or B.
 
+A web page whose author or organization was not established at step 8 (not
+opened: budget exhausted or fetch failed; or opened without an identifiable
+author) is written `unverified` there and scores as **C** here. The domain
+alone does not establish authority: an unopened page on the owner's domain is
+still `unverified`. With date and length `unverified` too, such a page scores
+at most 40 + 5 + 8 + 3 + 3 = 59 and is excluded by the threshold, which is
+the cap the known limitations in SKILL.md rely on.
+
 ## 4. Depth — 10 points
 
 | Type | Points |
