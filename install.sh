@@ -74,6 +74,17 @@ link "$DOTFILES_DIR/claude/agents/tech-watch.md"        "$HOME/.claude/agents/te
 # Serveurs MCP (dossiers entiers — projets uv autonomes, .venv local hors git)
 link "$DOTFILES_DIR/claude/mcp/dbt-enveloppe"           "$HOME/.claude/mcp/dbt-enveloppe"
 
+# --- Purge des liens morts ---
+# Un fichier retiré du repo (command, skill, hook, rule, agent) laisse son symlink
+# pendant dans ~/.claude sur les autres machines. On ne retire que les liens CASSÉS
+# dont la cible est dans ce dépôt : jamais un lien sain, jamais un lien fait à la
+# main vers ailleurs.
+for dir in commands skills hooks rules agents; do
+    [ -d "$HOME/.claude/$dir" ] || continue
+    find "$HOME/.claude/$dir" -mindepth 1 -maxdepth 1 -xtype l -lname "$DOTFILES_DIR/*" -print -delete \
+        | sed 's/^/Removed (lien mort) : /'
+done
+
 # Environnement du serveur dbt-enveloppe : l'agent dbt le lance avec `uv run --no-sync`,
 # qui ne crée rien — sans ce sync, le serveur ne démarre pas et l'agent n'a aucun outil.
 if command -v uv >/dev/null 2>&1; then

@@ -75,6 +75,12 @@ cd ~/dotfiles
 source ~/.zshrc
 ```
 
+`install.sh` est idempotent : il recrée les liens (`ln -sfn`) et **purge les liens
+morts** qui pointaient dans ce dépôt sous `~/.claude/{commands,skills,hooks,rules,agents}`
+(un fichier supprimé du repo, par exemple une command devenue skill, ne laisse
+pas de symlink pendant sur les autres machines). Il ne touche jamais un lien sain
+ni un lien fait à la main vers un autre emplacement.
+
 ---
 
 ## Stack
