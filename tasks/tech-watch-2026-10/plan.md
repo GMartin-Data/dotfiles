@@ -267,9 +267,15 @@ CWD, 121 s et 0,50 $ (contre 171 s et 0,92 $ en référence). Verdict E1 inchang
 écarté cette fois par variance, pas par règle (K10).
 
 Points pour Greg :
-1. **`model: opus` figé dans l'agent** — aligné sur la décision « Opus 5.5 pour la
+1. ~~**`model: opus` figé dans l'agent** — aligné sur la décision « Opus 5.5 pour la
    série E1–E10 » ; le choix pour l'usage réel (Fable par défaut, Opus en
-   repli) reste à trancher avant la phase 4.
+   repli) reste à trancher avant la phase 4.~~ — **Tranché par Greg le
+   2026-10-11 : Opus conservé** pour l'usage réel. Tarif 2,5 fois moindre que
+   Fable (4 $ / 20 $ contre 10 $ / 50 $ par million de tokens, soit ≈ 1 $ la
+   veille contre ≈ 2,5 $) ; règles de la skill calibrées et validées sur Opus
+   seulement (≈ 30 runs, aucun sur Fable), donc livrer ce qui a été testé. Le
+   pin `model: opus` suit l'alias, les evals restent rejouables. Aucun
+   changement de fichier.
 2. ~~**Skill claude.ai à retirer ou renommer maintenant**~~ — **supprimée par
    Greg le 2026-10-10** (Customize > Skills > … > Delete ; recommandation :
    supprimer plutôt que renommer, car le déclenchement se fait sur la
