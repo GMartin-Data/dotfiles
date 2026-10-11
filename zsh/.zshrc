@@ -44,3 +44,9 @@ alias git='LC_ALL=C.UTF-8 git'   # git output in English (reading Claude Code tr
 # GPG - Permet la saisie de passphrase dans le terminal
 # ============================================================
 export GPG_TTY=$(tty)
+
+# ============================================================
+# LOCAL - Secrets et réglages propres à la machine, hors dotfiles
+# (ex. TECH_WATCH_MCP_TOKEN pour l'agent tech-watch) — fichier en 600
+# ============================================================
+[ -f "$HOME/.zshrc.local" ] && . "$HOME/.zshrc.local"
