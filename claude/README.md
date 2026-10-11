@@ -59,7 +59,7 @@ Ajouter un nouveau template = fichier dans `templates/` (le dossier entier est s
 
 - **Command** : geste rituel court qui doit s'exécuter **en contexte principal** (ex. `/progress`, `/catchup`). Le rapport ou la décision doit rester visible pour l'utilisateur.
 - **Skill** : workflow spécialisé invoqué par description, avec plusieurs étapes et potentiellement ses propres ressources (ex. `code-mentor`, `dp-coach`).
-- **Agent** : délégation avec contexte isolé — utile quand la tâche génère beaucoup de tokens qu'on ne veut pas polluer le contexte principal (ex. `tech-watch-scorer` qui produit un JSON lourd).
+- **Agent** : délégation avec contexte isolé — utile quand la tâche génère beaucoup de tokens qu'on ne veut pas polluer le contexte principal (ex. `tech-watch`, dans lequel la skill du même nom fork : une trentaine de pages ouvertes par veille, et un serveur MCP connecté le temps du run seulement).
 
 Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
@@ -67,7 +67,7 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 
 ## Composants actuels
 
-**Commands** (8) :
+**Commands** (7) :
 - `adr` — crée un ADR atomique (mode interview ou capture), avec supersession bidirectionnelle
 - `catchup` — reconstruit le contexte de travail après `/clear` ou reprise de session
 - `grill` — revue adverse d'un PRD/PLAN avant gel ; lève implicites et tensions, ne modifie aucun artefact
@@ -75,9 +75,8 @@ Règle : migrer par **nécessité**, pas par conformité à un pattern.
 - `planning` — génère PLAN.md (architecture cible + phases) à partir de PRD + CLAUDE.md
 - `prd` — interview structurée produisant un PRD (détection d'instance Cruft)
 - `progress` — sauvegarde un checkpoint d'avancement dans `progress.md` (human-in-the-loop) ; fenêtre glissante de 3 checkpoints, le surplus part tel quel dans `tasks/progress-archive.md`
-- `tech-watch` — pipeline de veille techno : fetch, score et classe des sources
 
-> Quatre commands ont un sous-dossier compagnon `commands/<name>/evals/` (corpus de tests A→B→A — interne au repo, non symlinké) : `adr`, `grill`, `planning`, `prd`. Une command qui a besoin d'assets runtime (`reference/`, progressive disclosure) devient une skill : le dossier est l'unité de symlink et l'invocation explicite `/<name>` est conservée (précédent : `claude-md`, 2026-09).
+> Quatre commands ont un sous-dossier compagnon `commands/<name>/evals/` (corpus de tests A→B→A — interne au repo, non symlinké) : `adr`, `grill`, `planning`, `prd`. Une command qui a besoin d'assets runtime (`reference/`, progressive disclosure) devient une skill : le dossier est l'unité de symlink et l'invocation explicite `/<name>` est conservée (précédents : `claude-md`, 2026-09 ; `tech-watch`, 2026-10, qui a aussi remplacé le trio command + agent `tech-watch-scorer` + script `fetch-sources.py` par une skill forkant dans un agent à serveur MCP inline).
 
 ### Ajouter une command — checklist multi-fichiers
 
@@ -111,7 +110,7 @@ diff <(ls -d claude/skills/*/ | xargs -n1 basename | sort) \
      <(grep -oP 'skills/\K[a-z-]+' install.sh | sort -u)
 ```
 
-**Skills** (7) :
+**Skills** (8) :
 
 Cadrage :
 - `claude-md` — interview structurée produisant un CLAUDE.md projet (détection d'instance Cruft/PRD) ; invocation explicite `/claude-md`, parcours alternatifs dans `reference/` (progressive disclosure)
@@ -126,11 +125,15 @@ Couche learning, non-overlap (cf. [responsibility-matrix](../docs/methodology/re
 Revue :
 - `code-review` — première passe sur le diff (bugs, sécurité, invariants, conventions) ; **surcharge** la bundled, signale sans appliquer (cf. [ADR-0010](../adr/0010-surcharge-code-review-user-scope.md))
 
+Veille :
+- `tech-watch` — veille technologique sur un sujet : une requête par outil (arXiv, GitHub, YouTube via le serveur MCP, puis `WebSearch` par tiers de domaines), sources primaires d'abord, filtre on-topic, enrichissement budgété (10 `WebFetch`, dates `unverified` sinon), grille autorité / fraîcheur / engagement, rapport Markdown en anglais dans `~/tech-watch/tech-watch-<slug>-<date>.md`. Déclenchée par description, FR ou EN (« fais-moi une veille sur X ») ; `context: fork` + `agent: tech-watch` (cf. Agents). Références dans `references/` (`sources.yaml`, `scoring-criteria.md`, `report-template.md`) ; corpus d'evals `claude/evals/tech-watch/` ; plan et constats `tasks/tech-watch-2026-10/`
+
 **Agents** (2) :
-- `tech-watch-scorer` — stateless
+- `tech-watch` — environnement d'exécution de la skill `tech-watch`, ne pas déléguer directement ; outils `mcp__tech-watch__*, WebSearch, WebFetch, Read, Write, Edit`, `model: opus` (tarif, règles validées sur Opus) ; serveur MCP déclaré inline (voir ci-dessous), connecté le temps du run seulement — s'il est injoignable, les outils sont absents sans erreur et la skill passe en mode dégradé. Écrit dans `~/tech-watch/`, d'où `Edit(~/tech-watch/**)` dans `permissions.allow`
 - `dbt` — modélisation dbt dans le projet courant ; outils `Read, Grep, Glob, Edit, Write` + `mcp__dbt-enveloppe__*`, **pas de Bash** : dbt n'est joignable que par le serveur ci-dessous. Corps = blocs de `tasks/dbt-agent-2026-10/spec.md` copiés tels quels (test de synchronisation `mcp/dbt-enveloppe/tests/test_agent_sync.py`). `permissions.allow` sur `dbt_parse` et `dbt_ls` seulement (palier A, hors ligne) ; les autres outils demandent confirmation
 
-**Serveurs MCP** (1) :
+**Serveurs MCP** (2) :
+- `tech-watch` — déclaré inline dans `agents/tech-watch.md` (SSE, Cloud Run `europe-west1`, projet `mcp-servers-prod`) ; trois outils de recherche (arXiv, GitHub, YouTube). Code **hors dotfiles** : dépôt privé [`GMartin-Data/tech-watch-mcp`](https://github.com/GMartin-Data/tech-watch-mcp) (`~/mcp-server-code`, unité de déploiement avec son Dockerfile — décision D1 de `tasks/tech-watch-2026-10/plan.md`)
 - `dbt-enveloppe` — déclaré inline dans `agents/dbt.md` (stdio, `sh -c 'exec uv run --project "$HOME/.claude/mcp/dbt-enveloppe" --no-sync dbt-enveloppe-mcp'`) ; impose l'appel dbt canonique, vérifie la sortie, ne renvoie que l'utile ; cible le projet de `CLAUDE_PROJECT_DIR` avec le dbt de ce projet (`uv run --no-sync`). « Parse sur l'état courant » = empreinte (taille, mtime) de **tout** fichier non caché du projet hors les répertoires de sortie dbt (`target-path`, `log-path`, `packages-install-path`, lus comme dbt les résout : env `DBT_ENGINE_*`, puis `dbt_project.yml`, puis `target/`, `logs/`, `dbt_packages/`) : toute écriture tierce dans l'arbre pendant une session force un nouveau `dbt_parse` (fail-closed, délibéré — ne pas écrire de journaux dans le projet pendant qu'un agent tourne). Un seul subagent `dbt` à la fois : le serveur inline est partagé par nom entre subagents concurrents, le premier qui finit tue celui des autres. `install.sh` crée son `.venv` par `uv sync --frozen`. Plan et constats : `tasks/dbt-agent-2026-10/plan.md` ; bilan (ce qui marche, écarts avec la spec, table T0–T21) : `tasks/dbt-agent-2026-10/livrable.md`
 
 **Rules** (3) : `python.md`, `dbt-sql.md`, `terraform.md`

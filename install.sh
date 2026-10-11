@@ -37,7 +37,6 @@ link "$DOTFILES_DIR/claude/settings.json"        "$HOME/.claude/settings.json"
 link "$DOTFILES_DIR/claude/commands/immunize.md"    "$HOME/.claude/commands/immunize.md"
 link "$DOTFILES_DIR/claude/commands/catchup.md"    "$HOME/.claude/commands/catchup.md"
 link "$DOTFILES_DIR/claude/commands/progress.md"    "$HOME/.claude/commands/progress.md"
-link "$DOTFILES_DIR/claude/commands/tech-watch.md"  "$HOME/.claude/commands/tech-watch.md"
 link "$DOTFILES_DIR/claude/commands/prd.md"         "$HOME/.claude/commands/prd.md"
 link "$DOTFILES_DIR/claude/commands/planning.md"    "$HOME/.claude/commands/planning.md"
 link "$DOTFILES_DIR/claude/commands/adr.md"         "$HOME/.claude/commands/adr.md"
@@ -58,6 +57,7 @@ link "$DOTFILES_DIR/claude/skills/coach-pedagogique" "$HOME/.claude/skills/coach
 link "$DOTFILES_DIR/claude/skills/code-review"  "$HOME/.claude/skills/code-review"
 link "$DOTFILES_DIR/claude/skills/feynman-mentor" "$HOME/.claude/skills/feynman-mentor"
 link "$DOTFILES_DIR/claude/skills/claude-md"      "$HOME/.claude/skills/claude-md"
+link "$DOTFILES_DIR/claude/skills/tech-watch"     "$HOME/.claude/skills/tech-watch"
 
 # Rules (fichiers individuels — glob-scoped, chargés à la demande par Claude Code)
 link "$DOTFILES_DIR/claude/rules/python.md"     "$HOME/.claude/rules/python.md"
@@ -68,11 +68,8 @@ link "$DOTFILES_DIR/claude/rules/terraform.md"  "$HOME/.claude/rules/terraform.m
 link "$DOTFILES_DIR/claude/templates"            "$HOME/.claude/templates"
 
 # Agents (fichiers individuels)
-link "$DOTFILES_DIR/claude/agents/tech-watch-scorer.md" "$HOME/.claude/agents/tech-watch-scorer.md"
 link "$DOTFILES_DIR/claude/agents/dbt.md"               "$HOME/.claude/agents/dbt.md"
-
-# Agents (dossier scripts partagé)
-link "$DOTFILES_DIR/claude/agents/scripts"              "$HOME/.claude/agents/scripts"
+link "$DOTFILES_DIR/claude/agents/tech-watch.md"        "$HOME/.claude/agents/tech-watch.md"
 
 # Serveurs MCP (dossiers entiers — projets uv autonomes, .venv local hors git)
 link "$DOTFILES_DIR/claude/mcp/dbt-enveloppe"           "$HOME/.claude/mcp/dbt-enveloppe"
