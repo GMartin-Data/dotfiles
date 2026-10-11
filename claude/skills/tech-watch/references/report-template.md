@@ -99,14 +99,14 @@ The header is the only place that states which sources contributed and which fai
 - `ok`: the tool or search answered with results.
 - `empty`: it answered with 0 results and no error.
 - `degraded: <the tool's warning>`: it answered with results and a warning (rate limit, rejected token, partial index).
-- `failed: <the error>`: it returned an error. A fallback (`WebSearch` with `site:`) is noted in the same cell with its outcome, never as a separate row.
+- `failed: <the error>`: it returned an error. The fallback (the step 2 `WebSearch` with `allowed_domains`) is noted in the same cell with its outcome, never as a separate row.
 - `absent`: the tool is not in your tool list (MCP server not connected).
 - `not run (<reason>)`: the search was not launched (Tier 3 when unique on-topic ≥ 12).
 
 **Counts**:
 - `Raw`: results returned at steps 2, 4 and 7, before any filter. `On-topic`: after the step 5 filter, before deduplication. `In report`: entries of the ranking or of the Primary sources block whose canonical URL belongs to this source.
 - `Owner domains` is the step 3 search; its `In report` count is the number of primary sources.
-- Fallback results (`WebSearch` with `site:` for a failed or degraded tool) count in that tool's row, added to its `Raw` and `On-topic`; the status cell says how many came from the fallback.
+- Fallback results (the step 2 `WebSearch`, for a `failed` or `degraded` tool) count in that tool's row, added to its `Raw` and `On-topic`; the status cell says how many came from the fallback.
 - A row with nothing asked and no fallback (`absent`, `not run`, or `failed` without fallback) has `–` in `Raw` and `On-topic`, not `0`: `0` means "asked, nothing found".
 - `Pipeline` counts are the sums of the rows (`Owner domains` excluded: its results are not labeled); the unique count exists only here, since deduplication merges across sources.
 

@@ -29,6 +29,8 @@ The normalized topic also gives the report's file slug, never the request as typ
 Run the three MCP tools in parallel, each with its own query and with every parameter listed in `sources.yaml` passed explicitly (`max_results`, `days_back`, `categories`, `order`, `language`).
 Default window: `days_back=30`. Use 60 for niche or slow-moving topics.
 
+Fallback, the only one: when a Tier 1 tool is `failed` (it returned an error) or `degraded` (results with a warning), run one `WebSearch` on the topic with `allowed_domains` set to that tool's site (`github.com`, `youtube.com` or `arxiv.org`). Its results count in that tool's row of the status table, whose cell says how many came from the fallback (template, Header rules). No fallback when the tool is `absent` (server unreachable: the web tiers cover) or `empty` (0 results is an answer).
+
 ### Step 3 - Primary sources first (always)
 Identify the owner of the topic: the vendor, maintainer or standards body (Anthropic for Claude Code mods, the Apache project for Iceberg, dbt Labs for dbt). Primary sources are its official documentation, its announcement or blog post, the reference repository or specification, and release notes.
 
@@ -97,7 +99,8 @@ is named in the first line of your answer.
 - GitHub token rejected (401): the server retries once without authentication
   (10 searches per minute instead of 30) and prefixes its results with
   `⚠️ GitHub token rejected (401) …`. The results are usable: row `degraded`,
-  warning quoted in the status cell, rotation mentioned in your answer. Do not retry.
+  warning quoted in the status cell, rotation mentioned in your answer. Do not
+  retry the tool; the step 2 fallback applies.
 - YouTube key missing on the server: the tool returns `Error executing tool
   search_youtube_videos: YouTube API key not configured.` Row `failed`. The
   fallback `WebSearch` on `youtube.com` returns links without date, duration,

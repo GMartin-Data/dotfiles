@@ -30,7 +30,7 @@ tier_1:
       max_results: 20
       days_back: 30          # repositories pushed to within the window
       # no `sort`: best match (sorting by stars favors old homonyms)
-    note: on a 401 / rate-limit warning in the output, fall back to WebSearch with allowed_domains [github.com]
+    note: a 401 / rate-limit warning in the output makes the row `degraded`; the fallback is the one of SKILL.md step 2 (WebSearch, allowed_domains [github.com])
 
   - tool: mcp__tech-watch__search_youtube_videos
     priority: high
@@ -41,7 +41,7 @@ tier_1:
       days_back: 30
       order: relevance
       language: en           # fr only when the request asks for French-language content
-      # no `video_duration`: official videos can be under 4 min; Shorts are filtered at scoring time on duration_seconds
+      # no `video_duration`: official videos can be under 4 min; videos under 180 s are dropped at step 5 on duration_seconds
 
 # -------------------------------------------------------------------
 # PRIMARY SOURCES - one WebSearch restricted to the topic owner's domains
