@@ -3,7 +3,8 @@
   "permissions": {
     "allow": [
       "mcp__dbt-enveloppe__dbt_parse",
-      "mcp__dbt-enveloppe__dbt_ls"
+      "mcp__dbt-enveloppe__dbt_ls",
+      "Edit(~/tech-watch/**)"
     ],
     "deny": [
       "Bash(dbt *)",
