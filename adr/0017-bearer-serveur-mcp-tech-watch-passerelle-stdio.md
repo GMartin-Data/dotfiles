@@ -52,6 +52,16 @@ principale), cf. `tasks/tech-watch-2026-10/plan.md`.
   repos publics.
 - **F. Bearer vérifié par le serveur, passerelle stdio côté agent** : voir
   Décision.
+- **G. OAuth MCP côté serveur** (`mcp.server.auth`, présent dans mcp 1.20) :
+  la seule option qui rendrait le connecteur claude.ai (les connecteurs custom
+  savent faire OAuth, pas un en-tête statique). Mais elle impose d'héberger un
+  serveur d'autorisation — ou d'intégrer un IdP —, un flux de consentement et
+  un stockage de jetons, pour un service mono-utilisateur dont le seul client
+  prévu est l'agent Claude Code (D3 (d)). Rejetée ; la perte du client
+  claude.ai est assumée comme durable. **Déclencheur de réouverture** : le
+  besoin d'un client qui ne peut pas porter `TECH_WATCH_MCP_TOKEN` dans son
+  environnement (connecteur claude.ai en premier lieu). Ajoutée le 2026-10-11
+  à la suite du finding [4] du `/code-review` de la PR serveur #3.
 
 ## Décision
 
@@ -86,7 +96,8 @@ agent toujours symlinké tel quel.
   elle donne le même résultat qu'avant (20 classées + 3 primaires, trois outils
   MCP `ok`). Token absent ou refusé = outils absents = mode dégradé existant.
 - Le connecteur claude.ai de la phase 0 ne fonctionne plus (pas d'en-tête
-  statique possible) ; le seul client supporté est l'agent Claude Code.
+  statique possible) ; le seul client supporté est l'agent Claude Code. Perte
+  assumée comme durable, voir l'option G.
 - La variable doit être présente dans le shell qui lance Claude Code ; app
   desktop, extension IDE et routines remote passent en mode dégradé.
 - Rotation en deux endroits : variable Cloud Run et `~/.zshrc.local` sur chaque
