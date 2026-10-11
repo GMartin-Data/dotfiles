@@ -128,7 +128,7 @@ Retrait de l'ancien trio (D2a), `install.sh` + README des dotfiles, `claude/eval
 - **Quota YouTube** : 10 000 unités/jour ; `search.list` = 100, `videos.list` = 1 → l'enrichissement S4 coûte ~1 % de plus. Pas de risque.
 - **Verrou GitHub** : plusieurs `401` d'affilée → `403` temporaire sur le compte. Le retry S1 est unique et sans boucle ; les tests mockent, jamais d'appel réel avec token invalide **sauf** E3 en stdio local (1 appel).
 - **Coût des evals** : une veille complète ≈ 25 fetches + 3 appels MCP ; E1–E10 complets ×2 (avant/après) ≈ 20 veilles. Phase 0 joue un sous-ensemble (§3).
-- **Collision de nom** `/tech-watch` command ↔ skill tant que D2 n'est pas exécuté : la skill importée n'est **pas symlinkée** avant la phase 4.
+- ~~**Collision de nom** `/tech-watch` command ↔ skill tant que D2 n'est pas exécuté : la skill importée n'est **pas symlinkée** avant la phase 4.~~ — **Levé en phase 4** (D2a exécuté, `c94e36a` ; `install.sh` purge désormais les liens morts sur les autres machines, `bf56a06`).
 - **`server.py` stdio** : couvert par les tests mais pas déployé ; `server_http.py` déployé mais pas testé. S6 inverse cela — décision explicite attendue sur le sort de `server.py`.
 - **Dépendances `mcp>=1.20`** : vérifier la version installée dans `.venv` avant de choisir le mécanisme d'erreur S5.
 
@@ -513,6 +513,55 @@ d'engagement départagées par un critère inventé (E1, E2) ; `Owner domains` �
 comparés à `baseline/` ; chaque critère K* coché avec preuve.
 
 **Phase 3 close** (2026-10-10, rejeu final le 2026-10-11) : 11 items sur 11.
+
+### Phase 4 — Clôture (2026-10-11, PR #6 mergée `0b5d243`)
+
+**D2a exécuté** (`c94e36a`) : trio retiré (`commands/tech-watch.md`,
+`agents/tech-watch-scorer.md`, `agents/scripts/fetch-sources.py`), `install.sh`
+lie `skills/tech-watch` et `agents/tech-watch.md`, manifeste du plugin et
+READMEs alignés. Permission `Edit(~/tech-watch/**)` (`f18cdce`), README des
+evals (`80e8cd0`). PR #6 ouverte en brouillon, revue dans une session neuve.
+
+**`/code-review 6 high`** (skill user-scope, ADR-0010) : 10 findings, triés un
+par tour, 9 traités en 10 commits, 1 écarté (note historique, décision
+antérieure). Les deux qui ont changé le montage :
+
+| # | Finding | Résolution |
+|---|---|---|
+| 1 HIGH | endpoint Cloud Run `allUsers` sans auth, URL versionnée dans un repo public (clonée ~108 fois en 14 jours, robots) | **bearer côté serveur** (`utils/auth.py`, fail-closed, PR serveur #3, révision `00012`) + **passerelle stdio** `uvx mcp-proxy` dans l'agent, token dans `~/.zshrc.local` via `API_ACCESS_TOKEN` ; `${VAR}` n'est pas expansé dans un frontmatter d'agent (sonde K12, addendum de la fiche). [ADR-0017](../../adr/0017-bearer-serveur-mcp-tech-watch-passerelle-stdio.md). Bornes de coût conservées : `max-instances 2`, alerte budget 10 €/mois |
+| 3 MEDIUM | « unverified ⇒ ≤ 59 » affirmé par K1, non garanti par la grille K5 (autorité d'une page non ouverte indéfinie) | autorité non établie ⇒ C : 40+5+8+3+3 = 59 forcé (`fe51066`) |
+
+Autres : consigne du gabarit recopiée dans les rapports (`59f58c7`) ;
+`check-dates.py` strict sur les dates complètes et complet sur les graphies,
+bloc primaire lu, verdicts `fetched-month` / `fetched-noyear` (`9f946d3` —
+couvre le point « graphies » du rejeu final) ; `run-eval.sh` efface un sandbox
+réutilisé, id restreint (`961fcf1`) ; `install.sh` purge les liens morts vers
+le repo (`bf56a06`) ; repli Tier 1 énoncé une fois, étape 2 (`8888829`) ;
+label « partial » défini à l'étape 5 (`e241c1e`) ; limite du chemin littéral
+actée (`c951151`).
+
+**Rejeu à travers la passerelle [Observé]** : E1 complet (`e1-bearer`) identique
+au rejeu final (arXiv `empty`, GitHub `ok` 20/19/3, YouTube `ok` 15/15/14,
+Tier 2 `ok` 28/28/3, 20 classées + 3 primaires, `Report: … — normal`, 4 min,
+0,86 $) ; sondes K12 avec token (3 outils), sans token (absents), `down`
+(absents). Coût de la phase 4 ≈ 1,05 $ (sondes ≈ 0,15 $, E1 0,86 $, bouchon
+0,003 $).
+
+**Écart au plan** : « `/code-review` sur les deux branches » — la branche
+serveur `fix/search-quality` a eu sa revue en phase 1 bis ; la branche
+`feat/bearer-auth` (PR #3, née de la revue) attend la sienne avant de sortir du
+brouillon.
+
+**Points pour Greg, mis à jour** : dates sans année — désormais visibles comme
+`fetched-noyear` dans `check-dates.py`, signalées sans échec, la règle (statu
+quo ou `unverified`) reste à trancher ; égalités sans signal d'engagement ;
+`Owner domains` sans propriétaire ; première veille réelle en session
+interactive (héritage de `Edit(~/tech-watch/**)` par le fork, variable
+`TECH_WATCH_MCP_TOKEN` dans le shell qui lance) ; rotation de
+`YOUTUBE_API_KEY` ; ADR-0017 à passer en `Accepted` ; PR serveur #3.
+
+**Phase 4 close** (2026-10-11) : critère rempli — trio retiré, READMEs et evals
+alignés, revue triée, PR mergée. Checkpoint `/progress` à suivre.
 
 ## 6. Ce que Greg doit fournir
 
