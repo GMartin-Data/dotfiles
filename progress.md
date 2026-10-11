@@ -1,5 +1,92 @@
 ## Dernière mise à jour
-Date : 2026-10-11 09:51
+Date : 2026-10-11 12:09
+Session : 9820e7b9-f865-4bf1-8453-ee0d6b924790
+
+## Tâches complétées
+
+- **Chantier tech-watch clos — PR #6 mergée** (`0b5d243`, merge commit, branche
+  distante conservée comme pour la PR #5) ; `plan.md` §5 « Phase 4 — Clôture »
+  écrite et poussée sur `main` (`353f312`).
+- **`/code-review 6 high`** (skill user-scope, session neuve) : 10 findings,
+  triés un par tour, 9 traités en 10 commits, 1 écarté (note historique de
+  `claude/evals/claude-md/README.md`, décision du matin). Détail et commits :
+  `plan.md` §5 Phase 4 et corps de la PR #6.
+- **Finding [1] HIGH clos de bout en bout** : endpoint Cloud Run `allUsers`
+  sans auth, URL versionnée dans un repo public (~108 cloneurs uniques en 14
+  jours). Décision du matin « acter + borner » (`max-instances` 20 → 2, alerte
+  budget 10 €/mois, API Budgets activée) dépassée le jour même par le
+  **bearer** : serveur `utils/auth.py` fail-closed (105 tests, révisions
+  `00011` puis `00012` après rotation), agent en passerelle stdio `uvx
+  mcp-proxy@0.13.0` avec `API_ACCESS_TOKEN` depuis `TECH_WATCH_MCP_TOKEN`
+  (`~/.zshrc.local`, 600, sourcé par `zsh/.zshrc`). → `adr/0017`.
+  Vérifié : `curl` 401/200, sondes K12 avec/sans token et `down`, E1 complet à
+  travers la passerelle identique au rejeu final (0,86 $). Addendum daté dans
+  `phase3/K12-probe-2026-10-10.md`.
+- **Serveur** : branche `feat/bearer-auth` poussée, **PR #3 en brouillon**
+  (https://github.com/GMartin-Data/tech-watch-mcp/pull/3), code déjà en
+  production.
+- **Incident** : première valeur du token affichée par erreur dans deux
+  sorties de commande de la session (expansion `${VAR:-…}`, puis `ps`) ;
+  token tourné aussitôt E1 terminé, ancienne valeur morte (401).
+- Machine courante : `~/.zshrc.local` créé ; `install.sh` rejoué (purge
+  vérifiée sur un lien mort planté, un lien étranger conservé, 29 liens sains).
+
+## En cours
+
+- Rien. La revue de la PR serveur #3 s'ouvre dans une session neuve, CWD
+  `~/mcp-server-code` (cible `3` résolue par `gh` dans le repo courant).
+
+## Prochaines étapes
+
+1. **Session neuve dans `~/mcp-server-code`** : `/code-review 3 high`, triage,
+   `gh pr ready 3`, merge ; puis `git pull` et vérifier que la révision Cloud
+   Run `00012` correspond bien à `main`.
+2. **ADR-0017** : passer `Status: Proposed` → `Accepted` (date, porte franchie :
+   PR #6 mergée, E1 vert à travers la passerelle).
+3. **Première veille réelle** en session interactive, depuis un terminal neuf
+   (variable `TECH_WATCH_MCP_TOKEN` sourcée) : observer l'héritage de
+   `Edit(~/tech-watch/**)` par le fork (sinon `permissionMode: acceptEdits`
+   dans l'agent) et que l'en-tête s'arrête à `**Notes**:` (finding [2], non
+   rejoué).
+4. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
+   `~/.zshrc.local` avec le token (README racine, « À réinstaller
+   manuellement »).
+5. Points pour Greg (`plan.md` §5 Phase 4) : règle des dates sans année
+   (`check-dates.py` les montre en `fetched-noyear`, statu quo ou
+   `unverified`) ; égalités sans signal d'engagement ; `Owner domains` sans
+   propriétaire ; rotation de `YOUTUBE_API_KEY` (logs des révisions ≤ `00008`).
+6. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles). Écart au plan, consigné en §5 Phase 4 :
+  « `/code-review` sur les deux branches » — la branche serveur née de la revue
+  (`feat/bearer-auth`, PR #3) attend la sienne.
+
+## Décisions prises
+
+- **Bearer sur le serveur MCP tech-watch + passerelle stdio dans l'agent**
+  → `adr/0017` (Proposed). Décision intermédiaire « acter + borner » non écrite,
+  ses mitigations conservées en défense en profondeur.
+- Track léger, sans ADR — décisions Greg du 2026-10-11 (triage) :
+  - finding [3] : ligne d'autorité « non établie = C » dans la grille plutôt
+    qu'une exclusion hors score ;
+  - finding [6] : purge ciblée dans `install.sh` plutôt qu'une recette
+    documentée ;
+  - finding [10] : note historique conservée (décision du matin maintenue) ;
+  - revue de la PR serveur #3 dans une session neuve, CWD serveur.
+- **Claude, signalées** : pas de rejeu pour les correctifs de libellé ([2],
+  [3], [7], [8]), à vérifier au prochain run complet ; `check-dates.py`
+  signale `fetched-noyear` sans échouer, la règle reste à Greg.
+
+## Blocages
+
+- Aucun côté chantier. Hors chantier : rotation de `YOUTUBE_API_KEY` à la main
+  de Greg (le blocage « endpoint public sans auth » est levé par ADR-0017).
+
+---
+
+## Checkpoint précédent — 2026-10-11 09:51
 Session : dd4cb97a-540a-4afe-bc2a-f23ecd9b21d8
 
 ## Tâches complétées
@@ -175,91 +262,3 @@ Session : 728a4194-3ef1-4992-b8d4-be183eeec06e
   auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions ≤ `00008`) à la
   main de Greg — tous deux à traiter dans le dépôt `~/mcp-server-code`, hors
   de cette branche.
-
----
-
-## Checkpoint précédent — 2026-10-10 16:14
-Session : 74a6446f-bfe1-4ed1-9f87-7b70c2f7a0ba
-
-## Tâches complétées
-
-- **Phase 3 close : 11 items sur 11** (`plan.md` §5), chacun avec règle validée
-  par Greg, rejeu d'eval contre le critère, fiche dans
-  `tasks/tech-watch-2026-10/phase3/`. Lot « sortie » de cette session :
-  - **K3** état par source : en-tête à lignes fixes dans `report-template.md`
-    (tableau de 6 lignes, statuts fermés `ok` / `empty` / `degraded` / `failed`
-    / `absent` / `not run`, lignes `Pipeline`, `Enrichment`, `Date test`,
-    `Notes`), pied de page `Sources used` dérivé du tableau. E3 rejoué :
-    GitHub `degraded`, YouTube `failed`, pied de page sans arXiv ni YouTube,
-    syntaxe `env:` du `mcpServers` inline vérifiée. 0,83 $. Correctif après
-    run, non rejoué : les résultats de repli comptent dans la ligne de l'outil
-    remplacé.
-  - **K11** sortie : slug = sujet normalisé (minuscules, ASCII, tirets), nom
-    `tech-watch-{slug}-{date}.md` (`-{days}d` hors fenêtre 30), rapport en
-    **anglais fixe**, dossier fixe `/home/martin/tech-watch/` créé si absent,
-    première ligne de chat `Report: <chemin> — n ranked + m primary — normal |
-    degraded: …`. E1 et E7a : même nom de fichier sur deux formulations,
-    dossier créé par `Write`. 1,82 $. Correctif après run, non rejoué : titre
-    du gabarit = sujet normalisé, demande tapée en métadonnée `Request`.
-  - **K1** limitations réécrites d'après les fiches (3 lignes supprimées
-    jamais reproduites, 2 réécrites, 5 nouvelles), traçabilité dans
-    `phase3/K1-limitations-2026-10-10.md`. Sans run, 0 $.
-- `run-eval.sh` réécrit le dossier de sortie fixe en `cwd/tech-watch/` du
-  sandbox (sans le pré-créer) ; fixture E3 alignée sur l'agent.
-- Coût cumulé de la phase 3 ≈ 13 $. Branche `feat/tech-watch-skill` :
-  **47 commits d'avance sur `main`, non poussée**, arbre propre.
-
-## En cours
-
-- Rien. Phase 3 close ; le rejeu final et la phase 4 s'ouvrent dans une
-  session neuve.
-
-## Prochaines étapes
-
-1. **Rejeu final E1 à E7** via `run-eval.sh`, comparaison à `baseline/` (≈ 4 $) :
-   E1 et E7a servent aussi à observer la ligne `Request` du gabarit, non
-   rejouée depuis le correctif de titre. État des autres scénarios, d'après
-   les fiches : E4 joué en K5 (fenêtre 60 jours, réussi), E8 joué en K6 (E8a
-   sans `WebFetch`, E8b normal, réussi), E10 joué en K4 (trois sujets, Tier 3
-   déclenché sur « Apache Iceberg row lineage », réussi) ; E9 réussi de façon
-   opportuniste sur E1 en K7, sur une source hors top 20, à rejouer quand un
-   cas connu de contradiction existera.
-2. **Phase 4** : retrait de l'ancien trio command + agent `tech-watch-scorer`
-   + script (D2a, `claude/commands/tech-watch.md`, `claude/agents/scripts/`,
-   lignes correspondantes d'`install.sh`), liens `install.sh` pour la skill et
-   l'agent, README, `claude/evals/tech-watch/README.md`, règle de permission
-   `Write(/home/martin/tech-watch/**)` ou `--add-dir` dans la configuration
-   livrée, `/code-review` sur la branche, PR.
-3. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- Aucun (pas de PRD, repo dotfiles). Écarts à la passation de la phase 3 :
-  E10 sur 3 sujets, E8 simulé par retrait de `WebFetch`, E9 opportuniste,
-  Papers With Code remplacé par Hugging Face Papers, DEV.to/Hashnode retirés
-  du Tier 3 ; en fin de phase, E1 + E7a joués ensemble pour K11.
-
-## Décisions prises
-
-- Track léger, sans ADR — décisions Greg du 2026-10-10 (détail dans `plan.md`
-  §5, phase 3) :
-  - K3 : pied de page **dérivé** du tableau d'état plutôt que supprimé.
-  - K11 : rapport en **anglais fixe** ; sortie dans un **dossier fixe**
-    plutôt que `./tech-watch/` ou la racine du CWD.
-  - K1 : texte des limitations validé tel quel.
-  - Décisions des items K12, K8, K2/K9, K4, K6, K7, K5, K10 : checkpoint
-    précédent et `plan.md` §5.
-- Ajustements pris par Claude, signalés, non rejoués : comptes de repli dans la
-  ligne de l'outil remplacé (K3) ; titre du gabarit au sujet normalisé (K11).
-- **Points en suspens pour Greg** (consignés dans `plan.md` §5) : `model: opus`
-  figé dans l'agent ; Tier 3 de `sources.yaml` orienté IA, inutile sur un sujet
-  data ; frontière B/C au jugement du modèle ; plateau à 85 des vidéos-listes ;
-  E9 à rejouer sur une source classée ; `check-dates.py` ne lit pas le bloc
-  « Primary sources » ; sans YouTube, la tranche Essential peut rester vide
-  (K5, observé au rejeu K3).
-
-## Blocages
-
-- Aucun côté chantier. Hors chantier, inchangés : endpoint Cloud Run `/sse`
-  public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions
-  ≤ `00008`) à la main de Greg.

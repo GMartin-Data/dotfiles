@@ -6,6 +6,94 @@
 
 ---
 
+## Checkpoint précédent — 2026-10-10 16:14
+Session : 74a6446f-bfe1-4ed1-9f87-7b70c2f7a0ba
+
+## Tâches complétées
+
+- **Phase 3 close : 11 items sur 11** (`plan.md` §5), chacun avec règle validée
+  par Greg, rejeu d'eval contre le critère, fiche dans
+  `tasks/tech-watch-2026-10/phase3/`. Lot « sortie » de cette session :
+  - **K3** état par source : en-tête à lignes fixes dans `report-template.md`
+    (tableau de 6 lignes, statuts fermés `ok` / `empty` / `degraded` / `failed`
+    / `absent` / `not run`, lignes `Pipeline`, `Enrichment`, `Date test`,
+    `Notes`), pied de page `Sources used` dérivé du tableau. E3 rejoué :
+    GitHub `degraded`, YouTube `failed`, pied de page sans arXiv ni YouTube,
+    syntaxe `env:` du `mcpServers` inline vérifiée. 0,83 $. Correctif après
+    run, non rejoué : les résultats de repli comptent dans la ligne de l'outil
+    remplacé.
+  - **K11** sortie : slug = sujet normalisé (minuscules, ASCII, tirets), nom
+    `tech-watch-{slug}-{date}.md` (`-{days}d` hors fenêtre 30), rapport en
+    **anglais fixe**, dossier fixe `/home/martin/tech-watch/` créé si absent,
+    première ligne de chat `Report: <chemin> — n ranked + m primary — normal |
+    degraded: …`. E1 et E7a : même nom de fichier sur deux formulations,
+    dossier créé par `Write`. 1,82 $. Correctif après run, non rejoué : titre
+    du gabarit = sujet normalisé, demande tapée en métadonnée `Request`.
+  - **K1** limitations réécrites d'après les fiches (3 lignes supprimées
+    jamais reproduites, 2 réécrites, 5 nouvelles), traçabilité dans
+    `phase3/K1-limitations-2026-10-10.md`. Sans run, 0 $.
+- `run-eval.sh` réécrit le dossier de sortie fixe en `cwd/tech-watch/` du
+  sandbox (sans le pré-créer) ; fixture E3 alignée sur l'agent.
+- Coût cumulé de la phase 3 ≈ 13 $. Branche `feat/tech-watch-skill` :
+  **47 commits d'avance sur `main`, non poussée**, arbre propre.
+
+## En cours
+
+- Rien. Phase 3 close ; le rejeu final et la phase 4 s'ouvrent dans une
+  session neuve.
+
+## Prochaines étapes
+
+1. **Rejeu final E1 à E7** via `run-eval.sh`, comparaison à `baseline/` (≈ 4 $) :
+   E1 et E7a servent aussi à observer la ligne `Request` du gabarit, non
+   rejouée depuis le correctif de titre. État des autres scénarios, d'après
+   les fiches : E4 joué en K5 (fenêtre 60 jours, réussi), E8 joué en K6 (E8a
+   sans `WebFetch`, E8b normal, réussi), E10 joué en K4 (trois sujets, Tier 3
+   déclenché sur « Apache Iceberg row lineage », réussi) ; E9 réussi de façon
+   opportuniste sur E1 en K7, sur une source hors top 20, à rejouer quand un
+   cas connu de contradiction existera.
+2. **Phase 4** : retrait de l'ancien trio command + agent `tech-watch-scorer`
+   + script (D2a, `claude/commands/tech-watch.md`, `claude/agents/scripts/`,
+   lignes correspondantes d'`install.sh`), liens `install.sh` pour la skill et
+   l'agent, README, `claude/evals/tech-watch/README.md`, règle de permission
+   `Write(/home/martin/tech-watch/**)` ou `--add-dir` dans la configuration
+   livrée, `/code-review` sur la branche, PR.
+3. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles). Écarts à la passation de la phase 3 :
+  E10 sur 3 sujets, E8 simulé par retrait de `WebFetch`, E9 opportuniste,
+  Papers With Code remplacé par Hugging Face Papers, DEV.to/Hashnode retirés
+  du Tier 3 ; en fin de phase, E1 + E7a joués ensemble pour K11.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions Greg du 2026-10-10 (détail dans `plan.md`
+  §5, phase 3) :
+  - K3 : pied de page **dérivé** du tableau d'état plutôt que supprimé.
+  - K11 : rapport en **anglais fixe** ; sortie dans un **dossier fixe**
+    plutôt que `./tech-watch/` ou la racine du CWD.
+  - K1 : texte des limitations validé tel quel.
+  - Décisions des items K12, K8, K2/K9, K4, K6, K7, K5, K10 : checkpoint
+    précédent et `plan.md` §5.
+- Ajustements pris par Claude, signalés, non rejoués : comptes de repli dans la
+  ligne de l'outil remplacé (K3) ; titre du gabarit au sujet normalisé (K11).
+- **Points en suspens pour Greg** (consignés dans `plan.md` §5) : `model: opus`
+  figé dans l'agent ; Tier 3 de `sources.yaml` orienté IA, inutile sur un sujet
+  data ; frontière B/C au jugement du modèle ; plateau à 85 des vidéos-listes ;
+  E9 à rejouer sur une source classée ; `check-dates.py` ne lit pas le bloc
+  « Primary sources » ; sans YouTube, la tranche Essential peut rester vide
+  (K5, observé au rejeu K3).
+
+## Blocages
+
+- Aucun côté chantier. Hors chantier, inchangés : endpoint Cloud Run `/sse`
+  public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions
+  ≤ `00008`) à la main de Greg.
+
+---
+
 ## Checkpoint précédent — 2026-10-10 15:19
 Session : c353e960-a614-4035-b178-7387d249e416
 
