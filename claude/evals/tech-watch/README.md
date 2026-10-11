@@ -59,7 +59,10 @@ final E1–E7 sur les fichiers finaux (2026-10-11,
   inline d'un subagent est-il connecté quand une skill le fork ? `fork` =
   serveur réel, `nofork` = même sonde sans fork (témoin : outils absents),
   `down` = URL injoignable (outils absents, sans erreur). Fixtures
-  `fixtures/k12/`.
+  `fixtures/k12/`. Depuis le bearer (2026-10-11), `fork` exige
+  `TECH_WATCH_MCP_TOKEN` dans l'environnement du shell qui lance ; le test
+  négatif du bearer est `env -u TECH_WATCH_MCP_TOKEN ./probe-k12.sh fork`
+  (attendu : outils absents, `sh` refuse `${VAR:?}` avant même le réseau).
 - **`extract-run.sh <transcript.jsonl>`** — résumé d'un transcript : appels
   d'outils dans l'ordre, comptes, bloc `result` (coût, tours, durée), texte
   final.
@@ -85,13 +88,15 @@ final E1–E7 sur les fichiers finaux (2026-10-11,
   received: …`. Avec `--max-turns 1`, une sonde de déclenchement coûte
   ~0,13 $ au lieu d'une veille complète.
 - `fixtures/k12/` — agents (`tech-watch.md` serveur réel, `tech-watch-down.md`
-  URL `.invalid`) et skills (`tech-watch-probe` en fork, `tech-watch-probe-nofork`
-  témoin) de la sonde K12.
+  URL `.invalid`, tous deux sur la même passerelle stdio `uvx mcp-proxy` +
+  bearer que l'agent réel) et skills (`tech-watch-probe` en fork,
+  `tech-watch-probe-nofork` témoin) de la sonde K12.
 
 ## Recettes (rejeu final du 2026-10-11)
 
-Depuis `claude/evals/tech-watch/` ; les sept runs ont tourné en parallèle
-sans incident.
+Depuis `claude/evals/tech-watch/`, dans un shell qui a sourcé
+`~/.zshrc.local` (`TECH_WATCH_MCP_TOKEN`, hérité par `claude -p` puis par la
+passerelle de l'agent) ; les sept runs ont tourné en parallèle sans incident.
 
 ```bash
 ./run-eval.sh e1 "/tech-watch Claude Mods"                       # E1 + E6
@@ -144,7 +149,13 @@ pour le fond, `check-dates.py` pour les dates. Pas de grader automatique.
   tour 1 va au bout. D'où le bouchon `k8/agent-stub.md` pour les sondes.
 - **Serveur injoignable = outils `mcp__tech-watch__*` absents, sans
   erreur** (K12 `down`) : la skill le détecte par l'absence des outils, pas
-  par un message.
+  par un message. Même symptôme si le token manque ou est refusé (401).
+- **`${VAR}` n'est pas expansé dans le frontmatter d'un agent** (sondé le
+  2026-10-11 sur le montage K12, trois variantes : URL en `${VAR}` → absents ;
+  URL littérale + bloc `headers` → présents ; URL littérale seule → présents).
+  `headers` y est donc accepté, mais un secret ne peut pas y être injecté par
+  l'environnement : d'où la passerelle `sh -c 'exec uvx mcp-proxy …'`, où
+  c'est le shell qui expanse `$TECH_WATCH_MCP_TOKEN`.
 - **Même nom de fichier sur E1, E3 et E7a** (`tech-watch-claude-code-mods-<date>.md`,
   voulu par K11) : un run par sandbox, sinon le second écrase le premier.
 - **Permission `Write` hors CWD en session interactive** (K11) : couverte

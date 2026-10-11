@@ -126,11 +126,12 @@ Configuration versionnée et portable entre machines. Architecture détaillée e
 
 **Skills** : teach, coach-pedagogique, code-mentor, dp-coach, code-review, feynman-mentor, claude-md, tech-watch
 
-**Subagents** : dbt, tech-watch (environnement d'exécution de la skill du même nom ; serveur MCP distant déclaré inline, code dans [`GMartin-Data/tech-watch-mcp`](https://github.com/GMartin-Data/tech-watch-mcp), privé)
+**Subagents** : dbt, tech-watch (environnement d'exécution de la skill du même nom ; serveur MCP distant déclaré inline derrière une passerelle stdio `uvx mcp-proxy` qui ajoute le bearer, code dans [`GMartin-Data/tech-watch-mcp`](https://github.com/GMartin-Data/tech-watch-mcp), privé)
 
 **À réinstaller manuellement** (hors sync claude.ai, `syncClaudeAiSkills: false`) :
 - plugin `pyright-lsp@claude-plugins-official`
 - skills Anthropic depuis `anthropics/skills` : `pdf`, `docx`, `xlsx`, `pptx`, `skill-creator`, `mcp-builder`
+- `~/.zshrc.local` (mode 600, hors repo, sourcé par `zsh/.zshrc`) avec `export TECH_WATCH_MCP_TOKEN=…`, la valeur de la variable Cloud Run du serveur `tech-watch-mcp` — sans elle, l'agent `tech-watch` n'a pas ses outils MCP
 
 ---
 
