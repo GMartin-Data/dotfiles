@@ -1,5 +1,98 @@
 ## Dernière mise à jour
-Date : 2026-10-11 09:31
+Date : 2026-10-11 09:51
+Session : dd4cb97a-540a-4afe-bc2a-f23ecd9b21d8
+
+## Tâches complétées
+
+- **Phase 4 ouverte — quatre items sur six faits**, trois commits atomiques sur
+  `feat/tech-watch-skill`, **branche poussée** et **PR #6 ouverte en
+  brouillon** (https://github.com/GMartin-Data/dotfiles/pull/6, corps : résumé
+  du chantier, test plan, revue à faire avant passage en « ready ») :
+  - `c94e36a` **D2a** : ancien trio retiré (`claude/commands/tech-watch.md`,
+    `claude/agents/tech-watch-scorer.md`, `claude/agents/scripts/fetch-sources.py`) ;
+    `install.sh` lie `skills/tech-watch` et `agents/tech-watch.md`, les lignes
+    du trio et du dossier `scripts` sont supprimées ; manifeste du plugin,
+    `README.md` (listes Commands/Skills/Subagents, pointeur vers le dépôt privé
+    `GMartin-Data/tech-watch-mcp` = D1), `claude/README.md` (Commands 7,
+    Skills 8 avec famille « Veille », Agents 2, Serveurs MCP 2, précédent
+    command→skill) et `claude/agent-memory/README.md` alignés. Ajustement
+    adjacent inclus : `block-dbt` manquait dans la liste des hooks du README.
+    Vérifié : `bash -n`, tests de parité commands/skills/agents vides,
+    `plugin.json` valide, aucune référence résiduelle hors `tasks/`,
+    `progress.md` et transcripts figés.
+  - `f18cdce` **permission** : `Edit(~/tech-watch/**)` dans
+    `claude/settings.json`. Vérifié par le guide Claude Code : les règles de
+    chemin ne sont consultées que pour `Edit` et `Read` (jamais `Write`),
+    `/home/…` serait relatif au dossier du settings, `~/` est la forme
+    portable.
+  - `80e8cd0` **`claude/evals/tech-watch/README.md`** : scénarios E1–E10 et
+    où chacun a été joué, outillage (`run-eval.sh`, `probe-k12.sh`,
+    `extract-run.sh`, `check-dates.py`), fixtures, recettes du rejeu final,
+    résultats, frictions, doctrine d'étoffage. Chaque chemin cité vérifié.
+- **Machine courante** : `install.sh` rejoué (symlinks `~/.claude/skills/tech-watch`
+  et `~/.claude/agents/tech-watch.md` créés), trois symlinks obsolètes retirés
+  (`unlink`), aucun lien pendant. La skill `tech-watch` est chargée en session.
+
+## En cours
+
+- Rien. La revue de code s'ouvre dans une session neuve sur la PR #6 (choix
+  Greg : contexte frais par précaution).
+
+## Prochaines étapes
+
+1. **Session neuve** : `/code-review 6` (PR #6 ; seconde revue prévue par la
+   phase 1 bis du plan, une par dépôt), triage un finding par tour, correctifs
+   commités et poussés sur la branche.
+2. PR #6 : passer de brouillon à « ready » (`gh pr ready 6`), merge, puis
+   `plan.md` §5 : sous-section « Phase 4 » (ce qui a été fait, revue, PR) et
+   clôture du chantier.
+3. **Première veille réelle** en session interactive : observer si la règle
+   `Edit(~/tech-watch/**)` est héritée par le fork (non documenté — sinon
+   `permissionMode: acceptEdits` dans l'agent, valable si la session
+   principale est en `default`).
+4. Points pour Greg issus du rejeu final (`final-replay-2026-10-11/run.md`,
+   « Observations ») : dates dev.to sans année (statu quo ou `unverified` ;
+   `check-dates.py` à élargir aux graphies `10/7/2026`, `Oct 06, 2026`,
+   jour-mois seul, et au bloc « Primary sources ») ; égalités sans signal
+   d'engagement départagées par un critère inventé (règle K5) ; `Owner
+   domains` à `not run (…)` sur un sujet sans propriétaire.
+5. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles). Écart au plan : la phase 4 prévoyait
+  `/code-review` « sur les deux branches » ; la branche serveur
+  `fix/search-quality` a déjà eu sa revue en phase 1 bis, seule la branche
+  dotfiles reste à revoir.
+
+## Décisions prises
+
+- Track léger, sans ADR — décisions du 2026-10-11 :
+  - **Greg** : PR ouverte dans cette session, revue de code dans une session
+    neuve (contexte frais) avec la PR pour cible. Ouverte en **brouillon**
+    pour tenir le rituel « revue avant merge » du CLAUDE.md global.
+  - **Claude, signalées** : règle `Edit(…)` plutôt que `Write(…)` (contrainte
+    documentée) et plutôt que `additionalDirectories` (n'auto-approuve pas les
+    écritures en mode `default`) ; `claude/evals/claude-md/README.md` ligne 79
+    laissé tel quel (note historique sur `tech-watch-scorer`) ; `plan.md` non
+    touché avant la fin de la phase 4.
+- Décisions antérieures du chantier : `plan.md` §1 (D1–D6) et §5 (une
+  sous-section par item K*).
+- **Points en suspens pour Greg** (consignés dans `plan.md` §5) : Tier 3 de
+  `sources.yaml` orienté IA ; frontière B/C au jugement du modèle ; plateau à
+  85 des vidéos-listes ; égalités sans engagement ; `check-dates.py`
+  incomplet ; tranche Essential vide sans YouTube ; dates sans année ;
+  `Owner domains` sans propriétaire.
+
+## Blocages
+
+- Aucun côté chantier. Hors chantier, dépôt `~/mcp-server-code` : endpoint
+  Cloud Run `/sse` public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des
+  révisions ≤ `00008`) à la main de Greg.
+
+---
+
+## Checkpoint précédent — 2026-10-11 09:31
 Session : 728a4194-3ef1-4992-b8d4-be183eeec06e
 
 ## Tâches complétées
@@ -164,121 +257,6 @@ Session : 74a6446f-bfe1-4ed1-9f87-7b70c2f7a0ba
   E9 à rejouer sur une source classée ; `check-dates.py` ne lit pas le bloc
   « Primary sources » ; sans YouTube, la tranche Essential peut rester vide
   (K5, observé au rejeu K3).
-
-## Blocages
-
-- Aucun côté chantier. Hors chantier, inchangés : endpoint Cloud Run `/sse`
-  public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions
-  ≤ `00008`) à la main de Greg.
-
----
-
-## Checkpoint précédent — 2026-10-10 15:19
-Session : c353e960-a614-4035-b178-7387d249e416
-
-## Tâches complétées
-
-- **Phase 3 — 8 items sur 11 clos**, chacun avec règle validée par Greg
-  (un point par tour), rejeu d'eval contre le critère, fiche dans
-  `tasks/tech-watch-2026-10/phase3/` et section dans `plan.md` §5 :
-  - **K12** sonde du montage D3 (d) : le `mcpServers` inline d'un subagent est
-    connecté quand une skill le fork ; serveur injoignable = outils absents
-    sans erreur. `claude/agents/tech-watch.md` créé, `SKILL.md` en
-    `context: fork` + `agent: tech-watch`. E1 rejoué sous le fork : 121 s, 0,50 $.
-  - **K8** description enrichie (6 phrases-types FR/EN, cas négatifs remontés) ;
-    E5 ×2, E7 ×2 identiques à la référence. Skill claude.ai **supprimée par
-    Greg** (doublon synchronisé disparu, vérifié par sonde).
-  - **K2/K9** une requête par outil, paramètres explicites, Tier 2/3 en
-    `WebSearch` + `allowed_domains`, Papers With Code → Hugging Face ;
-    E2 arXiv **5/5** strict (référence 3/5), Tier 2 9–10 liens par recherche.
-  - **K4** filtre rapide on-topic / adjacent / off-topic, dédoublonnage avant
-    comptage, Tier 3 si on-topic uniques < 12 ; E10 sur 3 sujets, déclenché
-    sur « Apache Iceberg row lineage » (83 adjacents/off-topic n'ont pas
-    dispensé du Tier 3).
-  - **K6** enrichissement budgété (10 `WebFetch`, une par URL, Tier 1 jamais
-    ouvert, `unverified` sinon) ; E8 sans `WebFetch` et run normal : aucune
-    date inventée, budget tenu à l'unité. `check-dates.py` créé.
-  - **K7** sources primaires d'abord (recherche sur les domaines du
-    propriétaire, bloc « Primary sources » hors classement, règle de
-    contradiction) ; E1 : billet, docs `en`, changelog ouverts en premier ;
-    une contradiction réelle signalée (E9 opportuniste).
-  - **K5** grille réécrite (autorité par nature A/B/C/D, fraîcheur relative
-    à la fenêtre, dépôt sur sa date de création, seuil 60 strict) ; E1 :
-    vidéo officielle n° 1 à 94, vidéos-listes de 97 à 85, 3 sources web
-    classées ; E4 : sources de 31–60 j gardées.
-  - **K10** tests d'homonymie (date, sens) et dédoublonnage élargi (plafond
-    2 par auteur) ; correctif en cours de route (référence = plus ancienne
-    date d'une source primaire, préversion comprise, sinon test sauté) ;
-    E6 réussi, `0xDarkMatter/claude-mods` écarté par règle.
-- Montage d'evals stabilisé : `run-eval.sh` sans `--strict-mcp-config` (bloque
-  aussi les serveurs du frontmatter), `AGENT_MD` (E3 stdio, bouchon
-  `fixtures/k8/agent-stub.md` pour E5/E7 avec `--max-turns 1`),
-  `probe-k12.sh`, `check-dates.py`. Transcripts dans `claude/evals/results/`
-  (gitignorés). Coût cumulé de la phase 3 ≈ 10 $ (≈ 20 runs).
-- Branche `feat/tech-watch-skill` : **40 commits d'avance sur `main`, non
-  poussée**, arbre propre.
-
-## En cours
-
-- Rien. Checkpoint pris à 35 % de contexte, par découpage : le lot « sortie »
-  (K3, K11, K1) s'ouvre dans une session neuve sur les fichiers finaux.
-
-## Prochaines étapes
-
-1. **K3** — état par source : figer dans `report-template.md` un en-tête à
-   format fixe (comptes, requêtes, tiers, enrichissement, couverture, date
-   test — aujourd'hui 5 lignes spontanées, format différent à chaque run) et
-   un pied de page généré d'après les sources réellement utilisées (figé
-   « arXiv · GitHub · YouTube · Web search » depuis la référence). Rejeu E3 :
-   `AGENT_MD=claude/evals/tech-watch/fixtures/e3/agent-stdio-invalid-token.md`
-   (syntaxe `env:` du frontmatter à vérifier au passage), comparer à
-   `baseline/E3-github-401-2026-10-10/`. Proposer le format avant d'écrire.
-2. **K11** — slug, langue, emplacement (rapport en anglais ou français selon
-   les runs, résumé en français ; slug observé `claude-code-mods` /
-   `ai-agent-evaluation` ; emplacement = CWD).
-3. **K1** — limitations réécrites d'après les comportements réels
-   post-correction (S1 avertissement 401, serveur absent = outils absents,
-   budget de pages, `unverified`).
-4. Rejeu final E1–E7 via `run-eval.sh`, comparaison à `baseline/`, puis
-   **phase 4** : retrait de l'ancien trio command + agent + script (D2a),
-   `install.sh`, README, `claude/evals/tech-watch/README.md`, `/code-review`
-   sur la branche, PR.
-5. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- N/A (pas de PRD — repo dotfiles). Écarts à la passation : E10 a demandé
-  3 sujets (les deux premiers trop couverts) ; E8 simulé par retrait de
-  `WebFetch` ; E9 joué de façon opportuniste sur E1 ; Papers With Code
-  remplacé (archivé) ; DEV.to/Hashnode retiré du Tier 3 (doublon Tier 2).
-
-## Décisions prises
-
-- Track léger, sans ADR — décisions Greg du 2026-10-10 (détail dans `plan.md`
-  §5, phase 3) :
-  - Skill claude.ai **supprimée** plutôt que renommée (le déclenchement se
-    fait sur la description).
-  - K2/K9 : catégories arXiv `cs.AI, cs.LG, cs.CL, cs.SE, cs.DB` ; YouTube
-    `language=en` sauf demande FR ; Hugging Face Papers remplace Papers With Code.
-  - K4 : coupe vidéo < 3 min binaire ; adjacents hors du compte des 12.
-  - K6 : budget 10 pages échecs compris ; Tier 1 jamais ouvert ; E8 par
-    retrait de `WebFetch`.
-  - K7 : bloc « Primary sources » hors classement ; contradiction écartée si
-    dans le titre, sinon signalée ; 3 pages réservées ; AWS et Azure ajoutés
-    aux propriétaires connus.
-  - K5 : autorité par nature A/B/C/D ; date `unverified` = 5, adjacents non
-    classés ; seuil 60 strict avec note de couverture.
-  - K10 : test de date adossé à la source primaire ; plafond 2 par auteur ;
-    réécritures sans apport en D.
-- Ajustements pris par Claude, signalés, non contestés : dédoublonnage avant
-  comptage (K4) ; test de date sur la plus ancienne date primaire, sauté si
-  préversion non datée (K10).
-- **Points en suspens pour Greg** (consignés dans `plan.md` §5) : `model: opus`
-  figé dans l'agent (choix pour l'usage réel avant la phase 4) ; Tier 3 de
-  `sources.yaml` orienté IA, inutile sur un sujet data (compléter ou laisser
-  le modèle proposer) ; frontière B/C au jugement du modèle ; plateau à 85
-  des vidéos-listes (levier engagement ou seuil de tranche) ; E9 à rejouer
-  sur une source classée ; `check-dates.py` ne lit pas le bloc « Primary sources ».
 
 ## Blocages
 
