@@ -1,0 +1,132 @@
+# Tech Watch - Source Configuration
+#
+# Tool names are the Claude Code ones: the three `mcp__tech-watch__*` MCP tools
+# and `WebSearch` (parameters: query, allowed_domains, blocked_domains).
+# Quoting rule, every tier: quote only proper nouns and fixed expressions
+# ("Claude Code", "agent evaluation"), never the whole query - an exact phrase
+# on 3-4 words kills recall.
+
+# -------------------------------------------------------------------
+# TIER 1 - MCP tools (always run first, in parallel, structured metadata)
+# One query per tool, derived from the normalized topic (SKILL.md, step 1).
+# Pass every parameter below explicitly: server defaults differ (10 results).
+# -------------------------------------------------------------------
+tier_1:
+  - tool: mcp__tech-watch__search_arxiv_papers
+    priority: high
+    coverage: Research papers
+    query: concept terms only, fixed expression quoted ("agent evaluation"); no product name unless the product is the subject
+    params:
+      max_results: 20
+      days_back: 30          # 60 for niche or slow-moving topics
+      categories: [cs.AI, cs.LG, cs.CL, cs.SE, cs.DB]   # omit when the topic falls outside these
+    note: 0 papers is a valid answer for product or tooling topics - do not retry with broader terms
+
+  - tool: mcp__tech-watch__search_github_repos
+    priority: high
+    coverage: Repos, implementations, trending projects
+    query: implementation words, unquoted, plus the context word that removes ambiguity ("claude code mods", not "Claude Mods")
+    params:
+      max_results: 20
+      days_back: 30          # repositories pushed to within the window
+      # no `sort`: best match (sorting by stars favors old homonyms)
+    note: a 401 / rate-limit warning in the output makes the row `degraded`; the fallback is the one of SKILL.md step 2 (WebSearch, allowed_domains [github.com])
+
+  - tool: mcp__tech-watch__search_youtube_videos
+    priority: high
+    coverage: Tutorials, demos, conference talks
+    query: natural phrasing of the topic
+    params:
+      max_results: 15
+      days_back: 30
+      order: relevance
+      language: en           # fr only when the request asks for French-language content
+      # no `video_duration`: official videos can be under 4 min; videos under 180 s are dropped at step 5 on duration_seconds
+
+# -------------------------------------------------------------------
+# PRIMARY SOURCES - one WebSearch restricted to the topic owner's domains
+# (SKILL.md, step 3). Known owners below; any other owner is identified at
+# run time with a `{query} official documentation OR announcement` search.
+# -------------------------------------------------------------------
+primary_sources:
+  query: '{query}'
+  known_owners:
+    Anthropic / Claude Code: [claude.com, code.claude.com, docs.claude.com, anthropic.com]
+    dbt Labs: [docs.getdbt.com, getdbt.com]
+    Apache projects (Iceberg, Spark, Kafka, Airflow...): [apache.org]
+    Model Context Protocol: [modelcontextprotocol.io]
+    Snowflake: [docs.snowflake.com, snowflake.com]
+    Databricks: [docs.databricks.com, databricks.com]
+    AWS: [docs.aws.amazon.com, aws.amazon.com]
+    Azure / Microsoft: [learn.microsoft.com, azure.microsoft.com]
+    Google Cloud: [cloud.google.com]
+
+# -------------------------------------------------------------------
+# TIER 2 - WebSearch (always run after Tier 1): three searches
+# -------------------------------------------------------------------
+tier_2:
+  searches:
+    - name: general
+      query: '{query} {current_year}'
+    - name: community
+      query: '{query}'
+      allowed_domains: [substack.com, dev.to, hashnode.dev, medium.com]
+    - name: practical
+      query: '{query} tutorial OR guide'
+
+# -------------------------------------------------------------------
+# TIER 3 - Extended sources (only if Tier 1+2 return < 12 relevant results)
+# One WebSearch call per entry, highest priority first. WebSearch filters by
+# domain, not by path: an entry can return pages outside the listed section.
+# -------------------------------------------------------------------
+tier_3:
+  - name: Hugging Face (Papers + Blog)
+    url: huggingface.co/papers, huggingface.co/blog
+    query: '{query}'
+    allowed_domains: [huggingface.co]
+    priority: high
+    note: Papers = community-upvoted arXiv papers (replaces Papers With Code, archived in 2025 and redirected here); Blog = model/dataset releases with practical context
+
+  - name: Anthropic Engineering Blog
+    url: anthropic.com/engineering
+    query: '{query} engineering'
+    allowed_domains: [anthropic.com]
+    priority: high
+
+  - name: Google DeepMind Blog
+    url: deepmind.google/research
+    query: '{query}'
+    allowed_domains: [deepmind.google]
+    priority: medium
+
+  - name: The Batch (Andrew Ng)
+    url: deeplearning.ai/the-batch
+    query: '{query}'
+    allowed_domains: [deeplearning.ai]
+    priority: medium
+    note: Weekly editorial curation, strong signal-to-noise ratio
+
+  - name: Import AI / Ahead of AI
+    url: importai.substack.com, magazine.sebastianraschka.com
+    query: '{query}'
+    allowed_domains: [importai.substack.com, magazine.sebastianraschka.com]
+    priority: medium
+    note: Deep analytical newsletters, less noise than general blogs
+
+  - name: Hacker News
+    url: news.ycombinator.com
+    query: '{query}'
+    allowed_domains: [news.ycombinator.com]
+    priority: medium
+    note: Early-stage signal, unfiltered technical discussion
+
+# -------------------------------------------------------------------
+# SEARCH CONFIG
+# -------------------------------------------------------------------
+search_config:
+  default_days_back: 30
+  extended_days_back: 60       # for niche/slow-moving topics
+  target_results: 20
+  min_results_before_tier3: 12   # counted on unique on-topic results only (SKILL.md, steps 5-7)
+  min_video_duration_seconds: 180  # shorter videos (Shorts, teasers) are dropped at step 5
+  min_score_threshold: 60      # strict: results below this are excluded, no fallback

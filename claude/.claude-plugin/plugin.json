@@ -7,7 +7,6 @@
     "./commands/immunize.md",
     "./commands/planning.md",
     "./commands/prd.md",
-    "./commands/progress.md",
-    "./commands/tech-watch.md"
+    "./commands/progress.md"
   ]
 }

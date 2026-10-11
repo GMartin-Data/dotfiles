@@ -4,7 +4,7 @@
 
 L'auto memory Claude Code vit à `~/.claude/projects/<project>/memory/`. Elle est machine-locale, auto-gérée, non partagée entre machines (cf. [doc officielle](https://code.claude.com/docs/en/memory#storage-location)).
 
-Ce dossier contient une **mémoire custom** utilisée par les subagents personnalisés de ce dotfiles (ex. `tech-watch-scorer`). Chaque sous-dossier correspond à un subagent :
+Ce dossier contient une **mémoire custom** destinée aux subagents personnalisés de ce dotfiles (aucun ne l'utilise aujourd'hui, voir le tableau en bas). Chaque sous-dossier correspond à un subagent :
 
 ```
 agent-memory/
@@ -42,4 +42,5 @@ Laisser `MEMORY.md` grossir sans borne mène à :
 
 | Subagent | Chemin | Rôle de sa mémoire |
 |---|---|---|
-| `tech-watch-scorer` | — | Pas de mémoire persistante (stateless : lit `raw-sources.json`, écrit `scores.json`) |
+| `tech-watch` | — | Pas de mémoire persistante (stateless : un rapport par run dans `~/tech-watch/`) |
+| `dbt` | — | Pas de mémoire persistante (l'état « parse sur l'état courant » vit dans le serveur MCP, le temps du run) |

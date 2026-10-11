@@ -21,7 +21,7 @@ Optimisé pour **Crostini (ChromeOS, Debian 12 bookworm)** et **Ubuntu 22.04**.
 | `claude/commands/*.md` | `~/.claude/commands/` | Slash commands personnalisées |
 | `claude/hooks/*` | `~/.claude/hooks/` | Hooks SessionStart / PreToolUse / PostToolUse (dashboard, protection, lint) |
 | `claude/skills/` | `~/.claude/skills/` | Skills personnalisées (dossiers symlinkés) |
-| `claude/agents/` | `~/.claude/agents/` | Subagents (fichiers individuels + scripts partagés) |
+| `claude/agents/` | `~/.claude/agents/` | Subagents (fichiers individuels) |
 | `claude/agent-memory/` | `~/.claude/agent-memory/` | Mémoire persistante des subagents |
 | `TODO.md` | — | Évolutions différées avec contexte et critères |
 
@@ -43,7 +43,7 @@ réénoncé ici :
   l'overview §6).
 - **Evals** — corpus par command dans `claude/commands/<cmd>/evals/` (README
   dédié par corpus), corpus des skills dans `claude/evals/<skill>/`
-  (`feynman-mentor`, `claude-md-skill`), corpus CLAUDE.md global dans
+  (`feynman-mentor`, `claude-md-skill`, `tech-watch`), corpus CLAUDE.md global dans
   `claude/evals/claude-md/`, driver partagé `claude/evals/drive-session.py`.
 - **`tasks/`** — documents de travail datés (audits, lessons-inbox) ; voir
   chaque fichier.
@@ -74,6 +74,12 @@ cd ~/dotfiles
 ./install.sh
 source ~/.zshrc
 ```
+
+`install.sh` est idempotent : il recrée les liens (`ln -sfn`) et **purge les liens
+morts** qui pointaient dans ce dépôt sous `~/.claude/{commands,skills,hooks,rules,agents}`
+(un fichier supprimé du repo, par exemple une command devenue skill, ne laisse
+pas de symlink pendant sur les autres machines). Il ne touche jamais un lien sain
+ni un lien fait à la main vers un autre emplacement.
 
 ---
 
@@ -120,17 +126,18 @@ Configuration versionnée et portable entre machines. Architecture détaillée e
 | Hooks | `claude/hooks/*` | Événementiel | Automatismes déclenchés par l'harness |
 | Agent memory | `claude/agent-memory/<agent>/` | Lu/écrit par subagents | Mémoire custom portable |
 
-**Commands** : adr, catchup, grill, immunize, planning, prd, progress, tech-watch
+**Commands** : adr, catchup, grill, immunize, planning, prd, progress
 
-**Hooks** : block-force-push, block-rm-rf, protect_env (PreToolUse), ruff-check (PostToolUse)
+**Hooks** : block-force-push, block-rm-rf, block-dbt, protect_env (PreToolUse), ruff-check (PostToolUse)
 
-**Skills** : teach, coach-pedagogique, code-mentor, dp-coach, code-review, feynman-mentor, claude-md
+**Skills** : teach, coach-pedagogique, code-mentor, dp-coach, code-review, feynman-mentor, claude-md, tech-watch
 
-**Subagents** : tech-watch-scorer (stateless)
+**Subagents** : dbt, tech-watch (environnement d'exécution de la skill du même nom ; serveur MCP distant déclaré inline derrière une passerelle stdio `uvx mcp-proxy` qui ajoute le bearer, code dans [`GMartin-Data/tech-watch-mcp`](https://github.com/GMartin-Data/tech-watch-mcp), privé)
 
 **À réinstaller manuellement** (hors sync claude.ai, `syncClaudeAiSkills: false`) :
 - plugin `pyright-lsp@claude-plugins-official`
 - skills Anthropic depuis `anthropics/skills` : `pdf`, `docx`, `xlsx`, `pptx`, `skill-creator`, `mcp-builder`
+- `~/.zshrc.local` (mode 600, hors repo, sourcé par `zsh/.zshrc`) avec `export TECH_WATCH_MCP_TOKEN=…`, la valeur de la variable Cloud Run du serveur `tech-watch-mcp` — sans elle, l'agent `tech-watch` n'a pas ses outils MCP
 
 ---
 
