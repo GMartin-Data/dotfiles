@@ -476,7 +476,37 @@ caractères, paraphrase de la ligne `Report:` sous déclenchement en langage
 naturel. Laissé dehors faute d'observation : permission `Write` hors CWD
 (phase 4). **Critère rempli** (chaque limitation reproductible). Coût 0 $.
 
-**Phase 3 close** (2026-10-10) : 11 items sur 11.
+#### Rejeu final E1–E7 (2026-10-11, fichiers finaux)
+
+Sept sandboxes en parallèle (`run-eval.sh`, Opus, serveur `00009` ; E3 en
+stdio local avec `GITHUB_TOKEN=invalid` ; E5/E7b sur le bouchon,
+`--max-turns 1` ; E7a en veille complète). Détail, quatre rapports :
+`final-replay-2026-10-11/`.
+
+| E | Référence | Rejeu final **[Observé]** | Verdict |
+|---|---|---|---|
+| E1 | docs 80, billet 77 — échec ; aucun Short | bloc « Primary sources » à 3 entrées, vidéo officielle n° 1 A Primary 94, Essential = 10 ; 15 vidéos de 3:21 à 17:27 | **Réussi** ×2 |
+| E2 | 3/5 strict | 4/5 strict (le 3ᵉ au sens « théorie des jeux », signalé par le modèle), 13 arXiv classés | **Réussi** |
+| E3 | en-tête libre ; pied figé — échec | GitHub `degraded` 30/29/12 (repli compté dans la ligne), YouTube `failed` 10/10/0, `Pipeline` = somme des lignes ; pied `GitHub · Web (Tier 2) · Owner domains` ; ligne de chat `degraded: GitHub (…), YouTube (…)` | **Réussi** ×2 |
+| E5 | réussi ×2 | e5a 0 outil ; e5b `Read` seul | **Réussi** ×2 |
+| E6 | `0xDarkMatter` à 72 — échec | n° 9 côté serveur, écarté au test de sens dans E1, E3 et E7a | **Réussi** |
+| E7 | réussi ×2 | e7a `Skill` au tour 1, veille complète, même fichier que E1 ; e7b `Skill` au tour 1, ligne `PROBE:` | **Réussi** ×2 |
+
+Observés au passage : titre K11 au sujet normalisé et ligne `Request` sur les
+quatre rapports ; comptes de repli K3 ; **E9 sur une source classée** (E3,
+rang 4, dev.to datant l'annonce au 3 octobre : gardée et étiquetée
+`⚠️ Contradicts …`), ce qui couvre le point en suspens. Coût 3,94 $.
+
+Points pour Greg (détail dans la fiche) : dates dev.to sans année lues comme
+2026 et déclarées (aucune date inventée ; `check-dates.py` ne connaît pas les
+graphies `10/7/2026`, `Oct 06, 2026`, jour-mois seul) ; égalités sans signal
+d'engagement départagées par un critère inventé (E1, E2) ; `Owner domains` à
+`not run (…)` sur un sujet sans propriétaire (E2).
+
+**Critère de la phase 3 observé** : E1–E10 rejoués (E4, E8, E10 en K5, K6, K4),
+comparés à `baseline/` ; chaque critère K* coché avec preuve.
+
+**Phase 3 close** (2026-10-10, rejeu final le 2026-10-11) : 11 items sur 11.
 
 ## 6. Ce que Greg doit fournir
 
