@@ -1,5 +1,87 @@
 ## Dernière mise à jour
-Date : 2026-10-11 12:09
+Date : 2026-10-11 22:57
+Session : 5de2980a-ab5e-44ad-8a90-634ef8ddacde
+
+## Tâches complétées
+
+- **Revue de la PR serveur #3** (`/code-review 3 high`, session neuve CWD
+  serveur, puis triage ici, un finding par tour) : 4 findings, 4 traités, 0
+  écarté. [1] MEDIUM placeholder `.env.example` valide → vide, fail-closed
+  (`31a9ad7`, message amendé sans trailers d'attribution, push forcé par Greg) ;
+  [2] alias ASGI → `starlette.types` (`d5efb8b`) ; [3] warning de token absent
+  déplacé au scope `lifespan`, jamais envoyé en stdio, 2 tests (`f6999f7`) ;
+  [4] ADR → pas de nouvel ADR, pointeur README (`562bb68`).
+- **PR #3 mergée** (`b9b4c31`, merge commit, branche conservée), corps mis à jour
+  (test plan 107 tests, table de revue). GitGuardian vert.
+- **Cloud Run redéployé** : révision `00013-twd` = `main` (401 sans en-tête,
+  401 mauvais token, 200 bon token ; variables intactes ; aucun faux warning).
+- **ADR-0017** : option G (OAuth MCP) ajoutée, rejetée, avec déclencheur de
+  réouverture (`639ba6d`) ; puis `Proposed` → **`Accepted`** (`83f94bd`).
+- **Rotation `YOUTUBE_API_KEY` faite** : nouvelle clé « tech-watch-mcp
+  2026-10-11 » (restreinte à YouTube Data API v3) dans `youtube-tech-scraper`,
+  révision `00014-2gv` ; empreintes des deux révisions différentes et non
+  vides ; smoke test MCP vert avec l'ancienne clé supprimée ; « API key 1 »
+  supprimée. Valeur jamais passée par le chat.
+- Aucune PR ouverte ; `~/mcp-server-code` et `~/dotfiles` sur `main`,
+  synchronisés avec `origin`, arbres propres.
+
+## En cours
+
+- Rien.
+
+## Prochaines étapes
+
+1. **Première veille réelle** en session interactive, depuis un terminal neuf
+   (`TECH_WATCH_MCP_TOKEN` sourcée) : observer l'héritage de
+   `Edit(~/tech-watch/**)` par le fork (sinon `permissionMode: acceptEdits`
+   dans l'agent) et que l'en-tête s'arrête à `**Notes**:` (finding [2] de la
+   PR #6, non rejoué).
+2. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
+   `~/.zshrc.local` (mode 600) avec `export TECH_WATCH_MCP_TOKEN=…`, valeur lue
+   dans un terminal de la machine actuelle — jamais via le chat ni
+   `gcloud … describe`.
+3. **Points pour Greg** (`plan.md` §5 Phase 4), de préférence après la veille
+   réelle : dates sans année (`check-dates.py` les montre en `fetched-noyear`,
+   statu quo ou `unverified`) ; égalités sans signal d'engagement ; `Owner
+   domains` sans propriétaire.
+4. Cycle `/insights` du 2026-10-26 et items dormants :
+   `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles). L'écart au plan consigné en §5 Phase 4
+  (« `/code-review` sur les deux branches ») est résolu : la branche serveur a
+  eu sa revue.
+
+## Décisions prises
+
+- **Bearer sur le serveur MCP tech-watch + passerelle stdio** → `adr/0017`
+  (Accepted 2026-10-11). Option G (OAuth MCP) rejetée dans le même ADR, perte du
+  connecteur claude.ai assumée comme durable, déclencheur de réouverture nommé.
+- Track léger, sans ADR — décisions Greg du 2026-10-11 :
+  - finding [1] : placeholder vide, sans longueur minimale de token dans le
+    middleware (règle spéculative) ;
+  - finding [2] : correctif dans la PR plutôt que renvoi à `/simplify` ;
+  - finding [3] : warning au `lifespan` (variante retenue plutôt que simple note
+    de docstring) ;
+  - finding [4] : durable + G rejetée, pas de nouvel ADR ;
+  - redéploiement de `main` (option b) plutôt que laisser la prod sur
+    `512773e` ;
+  - rotation `YOUTUBE_API_KEY` faite le jour même (alternative « acter
+    l'exposition » écartée) ; fenêtre de logs fuités : purge au plus tard le
+    2026-11-08 (rétention `_Default` 30 jours).
+- **Claude, signalée** : un commit a reçu des trailers d'attribution
+  contraires à la règle mémoire « No Co-Authored-By » ; corrigé par amend, push
+  forcé fait par Greg (le hook `block-force-push` bloque Claude). Brouillon de
+  feedback mis en file locale (`/feedback`).
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-11 12:09
 Session : 9820e7b9-f865-4bf1-8453-ee0d6b924790
 
 ## Tâches complétées
@@ -177,88 +259,3 @@ Session : dd4cb97a-540a-4afe-bc2a-f23ecd9b21d8
   Cloud Run `/sse` public sans auth ; rotation de `YOUTUBE_API_KEY` (logs des
   révisions ≤ `00008`) à la main de Greg.
 
----
-
-## Checkpoint précédent — 2026-10-11 09:31
-Session : 728a4194-3ef1-4992-b8d4-be183eeec06e
-
-## Tâches complétées
-
-- **Rejeu final E1–E7 sur les fichiers finaux** (`tasks/tech-watch-2026-10/final-replay-2026-10-11/`,
-  section « Rejeu final » dans `plan.md` §5) : sept sandboxes en parallèle,
-  `run-eval.sh`, Opus, serveur `00009` (E3 en stdio local, `GITHUB_TOKEN=invalid` ;
-  E5a/E5b/E7b sur le bouchon, `--max-turns 1` ; E7a en veille complète).
-  **Six scénarios sur six réussis** : E1 (bloc « Primary sources » à 3 entrées,
-  vidéo officielle n° 1 A Primary 94, 15 vidéos de 3:21 à 17:27), E2 (4/5
-  arXiv strict), E3 (GitHub `degraded` 30/29/12 avec repli compté dans la
-  ligne, YouTube `failed` 10/10/0, pied `GitHub · Web (Tier 2) · Owner
-  domains`), E5 ×2, E6 (`0xDarkMatter` n° 9 côté serveur, écarté au test de
-  sens), E7 ×2. Les deux échecs de la référence (E1, E3) et l'échec acté E6
-  sont corrigés par règle. Coût 3,94 $.
-- Observés au passage : titre K11 au sujet normalisé et ligne `Request` sur
-  les quatre rapports ; comptes de repli K3 cohérents (`Pipeline` = somme des
-  lignes) ; **E9 sur une source classée** (E3, rang 4, dev.to datant l'annonce
-  au 3 octobre : gardée et étiquetée `⚠️ Contradicts …`), point en suspens
-  couvert.
-- **Critère de la phase 3 observé** : E1–E10 rejoués (E4, E8, E10 en K5, K6,
-  K4), comparés à `baseline/`.
-- **Décision Greg : agent sur Opus pour l'usage réel** (actée dans `plan.md` §5,
-  K12 point 1) : tarif 2,5 fois moindre que Fable, règles validées sur Opus
-  seulement. Aucun changement de fichier.
-- Branche `feat/tech-watch-skill` : **50 commits d'avance sur `main`, non
-  poussée**, arbre propre (`791e863` rejeu, `8da810d` décision Opus).
-
-## En cours
-
-- Rien. La phase 4 s'ouvre dans une session neuve.
-
-## Prochaines étapes
-
-1. **Phase 4** (`plan.md` §3) : retrait de l'ancien trio command + agent
-   `tech-watch-scorer` + script (D2a : `claude/commands/tech-watch.md`,
-   `claude/agents/scripts/`, lignes correspondantes d'`install.sh`) ; liens
-   `install.sh` pour `claude/skills/tech-watch/` et `claude/agents/tech-watch.md` ;
-   README des dotfiles ; `claude/evals/tech-watch/README.md` (montage fork,
-   `run-eval.sh`, fixtures, `check-dates.py`, recette E5/E7 au bouchon) ;
-   permission `Write(/home/martin/tech-watch/**)` ou `--add-dir` dans la
-   configuration livrée (en session interactive, `Write` hors CWD demande une
-   permission — observé en K11) ; `/code-review` sur la branche, triage, PR.
-2. Points pour Greg issus du rejeu final (fiche `final-replay-2026-10-11/run.md`,
-   « Observations ») : dates dev.to sans année lues comme 2026 et déclarées
-   (statu quo ou `unverified` ; `check-dates.py` à élargir aux graphies
-   `10/7/2026`, `Oct 06, 2026`, jour-mois seul, et au bloc « Primary
-   sources ») ; égalités sans signal d'engagement départagées par un critère
-   inventé (E1, E2 — règle K5) ; `Owner domains` à `not run (…)` sur un sujet
-   sans propriétaire (E2 — à figer dans « Header rules » ou laisser).
-3. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- Aucun (pas de PRD, repo dotfiles). Écarts à la passation sur l'ensemble de
-  la phase 3 : E10 sur 3 sujets, E8 simulé par retrait de `WebFetch`, E9
-  d'abord opportuniste puis observé sur une source classée au rejeu final,
-  Papers With Code remplacé par Hugging Face Papers, DEV.to/Hashnode retirés
-  du Tier 3, E1 + E7a joués ensemble pour K11.
-
-## Décisions prises
-
-- Track léger, sans ADR — décisions Greg du 2026-10-11 :
-  - **Agent `tech-watch` sur Opus pour l'usage réel** (`plan.md` §5, K12
-    point 1) ; le pin `model: opus` suit l'alias.
-  - Rejeu final lancé en parallèle (sept sandboxes), E7a en veille complète
-    pour observer la ligne `Request`.
-- Décisions de la phase 3 (K12 → K1, 2026-10-10) : `plan.md` §5, une
-  sous-section par item.
-- **Points en suspens pour Greg** (consignés dans `plan.md` §5) : Tier 3 de
-  `sources.yaml` orienté IA, inutile sur un sujet data ; frontière B/C au
-  jugement du modèle ; plateau à 85 des vidéos-listes et égalités sans signal
-  d'engagement ; `check-dates.py` incomplet (graphies, bloc « Primary
-  sources ») ; sans YouTube, la tranche Essential peut rester vide ; dates
-  dev.to sans année ; `Owner domains` sans propriétaire.
-
-## Blocages
-
-- Aucun côté chantier. Hors chantier : endpoint Cloud Run `/sse` public sans
-  auth ; rotation de `YOUTUBE_API_KEY` (logs des révisions ≤ `00008`) à la
-  main de Greg — tous deux à traiter dans le dépôt `~/mcp-server-code`, hors
-  de cette branche.
