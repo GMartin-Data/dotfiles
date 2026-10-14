@@ -6,6 +6,93 @@
 
 ---
 
+## Checkpoint précédent — 2026-10-11 12:09
+Session : 9820e7b9-f865-4bf1-8453-ee0d6b924790
+
+## Tâches complétées
+
+- **Chantier tech-watch clos — PR #6 mergée** (`0b5d243`, merge commit, branche
+  distante conservée comme pour la PR #5) ; `plan.md` §5 « Phase 4 — Clôture »
+  écrite et poussée sur `main` (`353f312`).
+- **`/code-review 6 high`** (skill user-scope, session neuve) : 10 findings,
+  triés un par tour, 9 traités en 10 commits, 1 écarté (note historique de
+  `claude/evals/claude-md/README.md`, décision du matin). Détail et commits :
+  `plan.md` §5 Phase 4 et corps de la PR #6.
+- **Finding [1] HIGH clos de bout en bout** : endpoint Cloud Run `allUsers`
+  sans auth, URL versionnée dans un repo public (~108 cloneurs uniques en 14
+  jours). Décision du matin « acter + borner » (`max-instances` 20 → 2, alerte
+  budget 10 €/mois, API Budgets activée) dépassée le jour même par le
+  **bearer** : serveur `utils/auth.py` fail-closed (105 tests, révisions
+  `00011` puis `00012` après rotation), agent en passerelle stdio `uvx
+  mcp-proxy@0.13.0` avec `API_ACCESS_TOKEN` depuis `TECH_WATCH_MCP_TOKEN`
+  (`~/.zshrc.local`, 600, sourcé par `zsh/.zshrc`). → `adr/0017`.
+  Vérifié : `curl` 401/200, sondes K12 avec/sans token et `down`, E1 complet à
+  travers la passerelle identique au rejeu final (0,86 $). Addendum daté dans
+  `phase3/K12-probe-2026-10-10.md`.
+- **Serveur** : branche `feat/bearer-auth` poussée, **PR #3 en brouillon**
+  (https://github.com/GMartin-Data/tech-watch-mcp/pull/3), code déjà en
+  production.
+- **Incident** : première valeur du token affichée par erreur dans deux
+  sorties de commande de la session (expansion `${VAR:-…}`, puis `ps`) ;
+  token tourné aussitôt E1 terminé, ancienne valeur morte (401).
+- Machine courante : `~/.zshrc.local` créé ; `install.sh` rejoué (purge
+  vérifiée sur un lien mort planté, un lien étranger conservé, 29 liens sains).
+
+## En cours
+
+- Rien. La revue de la PR serveur #3 s'ouvre dans une session neuve, CWD
+  `~/mcp-server-code` (cible `3` résolue par `gh` dans le repo courant).
+
+## Prochaines étapes
+
+1. **Session neuve dans `~/mcp-server-code`** : `/code-review 3 high`, triage,
+   `gh pr ready 3`, merge ; puis `git pull` et vérifier que la révision Cloud
+   Run `00012` correspond bien à `main`.
+2. **ADR-0017** : passer `Status: Proposed` → `Accepted` (date, porte franchie :
+   PR #6 mergée, E1 vert à travers la passerelle).
+3. **Première veille réelle** en session interactive, depuis un terminal neuf
+   (variable `TECH_WATCH_MCP_TOKEN` sourcée) : observer l'héritage de
+   `Edit(~/tech-watch/**)` par le fork (sinon `permissionMode: acceptEdits`
+   dans l'agent) et que l'en-tête s'arrête à `**Notes**:` (finding [2], non
+   rejoué).
+4. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
+   `~/.zshrc.local` avec le token (README racine, « À réinstaller
+   manuellement »).
+5. Points pour Greg (`plan.md` §5 Phase 4) : règle des dates sans année
+   (`check-dates.py` les montre en `fetched-noyear`, statu quo ou
+   `unverified`) ; égalités sans signal d'engagement ; `Owner domains` sans
+   propriétaire ; rotation de `YOUTUBE_API_KEY` (logs des révisions ≤ `00008`).
+6. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles). Écart au plan, consigné en §5 Phase 4 :
+  « `/code-review` sur les deux branches » — la branche serveur née de la revue
+  (`feat/bearer-auth`, PR #3) attend la sienne.
+
+## Décisions prises
+
+- **Bearer sur le serveur MCP tech-watch + passerelle stdio dans l'agent**
+  → `adr/0017` (Proposed). Décision intermédiaire « acter + borner » non écrite,
+  ses mitigations conservées en défense en profondeur.
+- Track léger, sans ADR — décisions Greg du 2026-10-11 (triage) :
+  - finding [3] : ligne d'autorité « non établie = C » dans la grille plutôt
+    qu'une exclusion hors score ;
+  - finding [6] : purge ciblée dans `install.sh` plutôt qu'une recette
+    documentée ;
+  - finding [10] : note historique conservée (décision du matin maintenue) ;
+  - revue de la PR serveur #3 dans une session neuve, CWD serveur.
+- **Claude, signalées** : pas de rejeu pour les correctifs de libellé ([2],
+  [3], [7], [8]), à vérifier au prochain run complet ; `check-dates.py`
+  signale `fetched-noyear` sans échouer, la règle reste à Greg.
+
+## Blocages
+
+- Aucun côté chantier. Hors chantier : rotation de `YOUTUBE_API_KEY` à la main
+  de Greg (le blocage « endpoint public sans auth » est levé par ADR-0017).
+
+---
+
 ## Checkpoint précédent — 2026-10-11 09:51
 Session : dd4cb97a-540a-4afe-bc2a-f23ecd9b21d8
 

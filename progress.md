@@ -1,5 +1,109 @@
 ## Dernière mise à jour
-Date : 2026-10-12 15:39
+Date : 2026-10-14 12:01
+Session : e8a211f1-b4e7-4c9e-85c2-fde9927c8923
+
+## Tâches complétées
+
+- **Étude des mods Claude Code** (veille du 12/10, skill bundled
+  `plugin-authoring`, types `claude-code.d.ts` lus sur deux builds — 2.1.296
+  le 13/10, 2.1.299 le 14/10 après mise à jour automatique nocturne, +556
+  lignes) : anatomie, chargement, modèle d'événements, outillage
+  (`validate`, `tsc`, `test`), fail-open, limites de dessin. Sept candidats
+  évalués avec la grille I/C/R/déclencheur de `TODO.md`, scores valeur /
+  complexité 1-10. Ce que les mods voient et contrôlent du contexte
+  (`session.append`, `session.measure`, `$.session.usage({ breakdown })`,
+  `session.compact`, `turn.step`) et trois limites (pas de fenêtrage par
+  requête, compaction maison vs preserved thinking non prouvé, estimations).
+  Livrable : **`tasks/mods-2026-10/synthese.md`** (8 sections, spec v0 du
+  registre en §8).
+- Brainstorming hors mods (structured outputs, idées de projets, deep
+  research Jev) mené puis **non conservé** à la demande de Greg : deux notes
+  `tasks/` supprimées avant commit.
+- Rien écrit dans `~/.claude/dev-mods/` ; aucune question de hot-reload
+  posée malgré deux chargements de `plugin-authoring`.
+- `~/dotfiles` sur `main`, propre après commit de la synthèse et de ce
+  checkpoint.
+
+## En cours
+
+- **Chantier mods ouvert** : premier mod = **registre de contexte**
+  (observe-only, JSONL par session + script d'analyse pour `/insights`),
+  mené sous `/coach-pedagogique` avec l'appropriation des mods comme
+  objectif explicite. Aucun code écrit ; spec v0 dans la synthèse §8.
+
+## Prochaines étapes
+
+1. **Branche `feat/context-ledger-mod`** pour le code (docs déjà commitées
+   sur `main`).
+2. **Session suivante** : `/catchup` → lire `tasks/mods-2026-10/synthese.md`
+   (§8) → optionnel : 30 min de `code-mentor` sur `examples/tool-call.ts` de
+   la skill bundled `plugin-authoring` → `/coach-pedagogique` avec le registre
+   comme artefact. Premier tour du coach : formuler l'objectif d'apprentissage
+   (le modèle événements / `$` / `next` / pinned / fail-open, pas les noms de
+   champs, périssables) et calibrer le niveau de scaffolding selon
+   l'aisance en TypeScript (si bases TS à acquérir : `/teach` court avant).
+3. L'étape 1-2 du coach produit **`tasks/mods-2026-10/plan.md`** (paliers
+   M0–M6 de la spec v0, un critère de vérification par palier) **avant** tout
+   fichier dans `claude/mods/`. Décisions à y prendre : mécanisme de
+   chargement définitif (dossier de skills auto-chargé, `CLAUDE_CODE_PLUGIN_DIRS`,
+   marketplace dossier — candidat ADR si 4ᵉ famille dans `install.sh` /
+   README), emplacement du script d'analyse, chemin du JSONL (à côté de
+   `~/.claude/usage-data/session-meta/` ?). Dev loop : `claude --plugin-dir
+   ~/dotfiles/claude/mods/context-ledger`, pas le dossier `dev-mods`.
+4. Rituel : `claude plugin test` + un run réel vérifié contre le JSONL ;
+   `/code-review` sur le diff avant PR ; checklist multi-fichiers (famille
+   `**Mods**` à créer dans les deux README).
+5. **Second mod, une autre semaine** : rédaction des secrets dans les
+   résultats d'outils (incident 2026-10-11, `session.append` porte
+   `tool-result`, `$.env.get`), spec dans la synthèse §5.
+6. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
+   `~/.zshrc.local` (mode 600) avec `export TECH_WATCH_MCP_TOKEN=…`, valeur
+   lue dans un terminal de la machine actuelle — jamais via le chat ni
+   `gcloud … describe`.
+7. **Points tech-watch pour Greg**, laissés en suspens par décision du 13/10
+   (`plan.md` §5 Phase 4) : dates sans année, égalités sans signal
+   d'engagement, `Owner domains` sans propriétaire ; budget de 10 pages à
+   mesurer sur deux ou trois sujets avant de toucher au seuil.
+8. **Purge des logs fuités** (`YOUTUBE_API_KEY` ancienne, révisions ≤ `00008`)
+   : effective au plus tard le 2026-11-08 ; vérification facultative après.
+9. Cycle `/insights` du 2026-10-26 (`tasks/insights-actions.md`) : remesurer
+   le ratio méta/produit **avec le chantier mods déclaré ouvert**.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — session 2026-10-13/14 :
+  - **Greg** : premier mod = registre de contexte, malgré une valeur
+    estimée 3/10 aujourd'hui (6 si runs longs autonomes ; complexité 5) —
+    choix assumé comme véhicule d'appropriation des mods et prérequis de
+    toute automatisation de contexte ; déclencheur assumé = le premier run
+    long planifié, pas une friction.
+  - **Greg** : approche pédagogique (implémenter en s'appropriant) plutôt
+    que livraison directe ; **Claude, acceptée** : instrument =
+    `/coach-pedagogique` (niche « livraison d'un vrai artefact par
+    scaffolding ») et non `/teach`.
+  - **Greg** : brainstorming hors mods non conservé ; **Claude** : les deux
+    notes supprimées, leur part mods reversée dans la synthèse.
+  - **Claude, signalées** : mods de contrôle (taille des résultats
+    d'outils, compaction maison) **seulement armés par une mesure du
+    registre** ; règle de conception pour toute automatisation future
+    « un run = un contexte, état transmis par fichier ou sortie structurée »
+    à consigner dans un CLAUDE.md ou un plan, pas dans un mod ; dérive d'API
+    constatée (bump nocturne) → `validate` + `tsc` à chaque bump.
+  - Déclencheurs de réouverture (synthèse §7) : 2ᵉ oubli de `/progress`
+    avant `/clear` → mod `command.run` ; sortie de l'early access → migration
+    des guards réévaluée ; première friction de contexte → mods de contrôle.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-12 15:39
 Session : 0a5fa4bd-f832-46dc-af93-22fcefa3c3d6
 
 ## Tâches complétées
@@ -144,90 +248,3 @@ Session : 5de2980a-ab5e-44ad-8a90-634ef8ddacde
 ## Blocages
 
 - Aucun.
-
----
-
-## Checkpoint précédent — 2026-10-11 12:09
-Session : 9820e7b9-f865-4bf1-8453-ee0d6b924790
-
-## Tâches complétées
-
-- **Chantier tech-watch clos — PR #6 mergée** (`0b5d243`, merge commit, branche
-  distante conservée comme pour la PR #5) ; `plan.md` §5 « Phase 4 — Clôture »
-  écrite et poussée sur `main` (`353f312`).
-- **`/code-review 6 high`** (skill user-scope, session neuve) : 10 findings,
-  triés un par tour, 9 traités en 10 commits, 1 écarté (note historique de
-  `claude/evals/claude-md/README.md`, décision du matin). Détail et commits :
-  `plan.md` §5 Phase 4 et corps de la PR #6.
-- **Finding [1] HIGH clos de bout en bout** : endpoint Cloud Run `allUsers`
-  sans auth, URL versionnée dans un repo public (~108 cloneurs uniques en 14
-  jours). Décision du matin « acter + borner » (`max-instances` 20 → 2, alerte
-  budget 10 €/mois, API Budgets activée) dépassée le jour même par le
-  **bearer** : serveur `utils/auth.py` fail-closed (105 tests, révisions
-  `00011` puis `00012` après rotation), agent en passerelle stdio `uvx
-  mcp-proxy@0.13.0` avec `API_ACCESS_TOKEN` depuis `TECH_WATCH_MCP_TOKEN`
-  (`~/.zshrc.local`, 600, sourcé par `zsh/.zshrc`). → `adr/0017`.
-  Vérifié : `curl` 401/200, sondes K12 avec/sans token et `down`, E1 complet à
-  travers la passerelle identique au rejeu final (0,86 $). Addendum daté dans
-  `phase3/K12-probe-2026-10-10.md`.
-- **Serveur** : branche `feat/bearer-auth` poussée, **PR #3 en brouillon**
-  (https://github.com/GMartin-Data/tech-watch-mcp/pull/3), code déjà en
-  production.
-- **Incident** : première valeur du token affichée par erreur dans deux
-  sorties de commande de la session (expansion `${VAR:-…}`, puis `ps`) ;
-  token tourné aussitôt E1 terminé, ancienne valeur morte (401).
-- Machine courante : `~/.zshrc.local` créé ; `install.sh` rejoué (purge
-  vérifiée sur un lien mort planté, un lien étranger conservé, 29 liens sains).
-
-## En cours
-
-- Rien. La revue de la PR serveur #3 s'ouvre dans une session neuve, CWD
-  `~/mcp-server-code` (cible `3` résolue par `gh` dans le repo courant).
-
-## Prochaines étapes
-
-1. **Session neuve dans `~/mcp-server-code`** : `/code-review 3 high`, triage,
-   `gh pr ready 3`, merge ; puis `git pull` et vérifier que la révision Cloud
-   Run `00012` correspond bien à `main`.
-2. **ADR-0017** : passer `Status: Proposed` → `Accepted` (date, porte franchie :
-   PR #6 mergée, E1 vert à travers la passerelle).
-3. **Première veille réelle** en session interactive, depuis un terminal neuf
-   (variable `TECH_WATCH_MCP_TOKEN` sourcée) : observer l'héritage de
-   `Edit(~/tech-watch/**)` par le fork (sinon `permissionMode: acceptEdits`
-   dans l'agent) et que l'en-tête s'arrête à `**Notes**:` (finding [2], non
-   rejoué).
-4. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
-   `~/.zshrc.local` avec le token (README racine, « À réinstaller
-   manuellement »).
-5. Points pour Greg (`plan.md` §5 Phase 4) : règle des dates sans année
-   (`check-dates.py` les montre en `fetched-noyear`, statu quo ou
-   `unverified`) ; égalités sans signal d'engagement ; `Owner domains` sans
-   propriétaire ; rotation de `YOUTUBE_API_KEY` (logs des révisions ≤ `00008`).
-6. Items dormants et cycle `/insights` 2026-10-26 : `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- Aucun (pas de PRD, repo dotfiles). Écart au plan, consigné en §5 Phase 4 :
-  « `/code-review` sur les deux branches » — la branche serveur née de la revue
-  (`feat/bearer-auth`, PR #3) attend la sienne.
-
-## Décisions prises
-
-- **Bearer sur le serveur MCP tech-watch + passerelle stdio dans l'agent**
-  → `adr/0017` (Proposed). Décision intermédiaire « acter + borner » non écrite,
-  ses mitigations conservées en défense en profondeur.
-- Track léger, sans ADR — décisions Greg du 2026-10-11 (triage) :
-  - finding [3] : ligne d'autorité « non établie = C » dans la grille plutôt
-    qu'une exclusion hors score ;
-  - finding [6] : purge ciblée dans `install.sh` plutôt qu'une recette
-    documentée ;
-  - finding [10] : note historique conservée (décision du matin maintenue) ;
-  - revue de la PR serveur #3 dans une session neuve, CWD serveur.
-- **Claude, signalées** : pas de rejeu pour les correctifs de libellé ([2],
-  [3], [7], [8]), à vérifier au prochain run complet ; `check-dates.py`
-  signale `fetched-noyear` sans échouer, la règle reste à Greg.
-
-## Blocages
-
-- Aucun côté chantier. Hors chantier : rotation de `YOUTUBE_API_KEY` à la main
-  de Greg (le blocage « endpoint public sans auth » est levé par ADR-0017).
