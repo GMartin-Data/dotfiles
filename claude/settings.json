@@ -1,5 +1,6 @@
 {
   "syncClaudeAiSkills": false,
+  "attribution": false,
   "permissions": {
     "allow": [
       "mcp__dbt-enveloppe__dbt_parse",
