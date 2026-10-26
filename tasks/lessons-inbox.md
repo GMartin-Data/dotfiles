@@ -11,3 +11,4 @@ Ajout : `/immunize "<leçon>"`. Triage : `/immunize` sans argument :
 ---
 
 *Dernière consolidation : 2026-10-02 (0 conservée, 4 archivées : 2 routées artefact — fixes déjà commités sur feynman-mentor et le corpus claude-md-skill, seconde occurrence non advenue à l'échéance du 2026-09-30 ; 2 uniques expirées — emprunt P4 à n = 0, gel des déclencheurs à n = 1). Inbox vide. Voir `lessons-archive.md`.*
+- [2026-10-26] ADR-0008 (record proposé, jamais écrit par l'outil) ne couvre pas le cas où le workspace teach est le CWD : learning-dlt y déroge (le coach écrit les learning records directement), écart déclaré dans son CLAUDE.md le 2026-10-26. Refondre 0008 si un second workspace hybride coaching + teach apparaît.
