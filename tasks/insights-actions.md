@@ -39,12 +39,22 @@ mono-population).
 
 ---
 
-## [INSIGHTS 2026-09-26] check-before-delivery
+## [INSIGHTS 2026-09-26] [VALIDÉ] check-before-delivery
 
 - **Problème observé** : friction n°1 du rapport du 2026-09-26 en session pédagogique — 7 des 15 sessions `/teach` postérieures au fix du 02/09 ont un défaut de leçon attrapé par l'utilisateur en cours d'exercice ; 4 relèvent du contenu livré (comptes faux, terme non défini, warm-up mensonger, étape dépendant d'une étape ultérieure : `9a79e366`, `8d920214`, `19e58bbd`, `be6e19a6`).
 - **Action engagée** : section « Check Before Delivery » dans `teach/SKILL.md` — relecture par checklist (ordre des dépendances, comptes, termes vs glossaire, promesses) après écriture et avant ouverture, sans exécution des commandes, avec une ligne de rapport visible `Checked: …` ; note de provenance amendée (sections de discipline de livraison distinguées des déviations de conception en ADR). Hors périmètre, explicitement : calibration des diagnostics (`8b7a0786`, `01c38a64`) et sorties de sous-agents non vérifiées (`6bb0255b`).
 - **Critère de succès vérifiable** : au prochain /insights (≈2026-10-26), zéro session `/teach` de la fenêtre où l'utilisateur corrige lui-même un compte, un terme ou une dépendance d'étape dans une leçon livrée ; contrôle de non-vacuité : la ligne `Checked:` est présente dans les transcripts des leçons livrées et aucun `0 corrections` n'est contredit par une correction utilisateur sur la même leçon.
 - **Date de revue** : 2026-10-26
+- **Verdict (2026-10-26)** : ✅ atteint, **n = 1** — rapport du 2026-10-26 (fenêtre 2026-09-25 → 2026-10-26, 48 sessions) : une seule session `/teach` postérieure au fix (`2c16815c`, Go leçon 0001, 21/10), zéro correction utilisateur ; ligne `Checked: 9 steps, 11 terms — 4 corrections` présente et non contredite (trois termes glosés, référence de date remplacée, commande d'export Anki ajoutée, hash rendu générique). Réserve : la leçon n'avait pas encore été exercée (début fixé au 26/10) ; les autres sessions `/teach` des facets (3 → 20/09) sont antérieures au fix. **Reversement de la leçon « forme > prohibition » par `/immunize` reporté au cycle du 2026-11-26**, après deux ou trois leçons Go passées.
+
+---
+
+## [INSIGHTS 2026-10-26] attribution-setting
+
+- **Problème observé** : trailer `Co-Authored-By` ajouté aux commits malgré la règle mémoire « No Co-Authored-By » — rejeté par Greg 2 fois dans la fenêtre (`48015dd2` 05/10 ; incident dotfiles du 11/10, amend + push forcé), 4 fois depuis septembre (`949d9450` 07/09, `f6285148` 22/09). Friction la plus répétée du rapport du 2026-10-26. Prose et mémoire ont échoué quatre fois : le harness injecte à chaque session une consigne d'attribution que le modèle suit par intermittence.
+- **Action engagée** : `"attribution": false` dans `claude/settings.json` (→ `~/.claude/settings.json` par lien `install.sh`), clé documentée dans la référence des settings (≥ 2.1.281 ; installé 2.1.310) ; masque trailer de commit, pied de PR et lien de session. Vérification A/B le jour même en bac à sable (`claude -p`, repo temporaire, consigne sans mention d'attribution) : **A sans setting → `Co-Authored-By: Claude Fable 5.1` présent ; B avec setting → message nu.** Observé en prime : la consigne injectée dans la session courante a basculé à chaud en « do not add attribution lines », donc le setting agit sur l'instruction, pas seulement sur le texte écrit — point que la doc ne précise pas. Hook F1 (PreToolUse sur `Co-Authored-By`) non ajouté : deux mécanismes pour une règle.
+- **Critère de succès vérifiable** : au prochain /insights (≈2026-11-26), zéro rejet par l'utilisateur d'un commit ou d'une PR pour trailer ou pied d'attribution dans les facets de la fenêtre ; contrôle de non-vacuité : `git log` des repos actifs montre des commits faits par Claude dans la fenêtre, aucun ne porte `Co-Authored-By` ni `Claude-Session`.
+- **Date de revue** : 2026-11-26
 
 ---
 
@@ -56,26 +66,48 @@ depuis `progress.md` le 2026-10-04 (dernier état complet : checkpoint du
 ne les reporte plus par référence. Chaque item est daté ; en retirer un demande
 un verdict, pas un oubli.
 
-1. **Cycle /insights 2026-10-26** :
-   - revue de la fiche `check-before-delivery` (critère inchangé) ; **si elle
-     valide le levier de forme, reverser la leçon « forme > prohibition »**
-     par `/immunize "<leçon>"` (n = 2) ;
-   - **§6 de la roadmap (hors repo) : passer P4 à « archivé, n = 0 »** ;
-   - option `candide-*` en rubriques binaires (~1,7 $), qui porte seule
-     l'hypothèse non vérifiée « rubriques longues ↔ paire flaky » ; y
-     rattacher le constat « règle 7 présente dans le seul README de
-     `claude-md-skill` » (généraliser ou acter) ;
-   - candidats reconduits inchangés : S1, S6, constats TODO.md 1-3,
-     `dmi: true` (bloqué par R9/R10), Pocock, S10 ;
-   - remesurer le ratio méta/produit — **le chantier d'outillage dbt
-     (2026-10-02 → 04) est fermé**, à prendre en compte.
+1. **Cycle /insights 2026-11-26** :
+   - revue de la fiche `attribution-setting` (critère : zéro rejet de trailer,
+     non-vacuité par `git log`) ;
+   - **reverser la leçon « forme > prohibition »** par `/immunize "<leçon>"`
+     (n = 2) — déclencheur : deux ou trois leçons Go exercées sans correction
+     de compte / terme / dépendance (fiche `check-before-delivery`, ✅ n = 1
+     le 26/10) ;
+   - à ta main, inchangés : constats `TODO.md` 2-3 (deadlock `/pr` ↔ audit ;
+     audit à re-scoper), `dmi: true` (R9/R10), S10 effort ; **constat 1
+     (hook `/clear`) à fermer par renvoi** au déclencheur de la synthèse mods
+     « 2ᵉ oubli de `/progress` avant `/clear` → mod `command.run` » ;
+   - remesurer le ratio méta/produit (chantier mods ouvert → signal muet ;
+     condition « sans chantier ouvert » conservée telle quelle le 26/10).
+   - *Cycle 2026-10-26, fait* : `check-before-delivery` ✅ n = 1 ; §6 roadmap
+     P4 archivé (T3 et ligne §3 alignées) ; `candide-*` → event-driven
+     (reconduite deux fois sans déclencheur) et règle 7 actée à n = 1 ; ratio
+     46 % des tokens de sortie ; **action unique S1** (`attribution: false`,
+     fiche ci-dessus). Scorés et non retenus : B1 `/catchup` + issues GitHub
+     (un événement par mois, impact 1, faisable en 5 min hors protocole), D
+     ligne « positions d'UI » (redondante avec State Verification), G skill
+     `/review-fix` et H rejeu d'evals headless (→ item 5), S6 (→ item 5),
+     blocs prose Git / Dev / Config du rapport (déjà couverts). Règle « une
+     seule action » contestée (trois candidats à coût 1) puis **confirmée** :
+     les candidats ne tenaient pas au scoring ; amendement « une
+     comportementale + une mécanique vérifiable le jour même » formulé, non
+     adopté faute de cas.
 2. **R10 à arbitrer avant exécution** (`disallowed-tools` sur `grill` et
    `code-review` ; toucher `grill.md` pourrait armer R9).
 3. **Chantier evals, Phase 4** (event-driven) : R8 au D5 ; R9 sous-ensembles
    mono-tour ; R10.
 4. **P5 verification-skills** (dormant) : ne reste que « projet concret à
    surface lançable » — l'agent dbt en est un candidat.
-5. Event-driven : réponse vide Step 0 ; paire `candide-*` ; diagnosing-bugs ;
+5. Event-driven : réponse vide Step 0 ; paire `candide-*` (si elle redevient
+   flaky : réécriture en rubriques binaires, ~1,7 $, seule à porter
+   l'hypothèse « rubriques longues ↔ paire flaky » — retirée de l'agenda
+   reconduit le 2026-10-26) ; **G** skill `/review-fix` (si la boucle
+   revue → triage → fix test-first → merge doit être ré-expliquée une fois de
+   plus malgré `/code-review` + rituel + « un finding par tour » ; coût 3,
+   corpus d'eval obligatoire) ; **H** rejeu d'evals en `claude -p` (à la
+   prochaine session d'amélioration de skill où le rejeu charge le contexte
+   principal) ; **S6** hook `ruff format` (si un pre-commit de format aborte à
+   nouveau un commit) ; diagnosing-bugs ;
    T2 ; échec de permissions d'un sous-agent d'exploration (`f6285148`) ;
    P4 se rouvre à la première occurrence observée de name-dropping de
    principe ; « gel des déclencheurs » passe en promotion projet à une
@@ -106,3 +138,4 @@ chantier méta n'est ouvert (> 1/3 deux cycles de suite).
 | Cycle | Fenêtre | Méta (sessions) | Méta (tokens sortie) | Chantier méta ouvert |
 |---|---|:---:|:---:|---|
 | 2026-09-26 | 60 sessions depuis le 31/07 | 19/60 = 32 % | 4,55 M / 16,29 M = 28 % | oui — evals Phases 1-3, 3 revues de repos, roadmap (baseline = plafond de période active) |
+| 2026-10-26 | 64 sessions depuis le 25/09 (48 analysées) | 23/64 = 36 % (21/48 = 44 % sur les analysées) | 5,74 M / 12,40 M = 46 % | oui — tech-watch Phases 0-3 + serveur MCP Cloud Run (26/09 → 12/10), outillage dbt (02 → 04/10), étude des mods (13-14/10), context-ledger déclaré ouvert le 14/10. Lecture : les 16 sessions `dbt-agent-testbed` sont des micro-tests de délégation (3-8 messages, 0,02 M tokens) qui gonflent le compte produit ; la lecture en tokens est la fiable. Signal « > 1/3 sans chantier ouvert » muet, car un chantier méta a été ouvert à chaque cycle. |
