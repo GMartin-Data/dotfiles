@@ -1,5 +1,117 @@
 ## Dernière mise à jour
-Date : 2026-10-14 12:01
+Date : 2026-10-26 08:57
+Session : b905eafa-527b-4718-be1e-80446a0a5fd1
+
+## Tâches complétées
+
+- **Cycle /insights 2026-10-26 fait** (rapport
+  `~/.claude/usage-data/report-2026-10-26-075720.html`, 48 sessions
+  analysées sur 64, fenêtre 25/09 → 26/10), protocole v3, un point par
+  tour :
+  - fiche `check-before-delivery` **validée à n = 1** (une seule session
+    `/teach` après le fix, Go leçon 0001 du 21/10, ligne `Checked:` présente
+    avec 4 corrections, zéro correction utilisateur, leçon non encore
+    exercée) ; `/immunize` de « forme > prohibition » reporté au 26/11 ;
+  - roadmap hors repo : §6 P4 « archivé, n = 0 », T3 et ligne §3 alignées ;
+  - option `candide-*` (~1,7 $) retirée de l'agenda → event-driven ; règle 7
+    actée à n = 1 dans le seul README de `claude-md-skill` ;
+  - ratio méta/produit : **46 % des tokens de sortie** (vs 28 %), signal muet
+    car un chantier méta ouvert à chaque cycle ; condition conservée telle
+    quelle ;
+  - scoring 3 axes de 10 candidats, règle « une seule action » contestée
+    (trois candidats à coût 1) puis confirmée ; **action unique S1** :
+    `"attribution": false` dans `claude/settings.json`, test A/B en bac à
+    sable concluant (trailer présent sans setting, absent avec ; l'instruction
+    injectée bascule à chaud). Fiche `attribution-setting`, revue le
+    2026-11-26.
+  - Issue #7 fermée.
+- **Cinq commits poussés** sur `main` (`131e073` → `fb00606`) : synthèse
+  mods et checkpoint du 14/10 jamais poussés, setting d'attribution, cycle
+  /insights, leçon inbox ADR-0008 venue de learning-dlt.
+- Mémoire : `feedback_no_coauthor` pointe vers le setting ; mémoire roadmap
+  et index mis à jour (§6 corrigé).
+
+## En cours
+
+- **Chantier mods ouvert, aucun code écrit** : premier mod = registre de
+  contexte (observe-only, JSONL par session + script d'analyse pour
+  `/insights`), sous `/coach-pedagogique`. Spec v0 dans
+  `tasks/mods-2026-10/synthese.md` §8.
+- `tasks/lessons-inbox.md` : une entrée à n = 1 (ADR-0008 ne couvre pas le
+  workspace teach en CWD, dérogation learning-dlt), à trier au prochain
+  `/immunize`.
+
+## Prochaines étapes
+
+1. **Branche `feat/context-ledger-mod`**, puis `/coach-pedagogique` avec le
+   registre comme artefact. Premier tour du coach : objectif d'apprentissage
+   (modèle événements / `$` / `next` / pinned / fail-open, pas les noms de
+   champs) et calibrage du scaffolding selon l'aisance TypeScript (si bases à
+   acquérir : `/teach` court avant). Optionnel avant : 30 min de
+   `code-mentor` sur `examples/tool-call.ts` de la skill bundled
+   `plugin-authoring`.
+2. L'étape 1-2 du coach produit **`tasks/mods-2026-10/plan.md`** (paliers
+   M0–M6, un critère de vérification par palier) **avant** tout fichier dans
+   `claude/mods/`. Décisions à y prendre : mécanisme de chargement définitif
+   (dossier de skills auto-chargé, `CLAUDE_CODE_PLUGIN_DIRS`, marketplace
+   dossier — candidat ADR si 4ᵉ famille dans `install.sh` / README),
+   emplacement du script d'analyse, chemin du JSONL (à côté de
+   `~/.claude/usage-data/session-meta/` ?). Dev loop : `claude --plugin-dir
+   ~/dotfiles/claude/mods/context-ledger`, pas le dossier `dev-mods`.
+3. Rituel : `claude plugin test` + un run réel vérifié contre le JSONL ;
+   `/code-review` sur le diff avant PR ; checklist multi-fichiers (famille
+   `**Mods**` à créer dans les deux README) ; `validate` + `tsc` à chaque bump
+   nocturne de Claude Code.
+4. **Second mod, une autre semaine** : rédaction des secrets dans les
+   résultats d'outils (incident 2026-10-11), spec dans la synthèse §5.
+5. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
+   `~/.zshrc.local` (mode 600) avec `export TECH_WATCH_MCP_TOKEN=…`, valeur
+   lue dans un terminal de la machine actuelle — jamais via le chat ni
+   `gcloud … describe`. Le setting `attribution: false` y arrive par le pull.
+6. **Points tech-watch pour Greg** (`plan.md` §5 Phase 4) : dates sans année,
+   égalités sans signal d'engagement, `Owner domains` sans propriétaire ;
+   budget de 10 pages à mesurer sur deux ou trois sujets avant de toucher au
+   seuil.
+7. **Purge des logs fuités** (`YOUTUBE_API_KEY` ancienne, révisions ≤ `00008`)
+   : effective au plus tard le 2026-11-08 ; vérification facultative après.
+8. Cycle `/insights` du 2026-11-26 : item 1 de l'ordre du jour reconduit dans
+   `tasks/insights-actions.md` (revue `attribution-setting`, `/immunize`
+   « forme > prohibition » après deux ou trois leçons Go, constat 1 de
+   `TODO.md` à fermer par renvoi au déclencheur mods, ratio à remesurer).
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — cycle /insights du 2026-10-26 :
+  - **Greg** : `check-before-delivery` validée à n = 1 avec réserve,
+    `/immunize` reporté au 26/11 ; condition du signal méta/produit laissée
+    telle quelle (compte de chantiers par cycle proposé, non retenu).
+  - **Greg** : option `candide-*` non dépensée → event-driven ; règle 7 actée
+    sans généralisation ; ligne §3 de la roadmap rayée.
+  - **Greg** : règle « une seule action » maintenue après contestation ;
+    **Claude** : l'amendement « une comportementale + une mécanique
+    vérifiable le jour même » formulé, non adopté faute de cas (B1 et D ne
+    tenaient pas au scoring : impact surnoté).
+  - **Greg** : S1 setting plutôt que hook F1 (supprimer la cause, pas
+    intercepter l'effet ; un seul mécanisme par règle). G (`/review-fix`) et
+    H (rejeu headless) non retenus : boucle déjà encodée trois fois / chantier
+    fermé, coût 3 ; conservés en event-driven avec déclencheur nommé.
+  - **Claude, signalée** : facets et session-meta de `~/.claude/usage-data/`
+    conservent des sessions de septembre dont les transcripts sont purgés ;
+    la revue d'une fiche ne peut s'appuyer que sur les transcripts encore
+    présents. Les 16 sessions `dbt-agent-testbed` sont des micro-tests
+    (0,02 M tokens) : la lecture en tokens du ratio est la fiable.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-14 12:01
 Session : e8a211f1-b4e7-4c9e-85c2-fde9927c8923
 
 ## Tâches complétées
@@ -162,88 +274,6 @@ Session : 0a5fa4bd-f832-46dc-af93-22fcefa3c3d6
   - **Claude, signalée** : observation 2 déclarée « sans symptôme » plutôt que
     « confirmée » — l'héritage de la règle `Edit(…)` par le fork n'est pas
     prouvé, seule l'absence du symptôme redouté l'est.
-
-## Blocages
-
-- Aucun.
-
----
-
-## Checkpoint précédent — 2026-10-11 22:57
-Session : 5de2980a-ab5e-44ad-8a90-634ef8ddacde
-
-## Tâches complétées
-
-- **Revue de la PR serveur #3** (`/code-review 3 high`, session neuve CWD
-  serveur, puis triage ici, un finding par tour) : 4 findings, 4 traités, 0
-  écarté. [1] MEDIUM placeholder `.env.example` valide → vide, fail-closed
-  (`31a9ad7`, message amendé sans trailers d'attribution, push forcé par Greg) ;
-  [2] alias ASGI → `starlette.types` (`d5efb8b`) ; [3] warning de token absent
-  déplacé au scope `lifespan`, jamais envoyé en stdio, 2 tests (`f6999f7`) ;
-  [4] ADR → pas de nouvel ADR, pointeur README (`562bb68`).
-- **PR #3 mergée** (`b9b4c31`, merge commit, branche conservée), corps mis à jour
-  (test plan 107 tests, table de revue). GitGuardian vert.
-- **Cloud Run redéployé** : révision `00013-twd` = `main` (401 sans en-tête,
-  401 mauvais token, 200 bon token ; variables intactes ; aucun faux warning).
-- **ADR-0017** : option G (OAuth MCP) ajoutée, rejetée, avec déclencheur de
-  réouverture (`639ba6d`) ; puis `Proposed` → **`Accepted`** (`83f94bd`).
-- **Rotation `YOUTUBE_API_KEY` faite** : nouvelle clé « tech-watch-mcp
-  2026-10-11 » (restreinte à YouTube Data API v3) dans `youtube-tech-scraper`,
-  révision `00014-2gv` ; empreintes des deux révisions différentes et non
-  vides ; smoke test MCP vert avec l'ancienne clé supprimée ; « API key 1 »
-  supprimée. Valeur jamais passée par le chat.
-- Aucune PR ouverte ; `~/mcp-server-code` et `~/dotfiles` sur `main`,
-  synchronisés avec `origin`, arbres propres.
-
-## En cours
-
-- Rien.
-
-## Prochaines étapes
-
-1. **Première veille réelle** en session interactive, depuis un terminal neuf
-   (`TECH_WATCH_MCP_TOKEN` sourcée) : observer l'héritage de
-   `Edit(~/tech-watch/**)` par le fork (sinon `permissionMode: acceptEdits`
-   dans l'agent) et que l'en-tête s'arrête à `**Notes**:` (finding [2] de la
-   PR #6, non rejoué).
-2. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
-   `~/.zshrc.local` (mode 600) avec `export TECH_WATCH_MCP_TOKEN=…`, valeur lue
-   dans un terminal de la machine actuelle — jamais via le chat ni
-   `gcloud … describe`.
-3. **Points pour Greg** (`plan.md` §5 Phase 4), de préférence après la veille
-   réelle : dates sans année (`check-dates.py` les montre en `fetched-noyear`,
-   statu quo ou `unverified`) ; égalités sans signal d'engagement ; `Owner
-   domains` sans propriétaire.
-4. Cycle `/insights` du 2026-10-26 et items dormants :
-   `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- Aucun (pas de PRD, repo dotfiles). L'écart au plan consigné en §5 Phase 4
-  (« `/code-review` sur les deux branches ») est résolu : la branche serveur a
-  eu sa revue.
-
-## Décisions prises
-
-- **Bearer sur le serveur MCP tech-watch + passerelle stdio** → `adr/0017`
-  (Accepted 2026-10-11). Option G (OAuth MCP) rejetée dans le même ADR, perte du
-  connecteur claude.ai assumée comme durable, déclencheur de réouverture nommé.
-- Track léger, sans ADR — décisions Greg du 2026-10-11 :
-  - finding [1] : placeholder vide, sans longueur minimale de token dans le
-    middleware (règle spéculative) ;
-  - finding [2] : correctif dans la PR plutôt que renvoi à `/simplify` ;
-  - finding [3] : warning au `lifespan` (variante retenue plutôt que simple note
-    de docstring) ;
-  - finding [4] : durable + G rejetée, pas de nouvel ADR ;
-  - redéploiement de `main` (option b) plutôt que laisser la prod sur
-    `512773e` ;
-  - rotation `YOUTUBE_API_KEY` faite le jour même (alternative « acter
-    l'exposition » écartée) ; fenêtre de logs fuités : purge au plus tard le
-    2026-11-08 (rétention `_Default` 30 jours).
-- **Claude, signalée** : un commit a reçu des trailers d'attribution
-  contraires à la règle mémoire « No Co-Authored-By » ; corrigé par amend, push
-  forcé fait par Greg (le hook `block-force-push` bloque Claude). Brouillon de
-  feedback mis en file locale (`/feedback`).
 
 ## Blocages
 

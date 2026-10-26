@@ -6,6 +6,88 @@
 
 ---
 
+## Checkpoint précédent — 2026-10-11 22:57
+Session : 5de2980a-ab5e-44ad-8a90-634ef8ddacde
+
+## Tâches complétées
+
+- **Revue de la PR serveur #3** (`/code-review 3 high`, session neuve CWD
+  serveur, puis triage ici, un finding par tour) : 4 findings, 4 traités, 0
+  écarté. [1] MEDIUM placeholder `.env.example` valide → vide, fail-closed
+  (`31a9ad7`, message amendé sans trailers d'attribution, push forcé par Greg) ;
+  [2] alias ASGI → `starlette.types` (`d5efb8b`) ; [3] warning de token absent
+  déplacé au scope `lifespan`, jamais envoyé en stdio, 2 tests (`f6999f7`) ;
+  [4] ADR → pas de nouvel ADR, pointeur README (`562bb68`).
+- **PR #3 mergée** (`b9b4c31`, merge commit, branche conservée), corps mis à jour
+  (test plan 107 tests, table de revue). GitGuardian vert.
+- **Cloud Run redéployé** : révision `00013-twd` = `main` (401 sans en-tête,
+  401 mauvais token, 200 bon token ; variables intactes ; aucun faux warning).
+- **ADR-0017** : option G (OAuth MCP) ajoutée, rejetée, avec déclencheur de
+  réouverture (`639ba6d`) ; puis `Proposed` → **`Accepted`** (`83f94bd`).
+- **Rotation `YOUTUBE_API_KEY` faite** : nouvelle clé « tech-watch-mcp
+  2026-10-11 » (restreinte à YouTube Data API v3) dans `youtube-tech-scraper`,
+  révision `00014-2gv` ; empreintes des deux révisions différentes et non
+  vides ; smoke test MCP vert avec l'ancienne clé supprimée ; « API key 1 »
+  supprimée. Valeur jamais passée par le chat.
+- Aucune PR ouverte ; `~/mcp-server-code` et `~/dotfiles` sur `main`,
+  synchronisés avec `origin`, arbres propres.
+
+## En cours
+
+- Rien.
+
+## Prochaines étapes
+
+1. **Première veille réelle** en session interactive, depuis un terminal neuf
+   (`TECH_WATCH_MCP_TOKEN` sourcée) : observer l'héritage de
+   `Edit(~/tech-watch/**)` par le fork (sinon `permissionMode: acceptEdits`
+   dans l'agent) et que l'en-tête s'arrête à `**Notes**:` (finding [2] de la
+   PR #6, non rejoué).
+2. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
+   `~/.zshrc.local` (mode 600) avec `export TECH_WATCH_MCP_TOKEN=…`, valeur lue
+   dans un terminal de la machine actuelle — jamais via le chat ni
+   `gcloud … describe`.
+3. **Points pour Greg** (`plan.md` §5 Phase 4), de préférence après la veille
+   réelle : dates sans année (`check-dates.py` les montre en `fetched-noyear`,
+   statu quo ou `unverified`) ; égalités sans signal d'engagement ; `Owner
+   domains` sans propriétaire.
+4. Cycle `/insights` du 2026-10-26 et items dormants :
+   `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles). L'écart au plan consigné en §5 Phase 4
+  (« `/code-review` sur les deux branches ») est résolu : la branche serveur a
+  eu sa revue.
+
+## Décisions prises
+
+- **Bearer sur le serveur MCP tech-watch + passerelle stdio** → `adr/0017`
+  (Accepted 2026-10-11). Option G (OAuth MCP) rejetée dans le même ADR, perte du
+  connecteur claude.ai assumée comme durable, déclencheur de réouverture nommé.
+- Track léger, sans ADR — décisions Greg du 2026-10-11 :
+  - finding [1] : placeholder vide, sans longueur minimale de token dans le
+    middleware (règle spéculative) ;
+  - finding [2] : correctif dans la PR plutôt que renvoi à `/simplify` ;
+  - finding [3] : warning au `lifespan` (variante retenue plutôt que simple note
+    de docstring) ;
+  - finding [4] : durable + G rejetée, pas de nouvel ADR ;
+  - redéploiement de `main` (option b) plutôt que laisser la prod sur
+    `512773e` ;
+  - rotation `YOUTUBE_API_KEY` faite le jour même (alternative « acter
+    l'exposition » écartée) ; fenêtre de logs fuités : purge au plus tard le
+    2026-11-08 (rétention `_Default` 30 jours).
+- **Claude, signalée** : un commit a reçu des trailers d'attribution
+  contraires à la règle mémoire « No Co-Authored-By » ; corrigé par amend, push
+  forcé fait par Greg (le hook `block-force-push` bloque Claude). Brouillon de
+  feedback mis en file locale (`/feedback`).
+
+## Blocages
+
+- Aucun.
+
+---
+
 ## Checkpoint précédent — 2026-10-11 12:09
 Session : 9820e7b9-f865-4bf1-8453-ee0d6b924790
 
