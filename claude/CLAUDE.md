@@ -37,6 +37,7 @@
 - Commands embed their own scope rules (autonomous prompts). The matrix is the reference those rules derive from — keep duplicated rules in sync with it; do not let them drift.
 - Read the matrix at runtime only at replanning decision points (Phase 3): when a drift or inflection must be routed to the right document (PLAN vs CLAUDE.md vs PRD vs ADR).
 - Project-specific deviations (lightweight ADRs for exploratory projects, direct-commit exemptions) belong in the project's CLAUDE.md, not here.
+- Cross-project learning sheets (data/infra concepts that outlive the current project) go to `~/explain/concepts/<theme>/` and carry the frontmatter defined in `~/explain/CLAUDE.md` (`origine`, `date`, optional `verifie`) — restated here because that file is not loaded when the CWD is another repo.
 
 ## State Verification
 - When asserting repo, config, or external state, prefer running the verifying command first and quote its result — if unverifiable, say "I don't know" rather than guess.
