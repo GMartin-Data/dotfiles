@@ -4,6 +4,72 @@
 > courant et les deux précédents), déplacés tels quels par `/progress`, du plus
 > récent au plus ancien. Lecture à la demande seulement — jamais au `/catchup`.
 
+## Checkpoint précédent — 2026-10-12 15:39
+Session : 0a5fa4bd-f832-46dc-af93-22fcefa3c3d6
+
+## Tâches complétées
+
+- **Première veille réelle faite** : `/tech-watch "Claude Code mods"` en session
+  interactive, terminal neuf, `TECH_WATCH_MCP_TOKEN` sourcée, passerelle stdio
+  avec bearer. Rapport :
+  `~/tech-watch/tech-watch-claude-code-mods-2026-10-12.md` (216 lignes, 20
+  classées + 3 primaires, 6 Essential, ~7,5 min, 65 k tokens côté fork,
+  21 appels d'outils). arXiv vide (attendu), Tier 3 non lancé (53 uniques ≥
+  seuil 12), 10/10 pages ouvertes, 13 pages web `unverified` (budget épuisé +
+  un 403 Medium), StationX lu tronqué.
+- **Observation 1 confirmée** : l'en-tête s'arrête à `**Notes**:` puis `---`
+  (finding [2] de la PR #6, validé par un run réel).
+- **Observation 2 sans symptôme** : le fork a écrit dans `~/tech-watch/` sans
+  demande de permission remontée ni blocage. Le mécanisme (règle
+  `Edit(~/tech-watch/**)` héritée ou autre chemin d'auto-approbation) n'est pas
+  distingué, mais `permissionMode: acceptEdits` dans l'agent n'est pas
+  nécessaire.
+- `~/dotfiles` sur `main`, propre, synchronisé avec `origin` ; aucune PR
+  ouverte.
+
+## En cours
+
+- Rien.
+
+## Prochaines étapes
+
+1. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
+   `~/.zshrc.local` (mode 600) avec `export TECH_WATCH_MCP_TOKEN=…`, valeur lue
+   dans un terminal de la machine actuelle — jamais via le chat ni
+   `gcloud … describe`.
+2. **Points pour Greg** (`plan.md` §5 Phase 4), maintenant qu'une veille réelle
+   existe pour les illustrer : dates sans année (le run a lu « Oct 4 » dev.to
+   comme 2026 en le justifiant dans les Notes — statu quo, règle à trancher :
+   statu quo ou `unverified`) ; égalités sans signal d'engagement ; `Owner
+   domains` sans propriétaire.
+3. **Budget de 10 pages** : 13 pages web laissées `unverified` sur ce sujet
+   dense. Friction à mesurer sur deux ou trois sujets différents avant de
+   toucher au seuil — pas d'action maintenant.
+4. **Purge des logs fuités** (`YOUTUBE_API_KEY` ancienne, révisions ≤ `00008`
+   du serveur) : effective au plus tard le 2026-11-08 par rétention `_Default`
+   30 jours ; rien à faire sauf vérification facultative après cette date.
+5. Cycle `/insights` du 2026-10-26 et items dormants :
+   `tasks/insights-actions.md`.
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — session 2026-10-12 :
+  - **Greg** : sujet de la première veille réelle = « Claude Code mods » ;
+    checkpoint direct sans revue du top 6 Essential en chat.
+  - **Claude, signalée** : observation 2 déclarée « sans symptôme » plutôt que
+    « confirmée » — l'héritage de la règle `Edit(…)` par le fork n'est pas
+    prouvé, seule l'absence du symptôme redouté l'est.
+
+## Blocages
+
+- Aucun.
+
+---
+
 ---
 
 ## Checkpoint précédent — 2026-10-11 22:57

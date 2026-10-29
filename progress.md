@@ -1,5 +1,111 @@
 ## Dernière mise à jour
-Date : 2026-10-26 08:57
+Date : 2026-10-29 12:42
+Session : e093589c-f287-4a54-ad93-367c84504061
+
+## Tâches complétées
+
+- **Chantier annexe « métadonnées pour `~/explain` » bouclé de bout en bout**
+  (déclenché par un tutoriel Claude.ai « frontmatter typé + index DuckDB »).
+  Avis rédigé dans `~/explain/tasks/avis-metadonnees-2026-10-29.md` (mesures :
+  54 `.md`, 0 frontmatter, 0 appel Grep/Glob vers `~/explain` en 30 jours ;
+  tutoriel jugé sur-dimensionné), puis un point par tour :
+  - **A retenue** : frontmatter minimal `origine` / `date` / `verifie`, sans
+    index. Backfill de **44/44 fiches** (`date` 44/44, `origine` 43/44 —
+    absente sur `concepts/shell/env-et-shebang.md`, source introuvable, champ
+    omis plutôt que deviné ; `verifie` sur 8 fiches rejouées).
+  - **B armée** : déclencheur nommé dans `~/explain/CLAUDE.md` (≥ 3 commandes
+    pour localiser une fiche, question fraîcheur/provenance sans réponse en une
+    commande, ou > ~200 fiches). Aucun code d'index.
+  - **Racine rangée** : 9 fichiers de pilotage DataTalent → `archive/datatalent/`
+    (`git mv`), 33 références absolues + 2 relatives réécrites. Liens cassés : 2
+    avant, 2 après (fiche `cloud-run-job-command-passing.md` jamais écrite).
+  - `~/explain/CLAUDE.md` créé ; une ligne ajoutée au CLAUDE.md global
+    (section Documentary Methodology) ; mémoire `explain-learning-folder`
+    (projet sf_airflow) mise à jour.
+- **Cinq commits, tous poussés** : `~/explain` `0fa6903`, `ea991ac`, `458df55` ;
+  `~/dotfiles` `db8cc87` ; `datatalent` `017f867` via **PR #99 mergée**
+  (`main` protégé : mon premier commit direct sur `main` était une erreur,
+  rattrapée par branche + PR).
+- `CLAUDE.md` local non versionné de `datatalent` : deux pointeurs
+  (`decisions-terraform.md`, `roadmap-terraform.md`) corrigés.
+
+## En cours
+
+- Rien d'ouvert sur ce chantier. Chantier mods inchangé : aucun code écrit.
+
+## Prochaines étapes
+
+1. **Branche `feat/context-ledger-mod`**, puis `/coach-pedagogique` avec le
+   registre comme artefact. Spec v0 dans `tasks/mods-2026-10/synthese.md` §8.
+   Premier tour du coach : objectif d'apprentissage (modèle événements / `$` /
+   `next` / pinned / fail-open, pas les noms de champs) et calibrage du
+   scaffolding selon l'aisance TypeScript (si bases à acquérir : `/teach` court
+   avant). Optionnel avant : 30 min de `code-mentor` sur `examples/tool-call.ts`
+   de la skill bundled `plugin-authoring`.
+2. L'étape 1-2 du coach produit **`tasks/mods-2026-10/plan.md`** (paliers
+   M0–M6, un critère de vérification par palier) **avant** tout fichier dans
+   `claude/mods/`. Décisions à y prendre : mécanisme de chargement définitif
+   (dossier de skills auto-chargé, `CLAUDE_CODE_PLUGIN_DIRS`, marketplace
+   dossier — candidat ADR si 4ᵉ famille dans `install.sh` / README), emplacement
+   du script d'analyse, chemin du JSONL. Dev loop : `claude --plugin-dir
+   ~/dotfiles/claude/mods/context-ledger`.
+3. Rituel du chantier mods : `claude plugin test` + un run réel vérifié contre
+   le JSONL ; `/code-review` sur le diff avant PR ; checklist multi-fichiers
+   (famille `**Mods**` dans les deux README) ; `validate` + `tsc` à chaque bump
+   nocturne de Claude Code.
+4. **Petits restes `~/explain`** (sans urgence) : renseigner l'`origine` de
+   `env-et-shebang.md` si Greg s'en souvient ; `/progress` à lancer dans
+   `~/explain` (son `progress.md` date du 2026-10-04 et ne mentionne rien de
+   cette session) ; lien mort `cloud-run-job-command-passing.md` toujours à
+   trancher (écrire la fiche ou retirer les mentions).
+5. **`datatalent`, hors périmètre** : son `CLAUDE.md` local (non versionné)
+   décrit encore `~/explain/` comme espace propre au projet, avec `journal.md`
+   et `rétro-todo.md` à la racine (l. 54, 129, 168-204, 228, 266-267) — doctrine
+   périmée depuis le rangement du 18/09, à purger ou laisser mourir (projet clos).
+6. Second mod, une autre semaine : rédaction des secrets dans les résultats
+   d'outils (incident 2026-10-11), spec dans la synthèse §5.
+7. **Autre machine** : `git pull` (dotfiles **et** explain), `install.sh`
+   (purge des trois liens morts), `~/.zshrc.local` (mode 600) avec `export
+   TECH_WATCH_MCP_TOKEN=…`, valeur lue dans un terminal de la machine actuelle —
+   jamais via le chat ni `gcloud … describe`.
+8. Points tech-watch pour Greg (`plan.md` §5 Phase 4) : dates sans année,
+   égalités sans signal d'engagement, `Owner domains` sans propriétaire ;
+   budget de 10 pages à mesurer sur deux ou trois sujets avant de toucher au
+   seuil.
+9. Purge des logs fuités (`YOUTUBE_API_KEY` ancienne, révisions ≤ `00008`) :
+   effective au plus tard le 2026-11-08 ; vérification facultative après.
+10. Items dormants et cycle `/insights` du 2026-11-26 : voir
+    `tasks/insights-actions.md` (« Ordre du jour reconduit »). Le chantier
+    `~/explain` ajoute un chantier méta de plus à compter dans le ratio
+    méta/produit (46 % au cycle du 26/10).
+
+## Écarts vs PRD
+
+- Aucun (pas de PRD, repo dotfiles).
+
+## Décisions prises
+
+- Track léger, sans ADR — chantier `~/explain` du 2026-10-29. Source :
+  `~/explain/tasks/avis-metadonnees-2026-10-29.md` (sections « Décision » et
+  « Exécution »).
+  - **Greg** : A retenue ; B armée via le CLAUDE.md d'explain uniquement ;
+    racine → `archive/datatalent/`.
+  - **Claude, signalées** : slugs `origine` = nom du dossier projet sans
+    `brief_` (`explain` pour l'étude autonome) ; dates backfillées depuis le
+    contexte des fiches puis le journal DataTalent, premier commit en dernier
+    recours ; `progress.md` d'explain laissé tel quel (checkpoints datés citant
+    les anciens noms) ; règle frontmatter répétée dans le CLAUDE.md global parce
+    que celui d'explain n'est pas chargé quand le CWD est un autre repo.
+  - **Claude, erreur corrigée** : commit direct sur `main` protégé de
+    `datatalent` (aucune exemption déclarée là-bas) → branche + PR #99.
+
+## Blocages
+
+- Aucun.
+
+---
+
+## Checkpoint précédent — 2026-10-26 08:57
 Session : b905eafa-527b-4718-be1e-80446a0a5fd1
 
 ## Tâches complétées
@@ -208,72 +314,6 @@ Session : e8a211f1-b4e7-4c9e-85c2-fde9927c8923
   - Déclencheurs de réouverture (synthèse §7) : 2ᵉ oubli de `/progress`
     avant `/clear` → mod `command.run` ; sortie de l'early access → migration
     des guards réévaluée ; première friction de contexte → mods de contrôle.
-
-## Blocages
-
-- Aucun.
-
----
-
-## Checkpoint précédent — 2026-10-12 15:39
-Session : 0a5fa4bd-f832-46dc-af93-22fcefa3c3d6
-
-## Tâches complétées
-
-- **Première veille réelle faite** : `/tech-watch "Claude Code mods"` en session
-  interactive, terminal neuf, `TECH_WATCH_MCP_TOKEN` sourcée, passerelle stdio
-  avec bearer. Rapport :
-  `~/tech-watch/tech-watch-claude-code-mods-2026-10-12.md` (216 lignes, 20
-  classées + 3 primaires, 6 Essential, ~7,5 min, 65 k tokens côté fork,
-  21 appels d'outils). arXiv vide (attendu), Tier 3 non lancé (53 uniques ≥
-  seuil 12), 10/10 pages ouvertes, 13 pages web `unverified` (budget épuisé +
-  un 403 Medium), StationX lu tronqué.
-- **Observation 1 confirmée** : l'en-tête s'arrête à `**Notes**:` puis `---`
-  (finding [2] de la PR #6, validé par un run réel).
-- **Observation 2 sans symptôme** : le fork a écrit dans `~/tech-watch/` sans
-  demande de permission remontée ni blocage. Le mécanisme (règle
-  `Edit(~/tech-watch/**)` héritée ou autre chemin d'auto-approbation) n'est pas
-  distingué, mais `permissionMode: acceptEdits` dans l'agent n'est pas
-  nécessaire.
-- `~/dotfiles` sur `main`, propre, synchronisé avec `origin` ; aucune PR
-  ouverte.
-
-## En cours
-
-- Rien.
-
-## Prochaines étapes
-
-1. **Autre machine** : `git pull`, `install.sh` (purge des trois liens morts),
-   `~/.zshrc.local` (mode 600) avec `export TECH_WATCH_MCP_TOKEN=…`, valeur lue
-   dans un terminal de la machine actuelle — jamais via le chat ni
-   `gcloud … describe`.
-2. **Points pour Greg** (`plan.md` §5 Phase 4), maintenant qu'une veille réelle
-   existe pour les illustrer : dates sans année (le run a lu « Oct 4 » dev.to
-   comme 2026 en le justifiant dans les Notes — statu quo, règle à trancher :
-   statu quo ou `unverified`) ; égalités sans signal d'engagement ; `Owner
-   domains` sans propriétaire.
-3. **Budget de 10 pages** : 13 pages web laissées `unverified` sur ce sujet
-   dense. Friction à mesurer sur deux ou trois sujets différents avant de
-   toucher au seuil — pas d'action maintenant.
-4. **Purge des logs fuités** (`YOUTUBE_API_KEY` ancienne, révisions ≤ `00008`
-   du serveur) : effective au plus tard le 2026-11-08 par rétention `_Default`
-   30 jours ; rien à faire sauf vérification facultative après cette date.
-5. Cycle `/insights` du 2026-10-26 et items dormants :
-   `tasks/insights-actions.md`.
-
-## Écarts vs PRD
-
-- Aucun (pas de PRD, repo dotfiles).
-
-## Décisions prises
-
-- Track léger, sans ADR — session 2026-10-12 :
-  - **Greg** : sujet de la première veille réelle = « Claude Code mods » ;
-    checkpoint direct sans revue du top 6 Essential en chat.
-  - **Claude, signalée** : observation 2 déclarée « sans symptôme » plutôt que
-    « confirmée » — l'héritage de la règle `Edit(…)` par le fork n'est pas
-    prouvé, seule l'absence du symptôme redouté l'est.
 
 ## Blocages
 
